@@ -19,6 +19,8 @@ export type NomeDeIcone =
   | 'conversa'
   | 'integracoes'
   | 'agentes'
+  | 'enviar'
+  | 'parar'
 
 export interface ItemDeMenu {
   rotulo: string

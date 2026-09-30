@@ -35,6 +35,8 @@ export type AcaoDaConversa =
   | { tipo: 'trecho'; texto: string }
   | { tipo: 'fim'; conversaId: string; mensagemId: string }
   | { tipo: 'erro'; erro: ErroDaConversa }
+  /** O servidor recusou o envio antes de gravar (422, 404, 409): a pergunta não existe lá. */
+  | { tipo: 'recusada'; erro: ErroDaConversa }
   | { tipo: 'parar' }
   | { tipo: 'nova' }
 
@@ -98,6 +100,13 @@ export function reduzir(estado: EstadoDaConversa, acao: AcaoDaConversa): EstadoD
       return {
         ...estado,
         bolhas: encerrarBolhaDoAgente(estado.bolhas, 'erro'),
+        transmitindo: false,
+        erro: acao.erro,
+      }
+    case 'recusada':
+      return {
+        ...estado,
+        bolhas: estado.bolhas.slice(0, -2),
         transmitindo: false,
         erro: acao.erro,
       }

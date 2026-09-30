@@ -71,6 +71,19 @@ describe('reduzir', () => {
     expect(e.erro?.mensagem).toBe('Falhou.')
   })
 
+  it('envio recusado antes do stream desfaz as duas bolhas e mostra o erro', () => {
+    const e = aplicar([
+      { tipo: 'enviar', texto: 'Primeira', idDoUsuario: 'u0', idDoAgente: 'a0' },
+      { tipo: 'fim', conversaId: 'c1', mensagemId: 'm0' },
+      enviar,
+      { tipo: 'recusada', erro: { codigo: 'entrada_invalida', mensagem: 'Escreva uma mensagem.' } },
+    ])
+    expect(e.bolhas.map((b) => b.id)).toEqual(['u0', 'm0'])
+    expect(e.transmitindo).toBe(false)
+    expect(e.erro).toEqual({ codigo: 'entrada_invalida', mensagem: 'Escreva uma mensagem.' })
+    expect(e.conversaId).toBe('c1')
+  })
+
   it('parar encerra sem erro e marca o texto parcial como interrompido', () => {
     const e = aplicar([enviar, { tipo: 'trecho', texto: 'Olá' }, { tipo: 'parar' }])
     expect(e.transmitindo).toBe(false)

@@ -25,18 +25,18 @@ tasks:
   - id: T-06.01
     titulo: "Componente ChatDeTeste e estilos"
     fase: F-06.1
-    status: pendente
+    status: concluida
     objetivo: "Componente cliente de chat (unico com fetch) sobre os modulos puros, com icones e classes de estilo por tokens."
     arquivos:
       cria: ["src/componentes/ChatDeTeste.tsx", "tests/chat-de-teste.test.tsx"]
-      altera: ["src/componentes/Icones.tsx", "src/estilos/global.css"]
+      altera: ["src/componentes/Icones.tsx", "src/estilos/global.css", "src/componentes/itens-de-menu.ts", "src/componentes/estado-da-conversa.ts", "tests/estado-da-conversa.test.ts"]
     teste_integracao: "tests/chat-de-teste.test.tsx renderiza o componente com renderToStaticMarkup em cada estado inicial."
     teste_funcional: "estado vazio traz a mensagem inicial do agente como primeira bolha, o campo rotulado com aria-label, Enviar, o contador e a regiao aria-live polite, conversa retomada mostra as bolhas na ordem, agente sem chave mostra aviso com link para Integracoes so para admin, nenhum dangerouslySetInnerHTML, e tests/tokens.test.ts continua sem cor literal."
     criterio_aceite: "O teste passa, tsc e lint com codigo 0, e ChatDeTeste.tsx e o unico arquivo de src/ com fetch para /api."
     depende_de: [T-05.01, T-05.02, T-05.03]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-06.02
     titulo: "Aba, subrota e aviso de exclusao"
     fase: F-06.1
@@ -92,7 +92,7 @@ flowchart LR
   classDef concluida fill:#DFF0D8,stroke:#4A6B3A,color:#1A1815
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
-  class T_06_01 pendente
+  class T_06_01 concluida
   class T_06_02 pendente
 ```
 
@@ -106,13 +106,16 @@ titulo: Componente ChatDeTeste e estilos
 objetivo: Componente cliente de chat (unico com fetch) sobre os modulos puros, com icones e classes de estilo por tokens.
 arquivos:
   cria: [src/componentes/ChatDeTeste.tsx, tests/chat-de-teste.test.tsx]
-  altera: [src/componentes/Icones.tsx, src/estilos/global.css]
+  altera: [src/componentes/Icones.tsx, src/estilos/global.css, src/componentes/itens-de-menu.ts, src/componentes/estado-da-conversa.ts, tests/estado-da-conversa.test.ts]
 teste_integracao: tests/chat-de-teste.test.tsx renderiza o componente com renderToStaticMarkup em cada estado inicial.
 teste_funcional: estado vazio traz a mensagem inicial do agente como primeira bolha, o campo rotulado com aria-label, Enviar, o contador e a regiao aria-live polite, conversa retomada mostra as bolhas na ordem, agente sem chave mostra aviso com link para Integracoes so para admin, nenhum dangerouslySetInnerHTML, e tests/tokens.test.ts continua sem cor literal.
 criterio_aceite: O teste passa, tsc e lint com codigo 0, e ChatDeTeste.tsx e o unico arquivo de src/ com fetch para /api.
 depende_de: [T-05.01, T-05.02, T-05.03]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: verde
+resultado: chat-de-teste 16 testes; suite 561 verdes; tsc e lint 0
 ```
 
 ---

@@ -80,6 +80,8 @@ const FORMAS: Record<NomeDeIcone, React.ReactNode> = {
       <circle cx="12" cy="3.5" r="1" />
     </>
   ),
+  enviar: <path d="m22 2-7 20-4-9-9-4 20-7ZM22 2 11 13" />,
+  parar: <rect x="6" y="6" width="12" height="12" rx="2" />,
   conversa: <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z" />,
 }
 

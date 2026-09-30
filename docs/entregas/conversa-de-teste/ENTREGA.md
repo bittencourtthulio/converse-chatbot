@@ -24,6 +24,8 @@ atencao:
   dispensavel: 0
 portao: null
 desvios:
+  - "T-06.01: src/componentes/itens-de-menu.ts (tipo NomeDeIcone ganhou enviar e parar), src/componentes/estado-da-conversa.ts e tests/estado-da-conversa.test.ts (acao recusada: envio recusado antes do stream desfaz as duas bolhas) — nao previstos"
+  - "T-05.01: o criterio de dangerouslySetInnerHTML admite o script constante do tema em src/app/layout.tsx (preexistente)"
   - "T-03.01: tests/apoio/chat.ts (arquivo novo: cenario e coletor de eventos reutilizaveis pelos testes do chat, FT-06 e FT-07, nao previsto)"
 push_feito: false
 pr_url: null

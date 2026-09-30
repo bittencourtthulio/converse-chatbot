@@ -691,3 +691,115 @@ textarea { min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: verti
   font-weight: 700;
 }
 .cartao-de-agente-nome { font-size: var(--texto-grande); font-weight: 650; overflow-wrap: anywhere; }
+
+/* ---------- conversa de teste (FT-03) ---------- */
+
+.chat {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 820px;
+}
+.chat-topo { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.chat-topo-titulo { margin: 0; font-weight: 650; }
+
+.chat-mensagens {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: min(60vh, 560px);
+  min-height: 280px;
+  padding: 16px;
+  overflow-y: auto;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--raio-cartao);
+}
+.chat-mensagens:focus-visible { outline: 2px solid var(--border-focus); outline-offset: 2px; }
+.chat-sugestao { margin: auto; max-width: 44ch; text-align: center; color: var(--fg-muted); font-size: var(--texto-pequeno); }
+
+.chat-linha { display: flex; }
+.chat-linha-usuario { justify-content: flex-end; }
+.chat-linha-agente { justify-content: flex-start; }
+
+.bolha {
+  max-width: min(85%, 60ch);
+  padding: 10px 14px;
+  border-radius: var(--raio-cartao);
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+.bolha-usuario {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-bottom-right-radius: var(--raio-pequeno);
+}
+.bolha-agente {
+  background: var(--bg-surface);
+  color: var(--fg-default);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: var(--raio-pequeno);
+  box-shadow: var(--sombra-sm);
+}
+.bolha-texto-simples { margin: 0; white-space: pre-wrap; }
+.bolha-nota { display: block; margin-top: 6px; color: var(--fg-muted); font-size: var(--texto-pequeno); }
+
+.texto-do-modelo > * { margin: 0; }
+.texto-do-modelo > * + * { margin-top: 8px; }
+.texto-do-modelo p { white-space: pre-wrap; }
+.texto-do-modelo ul, .texto-do-modelo ol { padding-left: 22px; }
+.texto-do-modelo a { color: var(--accent-text); text-decoration: underline; }
+.texto-do-modelo code {
+  padding: 1px 6px;
+  background: var(--bg-subtle);
+  border-radius: var(--raio-pequeno);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+}
+.texto-do-modelo pre {
+  padding: 12px;
+  overflow-x: auto;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--raio-controle);
+}
+.texto-do-modelo pre code { padding: 0; background: none; }
+
+.indicador-de-digitacao { display: inline-flex; align-items: center; gap: 4px; min-height: 24px; }
+.indicador-de-digitacao span:not(.somente-leitor) {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--fg-subtle);
+  animation: chat-pulso 1.2s ease-in-out infinite;
+}
+.indicador-de-digitacao span:nth-of-type(3) { animation-delay: 0.15s; }
+.indicador-de-digitacao span:nth-of-type(4) { animation-delay: 0.3s; }
+@keyframes chat-pulso {
+  0%, 60%, 100% { opacity: 0.35; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-3px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .indicador-de-digitacao span:not(.somente-leitor) { animation: none; opacity: 0.7; }
+}
+
+.chat-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--raio-cartao);
+  box-shadow: var(--sombra-sm);
+}
+.chat-campo textarea { min-height: 64px; max-height: 200px; border: 0; padding: 4px; resize: none; background: transparent; }
+.chat-campo textarea:focus-visible { outline: 2px solid var(--border-focus); outline-offset: 2px; border-radius: var(--raio-pequeno); }
+.chat-campo-rodape { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.chat-contador { color: var(--fg-muted); font-size: var(--texto-pequeno); }
+.chat-contador-limite { color: var(--danger-fg); font-weight: 600; }
+
+@media (max-width: 768px) {
+  .chat-mensagens { height: 55vh; padding: 12px; }
+  .bolha { max-width: 92%; }
+}
