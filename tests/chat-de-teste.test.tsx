@@ -124,11 +124,15 @@ describe('regras de código', () => {
       return statSync(caminho).isDirectory() ? arquivos(caminho) : /\.(ts|tsx)$/.test(nome) ? [caminho] : []
     })
 
-  it('ChatDeTeste.tsx é o único arquivo de src com fetch para /api', () => {
+  it('só componente cliente de src/componentes faz fetch para /api (ChatDeTeste e, desde a FT-04, o painel de conhecimento)', () => {
     const usam = arquivos(path.join(process.cwd(), 'src')).filter((f) =>
       /fetch\s*\(\s*[`'"]\/api/.test(readFileSync(f, 'utf8')),
     )
-    expect(usam.map((f) => path.basename(f))).toEqual(['ChatDeTeste.tsx'])
+    expect(usam.map((f) => path.basename(f))).toContain('ChatDeTeste.tsx')
+    for (const f of usam) {
+      expect(path.relative(process.cwd(), f).startsWith('src/componentes/'), f).toBe(true)
+      expect(readFileSync(f, 'utf8').trimStart().startsWith("'use client'"), f).toBe(true)
+    }
   })
 
   it('o componente não usa dangerouslySetInnerHTML nem cor literal', () => {

@@ -56,18 +56,18 @@ tasks:
   - id: T-06.04
     titulo: "Painel: lista de fontes, status e acoes"
     fase: F-06.3
-    status: pendente
+    status: concluida
     objetivo: "Componente cliente com a lista, badges, polling, excluir com confirmacao e reprocessar."
     arquivos:
-      cria: ["src/componentes/PainelDeConhecimento.tsx", "src/componentes/LinhaDeFonte.tsx", "src/componentes/BotaoExcluirFonte.tsx", "tests/painel-de-conhecimento.test.tsx"]
-      altera: []
+      cria: ["src/componentes/PainelDeConhecimento.tsx", "src/componentes/LinhaDeFonte.tsx", "src/componentes/BotaoExcluirFonte.tsx", "tests/painel-de-conhecimento.test.tsx", "src/componentes/fonte-da-tela.ts"]
+      altera: ["src/app/(sistema)/agentes/[id]/conhecimento/page.tsx", "tests/chat-de-teste.test.tsx"]
     teste_integracao: "O painel renderizado com fontes em cada status mostra Na fila, Processando com spinner, Pronto e Erro com o motivo, e Reprocessar so na linha em erro."
     teste_funcional: "A maquina de estados da confirmacao passa de inicial a confirmando a inicial sem window.confirm, e o painel vazio mostra o convite para adicionar a primeira fonte."
     criterio_aceite: "tests/painel-de-conhecimento.test.tsx passa."
     depende_de: ["T-06.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-06.05
     titulo: "Adicionar: arquivos e texto"
     fase: F-06.4
@@ -168,14 +168,16 @@ id: T-06.04
 titulo: Painel: lista de fontes, status e acoes
 objetivo: Componente cliente com a lista, badges, polling, excluir com confirmacao e reprocessar.
 arquivos:
-  cria: ["src/componentes/PainelDeConhecimento.tsx", "src/componentes/LinhaDeFonte.tsx", "src/componentes/BotaoExcluirFonte.tsx", "tests/painel-de-conhecimento.test.tsx"]
-  altera: []
+  cria: ["src/componentes/PainelDeConhecimento.tsx", "src/componentes/LinhaDeFonte.tsx", "src/componentes/BotaoExcluirFonte.tsx", "tests/painel-de-conhecimento.test.tsx", "src/componentes/fonte-da-tela.ts"]
+  altera: ["src/app/(sistema)/agentes/[id]/conhecimento/page.tsx", "tests/chat-de-teste.test.tsx"]
 teste_integracao: O painel renderizado com fontes em cada status mostra Na fila, Processando com spinner, Pronto e Erro com o motivo, e Reprocessar so na linha em erro.
 teste_funcional: A maquina de estados da confirmacao passa de inicial a confirmando a inicial sem window.confirm, e o painel vazio mostra o convite para adicionar a primeira fonte.
 criterio_aceite: tests/painel-de-conhecimento.test.tsx passa.
 depende_de: ["T-06.03"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 870 passed 870, 0 failed
 ```
 
 ---
