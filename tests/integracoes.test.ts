@@ -5,6 +5,7 @@ import {
   estadoDoOpenrouter,
   salvarChaveDoOpenrouter,
   removerChaveDoOpenrouter,
+  chaveDoOpenrouterConfigurada,
 } from '@/servicos/integracoes'
 import { criarAdmin, criarUsuario, limparBanco } from './ajuda'
 
@@ -148,5 +149,19 @@ describe('estado', () => {
     const estado = await estadoDoOpenrouter(admin)
     expect(estado.configurada).toBe(true)
     expect(estado.problema).toMatch(/ENCRYPTION_KEY/)
+  })
+})
+
+describe('chaveDoOpenrouterConfigurada', () => {
+  it('diz se há chave gravada, sem decifrar nem devolver nada dela', async () => {
+    const admin = await criarAdmin()
+    expect(await chaveDoOpenrouterConfigurada()).toBe(false)
+    await salvarChaveDoOpenrouter(admin, { chave: CHAVE })
+    expect(await chaveDoOpenrouterConfigurada()).toBe(true)
+    delete process.env.ENCRYPTION_KEY
+    expect(await chaveDoOpenrouterConfigurada()).toBe(true)
+    process.env.ENCRYPTION_KEY = chaveDeTeste
+    await removerChaveDoOpenrouter(admin)
+    expect(await chaveDoOpenrouterConfigurada()).toBe(false)
   })
 })

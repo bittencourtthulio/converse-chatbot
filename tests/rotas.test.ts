@@ -362,6 +362,96 @@ describe('Agentes: página do agente', () => {
   })
 })
 
+describe('Aba Testar do agente', () => {
+  async function agenteComConversa() {
+    const dono = await prisma.usuario.findUniqueOrThrow({ where: { email: 'comum.rota@teste.local' } })
+    const outro = await prisma.usuario.findUniqueOrThrow({ where: { email: 'admin.rota@teste.local' } })
+    const agente = await prisma.agente.create({
+      data: {
+        nome: 'Agente Testável',
+        modelo: 'openai/gpt-4o-mini',
+        mensagemInicial: 'Oi, eu sou o agente testável!',
+        criadoPorId: dono.id,
+      },
+    })
+    const minha = await prisma.conversa.create({
+      data: { agenteId: agente.id, canal: 'painel', criadoPorId: dono.id, titulo: 'Minha' },
+    })
+    await prisma.mensagem.createMany({
+      data: [
+        { conversaId: minha.id, papel: 'user', conteudo: 'Pergunta da comum', criadoEm: new Date('2026-01-01T00:00:00Z') },
+        { conversaId: minha.id, papel: 'assistant', conteudo: 'Resposta para a comum', criadoEm: new Date('2026-01-01T00:00:01Z') },
+      ],
+    })
+    const alheia = await prisma.conversa.create({
+      data: { agenteId: agente.id, canal: 'painel', criadoPorId: outro.id, titulo: 'Alheia' },
+    })
+    await prisma.mensagem.create({
+      data: { conversaId: alheia.id, papel: 'user', conteudo: 'Segredo do admin' },
+    })
+    return agente
+  }
+
+  it('sem sessão manda para o login', async () => {
+    const r = await pedir('/agentes/qualquer-id/testar')
+    expect(r.status).toBe(307)
+    expect(r.headers.get('location')).toContain('/entrar')
+  })
+
+  it('abre com a aba Testar marcada, a mensagem inicial e o campo de envio', async () => {
+    const agente = await agenteComConversa()
+    const r = await pedir(`/agentes/${agente.id}/testar`, await cookieDe('comum.rota@teste.local'))
+    const html = await r.text()
+    expect(r.status).toBe(200)
+    const abas = (html.match(/<a [^>]*>/g) ?? []).filter((t) => t.includes('class="aba"'))
+    expect(abas).toHaveLength(2)
+    const marcada = abas.filter((t) => t.includes('aria-current="page"'))
+    expect(marcada).toHaveLength(1)
+    expect(marcada[0]).toContain(`href="/agentes/${agente.id}/testar"`)
+    expect(html).toContain('Oi, eu sou o agente testável!')
+    expect(html).toMatch(/<textarea[^>]*name="mensagem"/)
+    expect(html).toContain('>Enviar<')
+    expect(html).not.toContain('style="')
+  })
+
+  it('retoma a conversa mais recente do próprio usuário e não mostra a de outro', async () => {
+    const agente = await agenteComConversa()
+    const html = await (
+      await pedir(`/agentes/${agente.id}/testar`, await cookieDe('comum.rota@teste.local'))
+    ).text()
+    expect(html).toContain('Pergunta da comum')
+    expect(html).toContain('Resposta para a comum')
+    expect(html).not.toContain('Segredo do admin')
+  })
+
+  it('avisa que falta a chave do OpenRouter; o link para Integrações só vai para o admin', async () => {
+    const agente = await agenteComConversa()
+    await prisma.configuracaoDoWorkspace.deleteMany()
+    const comum = await (
+      await pedir(`/agentes/${agente.id}/testar`, await cookieDe('comum.rota@teste.local'))
+    ).text()
+    expect(comum).toContain('não consegue responder')
+    expect(comum).toContain('Peça a um administrador')
+    const admin = await (
+      await pedir(`/agentes/${agente.id}/testar`, await cookieDe('admin.rota@teste.local'))
+    ).text()
+    expect(admin).toContain('href="/configuracoes/integracoes"')
+  })
+
+  it('agente inexistente responde 404', async () => {
+    const r = await pedir('/agentes/id-que-nao-existe/testar', await cookieDe('comum.rota@teste.local'))
+    expect(r.status).toBe(404)
+  })
+
+  it('a página de configurações avisa que excluir apaga também as conversas', async () => {
+    const agente = await agenteComConversa()
+    const html = await (
+      await pedir(`/agentes/${agente.id}`, await cookieDe('comum.rota@teste.local'))
+    ).text()
+    expect(html).toContain('as conversas')
+  })
+})
+
 describe('layout raiz', () => {
   it('o título usa o nome do produto e a página é em português do Brasil', async () => {
     const html = await (await pedir('/entrar')).text()

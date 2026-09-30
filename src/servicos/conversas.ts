@@ -176,3 +176,31 @@ export async function apagar(id: string): Promise<void> {
   const { count } = await prisma.conversa.deleteMany({ where: { id } })
   if (count === 0) throw naoEncontrado('Conversa não encontrada.')
 }
+
+export interface ConversaRetomada {
+  conversaId: string
+  mensagens: Array<{ id: string; papel: 'user' | 'assistant'; conteudo: string }>
+}
+
+export const LIMITE_DE_MENSAGENS_RETOMADAS = 100
+
+/**
+ * A conversa do painel a retomar (PR-44): a de atividade mais recente que este
+ * usuário tem com o agente, com as últimas 100 mensagens. `null` se não há.
+ */
+export async function retomarDoPainel(
+  agenteId: string,
+  usuarioId: string,
+): Promise<ConversaRetomada | null> {
+  const [conversa] = await listar({ agenteId, canal: 'painel', criadoPorId: usuarioId, limite: 1 })
+  if (!conversa) return null
+  const mensagens = await listarMensagens(conversa.id, LIMITE_DE_MENSAGENS_RETOMADAS)
+  return {
+    conversaId: conversa.id,
+    mensagens: mensagens.map((m) => ({
+      id: m.id,
+      papel: m.papel === 'assistant' ? 'assistant' : 'user',
+      conteudo: m.conteudo,
+    })),
+  }
+}

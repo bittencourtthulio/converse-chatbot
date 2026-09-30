@@ -4,9 +4,10 @@ import { AbasDoAgente } from '@/componentes/AbasDoAgente'
 import { ABAS_DO_AGENTE, hrefDaAba } from '@/componentes/abas-do-agente'
 
 describe('lista de abas do agente', () => {
-  it('por ora tem só Configurações, na raiz do agente', () => {
-    expect(ABAS_DO_AGENTE.map((a) => a.rotulo)).toEqual(['Configurações'])
+  it('tem Configurações, na raiz do agente, e Testar (FT-03)', () => {
+    expect(ABAS_DO_AGENTE.map((a) => a.rotulo)).toEqual(['Configurações', 'Testar'])
     expect(hrefDaAba('abc', ABAS_DO_AGENTE[0]!)).toBe('/agentes/abc')
+    expect(hrefDaAba('abc', ABAS_DO_AGENTE[1]!)).toBe('/agentes/abc/testar')
   })
 
   it('aba com caminho vira subrota do agente', () => {

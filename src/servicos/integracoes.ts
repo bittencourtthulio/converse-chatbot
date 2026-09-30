@@ -121,6 +121,18 @@ export async function obterChaveDoOpenrouter(): Promise<string | null> {
   return decifrar(linha.openrouterChaveCifrada)
 }
 
+/**
+ * Há chave do OpenRouter gravada? Só responde sim ou não: não decifra nada,
+ * então serve a qualquer usuário (a tela de teste avisa antes de enviar).
+ */
+export async function chaveDoOpenrouterConfigurada(): Promise<boolean> {
+  const linha = await prisma.configuracaoDoWorkspace.findUnique({
+    where: { id: ID_DA_CONFIGURACAO },
+    select: { openrouterChaveCifrada: true },
+  })
+  return Boolean(linha?.openrouterChaveCifrada)
+}
+
 /** Testa a chave gravada contra o OpenRouter. Só admin. */
 export async function testarConexaoDoOpenrouter(
   autor: UsuarioAutenticado,

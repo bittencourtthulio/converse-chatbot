@@ -40,18 +40,18 @@ tasks:
   - id: T-06.02
     titulo: "Aba, subrota e aviso de exclusao"
     fase: F-06.1
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar a aba Testar, a pagina de servidor com a ultima conversa do painel, o loading e o aviso de exclusao."
     arquivos:
       cria: ["src/app/(sistema)/agentes/[id]/testar/page.tsx", "src/app/(sistema)/agentes/[id]/testar/loading.tsx"]
-      altera: ["src/componentes/abas-do-agente.ts", "src/app/(sistema)/agentes/[id]/page.tsx", "tests/abas-do-agente.test.tsx", "tests/rotas.test.ts"]
+      altera: ["src/componentes/abas-do-agente.ts", "src/app/(sistema)/agentes/[id]/page.tsx", "tests/abas-do-agente.test.tsx", "tests/rotas.test.ts", "src/servicos/conversas.ts", "tests/conversas.test.ts", "src/servicos/integracoes.ts", "tests/integracoes.test.ts"]
     teste_integracao: "tests/rotas.test.ts pede /agentes/<id>/testar ao servidor de producao com e sem sessao, com conversa gravada no banco de teste."
     teste_funcional: "sem sessao 307 para o login, com sessao 200 com a mensagem inicial e a aba Testar marcada, agente inexistente 404, a conversa mais recente do usuario e retomada e a de outro usuario nao aparece, e a pagina de configuracoes avisa que excluir apaga as conversas."
     criterio_aceite: "O teste de rotas passa depois de npm run build e ABAS_DO_AGENTE tem Configuracoes e Testar nessa ordem."
     depende_de: [T-06.01, T-04.02]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
 ---
 
 # Plano — Sprint 06 — Aba Testar
@@ -93,7 +93,7 @@ flowchart LR
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
   class T_06_01 concluida
-  class T_06_02 pendente
+  class T_06_02 concluida
 ```
 
 ## Tasks
@@ -126,12 +126,15 @@ titulo: Aba, subrota e aviso de exclusao
 objetivo: Acrescentar a aba Testar, a pagina de servidor com a ultima conversa do painel, o loading e o aviso de exclusao.
 arquivos:
   cria: [src/app/(sistema)/agentes/[id]/testar/page.tsx, src/app/(sistema)/agentes/[id]/testar/loading.tsx]
-  altera: [src/componentes/abas-do-agente.ts, src/app/(sistema)/agentes/[id]/page.tsx, tests/abas-do-agente.test.tsx, tests/rotas.test.ts]
+  altera: [src/componentes/abas-do-agente.ts, src/app/(sistema)/agentes/[id]/page.tsx, tests/abas-do-agente.test.tsx, tests/rotas.test.ts, src/servicos/conversas.ts, tests/conversas.test.ts, src/servicos/integracoes.ts, tests/integracoes.test.ts]
 teste_integracao: tests/rotas.test.ts pede /agentes/<id>/testar ao servidor de producao com e sem sessao, com conversa gravada no banco de teste.
 teste_funcional: sem sessao 307 para o login, com sessao 200 com a mensagem inicial e a aba Testar marcada, agente inexistente 404, a conversa mais recente do usuario e retomada e a de outro usuario nao aparece, e a pagina de configuracoes avisa que excluir apaga as conversas.
 criterio_aceite: O teste de rotas passa depois de npm run build e ABAS_DO_AGENTE tem Configuracoes e Testar nessa ordem.
 depende_de: [T-06.01, T-04.02]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: verde
+resultado: rotas +6, conversas +4, integracoes +1; build verde; suite 572 verdes; tsc e lint 0
 ```
 

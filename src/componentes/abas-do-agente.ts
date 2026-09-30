@@ -9,7 +9,10 @@ export interface AbaDoAgente {
   caminho: string
 }
 
-export const ABAS_DO_AGENTE: AbaDoAgente[] = [{ rotulo: 'Configurações', caminho: '' }]
+export const ABAS_DO_AGENTE: AbaDoAgente[] = [
+  { rotulo: 'Configurações', caminho: '' },
+  { rotulo: 'Testar', caminho: 'testar' },
+]
 
 export function hrefDaAba(agenteId: string, aba: AbaDoAgente): string {
   return aba.caminho ? `/agentes/${agenteId}/${aba.caminho}` : `/agentes/${agenteId}`

@@ -8,6 +8,7 @@ import {
   listarMensagens,
   apagar,
   tituloDaConversa,
+  retomarDoPainel,
 } from '@/servicos/conversas'
 import { criarUsuario, limparBanco } from './ajuda'
 
@@ -176,5 +177,58 @@ describe('apagar', () => {
 
   it('conversa inexistente é 404', async () => {
     await expect(apagar('nada')).rejects.toMatchObject({ status: 404 })
+  })
+})
+
+describe('retomarDoPainel', () => {
+  it('sem conversa devolve null', async () => {
+    const { dono, agente } = await cenario()
+    expect(await retomarDoPainel(agente.id, dono.id)).toBeNull()
+  })
+
+  it('devolve a conversa mais recente do usuário, com as mensagens em ordem', async () => {
+    const { dono, agente } = await cenario()
+    const antiga = await criar({ agenteId: agente.id, canal: 'painel', criadoPorId: dono.id })
+    const recente = await criar({ agenteId: agente.id, canal: 'painel', criadoPorId: dono.id })
+    await anexarMensagem(antiga.id, { papel: 'user', conteudo: 'velha' })
+    await new Promise((r) => setTimeout(r, 5))
+    await anexarMensagem(recente.id, { papel: 'user', conteudo: 'pergunta' })
+    await anexarMensagem(recente.id, { papel: 'assistant', conteudo: 'resposta' })
+    const r = await retomarDoPainel(agente.id, dono.id)
+    expect(r?.conversaId).toBe(recente.id)
+    expect(r?.mensagens.map((m) => [m.papel, m.conteudo])).toEqual([
+      ['user', 'pergunta'],
+      ['assistant', 'resposta'],
+    ])
+    expect(Object.keys(r!.mensagens[0]!).sort()).toEqual(['conteudo', 'id', 'papel'])
+  })
+
+  it('não devolve conversa de outro usuário, de outro canal nem de outro agente', async () => {
+    const { dono, agente } = await cenario()
+    const outro = await criarUsuario()
+    const outroAgente = await prisma.agente.create({
+      data: { nome: 'B', modelo: 'openai/gpt-4o-mini', criadoPorId: dono.id },
+    })
+    await criar({ agenteId: agente.id, canal: 'painel', criadoPorId: outro.id })
+    await criar({ agenteId: agente.id, canal: 'widget', identificadorExterno: 'v' })
+    await criar({ agenteId: outroAgente.id, canal: 'painel', criadoPorId: dono.id })
+    expect(await retomarDoPainel(agente.id, dono.id)).toBeNull()
+  })
+
+  it('devolve no máximo as últimas 100 mensagens', async () => {
+    const { dono, agente } = await cenario()
+    const c = await criar({ agenteId: agente.id, canal: 'painel', criadoPorId: dono.id })
+    await prisma.mensagem.createMany({
+      data: Array.from({ length: 105 }, (_, i) => ({
+        conversaId: c.id,
+        papel: i % 2 ? 'assistant' : 'user',
+        conteudo: `m${i + 1}`,
+        criadoEm: new Date(Date.UTC(2026, 0, 1, 0, 0, i)),
+      })),
+    })
+    const r = await retomarDoPainel(agente.id, dono.id)
+    expect(r?.mensagens).toHaveLength(100)
+    expect(r?.mensagens.at(0)?.conteudo).toBe('m6')
+    expect(r?.mensagens.at(-1)?.conteudo).toBe('m105')
   })
 })

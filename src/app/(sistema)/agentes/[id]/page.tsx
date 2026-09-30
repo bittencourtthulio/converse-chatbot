@@ -43,7 +43,7 @@ export default async function ConfiguracoesDoAgente({
             Excluir agente
           </h2>
           <p className="texto-de-apoio">
-            Apaga o agente e as configurações dele. Não dá para desfazer.
+            Apaga o agente, as configurações dele e as conversas de teste. Não dá para desfazer.
           </p>
           <BotaoExcluirAgente agente={{ id: agente.id, nome: agente.nome }} acao={excluirAgente} />
         </div>
