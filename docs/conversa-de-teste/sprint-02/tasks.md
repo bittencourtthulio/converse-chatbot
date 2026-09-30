@@ -25,7 +25,7 @@ tasks:
   - id: T-02.01
     titulo: "Servico de conversas"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Criar, obter, listar, anexar mensagem, listar mensagens e apagar conversas, com posse validada."
     arquivos:
       cria: ["src/servicos/conversas.ts", "tests/conversas.test.ts"]
@@ -35,8 +35,8 @@ tasks:
     criterio_aceite: "O teste passa e o arquivo nao importa next nem src/app (tests/camadas.test.ts continua verde)."
     depende_de: [T-01.01]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-02.02
     titulo: "Montagem do prompt e do historico"
     fase: F-02.1
@@ -108,7 +108,7 @@ flowchart LR
   classDef concluida fill:#DFF0D8,stroke:#4A6B3A,color:#1A1815
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
-  class T_02_01 pendente
+  class T_02_01 concluida
   class T_02_02 pendente
   class T_02_03 pendente
 ```
@@ -129,7 +129,10 @@ teste_funcional: criar devolve conversa com titulo dos primeiros 60 caracteres d
 criterio_aceite: O teste passa e o arquivo nao importa next nem src/app (tests/camadas.test.ts continua verde).
 depende_de: [T-01.01]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: verde
+resultado: conversas 18 testes; suite 430 verdes; tsc e lint 0
 ```
 
 ---

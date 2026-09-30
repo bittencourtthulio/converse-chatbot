@@ -1,0 +1,180 @@
+import { describe, it, expect, beforeEach } from 'vitest'
+import { prisma } from '@/lib/prisma'
+import {
+  criar,
+  obter,
+  listar,
+  anexarMensagem,
+  listarMensagens,
+  apagar,
+  tituloDaConversa,
+} from '@/servicos/conversas'
+import { criarUsuario, limparBanco } from './ajuda'
+
+beforeEach(limparBanco)
+
+async function cenario() {
+  const dono = await criarUsuario()
+  const agente = await prisma.agente.create({
+    data: { nome: 'Agente', modelo: 'openai/gpt-4o-mini', criadoPorId: dono.id },
+  })
+  return { dono, agente }
+}
+
+describe('tituloDaConversa', () => {
+  it('usa os primeiros 60 caracteres, com espaços colapsados', () => {
+    expect(tituloDaConversa('  Olá,\n  tudo   bem?  ')).toBe('Olá, tudo bem?')
+    const titulo = tituloDaConversa('a'.repeat(100))
+    expect(titulo).toHaveLength(60)
+  })
+})
+
+describe('criar', () => {
+  it('grava o canal, o dono e o título da primeira mensagem', async () => {
+    const { dono, agente } = await cenario()
+    const conversa = await criar({
+      agenteId: agente.id,
+      canal: 'painel',
+      criadoPorId: dono.id,
+      primeiraMensagem: 'Como funciona o plano?',
+    })
+    expect(conversa).toMatchObject({
+      agenteId: agente.id,
+      canal: 'painel',
+      criadoPorId: dono.id,
+      identificadorExterno: null,
+      titulo: 'Como funciona o plano?',
+    })
+    expect(conversa.id).toMatch(/^\w{20,}$/)
+  })
+
+  it('aceita canal de visitante com identificador externo', async () => {
+    const { agente } = await cenario()
+    const conversa = await criar({
+      agenteId: agente.id,
+      canal: 'widget',
+      identificadorExterno: 'visitante-1',
+    })
+    expect(conversa.identificadorExterno).toBe('visitante-1')
+    expect(conversa.titulo).toBeNull()
+  })
+
+  it('recusa canal desconhecido', async () => {
+    const { agente } = await cenario()
+    await expect(
+      criar({ agenteId: agente.id, canal: 'fax' as never }),
+    ).rejects.toMatchObject({ status: 422 })
+  })
+
+  it('agente inexistente é 404', async () => {
+    await expect(criar({ agenteId: 'nao-existe', canal: 'painel' })).rejects.toMatchObject({
+      status: 404,
+    })
+  })
+})
+
+describe('obter', () => {
+  it('devolve a conversa de quem é dono', async () => {
+    const { dono, agente } = await cenario()
+    const c = await criar({ agenteId: agente.id, canal: 'painel', criadoPorId: dono.id })
+    const lida = await obter(c.id, { agenteId: agente.id, canal: 'painel', criadoPorId: dono.id })
+    expect(lida.id).toBe(c.id)
+  })
+
+  it.each([
+    ['outro agente', { agenteId: 'outro', canal: 'painel' as const }],
+    ['outro canal', { canal: 'widget' as const }],
+    ['outro usuário', { criadoPorId: 'outro-usuario' }],
+    ['outro visitante', { identificadorExterno: 'intruso' }],
+  ])('conversa de %s é 404, sem revelar que existe', async (_nome, diferente) => {
+    const { dono, agente } = await cenario()
+    const c = await criar({ agenteId: agente.id, canal: 'painel', criadoPorId: dono.id })
+    await expect(
+      obter(c.id, { agenteId: agente.id, canal: 'painel', criadoPorId: dono.id, ...diferente }),
+    ).rejects.toMatchObject({ status: 404, codigo: 'nao_encontrado' })
+  })
+
+  it('id inexistente é 404', async () => {
+    const { agente } = await cenario()
+    await expect(obter('nada', { agenteId: agente.id, canal: 'painel' })).rejects.toMatchObject({
+      status: 404,
+    })
+  })
+})
+
+describe('anexarMensagem e listarMensagens', () => {
+  it('grava a mensagem e avança o atualizadoEm da conversa', async () => {
+    const { agente } = await cenario()
+    const c = await criar({ agenteId: agente.id, canal: 'widget', identificadorExterno: 'v' })
+    await new Promise((r) => setTimeout(r, 5))
+    const m = await anexarMensagem(c.id, {
+      papel: 'assistant',
+      conteudo: 'Olá!',
+      modelo: 'openai/gpt-4o-mini',
+    })
+    expect(m).toMatchObject({ papel: 'assistant', conteudo: 'Olá!', modelo: 'openai/gpt-4o-mini' })
+    const depois = await prisma.conversa.findUniqueOrThrow({ where: { id: c.id } })
+    expect(depois.atualizadoEm.getTime()).toBeGreaterThan(c.atualizadoEm.getTime())
+  })
+
+  it('recusa papel inválido e conteúdo vazio', async () => {
+    const { agente } = await cenario()
+    const c = await criar({ agenteId: agente.id, canal: 'painel' })
+    await expect(anexarMensagem(c.id, { papel: 'system' as never, conteudo: 'x' })).rejects.toMatchObject({ status: 422 })
+    await expect(anexarMensagem(c.id, { papel: 'user', conteudo: '' })).rejects.toMatchObject({ status: 422 })
+  })
+
+  it('devolve as últimas N mensagens em ordem cronológica', async () => {
+    const { agente } = await cenario()
+    const c = await criar({ agenteId: agente.id, canal: 'painel' })
+    for (let i = 1; i <= 5; i += 1) {
+      await anexarMensagem(c.id, { papel: i % 2 ? 'user' : 'assistant', conteudo: `m${i}` })
+    }
+    expect((await listarMensagens(c.id, 3)).map((m) => m.conteudo)).toEqual(['m3', 'm4', 'm5'])
+    expect((await listarMensagens(c.id)).map((m) => m.conteudo)).toEqual(['m1', 'm2', 'm3', 'm4', 'm5'])
+  })
+})
+
+describe('listar', () => {
+  it('filtra por agente e canal e devolve a mais recente primeiro', async () => {
+    const { dono, agente } = await cenario()
+    const outro = await prisma.agente.create({
+      data: { nome: 'Outro', modelo: 'openai/gpt-4o-mini', criadoPorId: dono.id },
+    })
+    const a = await criar({ agenteId: agente.id, canal: 'painel', criadoPorId: dono.id })
+    const b = await criar({ agenteId: agente.id, canal: 'painel', criadoPorId: dono.id })
+    await criar({ agenteId: agente.id, canal: 'widget', identificadorExterno: 'v' })
+    await criar({ agenteId: outro.id, canal: 'painel', criadoPorId: dono.id })
+    await new Promise((r) => setTimeout(r, 5))
+    await anexarMensagem(a.id, { papel: 'user', conteudo: 'mexeu' })
+
+    const lista = await listar({ agenteId: agente.id, canal: 'painel' })
+    expect(lista.map((c) => c.id)).toEqual([a.id, b.id])
+  })
+
+  it('filtra por criador e por limite', async () => {
+    const { dono, agente } = await cenario()
+    const outroUsuario = await criarUsuario()
+    await criar({ agenteId: agente.id, canal: 'painel', criadoPorId: dono.id })
+    await criar({ agenteId: agente.id, canal: 'painel', criadoPorId: outroUsuario.id })
+    const so = await listar({ agenteId: agente.id, canal: 'painel', criadoPorId: dono.id })
+    expect(so).toHaveLength(1)
+    expect(so[0]!.criadoPorId).toBe(dono.id)
+    expect(await listar({ agenteId: agente.id, canal: 'painel', limite: 1 })).toHaveLength(1)
+  })
+})
+
+describe('apagar', () => {
+  it('remove a conversa e as mensagens dela', async () => {
+    const { agente } = await cenario()
+    const c = await criar({ agenteId: agente.id, canal: 'painel' })
+    await anexarMensagem(c.id, { papel: 'user', conteudo: 'oi' })
+    await apagar(c.id)
+    expect(await prisma.conversa.count()).toBe(0)
+    expect(await prisma.mensagem.count()).toBe(0)
+  })
+
+  it('conversa inexistente é 404', async () => {
+    await expect(apagar('nada')).rejects.toMatchObject({ status: 404 })
+  })
+})
