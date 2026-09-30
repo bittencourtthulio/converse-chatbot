@@ -40,7 +40,7 @@ tasks:
   - id: T-02.02
     titulo: "Parser SSE"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Ler trechos de texto de um fluxo SSE com buffer por linha."
     arquivos:
       cria: ["src/lib/sse.ts", "tests/sse.test.ts"]
@@ -50,8 +50,8 @@ tasks:
     criterio_aceite: "O teste passa e nenhuma chamada de JSON.parse recebe linha de comentario."
     depende_de: [T-02.01]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-02.03
     titulo: "Cliente: listarModelos e verificarChave"
     fase: F-02.1
@@ -129,7 +129,7 @@ flowchart LR
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
   class T_02_01 concluida
-  class T_02_02 pendente
+  class T_02_02 concluida
   class T_02_03 pendente
   class T_02_04 pendente
 ```
@@ -170,7 +170,10 @@ teste_funcional: linhas data: com JSON rendem delta.content, comentario iniciado
 criterio_aceite: O teste passa e nenhuma chamada de JSON.parse recebe linha de comentario.
 depende_de: [T-02.01]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: sse 14 passed; tsc e lint 0
 ```
 
 ---
