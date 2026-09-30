@@ -1017,6 +1017,7 @@ textarea { min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: verti
   align-items: center;
   gap: 6px;
   max-width: 100%;
+  align-self: flex-start;
   min-height: 32px;
   padding: 4px 10px;
   background: var(--bg-subtle);

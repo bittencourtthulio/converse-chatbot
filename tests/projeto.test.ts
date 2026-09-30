@@ -154,6 +154,19 @@ describe('README do projeto', () => {
     expect(readme).toMatch(/OCR/)
   })
 
+  it('explica as respostas com a base: busca FTS5, fontes, [n], Testar busca e o limite do modelo (FT-05)', () => {
+    expect(readme).toContain('FTS5')
+    expect(readme).toContain('BM25')
+    expect(readme).toContain('Testar busca')
+    expect(readme).toContain('/api/agentes/[id]/buscar')
+    expect(readme).toContain('src/servicos/recuperacao.ts')
+    expect(readme).toMatch(/\[n\]/)
+    expect(readme).toMatch(/evento `fontes`/)
+    expect(readme).toMatch(/modo fundamentado/)
+    expect(readme).toMatch(/não encontrou/)
+    expect(readme).not.toContain('a busca sobre eles é da próxima feature')
+  })
+
   it('explica como cadastrar a chave do OpenRouter e criar agentes', () => {
     expect(readme).toContain('Configurações, Integrações')
     expect(readme).toContain('Agentes')

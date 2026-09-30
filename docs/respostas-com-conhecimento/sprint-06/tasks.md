@@ -26,7 +26,7 @@ tasks:
   - id: T-06.02
     titulo: "README e verificacao visual"
     fase: F-06.1
-    status: pendente
+    status: concluida
     objetivo: "Documentar a busca no README e verificar visualmente a aba Testar com fontes e o cartao Testar busca nos dois temas."
     arquivos:
       cria: ["docs/respostas-com-conhecimento/VERIFICACAO-VISUAL.md"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/projeto.test.ts passa e VERIFICACAO-VISUAL.md existe."
     depende_de: ["T-06.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-06.03
     titulo: "Fechamento no laco do buildx"
     fase: F-06.2
@@ -92,7 +92,9 @@ teste_funcional: README cita a aba Conhecimento com Testar busca e a recuperacao
 criterio_aceite: tests/projeto.test.ts passa e VERIFICACAO-VISUAL.md existe.
 depende_de: ["T-06.01"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial: projeto + tokens passed; verificacao visual feita
 ```
 
 ---
