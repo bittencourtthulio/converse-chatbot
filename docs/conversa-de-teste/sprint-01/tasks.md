@@ -25,7 +25,7 @@ tasks:
   - id: T-01.01
     titulo: "Tabelas Conversa e Mensagem com cascata"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar os modelos Conversa e Mensagem, a migration aditiva e a limpeza de teste, provando a cascata do agente."
     arquivos:
       cria: ["tests/conversas-modelo.test.ts", "prisma/migrations/20260930170000_conversas/migration.sql"]
@@ -35,8 +35,8 @@ tasks:
     criterio_aceite: "O teste passa, tests/migracoes.test.ts continua verde sem a marca destrutiva-autorizada e limparBanco apaga mensagens e conversas antes dos agentes."
     depende_de: []
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-01.02
     titulo: "MAX_TOKENS_RESPOSTA na configuracao"
     fase: F-01.1
@@ -92,7 +92,7 @@ flowchart LR
   classDef concluida fill:#DFF0D8,stroke:#4A6B3A,color:#1A1815
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
-  class T_01_01 pendente
+  class T_01_01 concluida
   class T_01_02 pendente
 ```
 
@@ -112,7 +112,10 @@ teste_funcional: criar agente, conversa e duas mensagens e excluir o agente apag
 criterio_aceite: O teste passa, tests/migracoes.test.ts continua verde sem a marca destrutiva-autorizada e limparBanco apaga mensagens e conversas antes dos agentes.
 depende_de: []
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: verde
+resultado: suite 31 arquivos e 405 testes verdes; tsc e lint 0; cascata provada (foreign_keys ligado), servico de agentes intacto
 ```
 
 ---

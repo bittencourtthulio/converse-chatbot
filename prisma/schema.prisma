@@ -25,7 +25,8 @@ model Usuario {
   criadoEm     DateTime @default(now())
   atualizadoEm DateTime @updatedAt
 
-  agentes Agente[]
+  agentes   Agente[]
+  conversas Conversa[]
 
   @@map("usuarios")
 }
@@ -58,5 +59,50 @@ model Agente {
   criadoEm        DateTime @default(now())
   atualizadoEm    DateTime @updatedAt
 
+  conversas Conversa[]
+
   @@map("agentes")
+}
+
+// Conversa (FT-03): um fio de mensagens entre uma pessoa e um agente, em um
+// canal. Serve ao painel (FT-03), ao chat embutido (FT-06), ao Telegram (FT-07)
+// e ao histórico (FT-09). Excluir o agente apaga as conversas (PR-44).
+model Conversa {
+  id                   String   @id @default(cuid())
+  agenteId             String
+  agente               Agente   @relation(fields: [agenteId], references: [id], onDelete: Cascade)
+  // "painel" | "widget" | "telegram"
+  canal                String
+  // Visitante (widget) ou chat (Telegram); vazio no painel.
+  identificadorExterno String?
+  titulo               String?
+  // Só o painel preenche; o usuário some sem apagar a conversa (FT-10 decide).
+  criadoPorId          String?
+  criadoPor            Usuario? @relation(fields: [criadoPorId], references: [id], onDelete: SetNull)
+  criadoEm             DateTime @default(now())
+  atualizadoEm         DateTime @updatedAt
+
+  mensagens Mensagem[]
+
+  @@index([agenteId, atualizadoEm])
+  @@map("conversas")
+}
+
+// Mensagem de uma conversa. `fontes` guarda, em JSON, os trechos que
+// embasaram a resposta (FT-05).
+model Mensagem {
+  id            String   @id @default(cuid())
+  conversaId    String
+  conversa      Conversa @relation(fields: [conversaId], references: [id], onDelete: Cascade)
+  // "user" | "assistant"
+  papel         String
+  conteudo      String
+  modelo        String?
+  tokensEntrada Int?
+  tokensSaida   Int?
+  fontes        String?
+  criadoEm      DateTime @default(now())
+
+  @@index([conversaId, criadoEm])
+  @@map("mensagens")
 }
