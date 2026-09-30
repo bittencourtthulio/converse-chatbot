@@ -26,7 +26,7 @@ tasks:
   - id: T-01.02
     titulo: "Cascata e reprocessamento mantem o indice"
     fase: F-01.2
-    status: pendente
+    status: concluida
     objetivo: "Provar que excluir fonte, excluir agente, reprocessar e limparBanco deixam o indice sem linhas orfas."
     arquivos:
       cria: ["tests/indice-fts5-cascata.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/indice-fts5-cascata.test.ts passa e a consulta de contagem do indice (INSERT 'integrity-check' do FTS5) termina sem erro."
     depende_de: ["T-01.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-01.03
     titulo: "Apoio de teste: agente com base pronta"
     fase: F-01.2
@@ -92,7 +92,9 @@ teste_funcional: Reprocessar uma fonte em erro com texto novo (gravarResultado d
 criterio_aceite: tests/indice-fts5-cascata.test.ts passa e a consulta de contagem do indice (INSERT 'integrity-check' do FTS5) termina sem erro.
 depende_de: ["T-01.01"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial: indice-fts5-cascata 4 passed (gatilhos disparam na cascata; sem desvio)
 ```
 
 ---
