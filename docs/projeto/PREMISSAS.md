@@ -4,12 +4,12 @@ expx_tool: buildx
 kind: premissas
 projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-09-30
-total: 44
+total: 49
 por_origem:
   catalogo_lacunas: 27
   briefing: 0
   decisao_de_stack: 7
-  f2_autonoma: 10
+  f2_autonoma: 15
   recursao: 0
 ---
 
@@ -595,6 +595,71 @@ entram no relatório final como o que o usuário precisa confirmar.
 **Etapa:** b4
 **Provisória:** false
 **Realizada em:** FT-03
+
+---
+
+### PR-45 — Regras de validação do upload e da extração
+
+**Assunto:** F2 da FT-04 — PR-10 e PR-13, números e comportamentos que a premissa não dá
+**Decisão:** o tipo do arquivo vem da extensão (`.pdf .docx .txt .md .csv .html .htm .json .srt .vtt`) e o tipo MIME gravado é o da extensão, nunca o enviado pelo navegador. Cada envio aceita até 10 arquivos; cada um até `MAX_UPLOAD_MB` (padrão 25); o corpo inteiro é recusado cedo por `Content-Length` acima de `MAX_UPLOAD_MB` x 10 mais 1 MB (413). Arquivo vazio, com extensão fora da lista ou com conteúdo que não bate com a extensão é recusado individualmente, com motivo, sem derrubar os outros: PDF precisa começar por `%PDF-`; DOCX precisa ser ZIP com `word/document.xml`, sem entrada cifrada, com tamanho descompactado real somado de no máximo 100 MB e razão de compressão de no máximo 100 para 1 (conferidos descompactando com teto, sem confiar no tamanho declarado no cabeçalho); texto decodifica como UTF-8 (BOM aceito) e, se falhar, como Latin-1, e qualquer byte nulo o recusa; `.json` precisa ser JSON válido. Na extração: PDF de mais de 500 páginas, texto extraído acima de 5 milhões de caracteres, extração vazia e extração acima de 120 s viram `erro` com mensagem clara. PDF sem texto: "Este PDF não tem texto selecionável (parece escaneado). OCR não é suportado." O nome enviado é sanitizado (sem caminho, sem caractere de controle, até 200 caracteres) e serve só de título e exibição. Texto colado: título de 1 a 120 e conteúdo de 1 a 200.000 caracteres, sem ser só espaços.
+**Por quê:** a PR-10 e a PR-13 pedem conferir extensão, conteúdo e tamanho sem dar os números; conferir o conteúdo real e descompactar com teto é o que barra zip bomb e arquivo renomeado; erro por arquivo deixa o usuário reenviar só o que falhou.
+**O que invalida:** se a base tiver documentos legítimos acima de 25 MB, de 500 páginas ou de 5 milhões de caracteres, ou se forem exigidos outros formatos (XLSX, RTF); os números são constantes em um só módulo e o tamanho por variável de ambiente.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-04
+
+---
+
+### PR-46 — Divisão em trechos
+
+**Assunto:** F2 da FT-04 — PR-04 (a FT-05 consome os trechos)
+**Decisão:** o texto extraído é normalizado (quebras CRLF viram LF, três ou mais quebras seguidas viram duas, espaços nas pontas saem) e dividido em trechos de no máximo 1000 caracteres com sobreposição de cerca de 150, cortando de preferência na quebra de parágrafo, senão depois de frase, senão entre palavras, e só por último no meio de uma palavra. Nenhum trecho é vazio, a divisão é determinística (mesmo texto, mesmos trechos) e o índice do trecho começa em 0. `Fonte.caracteres` é o tamanho do texto normalizado; cada `Trecho` guarda também o `agenteId` para a busca por agente.
+**Por quê:** cerca de 1000 caracteres (uns 250 tokens) é um tamanho usual para recuperação por busca textual, e a sobreposição evita cortar uma resposta ao meio; determinismo torna o reprocessamento e o teste previsíveis.
+**O que invalida:** se a FT-05 medir revocação ruim com esse tamanho (o tamanho e a sobreposição são parâmetros da função), ou se a base tiver muito texto sem pontuação.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-04
+
+---
+
+### PR-47 — Armazenamento e ciclo de vida dos arquivos
+
+**Assunto:** F2 da FT-04 — PR-11, onde e quando o arquivo existe
+**Decisão:** o arquivo (e o texto colado, gravado como arquivo UTF-8) fica em `<STORAGE_DIR>/fontes/<agenteId>/<fonteId>/original`, com `STORAGE_DIR` padrão `./storage` relativo ao diretório de execução; o banco guarda só o caminho relativo a essa raiz e nunca o expõe à interface. Só ids gerados pelo servidor entram no caminho; qualquer id fora de `[A-Za-z0-9_-]` ou caminho que escape da raiz é recusado. A ordem de gravação é arquivo primeiro, linha depois (falha na linha apaga o arquivo); a exclusão apaga a linha (trechos em cascata) e depois o diretório da fonte, e excluir o agente apaga o diretório do agente. Falha ao apagar arquivo é registrada no log e não desfaz a exclusão no banco. Arquivos e diretórios são criados com permissão só do dono.
+**Por quê:** ids opacos nos caminhos tornam a travessia de diretório impossível por construção; linha sem arquivo é recuperável (reprocesso falha com erro claro), arquivo sem linha é lixo inofensivo, e a ordem escolhida evita o primeiro caso.
+**O que invalida:** se o deploy usar disco compartilhado entre instâncias ou armazenamento de objetos (PR-11).
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-04
+
+---
+
+### PR-48 — Fila em segundo plano: concorrência, retomada e falha
+
+**Assunto:** F2 da FT-04 — PR-05, parâmetros que a premissa não dá
+**Decisão:** a fila é um singleton do processo (guardado em `globalThis` para sobreviver a recarga em desenvolvimento), com concorrência 2. A fonte nasce `pendente`; quem processa a reivindica por atualização condicional (`pendente` para `processando`), grava os trechos e o `pronto` em uma transação, e em falha grava `erro` com mensagem em português (a do `ErroDeAplicacao`, ou uma frase genérica para erro inesperado, com o detalhe só no log junto de um código de correlação e sem conteúdo do arquivo). Ao subir o servidor (`src/instrumentation.ts`, só runtime Node) toda fonte `processando` volta a `pendente` e a fila retoma sem bloquear a subida. Só a fonte em `erro` pode ser reprocessada (409 nos outros estados), o que zera a mensagem e a devolve a `pendente`. Excluir uma fonte durante o processamento é seguro: o resultado é descartado. Não há cota de fontes por agente.
+**Por quê:** a atualização condicional impede duas execuções da mesma fonte; retomar na subida é o que a PR-05 exige; reprocessar só o que falhou evita perder trechos bons por engano.
+**O que invalida:** se rodar em mais de um processo (a PR-05 já o declara) ou se a empresa quiser reprocessar fontes prontas com uma nova versão do extrator.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-04
+
+---
+
+### PR-49 — Contrato HTTP e tela da base
+
+**Assunto:** F2 da FT-04 — interface entre handler, serviço e tela
+**Decisão:** `POST /api/agentes/[id]/fontes` (multipart, campo `arquivos`) responde 202 com um resultado por arquivo (aceito com a fonte, ou recusado com código e motivo) e 422 se nenhum foi aceito; `POST .../fontes/texto` (JSON) responde 202; `GET .../fontes` devolve a lista e o resumo sem `Cache-Control` de cache; `DELETE .../fontes/[fonteId]` responde 204 e `POST .../fontes/[fonteId]/reprocessar` 202. Sessão ausente 401, agente ou fonte inexistente (ou de outro agente) 404, corpo grande 413, tipo de conteúdo errado 415, entrada inválida 422. A resposta nunca traz o caminho do arquivo. A tela envia cada arquivo em uma requisição própria (progresso por arquivo), atualiza a lista a cada 2 segundos só enquanto houver fonte `pendente` ou `processando`, mostra as datas no fuso de São Paulo e pagina os trechos de uma fonte de 20 em 20.
+**Por quê:** uma requisição por arquivo dá progresso e erro por arquivo sem protocolo novo, e o servidor continua aceitando vários de uma vez; o fuso fixo evita diferença entre servidor e navegador na hidratação.
+**O que invalida:** se a instalação atender vários fusos e a tela precisar mostrar a hora local do usuário.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-04
 
 ---
 
