@@ -11,7 +11,7 @@ tasks:
   - id: T-07.01
     titulo: "Seed: fonte de exemplo ja processada"
     fase: F-07.1
-    status: pendente
+    status: concluida
     objetivo: "Semear uma fonte de texto ficticia pronta no agente de exemplo pelo mesmo divisor e armazenamento."
     arquivos:
       cria: []
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/seed.test.ts passa."
     depende_de: ["T-06.06"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-07.02
     titulo: "Verificacao visual da aba Conhecimento"
     fase: F-07.1
@@ -88,7 +88,9 @@ teste_funcional: A fonte semeada aparece em listar e resumo do servico, e a seed
 criterio_aceite: tests/seed.test.ts passa.
 depende_de: ["T-06.06"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 890 passed 890, 0 failed
 ```
 
 ---

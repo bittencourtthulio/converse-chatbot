@@ -4,6 +4,11 @@
  */
 import { describe, it, expect, beforeEach } from 'vitest'
 import { spawnSync } from 'node:child_process'
+import { existsSync, readFileSync } from 'node:fs'
+import path from 'node:path'
+import { ambiente } from '@/lib/ambiente'
+import { listar, resumo, trechosDaFonte } from '@/servicos/fontes'
+import { dividirEmTrechos } from '@/servicos/trechos'
 import { prisma } from '@/lib/prisma'
 import { senhaConfere } from '@/lib/senha'
 import { limparBanco } from './ajuda'
@@ -64,5 +69,79 @@ describe('seed de demonstração', () => {
     await prisma.agente.update({ where: { id: antes.id }, data: { nome: 'Renomeado' } })
     expect(semear().status).toBe(0)
     expect((await prisma.agente.findUniqueOrThrow({ where: { id: antes.id } })).nome).toBe('Renomeado')
+  })
+})
+
+describe('fonte de exemplo da base (PR-25, FT-04)', () => {
+  beforeEach(limparBanco)
+
+  it('o agente de exemplo ganha uma fonte de texto fictícia já processada, uma vez só', async () => {
+    expect(semear().status).toBe(0)
+    expect(semear().status).toBe(0)
+
+    const fontes = await prisma.fonte.findMany({ include: { criadoPor: true } })
+    expect(fontes).toHaveLength(1)
+    const [fonte] = fontes
+    expect(fonte).toMatchObject({
+      agenteId: 'agente-de-exemplo',
+      tipo: 'texto',
+      status: 'pronto',
+      mensagemErro: null,
+      tipoMime: 'text/plain',
+    })
+    expect(fonte!.criadoPor!.email).toBe('admin@exemplo.local')
+    expect(fonte!.titulo).toMatch(/Loja Exemplo/)
+    expect(fonte!.processadoEm).not.toBeNull()
+  })
+
+  it('os trechos vêm do mesmo divisor do serviço, e o original está no STORAGE_DIR', async () => {
+    expect(semear().status).toBe(0)
+    const fonte = await prisma.fonte.findFirstOrThrow()
+    expect(fonte.caminhoArquivo).toBe(`fontes/agente-de-exemplo/${fonte.id}/original`)
+    const arquivo = path.join(ambiente.storageDir, fonte.caminhoArquivo!)
+    expect(existsSync(arquivo)).toBe(true)
+
+    const texto = readFileSync(arquivo, 'utf8')
+    const esperados = dividirEmTrechos(texto)
+    const trechos = await prisma.trecho.findMany({ where: { fonteId: fonte.id }, orderBy: { indice: 'asc' } })
+    expect(esperados.length).toBeGreaterThanOrEqual(2)
+    expect(trechos.map((t) => t.texto)).toEqual(esperados)
+    expect(fonte.totalTrechos).toBe(esperados.length)
+    expect(fonte.tamanhoBytes).toBe(Buffer.byteLength(texto))
+    for (const t of trechos) expect(t.agenteId).toBe('agente-de-exemplo')
+  })
+
+  it('aparece no serviço: listar, resumo e trechos', async () => {
+    expect(semear().status).toBe(0)
+    const admin = await prisma.usuario.findUniqueOrThrow({ where: { email: 'admin@exemplo.local' } })
+    const autor = { id: admin.id, nome: admin.nome, email: admin.email, papel: admin.papel }
+    const [fonte] = await listar(autor, 'agente-de-exemplo')
+    expect(fonte!.status).toBe('pronto')
+    const r = await resumo(autor, 'agente-de-exemplo')
+    expect(r).toMatchObject({ total: 1, prontas: 1, emProcessamento: 0, comErro: 0 })
+    expect(r.caracteres).toBeGreaterThan(500)
+    const pagina = await trechosDaFonte(autor, 'agente-de-exemplo', fonte!.id)
+    expect(pagina.trechos.length).toBe(fonte!.totalTrechos)
+  })
+
+  it('o texto é fictício: só a Loja Exemplo, sem dado pessoal', async () => {
+    expect(semear().status).toBe(0)
+    const fonte = await prisma.fonte.findFirstOrThrow()
+    const texto = readFileSync(path.join(ambiente.storageDir, fonte.caminhoArquivo!), 'utf8')
+    expect(texto).toContain('Loja Exemplo')
+    expect(texto).not.toMatch(/@|\d{3}\.\d{3}\.\d{3}-\d{2}|\(\d{2}\)\s?\d{4,5}-\d{4}/)
+  })
+
+  it('não recria a fonte que alguém editou e não roda em produção', async () => {
+    expect(semear().status).toBe(0)
+    const antes = await prisma.fonte.findFirstOrThrow()
+    await prisma.fonte.update({ where: { id: antes.id }, data: { titulo: 'Renomeada' } })
+    expect(semear().status).toBe(0)
+    expect((await prisma.fonte.findUniqueOrThrow({ where: { id: antes.id } })).titulo).toBe('Renomeada')
+    expect(await prisma.fonte.count()).toBe(1)
+
+    await limparBanco()
+    expect(semear({ NODE_ENV: 'production' }).status).not.toBe(0)
+    expect(await prisma.fonte.count()).toBe(0)
   })
 })
