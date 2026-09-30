@@ -22,7 +22,7 @@ atencao:
   olho_obrigatorio: 0
   leitura_rapida: 0
   dispensavel: 0
-portao: null
+portao: bloqueado
 desvios: []
 push_feito: false
 pr_url: null
@@ -53,3 +53,4 @@ Branch aberta a partir de `feat/conversa-de-teste` (PRs empilhados; base indicad
 - T-06.04: o teste `tests/chat-de-teste.test.tsx` (FT-03) afirmava que `ChatDeTeste.tsx` era o único arquivo com `fetch` para `/api`. A regra de fundo (fetch só em componente cliente) continua; o teste passou a exigir que todo arquivo com esse `fetch` esteja em `src/componentes/` e comece por `'use client'`.
 - T-06.05: entrou um módulo não previsto, `src/componentes/enviar-arquivo.ts` (envio por XMLHttpRequest, para ter progresso por arquivo, e `interpretarRespostaDoEnvio`, pura e testada).
 - T-07.03: `tests/rotas.test.ts` (FT-03) contava duas abas na página do agente; com a aba Conhecimento são três. A falha só apareceu depois do `npm run build` da verificação visual, porque o teste de rotas roda contra o build. Ajustado o número.
+- Portão E2 (primeira rodada): V9 acusou os 14 arquivos `sprint.md` e `fases.md` das sprints 01 a 07, criados na F3 e não declarados em nenhuma task. Declarados em `arquivos.cria` da T-07.04 (fechamento no laço do buildx).
