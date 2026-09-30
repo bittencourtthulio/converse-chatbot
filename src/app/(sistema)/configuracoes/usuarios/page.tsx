@@ -1,4 +1,4 @@
-import { exigirUsuarioAdmin } from '@/lib/sessao-servidor'
+import { exigirUsuarioAdmin } from '@/app/sessao-servidor'
 import { listar } from '@/servicos/usuarios'
 import { criarUsuario } from '@/app/acoes'
 import { Formulario, Campo } from '@/componentes/Formulario'

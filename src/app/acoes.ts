@@ -11,7 +11,7 @@ import {
   exigirUsuarioAdmin,
   gravarCookieDeSessao,
   apagarCookieDeSessao,
-} from '@/lib/sessao-servidor'
+} from '@/app/sessao-servidor'
 
 export interface EstadoDoFormulario {
   erro?: string

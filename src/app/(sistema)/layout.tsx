@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { exigirUsuario } from '@/lib/sessao-servidor'
+import { exigirUsuario } from '@/app/sessao-servidor'
 import { Navegacao } from '@/componentes/Navegacao'
 import { AlternadorDeTema } from '@/componentes/AlternadorDeTema'
 import { sair } from '@/app/acoes'

@@ -1,4 +1,4 @@
-import { exigirUsuario } from '@/lib/sessao-servidor'
+import { exigirUsuario } from '@/app/sessao-servidor'
 
 /**
  * O painel — a tela inicial (P-9, E-1). Vem com título e subtítulo, e o

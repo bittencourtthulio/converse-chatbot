@@ -25,7 +25,7 @@ tasks:
   - id: T-01.01
     titulo: "Regra de camadas no lint e sessao-servidor movido"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Tornar a direcao das camadas uma regra de lint e corrigir a unica violacao existente."
     arquivos:
       cria: ["tests/camadas.test.ts", "src/app/sessao-servidor.ts"]
@@ -35,8 +35,8 @@ tasks:
     criterio_aceite: "npm run lint termina com codigo 0 no repositorio e os tres casos proibidos do teste falham como esperado."
     depende_de: []
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-01.02
     titulo: "Script setup com migrate deploy e exemplo de ambiente"
     fase: F-01.1
@@ -132,7 +132,7 @@ flowchart LR
   classDef concluida fill:#DFF0D8,stroke:#4A6B3A,color:#1A1815
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
-  class T_01_01 pendente
+  class T_01_01 concluida
   class T_01_02 pendente
   class T_01_03 pendente
   class T_01_04 pendente
@@ -154,7 +154,10 @@ teste_funcional: Amostra de src/servicos importando next/headers, amostra de src
 criterio_aceite: npm run lint termina com codigo 0 no repositorio e os tres casos proibidos do teste falham como esperado.
 depende_de: []
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: lint 0 erros, tsc ok, camadas 5 passed
 ```
 
 ---

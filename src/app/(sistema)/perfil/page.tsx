@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { exigirUsuario } from '@/lib/sessao-servidor'
+import { exigirUsuario } from '@/app/sessao-servidor'
 import { salvarPerfil } from '@/app/acoes'
 import { Formulario, Campo } from '@/componentes/Formulario'
 

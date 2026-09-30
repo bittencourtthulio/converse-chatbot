@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { usuarioAtual } from '@/lib/sessao-servidor'
+import { usuarioAtual } from '@/app/sessao-servidor'
 import { autenticar } from '@/app/acoes'
 import { Formulario, Campo } from '@/componentes/Formulario'
 
