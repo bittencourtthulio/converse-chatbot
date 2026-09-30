@@ -27,3 +27,16 @@ model Usuario {
 
   @@map("usuarios")
 }
+
+// Configuração do workspace (PR-02, PR-06): tabela singleton, uma linha só,
+// com id fixo "unica". A chave do OpenRouter fica cifrada (PR-14, PR-39).
+model ConfiguracaoDoWorkspace {
+  id                     String   @id @default("unica")
+  openrouterChaveCifrada String?
+  atualizadoEm           DateTime @updatedAt
+  // Id do usuário que gravou por último (sem chave estrangeira: a exclusão de
+  // usuário é da FT-10).
+  atualizadoPor          String?
+
+  @@map("configuracao_do_workspace")
+}

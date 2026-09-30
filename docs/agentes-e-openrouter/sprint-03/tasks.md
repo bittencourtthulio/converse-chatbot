@@ -25,18 +25,18 @@ tasks:
   - id: T-03.01
     titulo: "Modelo ConfiguracaoDoWorkspace e servico de integracoes"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Gravar a chave cifrada em tabela singleton e expor so o estado mascarado."
     arquivos:
-      cria: ["prisma/migrations/20260930120000_configuracao_do_workspace/migration.sql", "src/servicos/integracoes.ts", "tests/integracoes.test.ts"]
+      cria: ["prisma/migrations/20260930145651_configuracao_do_workspace/migration.sql", "src/servicos/integracoes.ts", "tests/integracoes.test.ts"]
       altera: ["prisma/schema.prisma", "tests/ajuda.ts"]
     teste_integracao: "tests/integracoes.test.ts usa o banco de teste migrado e o servico com a cripto real."
     teste_funcional: "salvarChaveDoOpenrouter grava texto que nao contem a chave, estadoDoOpenrouter devolve configurada, mascara e atualizadoEm sem chave nem texto cifrado, remover volta a nao configurada, usuario comum recebe 403, entrada vazia ou curta recebe 422, e ha uma linha so na tabela apos duas gravacoes."
     criterio_aceite: "O teste passa e a migration so contem CREATE TABLE."
     depende_de: [T-01.01, T-01.02]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-03.02
     titulo: "Teste de conexao e leitura interna da chave"
     fase: F-03.1
@@ -144,7 +144,7 @@ flowchart LR
   classDef concluida fill:#DFF0D8,stroke:#4A6B3A,color:#1A1815
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
-  class T_03_01 pendente
+  class T_03_01 concluida
   class T_03_02 pendente
   class T_03_03 pendente
   class T_03_04 pendente
@@ -160,14 +160,17 @@ id: T-03.01
 titulo: Modelo ConfiguracaoDoWorkspace e servico de integracoes
 objetivo: Gravar a chave cifrada em tabela singleton e expor so o estado mascarado.
 arquivos:
-  cria: [prisma/migrations/20260930120000_configuracao_do_workspace/migration.sql, src/servicos/integracoes.ts, tests/integracoes.test.ts]
+  cria: [prisma/migrations/20260930145651_configuracao_do_workspace/migration.sql, src/servicos/integracoes.ts, tests/integracoes.test.ts]
   altera: [prisma/schema.prisma, tests/ajuda.ts]
 teste_integracao: tests/integracoes.test.ts usa o banco de teste migrado e o servico com a cripto real.
 teste_funcional: salvarChaveDoOpenrouter grava texto que nao contem a chave, estadoDoOpenrouter devolve configurada, mascara e atualizadoEm sem chave nem texto cifrado, remover volta a nao configurada, usuario comum recebe 403, entrada vazia ou curta recebe 422, e ha uma linha so na tabela apos duas gravacoes.
 criterio_aceite: O teste passa e a migration so contem CREATE TABLE.
 depende_de: [T-01.01, T-01.02]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: integracoes 18 passed, migracoes 8 passed; tsc e lint 0
 ```
 
 ---

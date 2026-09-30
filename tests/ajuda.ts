@@ -37,5 +37,6 @@ export const criarAdmin = () => criarUsuario({ papel: 'admin' })
 
 /** Esvazia a tabela entre testes, para que um não veja o que o outro criou. */
 export async function limparBanco(): Promise<void> {
+  await prisma.configuracaoDoWorkspace.deleteMany()
   await prisma.usuario.deleteMany()
 }
