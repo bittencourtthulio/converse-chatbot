@@ -56,7 +56,7 @@ tasks:
   - id: T-05.04
     titulo: "Ponta a ponta de todos os formatos e build"
     fase: F-05.2
-    status: pendente
+    status: concluida
     objetivo: "Provar pelo servidor de producao os nove formatos e resolver o que o bundler exigir."
     arquivos:
       cria: ["tests/fontes-rota-formatos.test.ts"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "npm run build termina com 0, tests/fontes-rota-formatos.test.ts passa e o servidor de producao, ao subir com uma fonte pendente no banco de teste, a leva a pronto sem nenhuma requisicao."
     depende_de: ["T-05.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
 ---
 
 # Tasks — Sprint 05
@@ -145,5 +145,7 @@ teste_funcional: O PDF escaneado chega a erro com a mensagem de OCR e um DOCX co
 criterio_aceite: npm run build termina com 0, tests/fontes-rota-formatos.test.ts passa e o servidor de producao, ao subir com uma fonte pendente no banco de teste, a leva a pronto sem nenhuma requisicao.
 depende_de: ["T-05.03"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 826 passed 826, 0 failed
 ```

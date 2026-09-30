@@ -47,3 +47,4 @@ Branch aberta a partir de `feat/conversa-de-teste` (PRs empilhados; base indicad
 - T-05.01 e T-05.02: o `route.ts` foi escrito inteiro (GET e POST multipart) na T-05.01, junto do apoio `resposta.ts`; a T-05.02 então só acrescentou o teste de upload, que passou de primeira (sem ciclo vermelho separado). O 413 e o 415 do multipart ficam provados no teste, contra o servidor de produção.
 - T-05.01: `src/lib/ambiente.ts` ganhou o comentário `turbopackIgnore` no `path.resolve` de `storageDir`; sem ele o Turbopack avisava que o acesso dinâmico ao sistema de arquivos faria o rastreamento incluir o projeto inteiro no pacote do servidor.
 - T-01.03 e T-01.04: foram concluídas no mesmo commit (`9df888d`), porque o gerador de fixtures é um arquivo só.
+- T-05.04: `next.config.ts` não precisou mudar: `unpdf` e `mammoth` rodam no servidor de produção sem `serverExternalPackages` (provado por `tests/fontes-rota-formatos.test.ts`), resolvendo a lacuna 3 da base sem alteração.
