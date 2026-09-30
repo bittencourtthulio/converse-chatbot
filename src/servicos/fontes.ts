@@ -6,7 +6,7 @@ import { randomUUID } from 'node:crypto'
 import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
 import { ambiente } from '@/lib/ambiente'
-import { ErroDeAplicacao, entradaInvalida, naoAutenticado, naoEncontrado } from '@/lib/erros'
+import { ErroDeAplicacao, conflito, entradaInvalida, naoAutenticado, naoEncontrado } from '@/lib/erros'
 import { criarArmazenamento } from '@/lib/armazenamento'
 import { LIMITES } from '@/lib/extracao/limites'
 import { validarConteudo } from '@/lib/extracao'
@@ -299,4 +299,34 @@ export async function adicionarArquivos(
   for (const arquivo of arquivos) resultados.push(await adicionarUmArquivo(autor, agenteId, arquivo))
   if (resultados.some((r) => r.aceito)) obterFila().acordar()
   return resultados
+}
+
+/** Exclusão definitiva: linha, trechos (cascata) e o diretório da fonte em disco. */
+export async function excluir(autor: UsuarioAutenticado, agenteId: string, fonteId: string): Promise<void> {
+  exigirAutor(autor)
+  const { count } = await prisma.fonte.deleteMany({ where: { id: fonteId, agenteId } })
+  if (count === 0) throw naoEncontrado('Fonte não encontrada.')
+  // Falha ao apagar o arquivo vai para o log e não desfaz a exclusão (PR-47).
+  try {
+    await armazenamentoPadrao().apagarFonte(agenteId, fonteId)
+  } catch {
+    console.error(JSON.stringify({ evento: 'armazenamento_falhou', agenteId, fonteId }))
+  }
+}
+
+/** Só a fonte em erro pode ser reprocessada (PR-48): volta a `pendente` e a fila a retoma. */
+export async function reprocessar(
+  autor: UsuarioAutenticado,
+  agenteId: string,
+  fonteId: string,
+): Promise<FonteVisivel> {
+  exigirAutor(autor)
+  await obter(autor, agenteId, fonteId) // 404 se não existe ou é de outro agente
+  const { count } = await prisma.fonte.updateMany({
+    where: { id: fonteId, agenteId, status: 'erro' },
+    data: { status: 'pendente', mensagemErro: null },
+  })
+  if (count === 0) throw conflito('Só é possível reprocessar uma fonte que terminou com erro.')
+  obterFila().acordar()
+  return obter(autor, agenteId, fonteId)
 }

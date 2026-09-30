@@ -71,7 +71,7 @@ tasks:
   - id: T-04.05
     titulo: "Servico: excluir e reprocessar"
     fase: F-04.2
-    status: pendente
+    status: concluida
     objetivo: "Excluir com arquivo e reprocessar apenas fonte em erro."
     arquivos:
       cria: ["tests/fontes-ciclo.test.ts"]
@@ -81,8 +81,8 @@ tasks:
     criterio_aceite: "tests/fontes-ciclo.test.ts passa."
     depende_de: ["T-04.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-04.06
     titulo: "Subida do servidor: instrumentation"
     fase: F-04.3
@@ -194,7 +194,9 @@ teste_funcional: reprocessar uma fonte em erro cujo arquivo foi corrigido leva a
 criterio_aceite: tests/fontes-ciclo.test.ts passa.
 depende_de: ["T-04.04"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 797 passed 797, 0 failed
 ```
 
 ---
