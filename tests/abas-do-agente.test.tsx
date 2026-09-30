@@ -1,13 +1,15 @@
 import { describe, it, expect } from 'vitest'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { AbasDoAgente } from '@/componentes/AbasDoAgente'
+import { Icone } from '@/componentes/Icones'
 import { ABAS_DO_AGENTE, hrefDaAba } from '@/componentes/abas-do-agente'
 
 describe('lista de abas do agente', () => {
-  it('tem Configurações, na raiz do agente, e Testar (FT-03)', () => {
-    expect(ABAS_DO_AGENTE.map((a) => a.rotulo)).toEqual(['Configurações', 'Testar'])
+  it('tem Configurações, na raiz do agente, Conhecimento (FT-04) e Testar (FT-03)', () => {
+    expect(ABAS_DO_AGENTE.map((a) => a.rotulo)).toEqual(['Configurações', 'Conhecimento', 'Testar'])
     expect(hrefDaAba('abc', ABAS_DO_AGENTE[0]!)).toBe('/agentes/abc')
-    expect(hrefDaAba('abc', ABAS_DO_AGENTE[1]!)).toBe('/agentes/abc/testar')
+    expect(hrefDaAba('abc', ABAS_DO_AGENTE[1]!)).toBe('/agentes/abc/conhecimento')
+    expect(hrefDaAba('abc', ABAS_DO_AGENTE[2]!)).toBe('/agentes/abc/testar')
   })
 
   it('aba com caminho vira subrota do agente', () => {
@@ -18,6 +20,16 @@ describe('lista de abas do agente', () => {
 })
 
 describe('AbasDoAgente', () => {
+  it('lista as três abas e marca Conhecimento na página de uma fonte', () => {
+    const html = renderToStaticMarkup(
+      <AbasDoAgente agenteId="x" caminhoAtual="/agentes/x/conhecimento/fonte9" />,
+    )
+    for (const rotulo of ['Configurações', 'Conhecimento', 'Testar']) expect(html).toContain(rotulo)
+    const marcadas = html.match(/<a [^>]*aria-current="page"[^>]*>/g) ?? []
+    expect(marcadas).toHaveLength(1)
+    expect(marcadas[0]).toContain('href="/agentes/x/conhecimento"')
+  })
+
   it('rende a navegação com um link por aba e marca a aba atual', () => {
     const html = renderToStaticMarkup(
       <AbasDoAgente agenteId="abc" caminhoAtual="/agentes/abc" />,
@@ -32,17 +44,17 @@ describe('AbasDoAgente', () => {
   it('acrescentar uma entrada na lista faz aparecer outra aba sem mudar o componente', () => {
     const abas = [
       ...ABAS_DO_AGENTE,
-      { rotulo: 'Conhecimento', caminho: 'conhecimento' },
+      { rotulo: 'Conversas', caminho: 'conversas' },
       { rotulo: 'Canais', caminho: 'canais' },
     ]
     const html = renderToStaticMarkup(
-      <AbasDoAgente agenteId="abc" abas={abas} caminhoAtual="/agentes/abc/conhecimento" />,
+      <AbasDoAgente agenteId="abc" abas={abas} caminhoAtual="/agentes/abc/conversas" />,
     )
-    expect(html).toContain('href="/agentes/abc/conhecimento"')
+    expect(html).toContain('href="/agentes/abc/conversas"')
     expect(html).toContain('href="/agentes/abc/canais"')
     const marcadas = html.match(/<a [^>]*aria-current="page"[^>]*>/g) ?? []
     expect(marcadas).toHaveLength(1)
-    expect(marcadas[0]).toContain('/agentes/abc/conhecimento')
+    expect(marcadas[0]).toContain('/agentes/abc/conversas')
   })
 
   it('a aba raiz não fica marcada numa subrota', () => {
@@ -57,4 +69,16 @@ describe('AbasDoAgente', () => {
     expect(marcadas).toHaveLength(1)
     expect(marcadas[0]).toContain('/agentes/abc/canais')
   })
+})
+
+describe('ícones da base de conhecimento', () => {
+  it.each(['arquivo', 'texto', 'lixeira', 'upload', 'relogio', 'atualizar', 'voltar'] as const)(
+    '%s renderiza um svg decorativo',
+    (nome) => {
+      const html = renderToStaticMarkup(<Icone nome={nome} />)
+      expect(html).toMatch(/^<svg /)
+      expect(html).toContain('aria-hidden="true"')
+      expect(html.length).toBeGreaterThan(200)
+    },
+  )
 })

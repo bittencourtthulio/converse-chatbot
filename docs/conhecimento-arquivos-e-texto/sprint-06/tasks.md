@@ -11,7 +11,7 @@ tasks:
   - id: T-06.01
     titulo: "Aba Conhecimento e icones"
     fase: F-06.1
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar a aba na lista e os icones novos."
     arquivos:
       cria: []
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/abas-do-agente.test.tsx passa."
     depende_de: ["T-05.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-06.02
     titulo: "Logica pura da tela de conhecimento"
     fase: F-06.2
@@ -118,7 +118,9 @@ teste_funcional: hrefDaAba devolve /agentes/<id>/conhecimento e cada icone novo 
 criterio_aceite: tests/abas-do-agente.test.tsx passa.
 depende_de: ["T-05.04"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 834 passed 834, 0 failed
 ```
 
 ---

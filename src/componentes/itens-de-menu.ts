@@ -21,6 +21,13 @@ export type NomeDeIcone =
   | 'agentes'
   | 'enviar'
   | 'parar'
+  | 'arquivo'
+  | 'texto'
+  | 'lixeira'
+  | 'upload'
+  | 'relogio'
+  | 'atualizar'
+  | 'voltar'
 
 export interface ItemDeMenu {
   rotulo: string

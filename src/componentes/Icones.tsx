@@ -82,6 +82,38 @@ const FORMAS: Record<NomeDeIcone, React.ReactNode> = {
   ),
   enviar: <path d="m22 2-7 20-4-9-9-4 20-7ZM22 2 11 13" />,
   parar: <rect x="6" y="6" width="12" height="12" rx="2" />,
+  arquivo: (
+    <>
+      <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z" />
+      <path d="M14 3v5h5M9 13h6M9 17h6" />
+    </>
+  ),
+  texto: <path d="M4 6h16M4 12h16M4 18h10" />,
+  lixeira: (
+    <>
+      <path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2" />
+      <path d="m19 6-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6" />
+    </>
+  ),
+  upload: (
+    <>
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <path d="m17 8-5-5-5 5M12 3v12" />
+    </>
+  ),
+  relogio: (
+    <>
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 6v6l4 2" />
+    </>
+  ),
+  atualizar: (
+    <>
+      <path d="M21 12a9 9 0 0 0-15.5-6.2L3 8" />
+      <path d="M3 3v5h5M3 12a9 9 0 0 0 15.5 6.2L21 16M21 21v-5h-5" />
+    </>
+  ),
+  voltar: <path d="m15 18-6-6 6-6" />,
   conversa: <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z" />,
 }
 
