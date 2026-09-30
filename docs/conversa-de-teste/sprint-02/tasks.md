@@ -40,7 +40,7 @@ tasks:
   - id: T-02.02
     titulo: "Montagem do prompt e do historico"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Funcoes puras que montam a mensagem de sistema, o historico limitado e o ponto de extensao para o material de consulta."
     arquivos:
       cria: ["src/servicos/chat-prompt.ts", "tests/chat-prompt.test.ts"]
@@ -50,8 +50,8 @@ tasks:
     criterio_aceite: "O teste passa e a exportacao do ponto de extensao (parametro materialDeConsulta) esta documentada em comentario para a FT-05."
     depende_de: []
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-02.03
     titulo: "Mensagens de erro para operador e visitante"
     fase: F-02.1
@@ -109,7 +109,7 @@ flowchart LR
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
   class T_02_01 concluida
-  class T_02_02 pendente
+  class T_02_02 concluida
   class T_02_03 pendente
 ```
 
@@ -149,7 +149,10 @@ teste_funcional: o sistema traz as instrucoes do agente e a linha de conduta (id
 criterio_aceite: O teste passa e a exportacao do ponto de extensao (parametro materialDeConsulta) esta documentada em comentario para a FT-05.
 depende_de: []
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: verde
+resultado: chat-prompt 9 testes; suite 449 verdes; tsc e lint 0
 ```
 
 ---
