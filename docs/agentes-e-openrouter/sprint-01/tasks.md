@@ -48,7 +48,7 @@ tasks:
     teste_integracao: "tests/migracoes.test.ts le os arquivos prisma/migrations/*/migration.sql reais."
     teste_funcional: "SQL de amostra com DROP TABLE sem a marca -- destrutiva-autorizada falha, com a marca passa, DROP COLUMN idem, e as migrations existentes passam."
     criterio_aceite: "O teste passa e uma amostra com DROP COLUMN sem marca e recusada pela funcao verificadora."
-    depende_de: [T-01.01]
+    depende_de: []
     paralelizavel: false
     concluida_em: null
     suite: nao_executada
@@ -119,7 +119,6 @@ flowchart LR
     T_01_03["T-01.03<br/>Servidor OpenRouter simulado"]
     T_01_04["T-01.04<br/>Servidor OpenRouter simulado"]
   end
-  T_01_01 --> T_01_02
   T_01_01 --> T_01_03
   T_01_03 --> T_01_04
   classDef pendente fill:#F3F0EA,stroke:#8A7F70,color:#1A1815
@@ -164,7 +163,7 @@ arquivos:
 teste_integracao: tests/migracoes.test.ts le os arquivos prisma/migrations/*/migration.sql reais.
 teste_funcional: SQL de amostra com DROP TABLE sem a marca -- destrutiva-autorizada falha, com a marca passa, DROP COLUMN idem, e as migrations existentes passam.
 criterio_aceite: O teste passa e uma amostra com DROP COLUMN sem marca e recusada pela funcao verificadora.
-depende_de: [T-01.01]
+depende_de: []
 paralelizavel: false
 status: pendente
 ```

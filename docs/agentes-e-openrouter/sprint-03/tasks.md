@@ -46,7 +46,7 @@ tasks:
       cria: []
       altera: ["src/servicos/integracoes.ts", "tests/integracoes-conexao.test.ts"]
     teste_integracao: "tests/integracoes-conexao.test.ts usa o servidor simulado e o banco de teste."
-    teste_funcional: "testarConexaoDoOpenrouter devolve sucesso com chave valida, lanca provedor_chave_invalida no 401, informa que nao ha chave quando nao configurada, e obterChaveDoOpenrouter devolve a chave original ou null; chave gravada com outra ENCRYPTION_KEY resulta em erro claro sem derrubar estadoDoOpenrouter."
+    teste_funcional: "testarConexaoDoOpenrouter devolve sucesso com chave valida, lanca provedor_chave_invalida no 401, informa que nao ha chave quando nao configurada, e obterChaveDoOpenrouter devolve a chave original ou null; chave gravada com outra ENCRYPTION_KEY resulta em erro claro sem derrubar estadoDoOpenrouter, e espioes de console.error e console.log nao recebem a chave em nenhuma chamada."
     criterio_aceite: "O teste passa e nenhuma mensagem de erro contem a chave."
     depende_de: [T-03.01, T-02.03]
     paralelizavel: false
@@ -180,7 +180,7 @@ arquivos:
   cria: []
   altera: [src/servicos/integracoes.ts, tests/integracoes-conexao.test.ts]
 teste_integracao: tests/integracoes-conexao.test.ts usa o servidor simulado e o banco de teste.
-teste_funcional: testarConexaoDoOpenrouter devolve sucesso com chave valida, lanca provedor_chave_invalida no 401, informa que nao ha chave quando nao configurada, e obterChaveDoOpenrouter devolve a chave original ou null; chave gravada com outra ENCRYPTION_KEY resulta em erro claro sem derrubar estadoDoOpenrouter.
+teste_funcional: testarConexaoDoOpenrouter devolve sucesso com chave valida, lanca provedor_chave_invalida no 401, informa que nao ha chave quando nao configurada, e obterChaveDoOpenrouter devolve a chave original ou null; chave gravada com outra ENCRYPTION_KEY resulta em erro claro sem derrubar estadoDoOpenrouter, e espioes de console.error e console.log nao recebem a chave em nenhuma chamada.
 criterio_aceite: O teste passa e nenhuma mensagem de erro contem a chave.
 depende_de: [T-03.01, T-02.03]
 paralelizavel: false

@@ -14,7 +14,7 @@ criado_em: 2026-09-30
 atualizado_em: 2026-09-30
 concluido_em: null
 sprints: [sprint-01, sprint-02, sprint-03, sprint-04, sprint-05, sprint-06]
-caminho_critico: [T-01.01, T-03.03, T-05.01, T-05.02, T-05.03, T-05.04, T-05.05, T-05.06, T-05.07, T-05.08, T-06.01, T-06.02, T-06.03]
+caminho_critico: [T-01.01, T-03.03, T-05.01, T-05.02, T-05.03, T-05.04, T-05.05, T-05.06, T-05.07, T-06.01, T-06.02, T-06.03]
 modulo_afetado: [apresentacao, aplicacao, infraestrutura, banco, testes, documentacao]
 arquivos_alterados: []
 palavras_chave: [openrouter, agentes, cripto, segredo, sse, integracoes, modelo, temperatura]
@@ -47,12 +47,12 @@ FT-02 do projeto `plataforma-chatbot-ia`: o admin cadastra a chave do OpenRouter
 - Sprint 02: F-02.1, sequencial (T-02.01 → T-02.02 e T-02.03 → T-02.04)
 - Sprint 03: F-03.1, sequencial (T-03.01 → T-03.02; T-03.03; T-03.04 → T-03.05)
 - Sprint 04: F-04.1, sequencial (T-04.01 → T-04.02 e T-04.03)
-- Sprint 05: F-05.1, sequencial (T-05.01 → T-05.02 → T-05.03 → T-05.04 → T-05.05 → T-05.06 → T-05.07 → T-05.08)
+- Sprint 05: F-05.1, sequencial (T-05.01 → T-05.02 → T-05.03 → T-05.04 → T-05.05 → T-05.06 → T-05.07)
 - Sprint 06: F-06.1, sequencial (T-06.01 → T-06.02 → T-06.03)
 
 Nenhuma fase nem task roda em paralelo: o plano declara `paralelizavel: false` em todas; a execução segue a ordem dos ids respeitando `depende_de`.
 
-**Caminho crítico:** T-01.01 → T-03.03 → T-05.01 → T-05.02 → T-05.03 → T-05.04 → T-05.05 → T-05.06 → T-05.07 → T-05.08 → T-06.01 → T-06.02 → T-06.03
+**Caminho crítico:** T-01.01 → T-03.03 → T-05.01 → T-05.02 → T-05.03 → T-05.04 → T-05.05 → T-05.06 → T-05.07 → T-06.01 → T-06.02 → T-06.03
 
 ## 4. Ferramentas
 
