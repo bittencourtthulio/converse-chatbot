@@ -29,7 +29,7 @@ fases:
 > O paralelismo declarado aqui é definitivo: nenhuma fase nem task corre em paralelo.
 
 ```mermaid
-% Grafo de tasks — sprint-03 — gerado pela sprintx a partir de tasks.md
+%% Grafo de tasks — sprint-03 — gerado pela sprintx a partir de tasks.md
 flowchart LR
   subgraph fase_03_1["F-03.1 — API publica"]
     T_03_01["T-03.01<br/>Rota GET config e OPTIONS"]
