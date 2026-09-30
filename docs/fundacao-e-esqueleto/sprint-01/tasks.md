@@ -40,7 +40,7 @@ tasks:
   - id: T-01.02
     titulo: "Script setup com migrate deploy e exemplo de ambiente"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Trocar db push por migrate deploy no setup e documentar APP_NAME e TRUST_PROXY no exemplo de ambiente."
     arquivos:
       cria: ["tests/projeto.test.ts"]
@@ -50,8 +50,8 @@ tasks:
     criterio_aceite: "O teste de projeto passa e o package.json nao contem prisma db push."
     depende_de: [T-01.01]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-01.03
     titulo: "Pipeline de CI"
     fase: F-01.1
@@ -133,7 +133,7 @@ flowchart LR
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
   class T_01_01 concluida
-  class T_01_02 pendente
+  class T_01_02 concluida
   class T_01_03 pendente
   class T_01_04 pendente
 ```
@@ -174,7 +174,10 @@ teste_funcional: O script setup e igual a prisma generate && prisma migrate depl
 criterio_aceite: O teste de projeto passa e o package.json nao contem prisma db push.
 depende_de: [T-01.01]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: projeto.test 3 passed
 ```
 
 ---
