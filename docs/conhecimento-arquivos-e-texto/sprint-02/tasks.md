@@ -56,7 +56,7 @@ tasks:
   - id: T-02.04
     titulo: "Divisao em trechos"
     fase: F-02.2
-    status: pendente
+    status: concluida
     objetivo: "Dividir texto em trechos de ate 1000 caracteres com sobreposicao de 150, de forma pura e deterministica."
     arquivos:
       cria: ["src/servicos/trechos.ts", "tests/trechos.test.ts"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "tests/trechos.test.ts passa e src/servicos/trechos.ts nao importa nada com alias @/."
     depende_de: []
     paralelizavel: true
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
 ---
 
 # Tasks — Sprint 02
@@ -145,5 +145,7 @@ teste_funcional: Um texto de tres paragrafos curtos vira um trecho por paragrafo
 criterio_aceite: tests/trechos.test.ts passa e src/servicos/trechos.ts nao importa nada com alias @/.
 depende_de: []
 paralelizavel: true
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 674 passed, 0 failed
 ```

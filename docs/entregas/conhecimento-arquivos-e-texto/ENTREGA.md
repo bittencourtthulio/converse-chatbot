@@ -43,3 +43,4 @@ Branch aberta a partir de `feat/conversa-de-teste` (PRs empilhados; base indicad
 ## Desvios
 
 - T-01.02: `npm audit --audit-level=high` já acusava 1 vulnerabilidade crítica no `next` 16.3.3 (advisory publicado depois da FT-03). Atualizados, com versão fixa, `next` e `eslint-config-next` para 16.3.8 (patch dentro de 16.3); `package.json` e o lockfile já constavam na task. Build, testes e auditoria verdes depois.
+- T-02.04: o teste funcional previsto ("três parágrafos curtos viram um trecho por parágrafo") foi reescrito: parágrafos que cabem juntos na janela de 1000 caracteres ficam no mesmo trecho; o teste confere que o corte cai na quebra de parágrafo e que o trecho seguinte traz a sobreposição. Também entrou uma regra não prevista: a sobreposição que não leva conteúdo novo (antes de uma palavra gigante) é descartada.
