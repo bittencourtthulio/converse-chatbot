@@ -3,7 +3,7 @@ expx-schema: v1
 skill: stackx
 documento: convencoes
 gerado-em: 2026-09-30
-commit-referencia: 6a6892a
+commit-referencia: 40164c4
 projeto-legado: nao
 origem-do-documento: buildx-b4-ft-01
 ---
@@ -92,14 +92,15 @@ teste de integração e teste funcional passando.
 | Item | Valor | Evidência |
 | ---- | ----- | --------- |
 | Engine e versão exata | SQLite via better-sqlite3 12.11.1 | `package-lock.json:3895` |
-| ORM / camada de acesso | Prisma 7.10.0; SQL cru só para FTS5 (ainda não existe) | `prisma/schema.prisma:13`, `package.json:22` |
+| ORM / camada de acesso | Prisma 7.10.0; SQL cru só para FTS5: a tabela virtual `trechos_fts` nasce em migration escrita à mão e a consulta é `prisma.$queryRaw` parametrizado (FT-05, PR-30) | `prisma/schema.prisma:13`, `package.json:22`, `prisma/migrations/20260930190000_busca_fts5/migration.sql:10`, `src/servicos/recuperacao.ts:76` |
 | **Isolamento entre testes** | um arquivo SQLite (`prisma/test.db`) por arquivo de teste, criado por `prisma migrate deploy` e apagado ao fim | `tests/setup.ts:9,18-29,31-34` |
 | Combinação isolamento × paralelismo | arquivo único, `fileParallelism: false`, cada teste limpa o que criou | `vitest.config.ts:12-14`, `tests/ajuda.ts:39` |
 | Semeadura de dado de teste | funções em `tests/ajuda.ts`; a seed de demonstração só roda em teste dentro de `tests/seed.test.ts`, contra o banco de teste | `tests/ajuda.ts`, `tests/seed.test.ts` |
 | Onde vivem as migrações | `prisma/migrations/` | `prisma.config.ts:9` |
 | Comando de rodar migração | `npm run db:migrate` (`prisma migrate deploy`) | `package.json:13` |
 | Comando de reverter migração | — (LACUNA): o Prisma não gera reversão; toda migração destrutiva precisa de backup antes (PR-20) | `decidido_pelo_buildx` |
-| Migrações têm reversão declarada? | não. Regra: migração só acrescenta (coluna nova, tabela nova); `DROP TABLE` e `DROP COLUMN` só com a marca `-- destrutiva-autorizada` na própria migration, e um teste lê o SQL de todas as migrations | `tests/migracoes.test.ts:14`; as três migrations (`prisma/migrations/20260830193658_esquema_inicial`, `20260930145651_configuracao_do_workspace`, `20260930150122_agentes`) só criam tabela |
+| Migrações têm reversão declarada? | não. Regra: migração só acrescenta (coluna nova, tabela nova); `DROP TABLE` e `DROP COLUMN` só com a marca `-- destrutiva-autorizada` na própria migration, e um teste lê o SQL de todas as migrations | `tests/migracoes.test.ts:14`; as migrations só criam tabela, índice, tabela virtual e gatilho (`prisma/migrations/20260830193658_esquema_inicial` a `20260930190000_busca_fts5`) |
+| Tabela virtual FTS5 | SQL cru dentro de uma migration escrita à mão (o Prisma não a modela): tabela de conteúdo externo sobre `trechos`, tokenizer `unicode61 remove_diacritics 2`, três gatilhos (insert, delete, update do texto) e `rebuild` inicial; só `migrate deploy` a aplica, e `db push` a apagaria; o `rowid` implícito liga índice e conteúdo, então `reconstruirIndiceDeTrechos` é o remédio se um `VACUUM` ou uma restauração o renumerar (PR-50) | `prisma/migrations/20260930190000_busca_fts5/migration.sql:10`, `prisma/migrations/20260930190000_busca_fts5/migration.sql:19`, `src/servicos/recuperacao.ts:126`, `tests/indice-fts5.test.ts`, `tests/indice-fts5-cascata.test.ts` |
 | Regra do `setup` | usa `migrate deploy`, não `db push` (o `db push` apaga tabelas virtuais FTS5) | `package.json:15`, `tests/projeto.test.ts` |
 
 **Evidência:** `tests/setup.ts`, `vitest.config.ts`
@@ -136,6 +137,8 @@ importa `next/headers` (só `headers()`), o que a regra permite para `src/lib`.
 | Ação de formulário | `src/app/acoes.ts` (um arquivo para o sistema) | `src/app/acoes.ts:35` |
 | Guarda de sessão e papel | `src/app/sessao-servidor.ts` | `src/app/sessao-servidor.ts` |
 | Componente de interface | `src/componentes/<Nome>.tsx`, PascalCase | `src/componentes/Formulario.tsx` |
+| Busca textual (FTS5) | `src/servicos/recuperacao.ts` (`buscarTrechos`, `buscarNaBase`, `reconstruirIndiceDeTrechos`) com as funções puras de termos e expressão `MATCH` em `src/servicos/recuperacao-termos.ts`; a expressão só leva termos limpos entre aspas e vai como parâmetro de `prisma.$queryRaw`; só fonte `pronto` do agente; BM25; teto de 6 trechos (PR-51) | `src/servicos/recuperacao.ts:76`, `src/servicos/recuperacao-termos.ts:66`, `tests/recuperacao.test.ts` |
+| Prompt com material de terceiros | o conteúdo da base entra na mensagem de sistema como dado, num bloco com marcador aleatório por requisição e higienizado; o teste captura a requisição no OpenRouter falso e prova a estrutura (o comportamento do modelo real não é testável) (PR-52) | `src/servicos/chat-prompt.ts:102`, `src/servicos/chat.ts:106`, `tests/chat-fundamentado.test.ts` |
 | Item de menu | lista única em `src/componentes/itens-de-menu.ts` | `src/componentes/itens-de-menu.ts:37` |
 | Aba da página de um agente | lista única em `src/componentes/abas-do-agente.ts`; a subrota mora em `src/app/(sistema)/agentes/[id]/<caminho>` | `src/componentes/abas-do-agente.ts:12` |
 | Cor, sombra, raio, fonte | tokens em `src/estilos/tokens.css`; nenhum valor literal fora dele | `tests/tokens.test.ts` |
@@ -159,6 +162,10 @@ vira frase genérica e a tela de erro do sistema mostra só o código de correla
 (`digest`). O identificador de correlação próprio (PR-21) ainda não existe.
 Falha do provedor de IA: `erroDoProvedor` (status 502, ou 504 no tempo esgotado; códigos `provedor_*`; mensagem em português sem o corpo do provedor). Ação que lida com segredo usa `mensagemSemSegredo`, que registra só o nome do erro inesperado.
 **Evidência:** `src/lib/erros.ts:4`, `src/lib/erros.ts:45`, `src/app/acoes.ts:29-33`, `src/app/acoes.ts:46`, `src/app/(sistema)/error.tsx`
+
+### Consulta SQL com texto do usuário
+O texto do usuário nunca é concatenado em SQL (PR-13, PR-30). SQL cru só existe para FTS5 (migration e `prisma.$queryRaw` com template tagueado); a pergunta vira termos limpos (letras e dígitos) e só a expressão `MATCH` montada com eles e o `agenteId` vão como parâmetros. `$queryRawUnsafe` e `$executeRawUnsafe` não são usados no código de `src/` (um teste confere o módulo de recuperação, e a pergunta hostil é exercitada contra o FTS5 real).
+**Evidência:** `src/servicos/recuperacao.ts:76`, `src/servicos/recuperacao-termos.ts:66`, `tests/recuperacao.test.ts`, `tests/recuperacao-termos.test.ts`
 
 ### Validação de entrada
 zod, na camada de aplicação (`src/servicos`). A ação repassa a entrada bruta ao
@@ -249,6 +256,7 @@ Nenhum.
 | 2026-09-30 | 0e0fda1 | FT-02: regras de HTTP de saída simulado, adaptador em `src/lib`, segredo cifrado e migração aditiva verificada passam a ter evidência; lacunas 5 (parte HTTP) e 9 resolvidas |
 | 2026-09-30 | 2e17786 | FT-03: primeiro handler em `src/app/api` e primeiro uso de stream (lacuna 7 resolvida); leitura de SSE do navegador, texto seguro e reducer de tela; `MAX_TOKENS_RESPOSTA`; log do turno de conversa |
 | 2026-09-30 | 6a6892a | FT-04: primeiro uso de `src/instrumentation.ts`, de `STORAGE_DIR` e de tarefa em segundo plano (lacunas 5 e 8 resolvidas); adaptador de extração, armazenamento e upload multipart viram regras; `MAX_UPLOAD_MB`; Next 16.3.8 |
+| 2026-09-30 | 40164c4 | FT-05: primeiro SQL cru (FTS5 por migration escrita à mão, consulta `$queryRaw` parametrizada) e a regra de texto do usuário nunca concatenado em SQL; prompt com material de terceiros; evento SSE `fontes` |
 ---
 
 <!-- Lacunas: docs/stack/LACUNAS.md -->

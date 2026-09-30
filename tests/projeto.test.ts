@@ -165,3 +165,37 @@ describe('README do projeto', () => {
     expect(readme).not.toMatch(/template do buildx/i)
   })
 })
+
+describe('convenções da busca textual (FT-05, PR-30)', () => {
+  const convencoes = ler('docs/stack/CONVENCOES.md')
+  const lacunas = ler('docs/stack/LACUNAS.md')
+
+  // Cada citação `arquivo:linha` do CONVENCOES.md precisa apontar para a linha certa.
+  const CITACOES: Array<[string, RegExp]> = [
+    ['prisma/migrations/20260930190000_busca_fts5/migration.sql:10', /CREATE VIRTUAL TABLE "trechos_fts" USING fts5/],
+    ['prisma/migrations/20260930190000_busca_fts5/migration.sql:19', /CREATE TRIGGER "trechos_fts_ai"/],
+    ['src/servicos/recuperacao.ts:76', /prisma\.\$queryRaw</],
+    ['src/servicos/recuperacao.ts:126', /export async function reconstruirIndiceDeTrechos/],
+    ['src/servicos/recuperacao-termos.ts:66', /export function montarExpressaoMatch/],
+    ['src/servicos/chat.ts:106', /async function materialDaBase/],
+  ]
+
+  it.each(CITACOES)('%s existe e contém o que o CONVENCOES.md diz', (citacao, esperado) => {
+    expect(convencoes).toContain(citacao)
+    const [arquivo, linha] = citacao.split(':')
+    expect(ler(arquivo!).split('\n')[Number(linha) - 1]).toMatch(esperado)
+  })
+
+  it('registra a regra "texto do usuário nunca concatenado em SQL" e o SQL cru só para FTS5', () => {
+    expect(convencoes).toMatch(/texto do usuário nunca é concatenado em SQL/i)
+    expect(convencoes).toMatch(/\$queryRaw/)
+    expect(convencoes).toMatch(/SQL cru só para FTS5/)
+    expect(convencoes).not.toContain('SQL cru só para FTS5 (ainda não existe)')
+  })
+
+  it('as lacunas registram migrate dev com tabela virtual, o modelo real não testável e o rowid', () => {
+    expect(lacunas).toMatch(/migrate dev/)
+    expect(lacunas).toMatch(/modelo real/i)
+    expect(lacunas).toMatch(/rowid/)
+  })
+})

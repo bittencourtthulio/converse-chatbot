@@ -11,7 +11,7 @@ tasks:
   - id: T-06.01
     titulo: "Convencoes e lacunas com evidencia"
     fase: F-06.1
-    status: pendente
+    status: concluida
     objetivo: "Registrar em CONVENCOES.md e LACUNAS.md o SQL cru para FTS5 e a regra de texto do usuario nunca concatenado em SQL, com arquivo:linha."
     arquivos:
       cria: []
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/projeto.test.ts passa com a conferencia das duas citacoes."
     depende_de: ["T-05.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-06.02
     titulo: "README e verificacao visual"
     fase: F-06.1
@@ -73,7 +73,9 @@ teste_funcional: CONVENCOES.md tem a regra 'texto do usuario nunca concatenado e
 criterio_aceite: tests/projeto.test.ts passa com a conferencia das duas citacoes.
 depende_de: ["T-05.04"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial: projeto 25 passed
 ```
 
 ---
