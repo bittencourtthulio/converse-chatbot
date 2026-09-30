@@ -41,7 +41,7 @@ tasks:
   - id: T-01.03
     titulo: "Modulo de cor e tokens sobre cor do agente"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Escrever contraste, cor do texto por luminancia, validacao de hex e amostras por trios RGB, e os tokens de texto sobre cor."
     arquivos:
       cria: ["src/lib/cor.ts", "tests/cor.test.ts"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/cor.test.ts e tests/tokens.test.ts passam."
     depende_de: ["T-01.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-01.04
     titulo: "Leitura de APP_URL publica"
     fase: F-01.2
@@ -137,7 +137,7 @@ teste_funcional: "corDoTextoSobre escolhe texto escuro sobre amarelo claro e cla
 criterio_aceite: "tests/cor.test.ts e tests/tokens.test.ts passam."
 depende_de: ["T-01.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: verde — 1143 passed
 ```
 
 ---

@@ -24,6 +24,9 @@
   --fg-muted: #475569;
   --fg-subtle: #566479;
   --fg-on-danger: #ffffff;
+  /* texto sobre a cor que o usuário escolhe para o chat (FT-06): igual nos dois temas */
+  --fg-em-cor-clara: #000000;
+  --fg-em-cor-escura: #ffffff;
 
   /* bordas */
   --border: #e2e8f0;
