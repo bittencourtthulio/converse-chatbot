@@ -11,7 +11,7 @@ tasks:
   - id: T-03.01
     titulo: "Rota GET config e OPTIONS"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Criar o handler fino do config com CORS pela lista de dominios e o OPTIONS."
     arquivos:
       cria: ["src/app/api/publico/agentes/[id]/config/route.ts", "src/app/api/publico/resposta.ts", "tests/publico-config-rota.test.ts", "docs/chat-embutido/sprint-03/sprint.md", "docs/chat-embutido/sprint-03/fases.md", "docs/chat-embutido/sprint-03/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/publico-config-rota.test.ts passa e a resposta nao contem instrucoes, modelo, dominios nem limite."
     depende_de: ["T-02.05"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-03.02
     titulo: "Rota POST conversar"
     fase: F-03.1
@@ -88,7 +88,7 @@ teste_funcional: "Com lista vazia o Access-Control-Allow-Origin e '*', com lista
 criterio_aceite: "tests/publico-config-rota.test.ts passa e a resposta nao contem instrucoes, modelo, dominios nem limite."
 depende_de: ["T-02.05"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: verde — 1234 passed
 ```
 
 ---
