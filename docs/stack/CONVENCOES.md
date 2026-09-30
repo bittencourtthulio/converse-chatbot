@@ -3,7 +3,7 @@ expx-schema: v1
 skill: stackx
 documento: convencoes
 gerado-em: 2026-09-30
-commit-referencia: 2e17786
+commit-referencia: 6a6892a
 projeto-legado: nao
 origem-do-documento: buildx-b4-ft-01
 ---
@@ -26,7 +26,7 @@ origem-do-documento: buildx-b4-ft-01
 | Linguagem e versão | TypeScript 5.9.3 (versão exata), modo estrito | `package.json:39`, `tsconfig.json` (`"strict": true`) |
 | Runtime e versão | Node.js 22 (o CI roda 22; o README pede 22 ou superior) | `.github/workflows/ci.yml:20`, `README.md` |
 | Gerenciador de pacotes | npm 10, lockfile v3 versionado | `package-lock.json:4` |
-| Framework principal e versão | Next.js 16.3.3, App Router, React 19.2.8 | `package.json:26-27` |
+| Framework principal e versão | Next.js 16.3.8 (subiu de 16.3.3 na FT-04, pela auditoria), App Router, React 19.2.8 | `package.json:27` |
 | Banco | SQLite em arquivo, Prisma 7.10.0, adaptador better-sqlite3 (12.11.1 no lock) | `package.json:21-22`, `package-lock.json:3895` |
 | Validação de esquema | zod 4.5.4 | `package.json:29` |
 
@@ -77,9 +77,9 @@ Todos executados numa cópia limpa do commit de referência (T-05.02) e verdes.
 | Eixo | Tratamento | Evidência |
 | ---- | ---------- | --------- |
 | HTTP de saída (OpenRouter, Telegram, YouTube) | servidor HTTP local de teste em porta livre, URL base por variável de ambiente (`OPENROUTER_BASE_URL`), nunca a rede real; o servidor de produção do teste de rotas também recebe a URL do servidor simulado | `tests/apoio/openrouter-falso.ts:90`, `src/lib/ambiente.ts:50`, `tests/openrouter.test.ts:22`, `tests/rotas.test.ts` (variável `falso`); Telegram e YouTube seguem `decidido_pelo_buildx` (FT-07, FT-08) |
-| HTTP de entrada | o servidor de produção sobe no teste de rotas | `tests/rotas.test.ts:59` |
+| HTTP de entrada | o servidor de produção sobe no teste de rotas; desde a FT-04 há um apoio único para subir `next start` numa porta, herdando banco e `STORAGE_DIR` do teste, com upload multipart real por `FormData` | `tests/rotas.test.ts:59`, `tests/apoio/servidor.ts:15` |
 | Relógio | injetado por parâmetro: `criarLimitador(relogio)`; o limite de login recebe o limitador | `src/lib/limite-de-uso.ts:46`, `src/servicos/autenticacao.ts:36-40`, `tests/limite-de-login.test.ts` |
-| Sistema de arquivos | diretório temporário por teste, apontado por `STORAGE_DIR`. Ainda não há armazenamento | `decidido_pelo_buildx`; passa a valer na FT-04 |
+| Sistema de arquivos | um diretório temporário por arquivo de teste, criado e apontado por `STORAGE_DIR` no setup e apagado ao fim; o armazenamento recebe a raiz por parâmetro e os testes o criam com `armazenamentoDeTeste()` | `tests/setup.ts:23-24`, `tests/setup.ts:40`, `src/lib/armazenamento.ts:30`, `tests/apoio/fontes.ts:8` |
 | Serviço externo | nenhum real: o OpenRouter é simulado, e o teste de conversa cancela e estoura prazo contra o servidor simulado; os testes do turno reutilizam o falso por `tests/apoio/chat.ts:12` (`cenarioDeChat`) e o teste de rota o sobe junto de `next start` | `tests/openrouter-conversar.test.ts`, `tests/apoio/openrouter-falso.ts:90`, `tests/chat.test.ts`, `tests/conversar-rota.test.ts` |
 
 **Regra de TDD:** teste antes da implementação, sempre. Uma task só termina com
@@ -130,7 +130,7 @@ importa `next/headers` (só `headers()`), o que a regra permite para `src/lib`.
 | Segredo em repouso | `src/lib/cripto.ts` (AES-256-GCM, formato `v1:`), chave lida só ao cifrar ou decifrar; o serviço só devolve máscara | `src/lib/cripto.ts:44`, `src/servicos/integracoes.ts:69`, `tests/rotas.test.ts` (bloco Integrações) |
 | Módulo de infraestrutura reutilizável | `src/lib/<nome>.ts` | `src/lib/limite-de-uso.ts` |
 | Handler HTTP | `src/app/api/<recurso>/route.ts`, fino: sessão por `usuarioAtual()` (401 em JSON, sem redirecionar), corpo, e a tradução do serviço para HTTP; `export const dynamic = 'force-dynamic'`; erro antes de gravar vira JSON com o status do `ErroDeAplicacao`. Salvar, testar e remover a chave e as ações de agente seguem como ações de servidor em `src/app/acoes.ts`, sem rota de API | `src/app/api/agentes/[id]/conversar/route.ts:10,30`, `src/app/sessao-servidor.ts:10`, `tests/conversar-rota.test.ts` |
-| Resposta em stream (SSE) | o serviço devolve um `AsyncGenerator` de eventos tipados e não conhece HTTP; a rota o converte com `fluxoDeEventos` (`event:` + `data:` em JSON, cancelar a leitura aborta o gerador) e cabeçalhos `text/event-stream`, `Cache-Control: no-store` e `X-Accel-Buffering: no`; o navegador lê com `lerEventos`, em módulo puro, sem `fetch`; o `fetch` mora só no componente cliente | `src/servicos/chat.ts:82`, `src/app/eventos-sse.ts:10,29`, `src/componentes/leitor-de-sse.ts:62`, `src/componentes/ChatDeTeste.tsx`, `tests/eventos-sse.test.ts`, `tests/leitor-de-sse.test.ts` |
+| Resposta em stream (SSE) | o serviço devolve um `AsyncGenerator` de eventos tipados e não conhece HTTP; a rota o converte com `fluxoDeEventos` (`event:` + `data:` em JSON, cancelar a leitura aborta o gerador) e cabeçalhos `text/event-stream`, `Cache-Control: no-store` e `X-Accel-Buffering: no`; o navegador lê com `lerEventos`, em módulo puro, sem `fetch`; o `fetch` mora só em componente cliente de `src/componentes` (`'use client'`: o de conversa e, desde a FT-04, os da aba Conhecimento) | `src/servicos/chat.ts:82`, `src/app/eventos-sse.ts:10,29`, `src/componentes/leitor-de-sse.ts:62`, `src/componentes/ChatDeTeste.tsx`, `tests/eventos-sse.test.ts`, `tests/leitor-de-sse.test.ts` |
 | Texto de origem não confiável na tela | analisador puro para uma árvore mínima (parágrafo, lista, código, negrito, link http/https) e componente que a vira em elementos React; nunca `dangerouslySetInnerHTML` (o único uso é o script constante do tema em `src/app/layout.tsx`) | `src/componentes/texto-seguro.ts:59`, `src/componentes/TextoDoModelo.tsx`, `tests/texto-seguro.test.tsx` |
 | Lógica de tela sem navegador | estado como reducer puro e regras de teclado em módulo próprio; o componente só liga ao DOM e à rede (o ambiente de teste é `node`, sem jsdom) | `src/componentes/estado-da-conversa.ts:68`, `tests/estado-da-conversa.test.ts` |
 | Ação de formulário | `src/app/acoes.ts` (um arquivo para o sistema) | `src/app/acoes.ts:35` |
@@ -139,7 +139,11 @@ importa `next/headers` (só `headers()`), o que a regra permite para `src/lib`.
 | Item de menu | lista única em `src/componentes/itens-de-menu.ts` | `src/componentes/itens-de-menu.ts:37` |
 | Aba da página de um agente | lista única em `src/componentes/abas-do-agente.ts`; a subrota mora em `src/app/(sistema)/agentes/[id]/<caminho>` | `src/componentes/abas-do-agente.ts:12` |
 | Cor, sombra, raio, fonte | tokens em `src/estilos/tokens.css`; nenhum valor literal fora dele | `tests/tokens.test.ts` |
-| Tarefa em segundo plano | `src/servicos/<assunto>-fila.ts`, iniciada por `src/instrumentation.ts` | `decidido_pelo_buildx` (ainda não existe; FT-04) |
+| Tarefa em segundo plano | `src/servicos/<assunto>-fila.ts`: estado no banco, reivindicação atômica por `updateMany` condicional, concorrência injetável, `processarPendentes()` aguardável para teste, relógio e armazenamento injetáveis, singleton em `globalThis`; iniciada por `src/instrumentation.ts` (só runtime Node, import dinâmico, sem esperar o processamento); `acordar()` só age depois de `iniciar()`, por isso o teste de serviço controla a fila | `src/servicos/fontes-fila.ts:53`, `src/servicos/fontes-fila.ts:214`, `src/instrumentation.ts:6`, `tests/fontes-fila-execucao.test.ts` |
+| Armazenamento de arquivos | `src/lib/armazenamento.ts`: `criarArmazenamento(raiz)` grava em `<raiz>/fontes/<agenteId>/<fonteId>/original`; só ids gerados pelo servidor entram no caminho (alfabeto fechado) e o caminho final é conferido dentro da raiz; sem import com alias `@/` (a seed o usa); a raiz do ambiente vem de `ambiente.storageDir`, e o `path.resolve` de tempo de execução leva `turbopackIgnore` para o build não rastrear o projeto inteiro | `src/lib/armazenamento.ts:9`, `src/lib/armazenamento.ts:10`, `src/lib/armazenamento.ts:30`, `src/lib/ambiente.ts:69`, `src/lib/ambiente.ts:73` |
+| Extração de texto de arquivo | adaptador por formato em `src/lib/extracao/`, atrás de uma fachada `extrairTexto` que limita texto e prazo e converte qualquer exceção de biblioteca em `ErroDeAplicacao` sem repassar a mensagem dela; conferência do conteúdo real em `validarConteudo`; o ZIP do DOCX é lido à mão e descompactado com teto | `src/lib/extracao/index.ts:51`, `src/lib/extracao/index.ts:45`, `src/lib/extracao/zip.ts:31` |
+| Upload multipart | handler fino: sessão, tipo de conteúdo (415), teto por `Content-Length` antes de ler o corpo (413) e conferência do tamanho real depois; um resultado por arquivo vem do serviço; no navegador, um `XMLHttpRequest` por arquivo dá progresso | `src/app/api/agentes/[id]/fontes/route.ts:26`, `src/app/api/agentes/[id]/fontes/route.ts:35`, `src/app/api/agentes/[id]/fontes/route.ts:44`, `src/componentes/enviar-arquivo.ts:34` |
+| Opção de adicionar fonte | lista única em `src/componentes/opcoes-de-fonte.ts` e o painel de cada opção em `PAINEIS` de `AdicionarFontes`; a FT-08 acrescenta vídeo nos dois | `src/componentes/opcoes-de-fonte.ts:13`, `src/componentes/AdicionarFontes.tsx:17` |
 
 **Evidência:** `eslint.config.mjs`, `tests/camadas.test.ts`, estrutura de `src/`.
 
@@ -169,7 +173,7 @@ senha, token, chave de API, corpo de mensagem de visitante, e-mail completo.
 
 ### Configuração e segredo
 Variável de ambiente da aplicação lida em `src/lib/ambiente.ts`; obrigatória ausente
-falha no start (L20); opcional tem padrão (`APP_NAME`, `TRUST_PROXY`, `OPENROUTER_BASE_URL`, `APP_URL`, `MAX_TOKENS_RESPOSTA`, esta em `src/lib/ambiente.ts:60`); `ENCRYPTION_KEY` é lida por getter e só validada quando um segredo é cifrado ou decifrado (`src/lib/ambiente.ts:45`, `src/lib/cripto.ts:29`). Exceções
+falha no start (L20); opcional tem padrão (`APP_NAME`, `TRUST_PROXY`, `OPENROUTER_BASE_URL`, `APP_URL`, `MAX_TOKENS_RESPOSTA`, esta em `src/lib/ambiente.ts:60`, e, desde a FT-04, `STORAGE_DIR` em `src/lib/ambiente.ts:69` e `MAX_UPLOAD_MB` em `src/lib/ambiente.ts:76`); `ENCRYPTION_KEY` é lida por getter e só validada quando um segredo é cifrado ou decifrado (`src/lib/ambiente.ts:45`, `src/lib/cripto.ts:29`). Exceções
 declaradas: `DATABASE_URL` é lida também por `src/lib/prisma.ts:7`, `prisma/seed.ts:5` e
 `prisma.config.ts` (o Prisma constrói a conexão fora do resto da aplicação), e
 `NODE_ENV` pela seed (`prisma/seed.ts:28`). Segredo só em variável de ambiente,
@@ -244,6 +248,7 @@ Nenhum.
 | 2026-09-30 | d344de3 | conversão da FT-01: `decidido_pelo_buildx` virou evidência ou achado; regra de lint das camadas, limite de uso, cabeçalhos, tokens e CI incluídos |
 | 2026-09-30 | 0e0fda1 | FT-02: regras de HTTP de saída simulado, adaptador em `src/lib`, segredo cifrado e migração aditiva verificada passam a ter evidência; lacunas 5 (parte HTTP) e 9 resolvidas |
 | 2026-09-30 | 2e17786 | FT-03: primeiro handler em `src/app/api` e primeiro uso de stream (lacuna 7 resolvida); leitura de SSE do navegador, texto seguro e reducer de tela; `MAX_TOKENS_RESPOSTA`; log do turno de conversa |
+| 2026-09-30 | 6a6892a | FT-04: primeiro uso de `src/instrumentation.ts`, de `STORAGE_DIR` e de tarefa em segundo plano (lacunas 5 e 8 resolvidas); adaptador de extração, armazenamento e upload multipart viram regras; `MAX_UPLOAD_MB`; Next 16.3.8 |
 ---
 
 <!-- Lacunas: docs/stack/LACUNAS.md -->

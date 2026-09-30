@@ -41,18 +41,18 @@ tasks:
   - id: T-07.03
     titulo: "Convencoes e lacunas com a evidencia nova"
     fase: F-07.1
-    status: em_andamento
+    status: concluida
     objetivo: "Converter as lacunas 5 e 8 e o armazenamento em regras com arquivo e linha."
     arquivos:
       cria: []
-      altera: ["docs/stack/CONVENCOES.md", "docs/stack/LACUNAS.md"]
+      altera: ["docs/stack/CONVENCOES.md", "docs/stack/LACUNAS.md", "tests/rotas.test.ts"]
     teste_integracao: "Cada evidencia citada em CONVENCOES.md aponta para arquivo e linha existentes."
     teste_funcional: "A linha de tarefa em segundo plano cita src/servicos/fontes-fila.ts e src/instrumentation.ts, a de sistema de arquivos cita src/lib/armazenamento.ts e tests/setup.ts, e as lacunas 5 e 8 aparecem resolvidas."
     criterio_aceite: "grep das linhas citadas confirma cada referencia e o commit-referencia e atualizado."
     depende_de: ["T-07.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-07.04
     titulo: "Fechamento no laco do buildx"
     fase: F-07.2
@@ -120,13 +120,15 @@ titulo: Convencoes e lacunas com a evidencia nova
 objetivo: Converter as lacunas 5 e 8 e o armazenamento em regras com arquivo e linha.
 arquivos:
   cria: []
-  altera: ["docs/stack/CONVENCOES.md", "docs/stack/LACUNAS.md"]
+  altera: ["docs/stack/CONVENCOES.md", "docs/stack/LACUNAS.md", "tests/rotas.test.ts"]
 teste_integracao: Cada evidencia citada em CONVENCOES.md aponta para arquivo e linha existentes.
 teste_funcional: A linha de tarefa em segundo plano cita src/servicos/fontes-fila.ts e src/instrumentation.ts, a de sistema de arquivos cita src/lib/armazenamento.ts e tests/setup.ts, e as lacunas 5 e 8 aparecem resolvidas.
 criterio_aceite: grep das linhas citadas confirma cada referencia e o commit-referencia e atualizado.
 depende_de: ["T-07.02"]
 paralelizavel: false
-status: em_andamento
+status: concluida
+concluida_em: 2026-09-30
+suite: 890 passed 890, 0 failed
 ```
 
 ---
