@@ -26,7 +26,7 @@ tasks:
   - id: T-03.02
     titulo: "Conferencia do conteudo real"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Conferir assinatura de PDF, decodificar texto com BOM e fallback Latin-1 e validar JSON."
     arquivos:
       cria: ["src/lib/extracao/conteudo.ts", "tests/extracao-conteudo.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/extracao-conteudo.test.ts passa."
     depende_de: ["T-01.03", "T-01.04", "T-03.01"]
     paralelizavel: true
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-03.03
     titulo: "Conferencia do ZIP do DOCX"
     fase: F-03.1
@@ -182,7 +182,9 @@ teste_funcional: Bytes UTF-8 com BOM viram texto sem o BOM, bytes Latin-1 invali
 criterio_aceite: tests/extracao-conteudo.test.ts passa.
 depende_de: ["T-01.03", "T-01.04", "T-03.01"]
 paralelizavel: true
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 692 passed, 0 failed
 ```
 
 ---
