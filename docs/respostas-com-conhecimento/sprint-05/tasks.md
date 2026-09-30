@@ -11,7 +11,7 @@ tasks:
   - id: T-05.01
     titulo: "Referencias [n] no texto do modelo"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar o no referencia ao analisador e ao renderizador seguro, so para numeros presentes na lista."
     arquivos:
       cria: []
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/texto-seguro.test.tsx passa com os casos antigos e os novos."
     depende_de: ["T-04.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-05.02
     titulo: "Estado da conversa com fontes"
     fase: F-05.1
@@ -88,7 +88,9 @@ teste_funcional: analisarTexto('veja [1] e [7]', {referencias:[1]}) marca so o 1
 criterio_aceite: tests/texto-seguro.test.tsx passa com os casos antigos e os novos.
 depende_de: ["T-04.01"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial: texto-seguro 26 passed
 ```
 
 ---

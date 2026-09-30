@@ -8,6 +8,8 @@ export type Inline =
   | { tipo: 'negrito'; filhos: Inline[] }
   | { tipo: 'codigo'; texto: string }
   | { tipo: 'link'; href: string; filhos: Inline[] }
+  /** Referência [n] a uma fonte da resposta (FT-05): só para números que o chamador conhece. */
+  | { tipo: 'referencia'; n: number }
 
 export type Bloco =
   | { tipo: 'paragrafo'; filhos: Inline[] }
@@ -24,9 +26,15 @@ export function urlSegura(href: string): string | null {
   }
 }
 
-const INLINE = /`([^`\n]+)`|\*\*([^*\n]+)\*\*|\[([^\]\n]+)\]\(([^)\s]+)\)/g
+// O link `[texto](url)` vem antes da referência `[n]`: `[1](https://...)` é link.
+const INLINE = /`([^`\n]+)`|\*\*([^*\n]+)\*\*|\[([^\]\n]+)\]\(([^)\s]+)\)|\[(\d{1,2})\]/g
 
-export function analisarInline(texto: string): Inline[] {
+export interface OpcoesDeAnalise {
+  /** Os números [n] que viram referência; os demais ficam como texto. */
+  referencias?: number[]
+}
+
+export function analisarInline(texto: string, opcoes: OpcoesDeAnalise = {}): Inline[] {
   const saida: Inline[] = []
   let ultimo = 0
   const acrescentarTexto = (t: string) => {
@@ -39,11 +47,15 @@ export function analisarInline(texto: string): Inline[] {
     acrescentarTexto(texto.slice(ultimo, m.index))
     ultimo = m.index + m[0].length
     if (m[1] !== undefined) saida.push({ tipo: 'codigo', texto: m[1] })
-    else if (m[2] !== undefined) saida.push({ tipo: 'negrito', filhos: analisarInline(m[2]) })
-    else {
+    else if (m[2] !== undefined) saida.push({ tipo: 'negrito', filhos: analisarInline(m[2], opcoes) })
+    else if (m[5] !== undefined) {
+      const n = Number(m[5])
+      if (opcoes.referencias?.includes(n)) saida.push({ tipo: 'referencia', n })
+      else acrescentarTexto(m[0])
+    } else {
       const href = urlSegura(m[4]!)
       // Esquema que não é http nem https não vira link: fica o texto original.
-      if (href) saida.push({ tipo: 'link', href, filhos: analisarInline(m[3]!) })
+      if (href) saida.push({ tipo: 'link', href, filhos: analisarInline(m[3]!, opcoes) })
       else acrescentarTexto(m[0])
     }
   }
@@ -56,13 +68,13 @@ const CERCA = /^\s{0,3}```\s*([\w+-]*)\s*$/
 const TITULO = /^\s{0,3}#{1,6}\s+(.*)$/
 
 /** Blocos do texto. Uma cerca de código aberta e não fechada vai até o fim (streaming). */
-export function analisarTexto(texto: string): Bloco[] {
+export function analisarTexto(texto: string, opcoes: OpcoesDeAnalise = {}): Bloco[] {
   const linhas = texto.replace(/\r\n?/g, '\n').split('\n')
   const blocos: Bloco[] = []
   let paragrafo: string[] = []
   const fecharParagrafo = () => {
     if (paragrafo.length > 0) {
-      blocos.push({ tipo: 'paragrafo', filhos: analisarInline(paragrafo.join('\n')) })
+      blocos.push({ tipo: 'paragrafo', filhos: analisarInline(paragrafo.join('\n'), opcoes) })
       paragrafo = []
     }
   }
@@ -93,7 +105,7 @@ export function analisarTexto(texto: string): Bloco[] {
       for (; i < linhas.length; i += 1) {
         const proximo = ITEM_DE_LISTA.exec(linhas[i]!)
         if (!proximo || (proximo[2] !== undefined) !== ordenada) break
-        itens.push(analisarInline(proximo[3]!))
+        itens.push(analisarInline(proximo[3]!, opcoes))
       }
       i -= 1
       blocos.push({ tipo: 'lista', ordenada, itens })
@@ -102,7 +114,7 @@ export function analisarTexto(texto: string): Bloco[] {
     const titulo = TITULO.exec(linha)
     if (titulo) {
       fecharParagrafo()
-      blocos.push({ tipo: 'paragrafo', filhos: [{ tipo: 'negrito', filhos: analisarInline(titulo[1]!) }] })
+      blocos.push({ tipo: 'paragrafo', filhos: [{ tipo: 'negrito', filhos: analisarInline(titulo[1]!, opcoes) }] })
       continue
     }
     paragrafo.push(linha)

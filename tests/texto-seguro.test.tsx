@@ -73,6 +73,60 @@ describe('inline', () => {
   })
 })
 
+describe('referências [n] às fontes (FT-05)', () => {
+  const comRef = (texto: string, referencias: number[]) =>
+    renderToStaticMarkup(<TextoDoModelo texto={texto} referencias={referencias} />)
+
+  it('[1] e [2] da lista viram botões de referência com rótulo acessível', () => {
+    const saida = comRef('Troca em sete dias [1] e frete grátis [2].', [1, 2])
+    expect(saida).toContain(
+      '<button type="button" class="referencia-de-fonte" data-referencia="1" aria-label="Ver a fonte do trecho [1]">[1]</button>',
+    )
+    expect(saida).toContain('data-referencia="2"')
+    expect(saida).toContain('Troca em sete dias ')
+    expect(saida).toContain(' e frete grátis ')
+  })
+
+  it('número fora da lista fica texto comum', () => {
+    const saida = comRef('veja [1] e [7]', [1])
+    expect(saida).toContain('data-referencia="1"')
+    expect(saida).not.toContain('data-referencia="7"')
+    expect(saida).toContain(' e [7]')
+  })
+
+  it('sem a lista nada muda em relação à FT-03', () => {
+    expect(html('veja [1] e [2]')).toBe('<div class="texto-do-modelo"><p>veja [1] e [2]</p></div>')
+    expect(comRef('veja [1]', [])).not.toContain('referencia-de-fonte')
+  })
+
+  it('[1](https://x.com) continua sendo link, não referência', () => {
+    const saida = comRef('[1](https://x.com/a)', [1])
+    expect(saida).toContain('<a href="https://x.com/a"')
+    expect(saida).not.toContain('referencia-de-fonte')
+  })
+
+  it('a referência dentro de negrito e de lista funciona, e dentro de código fica código', () => {
+    expect(comRef('**atenção [1]**', [1])).toContain('<strong>atenção <button')
+    expect(comRef('- item [2]', [2])).toContain('<li>item <button')
+    const codigo = comRef('`a[1]`', [1])
+    expect(codigo).toContain('<code>a[1]</code>')
+    expect(codigo).not.toContain('referencia-de-fonte')
+  })
+
+  it('o número é o do texto, nunca HTML: [1] com lixo em volta continua escapado', () => {
+    const saida = comRef('<b>[1]</b>', [1])
+    expect(saida).toContain('&lt;b&gt;')
+    expect(saida).not.toContain('<b>')
+  })
+
+  it('analisarTexto entrega o nó referencia só para números da lista', () => {
+    const [bloco] = analisarTexto('a [3] b [4]', { referencias: [3] })
+    expect(bloco).toMatchObject({ tipo: 'paragrafo' })
+    const filhos = (bloco as { filhos: Array<{ tipo: string }> }).filhos
+    expect(filhos.map((f) => f.tipo)).toEqual(['texto', 'referencia', 'texto'])
+  })
+})
+
 describe('HTML do modelo é texto', () => {
   it('<script> e <img onerror> saem escapados', () => {
     const saida = html('<script>alert(1)</script>\n\n<img src=x onerror="alert(2)">')
