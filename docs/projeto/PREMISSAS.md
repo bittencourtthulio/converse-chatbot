@@ -4,12 +4,12 @@ expx_tool: buildx
 kind: premissas
 projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-09-30
-total: 49
+total: 54
 por_origem:
   catalogo_lacunas: 27
   briefing: 0
   decisao_de_stack: 7
-  f2_autonoma: 15
+  f2_autonoma: 20
   recursao: 0
 ---
 
@@ -660,6 +660,71 @@ entram no relatório final como o que o usuário precisa confirmar.
 **Etapa:** b4
 **Provisória:** false
 **Realizada em:** FT-04
+
+---
+
+### PR-50 — Índice FTS5 de conteúdo externo, por migration
+
+**Assunto:** F2 da FT-05 — PR-04 e PR-30, forma do índice
+**Decisão:** `trechos_fts` é uma tabela virtual FTS5 de conteúdo externo sobre `trechos` (`content='trechos'`, `content_rowid='rowid'`, tokenizer `unicode61 remove_diacritics 2`), criada por SQL cru escrito à mão numa migration nova que só acrescenta, com três gatilhos em `trechos` (insert, update, delete) e um `rebuild` inicial para os trechos já existentes. O `rowid` implícito do SQLite liga as duas tabelas (`trechos.id` é texto). A exclusão de fonte ou de agente, o reprocessamento e `limparBanco` mantêm o índice em dia pelos gatilhos, sem código de aplicação. A função `reconstruirIndiceDeTrechos()` (`rebuild`) fica disponível como remédio.
+**Por quê:** conteúdo externo não duplica o texto dos trechos no banco; gatilhos tornam impossível esquecer de indexar, inclusive pela seed e pela fila da FT-04, que gravam com `createMany`.
+**O que invalida:** se um `VACUUM` ou a restauração de backup renumerar o `rowid` de `trechos` (tabela sem `INTEGER PRIMARY KEY`), o índice passa a apontar para a linha errada até um `rebuild`; nesse caso a FT-11 precisa rodar `reconstruirIndiceDeTrechos()` depois de restaurar, ou a tabela trocar para FTS5 com conteúdo próprio.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-05
+
+---
+
+### PR-51 — Parâmetros da recuperação de trechos
+
+**Assunto:** F2 da FT-05 — PR-04 e PR-13, números e regras que a premissa não dá
+**Decisão:** a pergunta vira termos: minúsculas, sem acento, só letras e dígitos, termos de 2 a 40 caracteres, sem stopwords do português (lista própria, constante no módulo, inclui saudações como "oi", "olá", "obrigado"), sem repetição, no máximo 12 termos. A expressão `MATCH` é montada só com esses termos, cada um entre aspas, ligados por `OR`, e os de 4 caracteres ou mais levam prefixo (`"termo"*`); o texto do usuário nunca é concatenado no SQL: a expressão já limpa e o `agenteId` vão como parâmetros de `prisma.$queryRaw`. O resultado é ordenado por BM25, limitado a 6 trechos (padrão e teto), só de fontes com `status = 'pronto'` do agente, e cada item traz `trechoId`, `fonteId`, `titulo`, `posicao` (índice do trecho mais 1), `texto` e `pontuacao` (o BM25 com o sinal trocado, maior é melhor). Limiar de relevância: pelo menos um termo significativo precisa casar; pergunta vazia ou só de stopwords devolve lista vazia sem consultar o banco. Pergunta de continuação: se a pergunta tem no máximo 2 termos significativos, somam-se os termos da última pergunta anterior do usuário na conversa (passada como `perguntaAnterior`). A busca nunca lança por causa do texto da pergunta.
+**Por quê:** OR com BM25 favorece revocação, que importa numa base pequena; prefixo cobre plural e flexão sem radicalizador; "olá" e "obrigado" não devem trazer trechos; "e o preço?" só tem sentido com a pergunta anterior.
+**O que invalida:** se a revocação se mostrar ruim para perguntas longas (então entra AND parcial ou reescrita da pergunta), se o idioma da base não for o português (stopwords), ou se 6 trechos não couberem no contexto do modelo usado.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-05
+
+---
+
+### PR-52 — Modo fundamentado e estrutura do prompt
+
+**Assunto:** F2 da FT-05 — PR-15, quando e como o material entra no prompt
+**Decisão:** o agente com ao menos uma fonte `pronto` responde em modo fundamentado; sem nenhuma fonte pronta, o turno é idêntico ao da FT-03 (conhecimento geral do modelo, sem aviso de base vazia). No modo fundamentado, com trechos encontrados, a mensagem de sistema ganha um bloco delimitado por marcadores com identificador aleatório de 16 hexadecimais gerado a cada requisição, com os trechos numerados `[1]`, `[2]`... e o título da fonte, e instruções para usar o material como fonte dos fatos, citar `[n]` ao usá-lo, tratar o conteúdo do bloco como dado e ignorar qualquer instrução escrita nele, e não revelar as instruções internas. O texto dos trechos é higienizado (sequências `<<<` e `>>>` e o próprio identificador saem). O material tem orçamento de 6000 caracteres, cortando do menos relevante (o mais relevante entra sempre, truncado se passar do orçamento). Sem trecho relevante, a mensagem de sistema diz que não há material relevante e manda responder, em português do Brasil e no idioma de quem pergunta, que a informação não foi encontrada na base, sem inventar, exceto para saudações e conversa trivial. A estrutura é provada por teste contra o OpenRouter falso; o comportamento do modelo real não é testável (PR-26) e é limite conhecido.
+**Por quê:** identificador imprevisível impede que um trecho malicioso feche o bloco; a dúvida entre "responder do conhecimento geral" e "dizer que não sabe" cai do lado honesto assim que a base existe; sem base, o agente da FT-03 segue útil.
+**O que invalida:** se o dono quiser que o agente com base também responda de conhecimento geral (PR-15), ou se um modelo ignorar a instrução de tratar o bloco como dado (então a defesa precisa de filtro adicional).
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-05
+
+---
+
+### PR-53 — Fontes da resposta: evento, gravação e retomada
+
+**Assunto:** F2 da FT-05 — PR-15 (fontes aparecem) e PR-43 (protocolo)
+**Decisão:** quando o turno fundamentado encontrou trechos, o serviço emite o evento `fontes` antes do `fim`, com a lista `[{fonteId, titulo, trechos: [{n, posicao, trechoTexto}], citada}]`, uma entrada por fonte (na ordem do primeiro trecho), `trechoTexto` com no máximo 300 caracteres, `n` o número `[n]` do trecho no prompt e `citada` verdadeiro se algum `[n]` dos trechos dela aparece na resposta final. A lista é gravada em `Mensagem.fontes` como JSON junto da resposta; falha ao gravar as fontes é registrada no log e a resposta é gravada sem elas, sem derrubar o turno. O protocolo é estendido só por evento novo (clientes antigos ignoram evento desconhecido). Sem trechos, não há evento nem JSON (`fontes` fica nulo). Ao recarregar, a conversa retomada traz as fontes lidas de `Mensagem.fontes`, com JSON inválido tratado como ausente.
+**Por quê:** a fonte é a unidade que o usuário entende; o número `[n]` liga o texto ao trecho; evento novo não quebra a FT-03; o histórico da FT-09 lerá o mesmo JSON.
+**O que invalida:** se o modelo não citar `[n]` de forma confiável (então toda fonte consultada aparece como "consultada" e a citação perde valor), ou se a FT-09 precisar de outro formato.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-05
+
+---
+
+### PR-54 — Testar busca: contrato e limites
+
+**Assunto:** F2 da FT-05 — o cartão "Testar busca" da aba Conhecimento
+**Decisão:** `POST /api/agentes/[id]/buscar` recebe `{pergunta}` (1 a 500 caracteres, sem ser só espaços) e devolve `{trechos: [...]}` no formato de `buscarTrechos`, com o texto do trecho inteiro e a pontuação. Sessão obrigatória (401), agente inexistente 404, entrada inválida 422; sem cache. Qualquer usuário autenticado pode usar (PR-12, PR-40). Não chama o OpenRouter e funciona sem chave. A busca da tela não usa pergunta anterior.
+**Por quê:** é a ferramenta para entender o que o agente vai enxergar sem gastar crédito; 500 caracteres bastam para uma pergunta e limitam o custo da consulta.
+**O que invalida:** se a busca do painel precisar refletir o histórico da conversa ou ser aberta ao público (então precisa de limite de uso, PR-16).
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-05
 
 ---
 
