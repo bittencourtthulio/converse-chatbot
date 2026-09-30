@@ -55,7 +55,7 @@ tasks:
   - id: T-01.03
     titulo: "Servidor OpenRouter simulado: rotas e erros"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Servidor HTTP local em porta livre com /models, /key, /auth/key e /chat/completions sem stream, erros e latencia configuraveis."
     arquivos:
       cria: ["tests/apoio/openrouter-falso.ts", "tests/openrouter-falso.test.ts"]
@@ -65,8 +65,8 @@ tasks:
     criterio_aceite: "O teste passa e fechar() libera a porta (nova conexao recusada)."
     depende_de: [T-01.01]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-01.04
     titulo: "Servidor OpenRouter simulado: stream"
     fase: F-01.1
@@ -128,7 +128,7 @@ flowchart LR
   classDef critico stroke-width:3px
   class T_01_01 concluida
   class T_01_02 concluida
-  class T_01_03 pendente
+  class T_01_03 concluida
   class T_01_04 pendente
 ```
 
@@ -188,7 +188,10 @@ teste_funcional: iniciarOpenRouterFalso devolve url de porta livre, /models list
 criterio_aceite: O teste passa e fechar() libera a porta (nova conexao recusada).
 depende_de: [T-01.01]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: openrouter-falso 14 passed; tsc e lint 0
 ```
 
 ---
