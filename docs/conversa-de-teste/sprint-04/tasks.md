@@ -25,7 +25,7 @@ tasks:
   - id: T-04.01
     titulo: "Formatacao dos eventos SSE"
     fase: F-04.1
-    status: pendente
+    status: concluida
     objetivo: "Converter os eventos do servico em texto SSE (trecho, fim, erro) na camada de apresentacao."
     arquivos:
       cria: ["src/app/eventos-sse.ts", "tests/eventos-sse.test.ts"]
@@ -35,8 +35,8 @@ tasks:
     criterio_aceite: "O teste passa e o arquivo importa next apenas se necessario (nenhum import de next e esperado)."
     depende_de: [T-03.02]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-04.02
     titulo: "Rota POST /api/agentes/[id]/conversar"
     fase: F-04.1
@@ -93,7 +93,7 @@ flowchart LR
   classDef concluida fill:#DFF0D8,stroke:#4A6B3A,color:#1A1815
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
-  class T_04_01 pendente
+  class T_04_01 concluida
   class T_04_02 pendente
 ```
 
@@ -113,7 +113,10 @@ teste_funcional: trecho vira 'event: trecho' com data JSON de texto, fim vira 'e
 criterio_aceite: O teste passa e o arquivo importa next apenas se necessario (nenhum import de next e esperado).
 depende_de: [T-03.02]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: verde
+resultado: eventos-sse 8 testes; suite 502 verdes; tsc e lint 0
 ```
 
 ---
