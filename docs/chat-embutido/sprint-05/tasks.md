@@ -11,7 +11,7 @@ tasks:
   - id: T-05.01
     titulo: "Widget: montagem, config e idempotencia"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Escrever o widget que acha o proprio script, busca o config, monta botao e painel em Shadow DOM e nao faz nada se inativo."
     arquivos:
       cria: ["src/widget/widget.js", "tests/widget-montagem.test.ts", "docs/chat-embutido/sprint-05/sprint.md", "docs/chat-embutido/sprint-05/fases.md", "docs/chat-embutido/sprint-05/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/widget-montagem.test.ts passa com ao menos 10 casos."
     depende_de: ["T-04.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-05.02
     titulo: "Widget: abrir, fechar, foco e postMessage"
     fase: F-05.1
@@ -30,7 +30,7 @@ tasks:
     objetivo: "Acrescentar abertura com iframe preguicoso, Esc, foco, tela estreita, movimento reduzido e postMessage com origin estrito."
     arquivos:
       cria: ["tests/widget-interacao.test.ts"]
-      altera: ["src/widget/widget.js"]
+      altera: ["src/widget/widget.js", "tests/apoio/dom.ts"]
     teste_integracao: "No happy-dom o iframe so existe depois do primeiro clique, aponta para origem-da-plataforma/embed/id e fechar devolve o foco ao botao."
     teste_funcional: "Esc fecha, mensagem fechar com origin da plataforma fecha e com origin de outro site e ignorada, abrir() e fechar() de window.Converse funcionam e abaixo de 480px o painel ocupa a tela toda."
     criterio_aceite: "tests/widget-interacao.test.ts passa com ao menos 10 casos."
@@ -73,7 +73,7 @@ teste_funcional: "Com config 404 nada e acrescentado e o console nao recebe erro
 criterio_aceite: "tests/widget-montagem.test.ts passa com ao menos 10 casos."
 depende_de: ["T-04.04"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: verde — 1385 passed
 ```
 
 ---
@@ -84,7 +84,7 @@ titulo: "Widget: abrir, fechar, foco e postMessage"
 objetivo: "Acrescentar abertura com iframe preguicoso, Esc, foco, tela estreita, movimento reduzido e postMessage com origin estrito."
 arquivos:
   cria: ["tests/widget-interacao.test.ts"]
-  altera: ["src/widget/widget.js"]
+  altera: ["src/widget/widget.js", "tests/apoio/dom.ts"]
 teste_integracao: "No happy-dom o iframe so existe depois do primeiro clique, aponta para origem-da-plataforma/embed/id e fechar devolve o foco ao botao."
 teste_funcional: "Esc fecha, mensagem fechar com origin da plataforma fecha e com origin de outro site e ignorada, abrir() e fechar() de window.Converse funcionam e abaixo de 480px o painel ocupa a tela toda."
 criterio_aceite: "tests/widget-interacao.test.ts passa com ao menos 10 casos."
