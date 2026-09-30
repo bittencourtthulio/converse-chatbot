@@ -7,6 +7,8 @@ export const LIMITE_DA_MENSAGEM = 4000
 /** A partir daqui o contador de caracteres aparece. */
 export const LIMITE_PARA_AVISO = 3500
 
+import type { FonteDaResposta } from '@/componentes/leitor-de-sse'
+
 export type EstadoDaBolha = 'completa' | 'digitando' | 'interrompida' | 'erro'
 
 export interface Bolha {
@@ -14,6 +16,8 @@ export interface Bolha {
   papel: 'user' | 'assistant'
   texto: string
   estado: EstadoDaBolha
+  /** De onde veio a resposta do agente (FT-05); só em resposta completa. */
+  fontes?: FonteDaResposta[]
 }
 
 export interface ErroDaConversa {
@@ -33,6 +37,7 @@ export type AcaoDaConversa =
   | { tipo: 'enviar'; texto: string; idDoUsuario: string; idDoAgente: string }
   | { tipo: 'conversa'; conversaId: string }
   | { tipo: 'trecho'; texto: string }
+  | { tipo: 'fontes'; fontes: FonteDaResposta[] }
   | { tipo: 'fim'; conversaId: string; mensagemId: string }
   | { tipo: 'erro'; erro: ErroDaConversa }
   /** O servidor recusou o envio antes de gravar (422, 404, 409): a pergunta não existe lá. */
@@ -42,7 +47,7 @@ export type AcaoDaConversa =
 
 export function estadoInicial(retomada?: {
   conversaId: string
-  mensagens: Array<{ id: string; papel: 'user' | 'assistant'; conteudo: string }>
+  mensagens: Array<{ id: string; papel: 'user' | 'assistant'; conteudo: string; fontes?: FonteDaResposta[] }>
 }): EstadoDaConversa {
   return {
     conversaId: retomada?.conversaId ?? null,
@@ -51,6 +56,7 @@ export function estadoInicial(retomada?: {
       papel: m.papel,
       texto: m.conteudo,
       estado: 'completa',
+      ...(m.fontes && m.fontes.length > 0 && { fontes: m.fontes }),
     })),
     transmitindo: false,
     erro: null,
@@ -62,7 +68,9 @@ function encerrarBolhaDoAgente(bolhas: Bolha[], estado: EstadoDaBolha): Bolha[] 
   const ultima = bolhas.at(-1)
   if (!ultima || ultima.papel !== 'assistant' || ultima.estado !== 'digitando') return bolhas
   if (ultima.texto === '') return bolhas.slice(0, -1)
-  return [...bolhas.slice(0, -1), { ...ultima, estado }]
+  // Resposta incompleta não mostra fontes: elas só valem para a resposta inteira.
+  const { fontes: _fontes, ...semFontes } = ultima
+  return [...bolhas.slice(0, -1), { ...semFontes, estado }]
 }
 
 export function reduzir(estado: EstadoDaConversa, acao: AcaoDaConversa): EstadoDaConversa {
@@ -87,6 +95,11 @@ export function reduzir(estado: EstadoDaConversa, acao: AcaoDaConversa): EstadoD
         ...estado,
         bolhas: [...estado.bolhas.slice(0, -1), { ...ultima, texto: ultima.texto + acao.texto }],
       }
+    }
+    case 'fontes': {
+      const ultima = estado.bolhas.at(-1)
+      if (!estado.transmitindo || !ultima || ultima.estado !== 'digitando') return estado
+      return { ...estado, bolhas: [...estado.bolhas.slice(0, -1), { ...ultima, fontes: acao.fontes }] }
     }
     case 'fim': {
       const ultima = estado.bolhas.at(-1)

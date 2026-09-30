@@ -26,7 +26,7 @@ tasks:
   - id: T-05.02
     titulo: "Estado da conversa com fontes"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Bolha.fontes opcional, acao fontes e retomada com fontes."
     arquivos:
       cria: []
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/estado-da-conversa.test.ts passa com os casos novos e os antigos."
     depende_de: ["T-05.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-05.03
     titulo: "Fontes da resposta na aba Testar"
     fase: F-05.2
@@ -107,7 +107,9 @@ teste_funcional: estadoInicial com retomada que traz fontes por mensagem as colo
 criterio_aceite: tests/estado-da-conversa.test.ts passa com os casos novos e os antigos.
 depende_de: ["T-05.01"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial: estado-da-conversa + chat-de-teste 37 passed
 ```
 
 ---

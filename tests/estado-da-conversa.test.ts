@@ -129,6 +129,52 @@ describe('reduzir', () => {
   })
 })
 
+const FONTES = [
+  { fonteId: 'f1', titulo: 'Política', citada: true, trechos: [{ n: 1, posicao: 1, trechoTexto: 'Troca em sete dias.' }] },
+]
+
+describe('fontes da resposta (FT-05)', () => {
+  it('a ação fontes durante a transmissão guarda as fontes na bolha do agente, e o fim as preserva', () => {
+    const durante = aplicar([enviar, { tipo: 'trecho', texto: 'Sete dias [1].' }, { tipo: 'fontes', fontes: FONTES }])
+    expect(durante.bolhas.at(-1)).toMatchObject({ estado: 'digitando', fontes: FONTES })
+    expect(durante.bolhas[0]!.fontes).toBeUndefined()
+
+    const fim = reduzir(durante, { tipo: 'fim', conversaId: 'c1', mensagemId: 'm1' })
+    expect(fim.bolhas.at(-1)).toMatchObject({ id: 'm1', estado: 'completa', fontes: FONTES })
+  })
+
+  it('fontes fora de uma transmissão é ignorada', () => {
+    expect(aplicar([{ tipo: 'fontes', fontes: FONTES }]).bolhas).toEqual([])
+  })
+
+  it('parar ou erro sem fim descarta as fontes da bolha incompleta', () => {
+    const base: AcaoDaConversa[] = [enviar, { tipo: 'trecho', texto: 'parcial' }, { tipo: 'fontes', fontes: FONTES }]
+    const parada = aplicar([...base, { tipo: 'parar' }])
+    expect(parada.bolhas.at(-1)).toMatchObject({ estado: 'interrompida', texto: 'parcial' })
+    expect('fontes' in parada.bolhas.at(-1)!).toBe(false)
+    const erro = aplicar([...base, { tipo: 'erro', erro: { codigo: 'x', mensagem: 'y' } }])
+    expect(erro.bolhas.at(-1)).toMatchObject({ estado: 'erro' })
+    expect('fontes' in erro.bolhas.at(-1)!).toBe(false)
+  })
+
+  it('estadoInicial com retomada que traz fontes as põe nas bolhas certas', () => {
+    const e = estadoInicial({
+      conversaId: 'c1',
+      mensagens: [
+        { id: 'm1', papel: 'user', conteudo: 'Prazo de troca?' },
+        { id: 'm2', papel: 'assistant', conteudo: 'Sete dias [1].', fontes: FONTES },
+        { id: 'm3', papel: 'assistant', conteudo: 'Sem fontes.' },
+      ],
+    })
+    expect(e.bolhas.map((b) => b.fontes)).toEqual([undefined, FONTES, undefined])
+    expect('fontes' in e.bolhas[2]!).toBe(false)
+  })
+
+  it('nova conversa zera as fontes junto com as bolhas', () => {
+    expect(aplicar([enviar, { tipo: 'fontes', fontes: FONTES }, { tipo: 'nova' }]).bolhas).toEqual([])
+  })
+})
+
 describe('campo de texto', () => {
   it('Enter envia; Shift+Enter não; Enter na composição de IME não', () => {
     expect(decidirTecla({ key: 'Enter', shiftKey: false })).toBe('enviar')
