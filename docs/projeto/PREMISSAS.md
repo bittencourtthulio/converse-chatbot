@@ -4,12 +4,12 @@ expx_tool: buildx
 kind: premissas
 projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-09-30
-total: 34
+total: 37
 por_origem:
   catalogo_lacunas: 27
   briefing: 0
   decisao_de_stack: 7
-  f2_autonoma: 0
+  f2_autonoma: 3
   recursao: 0
 ---
 
@@ -463,6 +463,45 @@ entram no relatório final como o que o usuário precisa confirmar.
 **O que invalida:** se a skill não estiver disponível em quem continuar o projeto; então vale o `PR-23` aplicado à mão.
 **Origem:** decisao_de_stack
 **Etapa:** b2
+**Provisória:** false
+**Realizada em:** FT-01
+
+---
+
+### PR-35 — Densidade padrão das features
+
+**Assunto:** F2 da FT-01 — densidade do planejamento
+**Decisão:** toda feature é planejada com densidade `padrao` e forma de construção `autonomo` (os sete eixos da F2 cobertos, sem ir atrás de caso extremo que ninguém mencionou).
+**Por quê:** nenhum artefato do projeto fixa a densidade; `padrao` é a cobertura normal, e o projeto já está em modo autônomo total (`docs/projeto/PROJETO.md`, "Modo escolhido").
+**O que invalida:** se o dono pedir cobertura mínima (`mvp`) ou aprofundada (`profundo`) em alguma feature.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-01
+
+---
+
+### PR-36 — Limites de tentativa de login e endereço do cliente
+
+**Assunto:** F2 da FT-01 — PR-16, parte do login
+**Decisão:** o login aceita 5 tentativas por minuto por combinação IP mais e-mail e 20 por minuto por IP, contando toda tentativa (certa ou errada), em memória do processo, com janela deslizante; passado o limite, a tela mostra "Muitas tentativas. Tente de novo em N segundos." O IP vem do primeiro valor de `X-Forwarded-For` só quando `TRUST_PROXY=1`; sem isso é o valor fixo `desconhecido`.
+**Por quê:** o PR-16 manda limitar o login sem dar números; estes são valores usuais para tela de equipe pequena. Confiar em `X-Forwarded-For` sem proxy permite forjar o IP e fugir do limite; com proxy e sem confiar, todos dividiriam um IP só.
+**O que invalida:** se rodar em mais de um processo (o limite deixa de ser global, ver PR-05) ou se a equipe legítima passar de 20 tentativas por minuto atrás de um mesmo IP.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-01
+
+---
+
+### PR-37 — Cabeçalhos de segurança sem política de conteúdo
+
+**Assunto:** F2 da FT-01 — L7 transporte e origem
+**Decisão:** toda resposta leva `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `X-Frame-Options: DENY` e `Permissions-Policy` negando câmera, microfone, geolocalização, pagamento e USB. A `Content-Security-Policy` fica para a FT-06, junto do `frame-ancestors` (PR-17), que também sobrescreve o `X-Frame-Options` na rota do chat.
+**Por quê:** os quatro cabeçalhos não quebram nada hoje; uma CSP escrita antes das telas existirem tende a ser frouxa ou a quebrar o Next.
+**O que invalida:** se a instalação exigir CSP desde já.
+**Origem:** f2_autonoma
+**Etapa:** b4
 **Provisória:** false
 **Realizada em:** FT-01
 
