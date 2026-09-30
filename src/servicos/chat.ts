@@ -19,7 +19,14 @@ import {
   obter as obterConversa,
   type Canal,
 } from '@/servicos/conversas'
-import { montarPrompt, LIMITE_DE_MENSAGENS_DO_HISTORICO } from '@/servicos/chat-prompt'
+import {
+  LIMITE_DE_MENSAGENS_DO_HISTORICO,
+  montarMaterialDeConsulta,
+  montarMaterialSemResultado,
+  montarPrompt,
+  novoMarcador,
+} from '@/servicos/chat-prompt'
+import { buscarTrechos } from '@/servicos/recuperacao'
 import {
   CODIGO_INESPERADO,
   erroSemChave,
@@ -73,6 +80,33 @@ function registrarErro(erro: unknown, contexto: { agenteId: string; conversaId?:
   return correlacao
 }
 
+/** Uma linha JSON, sem a pergunta nem o texto dos trechos (PR-42). */
+function registrarRecuperacao(agenteId: string, conversaId: string, trechos: number): void {
+  console.info(JSON.stringify({ evento: 'recuperacao', agenteId, conversaId, trechos }))
+}
+
+/**
+ * O material de consulta do turno: `undefined` sem fonte pronta (modo da FT-03);
+ * com fonte pronta, os trechos relevantes delimitados ou a instrução de dizer
+ * que a base não cobre a pergunta. A pergunta anterior do usuário ajuda as
+ * perguntas de continuação (PR-51). Erro da busca é erro do turno: responder
+ * como se a base estivesse vazia seria mentir.
+ */
+async function materialDaBase(
+  agenteId: string,
+  conversaId: string,
+  historico: Array<{ role: 'user' | 'assistant'; content: string }>,
+): Promise<string | undefined> {
+  const comBase = (await prisma.fonte.count({ where: { agenteId, status: 'pronto' } })) > 0
+  if (!comBase) return undefined
+  const perguntas = historico.filter((m) => m.role === 'user')
+  const pergunta = perguntas.at(-1)?.content ?? ''
+  const trechos = await buscarTrechos(agenteId, pergunta, { perguntaAnterior: perguntas.at(-2)?.content })
+  registrarRecuperacao(agenteId, conversaId, trechos.length)
+  if (trechos.length === 0) return montarMaterialSemResultado()
+  return montarMaterialDeConsulta({ trechos, marcador: novoMarcador() }).texto
+}
+
 /**
  * Responde a uma mensagem. Lança `ErroDeAplicacao`: antes do evento `inicio`
  * (validação, agente ou conversa inexistente, sem chave) nada foi gravado;
@@ -109,11 +143,15 @@ export async function* responderMensagem(entrada: EntradaDoTurno): AsyncGenerato
       await listarMensagens(conversa.id, LIMITE_DE_MENSAGENS_DO_HISTORICO * 2)
     ).map((m) => ({ role: m.papel as 'user' | 'assistant', content: m.conteudo }))
 
+    // Modo fundamentado (PR-52): o agente com ao menos uma fonte pronta responde a
+    // partir da base; sem nenhuma, o turno é o da FT-03.
+    const materialDeConsulta = await materialDaBase(agente.id, conversa.id, historico)
+
     let resposta = ''
     for await (const trecho of conversar({
       chave,
       modelo: agente.modelo,
-      mensagens: montarPrompt({ instrucoes: agente.instrucoes, historico }),
+      mensagens: montarPrompt({ instrucoes: agente.instrucoes, materialDeConsulta, historico }),
       temperatura: agente.temperatura,
       maxTokens: ambiente.maxTokensDaResposta,
       sinal: entrada.sinal,

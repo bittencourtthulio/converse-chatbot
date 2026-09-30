@@ -41,7 +41,7 @@ tasks:
   - id: T-03.03
     titulo: "Modo fundamentado em responderMensagem"
     fase: F-03.2
-    status: pendente
+    status: concluida
     objetivo: "Buscar trechos e montar o prompt no turno, com os tres casos: sem fonte pronta, com trechos, sem trechos relevantes."
     arquivos:
       cria: ["tests/chat-fundamentado.test.ts"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/chat-fundamentado.test.ts e os testes de chat existentes passam, e falha da busca vira erro do turno com correlacao sem texto da pergunta no log."
     depende_de: ["T-03.01", "T-03.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-03.04
     titulo: "Evento fontes e gravacao em Mensagem.fontes"
     fase: F-03.2
@@ -141,7 +141,9 @@ teste_funcional: Agente sem fonte pronta envia exatamente o prompt da FT-03, age
 criterio_aceite: tests/chat-fundamentado.test.ts e os testes de chat existentes passam, e falha da busca vira erro do turno com correlacao sem texto da pergunta no log.
 depende_de: ["T-03.01", "T-03.02"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial: chat* 79 passed (7 arquivos)
 ```
 
 ---
