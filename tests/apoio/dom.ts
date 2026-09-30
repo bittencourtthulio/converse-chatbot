@@ -32,6 +32,12 @@ export function fetchSimulado(respostas: (url: string) => RespostaSimulada) {
 
 /** Zera a página de teste. */
 export function limparPagina(): void {
+  // Nenhum teste chama a rede: o happy-dom não baixa a página de um iframe nem um script.
+  const ajustes = (window as unknown as { happyDOM?: { settings: Record<string, unknown> } }).happyDOM?.settings
+  if (ajustes) {
+    ajustes.disableIframePageLoading = true
+    ajustes.disableJavaScriptFileLoading = true
+  }
   document.head.innerHTML = ''
   document.body.innerHTML = ''
 }

@@ -26,7 +26,7 @@ tasks:
   - id: T-05.02
     titulo: "Widget: abrir, fechar, foco e postMessage"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar abertura com iframe preguicoso, Esc, foco, tela estreita, movimento reduzido e postMessage com origin estrito."
     arquivos:
       cria: ["tests/widget-interacao.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/widget-interacao.test.ts passa com ao menos 10 casos."
     depende_de: ["T-05.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-05.03
     titulo: "Rota /widget.js"
     fase: F-05.2
@@ -90,7 +90,7 @@ teste_funcional: "Esc fecha, mensagem fechar com origin da plataforma fecha e co
 criterio_aceite: "tests/widget-interacao.test.ts passa com ao menos 10 casos."
 depende_de: ["T-05.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: verde — 1385 passed
 ```
 
 ---
