@@ -10,14 +10,14 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-02.1
     titulo: "Configuracao"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Salvar e ler a configuracao, inclusive a visao publica."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-02.01", "T-02.02"]
   - id: F-02.2
     titulo: "Turno publico"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Limites, posse da conversa, erros e fontes do canal widget."
     paralelizavel: false
     paralela_com: []
@@ -55,7 +55,7 @@ flowchart LR
   class T_02_02 concluida
   class T_02_03 concluida
   class T_02_04 concluida
-  class T_02_05 pendente
+  class T_02_05 concluida
   class T_02_01,T_02_02,T_02_03,T_02_04,T_02_05 critico
 ```
 

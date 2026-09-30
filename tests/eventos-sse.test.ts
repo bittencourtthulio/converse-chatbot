@@ -1,7 +1,9 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { ErroDeAplicacao, erroDoProvedor } from '@/lib/erros'
 import type { EventoDoChat } from '@/servicos/chat'
 import { fluxoDeEventos, formatarEvento } from '@/app/eventos-sse'
+import { MENSAGEM_PARA_VISITANTE } from '@/servicos/chat-erros'
+import { quadroDeErroParaVisitante } from '@/servicos/chat-publico'
 
 async function* gerar(eventos: EventoDoChat[], erro?: unknown): AsyncGenerator<EventoDoChat> {
   for (const e of eventos) yield e
@@ -151,5 +153,49 @@ describe('fluxoDeEventos', () => {
     await leitor.cancel()
     for (let i = 0; i < 20 && !encerrado; i += 1) await new Promise((r) => setTimeout(r, 10))
     expect(encerrado).toBe(true)
+  })
+})
+
+describe('fluxoDeEventos com mapeador de erro (FT-06, PR-56)', () => {
+  it('com mapeador público o erro do provedor vira a frase do visitante, sem saldo nem correlação', async () => {
+    const texto = await ler(
+      fluxoDeEventos(gerar([{ tipo: 'trecho', texto: 'parcial' }], erroDoProvedor(402)), {
+        mapearErro: quadroDeErroParaVisitante,
+      }),
+    )
+    const eventos = eventosDe(texto)
+    expect(eventos[1]).toEqual(['erro', { codigo: 'indisponivel', mensagem: MENSAGEM_PARA_VISITANTE }])
+    expect(texto).not.toMatch(/saldo|provedor_|correlacao|OpenRouter/i)
+  })
+
+  it('erro inesperado com mapeador público não grava log com correlação nem vaza o texto', async () => {
+    const espiao = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+    const texto = await ler(
+      fluxoDeEventos(gerar([], new Error('SELECT * FROM segredo')), { mapearErro: quadroDeErroParaVisitante }),
+    )
+    expect(eventosDe(texto)).toEqual([['erro', { codigo: 'indisponivel', mensagem: MENSAGEM_PARA_VISITANTE }]])
+    expect(texto).not.toContain('SELECT')
+    espiao.mockRestore()
+  })
+
+  it('o mapeador recebe o erro original', async () => {
+    const recebidos: unknown[] = []
+    const erro = new Error('x')
+    await ler(
+      fluxoDeEventos(gerar([], erro), {
+        mapearErro: (e) => {
+          recebidos.push(e)
+          return { codigo: 'c', mensagem: 'm' }
+        },
+      }),
+    )
+    expect(recebidos).toEqual([erro])
+  })
+
+  it('sem mapeador o comportamento do painel não mudou', async () => {
+    const texto = await ler(fluxoDeEventos(gerar([], erroDoProvedor(402))))
+    const [nome, dados] = eventosDe(texto)[0] as [string, { codigo: string }]
+    expect(nome).toBe('erro')
+    expect(dados.codigo).toBe('provedor_sem_saldo')
   })
 })

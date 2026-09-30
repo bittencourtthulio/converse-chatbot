@@ -11,7 +11,15 @@ export function formatarEvento(nome: string, dados: unknown): string {
   return `event: ${nome}\ndata: ${JSON.stringify(dados)}\n\n`
 }
 
-function quadroDoErro(erro: unknown): string {
+/** Como o erro do gerador vira o quadro do evento `erro`; o canal público passa o seu (PR-56). */
+export type MapeadorDeErro = (erro: unknown) => { codigo: string; mensagem: string }
+
+function quadroDoErro(erro: unknown, mapearErro?: MapeadorDeErro): string {
+  if (mapearErro) {
+    // O mapeador decide tudo o que sai: nada de correlação nem de log com o texto do erro.
+    const { codigo, mensagem } = mapearErro(erro)
+    return formatarEvento('erro', { codigo, mensagem })
+  }
   // Erro de aplicação já foi registrado pelo serviço; o resto é registrado aqui,
   // só com o código de referência, nunca com o texto do erro (PR-42).
   const correlacao = erro instanceof ErroDeAplicacao ? undefined : gerarCorrelacao()
@@ -24,9 +32,13 @@ function quadroDoErro(erro: unknown): string {
  * Converte o gerador de eventos do serviço num fluxo SSE. `trecho`, `fontes` e
  * `fim` são repassados (só o `fim` encerra); `inicio` fica de fora, porque o id da conversa
  * segue no cabeçalho; erro do gerador vira o evento `erro`, com a mensagem do
- * operador, e encerra. Cancelar a leitura aborta o gerador.
+ * operador (ou a do `mapearErro`, no canal público), e encerra. Cancelar a leitura
+ * aborta o gerador.
  */
-export function fluxoDeEventos(gerador: AsyncGenerator<EventoDoChat>): ReadableStream<Uint8Array> {
+export function fluxoDeEventos(
+  gerador: AsyncGenerator<EventoDoChat>,
+  opcoes: { mapearErro?: MapeadorDeErro } = {},
+): ReadableStream<Uint8Array> {
   return new ReadableStream<Uint8Array>({
     async pull(controle) {
       try {
@@ -54,7 +66,7 @@ export function fluxoDeEventos(gerador: AsyncGenerator<EventoDoChat>): ReadableS
           return
         }
       } catch (erro) {
-        controle.enqueue(codificador.encode(quadroDoErro(erro)))
+        controle.enqueue(codificador.encode(quadroDoErro(erro, opcoes.mapearErro)))
         controle.close()
       }
     },

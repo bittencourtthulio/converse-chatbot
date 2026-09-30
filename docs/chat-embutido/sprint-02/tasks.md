@@ -71,7 +71,7 @@ tasks:
   - id: T-02.05
     titulo: "Tradutor SSE com mapeador de erro"
     fase: F-02.2
-    status: pendente
+    status: concluida
     objetivo: "Fazer fluxoDeEventos aceitar um mapeador de erro opcional, mantendo o comportamento do painel."
     arquivos:
       cria: []
@@ -81,8 +81,8 @@ tasks:
     criterio_aceite: "tests/eventos-sse.test.ts passa com os casos antigos inalterados mais ao menos 3 novos."
     depende_de: ["T-02.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
 ---
 
 # Tasks — Sprint 02
@@ -171,5 +171,5 @@ teste_funcional: "Sem mapeador o evento erro e identico ao de antes e com mapead
 criterio_aceite: "tests/eventos-sse.test.ts passa com os casos antigos inalterados mais ao menos 3 novos."
 depende_de: ["T-02.04"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: verde — 1227 passed
 ```

@@ -7,7 +7,7 @@ origem_buildx: plataforma-chatbot-ia
 feature_id: FT-06
 sprint_id: sprint-02
 titulo: "Servicos de configuracao e de chat publico"
-status: nao_iniciado
+status: concluido
 criterio_saida: "Os testes dos quatro servicos novos e do tradutor SSE passam e a suite inteira esta verde."
 fases: ["F-02.1", "F-02.2"]
 riscos: ["o teto diario conta tentativas e tem corrida benigna (PR-57)", "fluxoDeEventos e compartilhado com o painel: regressao possivel (D-08)"]
