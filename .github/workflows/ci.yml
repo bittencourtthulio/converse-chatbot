@@ -1,0 +1,42 @@
+name: verificacao
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # Valores de CI, sem valor de produção. Os testes definem os próprios.
+      DATABASE_URL: file:./prisma/ci.db
+      JWT_SECRET: ci-segredo-apenas-para-verificacao-nao-usar-em-producao
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Gerar o client do Prisma
+        run: npx prisma generate
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Tipos
+        run: npx tsc --noEmit
+
+      - name: Build
+        run: npm run build
+
+      - name: Testes
+        run: npm test
+
+      - name: Auditoria de dependências
+        run: npm audit --audit-level=high

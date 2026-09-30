@@ -55,7 +55,7 @@ tasks:
   - id: T-01.03
     titulo: "Pipeline de CI"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Criar o fluxo de verificacao de PR-26 com Node 22."
     arquivos:
       cria: [".github/workflows/ci.yml"]
@@ -65,8 +65,8 @@ tasks:
     criterio_aceite: "O teste de projeto passa e nenhum valor de segredo real aparece no arquivo."
     depende_de: [T-01.02]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-01.04
     titulo: "Seed de demonstracao coberta por teste"
     fase: F-01.1
@@ -134,7 +134,7 @@ flowchart LR
   classDef critico stroke-width:3px
   class T_01_01 concluida
   class T_01_02 concluida
-  class T_01_03 pendente
+  class T_01_03 concluida
   class T_01_04 pendente
 ```
 
@@ -194,7 +194,10 @@ teste_funcional: O arquivo tem node-version 22 e, nesta ordem, npm ci, npx prism
 criterio_aceite: O teste de projeto passa e nenhum valor de segredo real aparece no arquivo.
 depende_de: [T-01.02]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: projeto.test 6 passed
 ```
 
 ---

@@ -42,3 +42,35 @@ describe('exemplo de ambiente', () => {
     expect(valorDe('JWT_SECRET')).toBe('')
   })
 })
+
+describe('pipeline de verificação', () => {
+  const ci = ler('.github/workflows/ci.yml')
+
+  it('usa Node 22', () => {
+    expect(ci).toMatch(/node-version:\s*['"]?22['"]?/)
+  })
+
+  it('roda os passos de verificação na ordem do PR-26', () => {
+    const passos = [
+      'npm ci',
+      'npx prisma generate',
+      'npm run lint',
+      'npx tsc --noEmit',
+      'npm run build',
+      'npm test',
+      'npm audit --audit-level=high',
+    ]
+    let posicao = -1
+    for (const passo of passos) {
+      const onde = ci.indexOf(passo, posicao + 1)
+      expect(onde, `passo ausente ou fora de ordem: ${passo}`).toBeGreaterThan(posicao)
+      posicao = onde
+    }
+  })
+
+  it('o build recebe DATABASE_URL e JWT_SECRET de CI, sem segredo do repositório', () => {
+    expect(ci).toMatch(/DATABASE_URL:\s*file:/)
+    expect(ci).toMatch(/JWT_SECRET:\s*\S+/)
+    expect(ci).not.toContain('secrets.')
+  })
+})
