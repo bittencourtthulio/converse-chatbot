@@ -70,7 +70,7 @@ tasks:
   - id: T-01.04
     titulo: "Seed de demonstracao coberta por teste"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Provar que a seed cria as duas contas, e idempotente e recusa producao."
     arquivos:
       cria: ["tests/seed.test.ts"]
@@ -80,8 +80,8 @@ tasks:
     criterio_aceite: "O teste da seed passa e a tabela de usuarios tem 2 linhas apos duas execucoes."
     depende_de: [T-01.02]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
 ---
 
 # Plano — Sprint 01 — Rede de protecao: camadas, scripts, pipeline e seed verificados
@@ -135,7 +135,7 @@ flowchart LR
   class T_01_01 concluida
   class T_01_02 concluida
   class T_01_03 concluida
-  class T_01_04 pendente
+  class T_01_04 concluida
 ```
 
 ## Tasks
@@ -214,6 +214,9 @@ teste_funcional: Duas execucoes seguidas deixam exatamente as contas admin@exemp
 criterio_aceite: O teste da seed passa e a tabela de usuarios tem 2 linhas apos duas execucoes.
 depende_de: [T-01.02]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: seed.test 2 passed
 ```
 
