@@ -40,7 +40,7 @@ tasks:
   - id: T-03.02
     titulo: "responderMensagem: falhas e cancelamento"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Tratar erro do provedor, erro no meio do stream, prazo e cancelamento sem gravar resposta parcial e com log correlacionado."
     arquivos:
       cria: ["tests/chat-falhas.test.ts"]
@@ -50,8 +50,8 @@ tasks:
     criterio_aceite: "O teste passa e nenhuma chamada de console.error contem o texto enviado pelo usuario nem a chave."
     depende_de: [T-03.01]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
 ---
 
 # Plano — Sprint 03 — Turno de conversa com o provedor
@@ -94,7 +94,7 @@ flowchart LR
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
   class T_03_01 concluida
-  class T_03_02 pendente
+  class T_03_02 concluida
 ```
 
 ## Tasks
@@ -133,6 +133,9 @@ teste_funcional: chave invalida, saldo e modelo invalido do provedor lancam o co
 criterio_aceite: O teste passa e nenhuma chamada de console.error contem o texto enviado pelo usuario nem a chave.
 depende_de: [T-03.01]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: verde
+resultado: chat-falhas 11 testes (mutacao do cancelamento reprovada); suite 475 verdes; tsc e lint 0
 ```
 
