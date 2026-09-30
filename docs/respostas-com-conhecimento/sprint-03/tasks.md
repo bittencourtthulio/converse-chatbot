@@ -71,7 +71,7 @@ tasks:
   - id: T-03.05
     titulo: "Retomada da conversa com fontes"
     fase: F-03.2
-    status: pendente
+    status: concluida
     objetivo: "Devolver as fontes de cada mensagem em retomarDoPainel."
     arquivos:
       cria: ["docs/respostas-com-conhecimento/sprint-03/sprint.md", "docs/respostas-com-conhecimento/sprint-03/fases.md", "docs/respostas-com-conhecimento/sprint-03/tasks.md"]
@@ -81,8 +81,8 @@ tasks:
     criterio_aceite: "tests/conversas.test.ts passa com os dois casos novos e os casos antigos seguem verdes."
     depende_de: ["T-03.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
 ---
 
 # Tasks — Sprint 03
@@ -179,6 +179,8 @@ teste_funcional: Mensagem com JSON invalido ou sem fontes volta com fontes indef
 criterio_aceite: tests/conversas.test.ts passa com os dois casos novos e os casos antigos seguem verdes.
 depende_de: ["T-03.04"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: verde: 996 passed, 0 failed (fecha a sprint 03)
 ```
 

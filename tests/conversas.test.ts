@@ -203,6 +203,26 @@ describe('retomarDoPainel', () => {
     expect(Object.keys(r!.mensagens[0]!).sort()).toEqual(['conteudo', 'id', 'papel'])
   })
 
+  it('devolve as fontes gravadas na resposta (FT-05); JSON inválido ou ausente não vira chave nem erro', async () => {
+    const { dono, agente } = await cenario()
+    const conversa = await criar({ agenteId: agente.id, canal: 'painel', criadoPorId: dono.id })
+    const fontes = [
+      { fonteId: 'f1', titulo: 'Política', citada: true, trechos: [{ n: 1, posicao: 2, trechoTexto: 'Troca em sete dias.' }] },
+    ]
+    await anexarMensagem(conversa.id, { papel: 'user', conteudo: 'p1' })
+    await anexarMensagem(conversa.id, { papel: 'assistant', conteudo: 'r1 [1]', fontes: JSON.stringify(fontes) })
+    await anexarMensagem(conversa.id, { papel: 'user', conteudo: 'p2' })
+    await anexarMensagem(conversa.id, { papel: 'assistant', conteudo: 'r2', fontes: 'isto não é json' })
+    await anexarMensagem(conversa.id, { papel: 'assistant', conteudo: 'r3', fontes: '[{"fonteId":1}]' })
+
+    const r = await retomarDoPainel(agente.id, dono.id)
+
+    expect(r!.mensagens[1]).toMatchObject({ papel: 'assistant', conteudo: 'r1 [1]', fontes })
+    expect('fontes' in r!.mensagens[0]!).toBe(false)
+    expect('fontes' in r!.mensagens[3]!).toBe(false)
+    expect('fontes' in r!.mensagens[4]!).toBe(false)
+  })
+
   it('não devolve conversa de outro usuário, de outro canal nem de outro agente', async () => {
     const { dono, agente } = await cenario()
     const outro = await criarUsuario()

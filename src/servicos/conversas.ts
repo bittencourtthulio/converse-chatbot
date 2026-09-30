@@ -6,6 +6,7 @@
 import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
 import { entradaInvalida, naoEncontrado } from '@/lib/erros'
+import { lerFontesGravadas, type FonteDaResposta } from '@/servicos/fontes-da-resposta'
 
 export const CANAIS = ['painel', 'widget', 'telegram'] as const
 export type Canal = (typeof CANAIS)[number]
@@ -179,7 +180,13 @@ export async function apagar(id: string): Promise<void> {
 
 export interface ConversaRetomada {
   conversaId: string
-  mensagens: Array<{ id: string; papel: 'user' | 'assistant'; conteudo: string }>
+  mensagens: Array<{
+    id: string
+    papel: 'user' | 'assistant'
+    conteudo: string
+    /** Só nas respostas gravadas com fontes (FT-05). */
+    fontes?: FonteDaResposta[]
+  }>
 }
 
 export const LIMITE_DE_MENSAGENS_RETOMADAS = 100
@@ -197,10 +204,14 @@ export async function retomarDoPainel(
   const mensagens = await listarMensagens(conversa.id, LIMITE_DE_MENSAGENS_RETOMADAS)
   return {
     conversaId: conversa.id,
-    mensagens: mensagens.map((m) => ({
-      id: m.id,
-      papel: m.papel === 'assistant' ? 'assistant' : 'user',
-      conteudo: m.conteudo,
-    })),
+    mensagens: mensagens.map((m) => {
+      const fontes = lerFontesGravadas(m.fontes)
+      return {
+        id: m.id,
+        papel: m.papel === 'assistant' ? ('assistant' as const) : ('user' as const),
+        conteudo: m.conteudo,
+        ...(fontes.length > 0 && { fontes }),
+      }
+    }),
   }
 }
