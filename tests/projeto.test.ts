@@ -74,3 +74,39 @@ describe('pipeline de verificação', () => {
     expect(ci).not.toContain('secrets.')
   })
 })
+
+describe('README do projeto', () => {
+  const readme = ler('README.md')
+
+  it('diz como rodar, com Node 22 e as contas de demonstração', () => {
+    expect(readme).toContain('Node 22')
+    expect(readme).toContain('cp .env.example .env')
+    expect(readme).toContain('JWT_SECRET')
+    for (const comando of ['npm install', 'npm run setup', 'npm run dev']) {
+      expect(readme, comando).toContain(comando)
+    }
+    expect(readme).toContain('admin@exemplo.local')
+    expect(readme).toContain('usuario@exemplo.local')
+  })
+
+  it('documenta cada script do package.json', () => {
+    for (const nome of Object.keys(pacote.scripts)) {
+      const comando = nome === 'test' ? 'npm test' : `npm run ${nome}`
+      expect(readme, comando).toContain(comando)
+    }
+  })
+
+  it('descreve as três camadas e as variáveis de ambiente', () => {
+    for (const pasta of ['src/app', 'src/servicos', 'src/lib']) {
+      expect(readme, pasta).toContain(pasta)
+    }
+    for (const variavel of ['APP_NAME', 'TRUST_PROXY', 'DATABASE_URL']) {
+      expect(readme, variavel).toContain(variavel)
+    }
+  })
+
+  it('é o README do Converse, não o do template', () => {
+    expect(readme).toContain('Converse')
+    expect(readme).not.toMatch(/template do buildx/i)
+  })
+})

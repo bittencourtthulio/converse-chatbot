@@ -25,7 +25,7 @@ tasks:
   - id: T-05.01
     titulo: "README do projeto"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Substituir o README do template pelo do Converse."
     arquivos:
       cria: []
@@ -35,8 +35,8 @@ tasks:
     criterio_aceite: "O teste de projeto passa e o README nao menciona template do buildx."
     depende_de: []
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-05.02
     titulo: "Verificacao em copia limpa"
     fase: F-05.1
@@ -114,7 +114,7 @@ flowchart LR
   classDef concluida fill:#DFF0D8,stroke:#4A6B3A,color:#1A1815
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
-  class T_05_01 pendente
+  class T_05_01 concluida
   class T_05_02 pendente
   class T_05_03 pendente
 ```
@@ -135,7 +135,10 @@ teste_funcional: O README cita Node 22, o cp do exemplo de ambiente como instruc
 criterio_aceite: O teste de projeto passa e o README nao menciona template do buildx.
 depende_de: []
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: projeto.test 10 passed
 ```
 
 ---

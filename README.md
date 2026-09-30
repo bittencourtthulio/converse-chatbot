@@ -1,96 +1,69 @@
-# O template do buildx
+# Converse
 
-O esqueleto que todo projeto criado pelo buildx recebe no **B2**: um sistema
-que sobe, testa e já traz o P-9 implementado — painel, cadastro de usuários,
-perfil e troca de senha.
+Plataforma de agentes de IA com base de conhecimento própria. Você cria agentes, escolhe o modelo de linguagem (via OpenRouter), alimenta a base com arquivos, textos e vídeos e publica o agente no Telegram e num chat embutido em qualquer site com um script.
 
-Não é um exemplo nem uma referência para copiar à mão. É o ponto de partida
-literal: o B2 copia esta pasta para a raiz do projeto novo e segue dali.
+O projeto é construído por features, na ordem de `docs/projeto/MAPA.md`. Hoje existe a fundação: login, papéis, painel, cadastro de usuários, perfil e troca de senha, num layout de SaaS com tema claro e escuro. Agentes, base de conhecimento e canais chegam nas próximas features. O nome "Converse" é provisório e se troca por `APP_NAME`.
 
-## O que já vem pronto
+## Pré-requisitos
 
-| Camada | Conteúdo |
-|---|---|
-| Configuração | `package.json`, TypeScript estrito, ESLint, Vitest, `.env.example` |
-| Banco | SQLite via Prisma, migration inicial versionada, seed de demonstração |
-| Autenticação | e-mail e senha, hash bcrypt, sessão JWT em cookie `httpOnly`, papéis `admin` e `usuario` |
-| Interface | tokens do VS Code (Dark+ e Light+), layout de regiões, alternador de tema |
-| P-9 | painel `/`, `/configuracoes/usuarios`, `/perfil`, `/perfil/senha` |
-| Testes | 61, cobrindo os serviços e as rotas com o servidor de pé |
+- Node 22 ou superior e npm 10.
 
 ## Como rodar
 
-```bash
-npm install
-cp .env.example .env    # e preencha JWT_SECRET
-npm run setup           # generate + migrate + seed
-npm run dev
-```
+1. Copie o exemplo de configuração: `cp .env.example .env`, e preencha `JWT_SECRET` no `.env` com um segredo seu (o comando para gerar está no próprio arquivo de exemplo).
+2. Instale as dependências: `npm install`.
+3. Prepare o banco: `npm run setup` (gera o client do Prisma, aplica as migrations e cria as contas de demonstração).
+4. Suba o servidor: `npm run dev` e abra `http://localhost:3000`.
 
-Contas de demonstração — fictícias, criadas pela seed, que **não roda em
-produção**:
+## Contas de demonstração
 
-```
-admin@exemplo.local     demo1234    administrador
-usuario@exemplo.local   demo1234    usuário comum
-```
+Fictícias, criadas pela seed, que se recusa a rodar em produção.
 
-## Os comandos
+| Papel | E-mail | Senha |
+|---|---|---|
+| Administrador | `admin@exemplo.local` | `demo1234` |
+| Usuário | `usuario@exemplo.local` | `demo1234` |
+
+Só o administrador cadastra outros usuários (Configurações, Usuários).
+
+## Configuração
+
+Toda variável é lida em um ponto só, `src/lib/ambiente.ts`. O que cada uma faz está no `.env.example`.
+
+| Variável | Para quê | Obrigatória |
+|---|---|---|
+| `DATABASE_URL` | arquivo SQLite | sim |
+| `JWT_SECRET` | assinatura da sessão | sim |
+| `JWT_TTL_SEGUNDOS` | vida da sessão (padrão 900) | não |
+| `APP_NAME` | nome do produto na interface (padrão Converse) | não |
+| `TRUST_PROXY` | `1` atrás de proxy, para o limite de login usar `X-Forwarded-For` | não |
+
+## Comandos
 
 | Comando | O que faz |
 |---|---|
-| `npm run dev` | sobe em desenvolvimento |
-| `npm run build` | build de produção |
-| `npm test` | a suíte inteira |
-| `npm run lint` | ESLint |
-| `npm run setup` | prepara o banco do zero |
-| `npm run db:seed` | só a seed |
+| `npm run dev` | servidor de desenvolvimento |
+| `npm run build` | build de produção (precisa de `DATABASE_URL` e `JWT_SECRET` no ambiente) |
+| `npm run start` | servidor de produção (depois do build) |
+| `npm run lint` | ESLint, inclusive a regra da direção das camadas |
+| `npm test` | suíte inteira (Vitest); o teste de rotas sobe o servidor de produção e pede um `npm run build` antes |
+| `npm run test:watch` | testes em modo observação |
+| `npm run setup` | generate, migrations e seed |
+| `npm run db:migrate` | aplica as migrations |
+| `npm run db:seed` | cria as contas de demonstração |
+| `npx tsc --noEmit` | checagem de tipos |
+| `npm audit --audit-level=high` | auditoria de dependências |
 
-## O que este template não traz, de propósito
+A pipeline (`.github/workflows/ci.yml`) roda lint, tipos, build, testes e auditoria a cada mudança.
 
-**Nenhuma entidade de domínio.** O modelo tem `Usuario` e nada mais. As
-entidades do projeto nascem nas features do B4, planejadas pelo sprintx sob
-TDD. Um template que já trouxesse "Cliente" ou "Produto" estaria decidindo o
-negócio, e isso não é dele.
+## Camadas
 
-**Nenhum item extra na barra lateral.** A navegação tem Painel, Usuários e
-Meu perfil. As features acrescentam os seus — não recriam a área de
-Configurações.
+A dependência segue uma direção só, e o `npm run lint` a impõe.
 
-**O painel vem vazio.** Título e subtítulo, e o corpo dizendo que ainda não
-há o que mostrar. É o B4 que o preenche.
+| Camada | Pasta | Regra |
+|---|---|---|
+| Apresentação | `src/app`, `src/componentes`, `src/estilos` | chama `src/servicos`; não importa `src/lib/prisma` |
+| Aplicação | `src/servicos` | casos de uso e validação com zod; não importa `next/*` nem a apresentação |
+| Dados e infraestrutura | `src/lib` | Prisma, sessão, ambiente, limite de uso; não importa serviços nem a apresentação |
 
-## As decisões que valem conhecer
-
-**A troca de senha derruba as outras sessões.** O usuário tem
-`sessoesValidasDesde`; a troca move esse instante para frente, e todo token
-emitido antes deixa de valer. Quem trocou recebe um token novo e continua na
-sessão. Sem isso, uma sessão sequestrada sobrevive à troca de senha — que é
-justamente a ação que a vítima toma para se defender.
-
-**O sistema nunca fica sem administrador.** Rebaixar ou desativar o último
-admin ativo é recusado com 409. Admin desativado não conta como o outro.
-
-**Desativar não apaga.** Um usuário apagado levaria junto o rastro do que
-fez. A exclusão de verdade, quando o projeto precisar dela, é a feature de
-LGPD, com o cuidado que ela exige.
-
-**O controle de acesso é no servidor.** `exigirUsuarioAdmin` roda antes da
-página; esconder o item do menu é conveniência, não controle. Há teste que
-prova isso pedindo a rota com sessão de usuário comum.
-
-**O e-mail é normalizado antes de validado.** `"  ALGUEM@X.LOCAL  "` é o
-mesmo e-mail que `alguem@x.local`. Recusá-lo seria um defeito de
-usabilidade disfarçado de validação.
-
-## Manutenção
-
-Este template é copiado para todo projeto novo. Se ele quebrar, todo projeto
-nasce quebrado — por isso o `.github/workflows/template.yml` roda, a cada
-mudança e toda segunda-feira: instala, migra, semeia, linta, checa tipos,
-builda, testa e **audita as dependências**, falhando em vulnerabilidade
-`high` ou acima.
-
-Ao atualizar dependência: rode o ciclo inteiro numa cópia limpa antes de
-commitar. O critério é o mesmo do B2 — instalar, build, teste, lint, e o
-projeto sobe. Quatro verificações binárias; três não bastam.
+Para acrescentar uma tela ao menu, edite só `src/componentes/itens-de-menu.ts`. As cores vivem em `src/estilos/tokens.css`; nenhum componente usa cor literal.
