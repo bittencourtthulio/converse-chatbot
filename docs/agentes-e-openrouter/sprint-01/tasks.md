@@ -40,7 +40,7 @@ tasks:
   - id: T-01.02
     titulo: "Teste das migracoes contra remocao sem marca"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Falhar quando uma migration tiver DROP TABLE ou DROP COLUMN sem a marca destrutiva-autorizada (lacuna 9)."
     arquivos:
       cria: ["tests/migracoes.test.ts"]
@@ -50,8 +50,8 @@ tasks:
     criterio_aceite: "O teste passa e uma amostra com DROP COLUMN sem marca e recusada pela funcao verificadora."
     depende_de: []
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-01.03
     titulo: "Servidor OpenRouter simulado: rotas e erros"
     fase: F-01.1
@@ -127,7 +127,7 @@ flowchart LR
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
   class T_01_01 concluida
-  class T_01_02 pendente
+  class T_01_02 concluida
   class T_01_03 pendente
   class T_01_04 pendente
 ```
@@ -168,7 +168,10 @@ teste_funcional: SQL de amostra com DROP TABLE sem a marca -- destrutiva-autoriz
 criterio_aceite: O teste passa e uma amostra com DROP COLUMN sem marca e recusada pela funcao verificadora.
 depende_de: []
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: migracoes 6 passed; tsc e lint 0
 ```
 
 ---
