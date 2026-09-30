@@ -56,18 +56,18 @@ tasks:
   - id: T-06.04
     titulo: "Rota da aba Publicar em producao"
     fase: F-06.2
-    status: pendente
+    status: concluida
     objetivo: "Provar por HTTP real a aba Publicar e o acesso."
     arquivos:
       cria: ["tests/publicar-rota.test.ts"]
-      altera: []
+      altera: ["tests/rotas.test.ts"]
     teste_integracao: "Contra next start, a aba Publicar sem sessao manda para o login e com sessao de usuario comum abre com o formulario preenchido."
     teste_funcional: "A pagina traz o snippet com data-agent igual ao id, a previa com /embed/<id>?previa=1, agente inexistente devolve 404 e a aba Publicar aparece marcada."
     criterio_aceite: "tests/publicar-rota.test.ts passa."
     depende_de: ["T-06.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
 ---
 
 # Tasks — Sprint 06
@@ -133,11 +133,11 @@ titulo: "Rota da aba Publicar em producao"
 objetivo: "Provar por HTTP real a aba Publicar e o acesso."
 arquivos:
   cria: ["tests/publicar-rota.test.ts"]
-  altera: []
+  altera: ["tests/rotas.test.ts"]
 teste_integracao: "Contra next start, a aba Publicar sem sessao manda para o login e com sessao de usuario comum abre com o formulario preenchido."
 teste_funcional: "A pagina traz o snippet com data-agent igual ao id, a previa com /embed/<id>?previa=1, agente inexistente devolve 404 e a aba Publicar aparece marcada."
 criterio_aceite: "tests/publicar-rota.test.ts passa."
 depende_de: ["T-06.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: verde — 1458 passed
 ```

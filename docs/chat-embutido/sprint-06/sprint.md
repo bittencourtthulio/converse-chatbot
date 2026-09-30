@@ -7,7 +7,7 @@ origem_buildx: plataforma-chatbot-ia
 feature_id: FT-06
 sprint_id: sprint-06
 titulo: "Aba Publicar e seed"
-status: nao_iniciado
+status: concluido
 criterio_saida: "Os testes da aba, da acao, da seed e das rotas passam e a suite inteira esta verde."
 fases: ["F-06.1", "F-06.2"]
 riscos: ["a previa usa o endpoint do painel e cria conversa canal painel (PR-61)", "copiar depende de navigator.clipboard: fallback obrigatorio"]

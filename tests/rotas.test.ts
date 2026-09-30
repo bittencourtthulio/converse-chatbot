@@ -404,7 +404,8 @@ describe('Aba Testar do agente', () => {
     const html = await r.text()
     expect(r.status).toBe(200)
     const abas = (html.match(/<a [^>]*>/g) ?? []).filter((t) => t.includes('class="aba"'))
-    expect(abas).toHaveLength(3)
+    // Configurações, Conhecimento, Testar e, desde a FT-06, Publicar.
+    expect(abas).toHaveLength(4)
     const marcada = abas.filter((t) => t.includes('aria-current="page"'))
     expect(marcada).toHaveLength(1)
     expect(marcada[0]).toContain(`href="/agentes/${agente.id}/testar"`)
