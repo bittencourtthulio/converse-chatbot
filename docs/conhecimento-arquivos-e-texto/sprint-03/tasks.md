@@ -56,7 +56,7 @@ tasks:
   - id: T-03.04
     titulo: "Adaptadores de texto e legenda"
     fase: F-03.2
-    status: pendente
+    status: concluida
     objetivo: "Extrair TXT, MD, SRT e VTT para texto puro."
     arquivos:
       cria: ["src/lib/extracao/texto.ts", "src/lib/extracao/legenda.ts", "tests/extracao-texto.test.ts"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "tests/extracao-texto.test.ts passa."
     depende_de: ["T-03.02"]
     paralelizavel: true
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-03.05
     titulo: "Adaptadores de CSV e JSON"
     fase: F-03.2
@@ -220,7 +220,9 @@ teste_funcional: Um SRT com numeracao, marcas de tempo e tags <i> vira so as fal
 criterio_aceite: tests/extracao-texto.test.ts passa.
 depende_de: ["T-03.02"]
 paralelizavel: true
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 709 passed (709)
 ```
 
 ---
