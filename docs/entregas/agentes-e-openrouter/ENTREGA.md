@@ -17,6 +17,8 @@ commits: []
 modulo_afetado: []
 arquivos_alterados: []
 desvios:
+  - "T-05.06: src/servicos/agentes.ts (modelosParaOSeletor, funcao nova que a pagina consome, nao prevista)"
+  - "T-05.06: tests/agentes-modelos.test.ts (arquivo novo: testes do servico modelosParaOSeletor, nao previsto)"
   - "T-05.05: src/estilos/global.css (estilos do bloco de confirmacao, nao previstos na task)"
   - "T-05.04: tests/acoes-de-agente.test.ts (arquivo novo: testes das acoes de servidor de agente, nao previsto)"
   - "T-05.03: src/estilos/global.css (estilos do campo com aviso, nao previstos na task)"

@@ -14,11 +14,13 @@ import { hashDeSenha } from '@/lib/senha'
 import { prisma } from '@/lib/prisma'
 import { salvarChaveDoOpenrouter } from '@/servicos/integracoes'
 import { limparBanco } from './ajuda'
+import { iniciarOpenRouterFalso, type OpenRouterFalso } from './apoio/openrouter-falso'
 
 const PORTA = 3178
 const BASE = `http://localhost:${PORTA}`
 
 let servidor: ChildProcess
+let falso: OpenRouterFalso
 
 async function esperarDePe(tentativas = 60): Promise<void> {
   for (let i = 0; i < tentativas; i += 1) {
@@ -58,15 +60,18 @@ beforeAll(async () => {
     ],
   })
 
+  // O servidor de produção fala com o OpenRouter simulado, nunca com a rede real.
+  falso = await iniciarOpenRouterFalso()
   servidor = spawn('npx', ['next', 'start', '-p', String(PORTA)], {
-    env: { ...process.env, NODE_ENV: 'production' },
+    env: { ...process.env, NODE_ENV: 'production', OPENROUTER_BASE_URL: falso.url },
     stdio: 'ignore',
   })
   await esperarDePe()
 }, 120_000)
 
-afterAll(() => {
+afterAll(async () => {
   servidor?.kill()
+  await falso?.fechar()
 })
 
 async function cookieDe(email: string): Promise<string> {
@@ -75,7 +80,7 @@ async function cookieDe(email: string): Promise<string> {
 }
 
 describe('sem sessão', () => {
-  it.each(['/', '/perfil', '/perfil/senha', '/configuracoes/usuarios', '/configuracoes/integracoes'])(
+  it.each(['/', '/perfil', '/perfil/senha', '/configuracoes/usuarios', '/configuracoes/integracoes', '/agentes', '/agentes/novo'])(
     'manda %s para o login',
     async (rota) => {
       const r = await pedir(rota)
@@ -220,6 +225,78 @@ describe('Configurações > Integrações', () => {
     expect(html).not.toContain(cifrada)
     expect(html).not.toContain(cifrada.split(':')[3]!)
     expect(html).not.toMatch(/<input[^>]*type="password"[^>]*value=/)
+  })
+})
+
+describe('Agentes: lista e novo agente', () => {
+  const chaveDoFalso = 'sk-or-v1-chave-de-teste-0000'
+
+  async function admin() {
+    const a = await prisma.usuario.findUniqueOrThrow({ where: { email: 'admin.rota@teste.local' } })
+    return { id: a.id, nome: a.nome, email: a.email, papel: 'admin' }
+  }
+
+  it('sem agentes mostra o estado vazio com a chamada para criar', async () => {
+    await prisma.agente.deleteMany()
+    const r = await pedir('/agentes', await cookieDe('comum.rota@teste.local'))
+    const html = await r.text()
+    expect(r.status).toBe(200)
+    expect(html).toContain('Nenhum agente ainda')
+    expect(html).toContain('href="/agentes/novo"')
+    expect(html).toContain('estado-vazio')
+  })
+
+  it('com agentes mostra um cartão por agente, com nome, modelo, data e link', async () => {
+    const dono = await prisma.usuario.findUniqueOrThrow({ where: { email: 'comum.rota@teste.local' } })
+    const agente = await prisma.agente.create({
+      data: { nome: 'Atendimento da Loja', modelo: 'anthropic/claude-sonnet-4', criadoPorId: dono.id },
+    })
+    const r = await pedir('/agentes', await cookieDe('admin.rota@teste.local'))
+    const html = await r.text()
+    expect(r.status).toBe(200)
+    expect(html).toContain('Atendimento da Loja')
+    expect(html).toContain('anthropic/claude-sonnet-4')
+    expect(html).toMatch(/\d{2}\/\d{2}\/\d{4}/)
+    expect(html).toContain(`href="/agentes/${agente.id}"`)
+    expect(html).not.toContain('Nenhum agente ainda')
+    expect(html).not.toContain('style="')
+  })
+
+  it('o menu leva a Agentes e o item fica marcado na rota', async () => {
+    const r = await pedir('/agentes', await cookieDe('comum.rota@teste.local'))
+    const html = await r.text()
+    const marcadas = (html.match(/<a [^>]*>/g) ?? []).filter((t) => t.includes('aria-current="page"'))
+    expect(marcadas).toHaveLength(1)
+    expect(marcadas[0]).toContain('href="/agentes"')
+  })
+
+  it('novo agente traz o formulário com o modelo padrão e o aviso de chave', async () => {
+    await prisma.configuracaoDoWorkspace.deleteMany()
+    const r = await pedir('/agentes/novo', await cookieDe('comum.rota@teste.local'))
+    const html = await r.text()
+    expect(r.status).toBe(200)
+    expect(html).toMatch(/<input[^>]*name="modelo"/)
+    expect(html).toContain('value="openai/gpt-4o-mini"')
+    expect(html).toContain('Criar agente')
+    expect(html).toContain('Nenhuma chave do OpenRouter')
+    expect(html).not.toContain('/configuracoes/integracoes"') // usuário comum não recebe o link
+  })
+
+  it('novo agente para admin sem chave leva o link para Integrações', async () => {
+    const r = await pedir('/agentes/novo', await cookieDe('admin.rota@teste.local'))
+    const html = await r.text()
+    expect(html).toContain('Nenhuma chave do OpenRouter')
+    expect(html).toContain('href="/configuracoes/integracoes"')
+  })
+
+  it('com chave, o seletor oferece os modelos do OpenRouter simulado', async () => {
+    await salvarChaveDoOpenrouter(await admin(), { chave: chaveDoFalso })
+    const r = await pedir('/agentes/novo', await cookieDe('comum.rota@teste.local'))
+    const html = await r.text()
+    expect(html).toContain('<datalist')
+    expect(html).toContain('OpenAI: GPT-4o mini')
+    expect(html).not.toContain('Nenhuma chave do OpenRouter')
+    expect(html).not.toContain(chaveDoFalso)
   })
 })
 

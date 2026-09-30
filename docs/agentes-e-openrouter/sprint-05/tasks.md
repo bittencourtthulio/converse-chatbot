@@ -100,18 +100,18 @@ tasks:
   - id: T-05.06
     titulo: "Paginas /agentes e /agentes/novo"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Grade de cartoes com estados vazio e carregando, e pagina de novo agente."
     arquivos:
-      cria: ["src/app/(sistema)/agentes/page.tsx", "src/app/(sistema)/agentes/loading.tsx", "src/app/(sistema)/agentes/novo/page.tsx"]
-      altera: ["src/estilos/global.css", "tests/rotas.test.ts"]
+      cria: ["src/app/(sistema)/agentes/page.tsx", "src/app/(sistema)/agentes/loading.tsx", "src/app/(sistema)/agentes/novo/page.tsx", "tests/agentes-modelos.test.ts"]
+      altera: ["src/estilos/global.css", "tests/rotas.test.ts", "src/servicos/agentes.ts"]
     teste_integracao: "tests/rotas.test.ts sobe o servidor de producao ja usado e cria agentes pelo servico."
     teste_funcional: "sem sessao /agentes redireciona para /entrar, usuario comum ve 200 em /agentes com nome, modelo e data do agente criado, sem agentes a pagina traz o estado vazio com o link para /agentes/novo, e /agentes/novo traz o campo modelo com openai/gpt-4o-mini."
     criterio_aceite: "O teste de rotas passa apos npm run build e cada pagina chama exigirUsuario."
     depende_de: [T-05.05]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-05.07
     titulo: "Pagina /agentes/[id] com layout de abas"
     fase: F-05.1
@@ -183,7 +183,7 @@ flowchart LR
   class T_05_03 concluida
   class T_05_04 concluida
   class T_05_05 concluida
-  class T_05_06 pendente
+  class T_05_06 concluida
   class T_05_07 pendente
 ```
 
@@ -296,14 +296,17 @@ id: T-05.06
 titulo: Paginas /agentes e /agentes/novo
 objetivo: Grade de cartoes com estados vazio e carregando, e pagina de novo agente.
 arquivos:
-  cria: [src/app/(sistema)/agentes/page.tsx, src/app/(sistema)/agentes/loading.tsx, src/app/(sistema)/agentes/novo/page.tsx]
-  altera: [src/estilos/global.css, tests/rotas.test.ts]
+  cria: [src/app/(sistema)/agentes/page.tsx, src/app/(sistema)/agentes/loading.tsx, src/app/(sistema)/agentes/novo/page.tsx, tests/agentes-modelos.test.ts]
+  altera: [src/estilos/global.css, tests/rotas.test.ts, src/servicos/agentes.ts]
 teste_integracao: tests/rotas.test.ts sobe o servidor de producao ja usado e cria agentes pelo servico.
 teste_funcional: sem sessao /agentes redireciona para /entrar, usuario comum ve 200 em /agentes com nome, modelo e data do agente criado, sem agentes a pagina traz o estado vazio com o link para /agentes/novo, e /agentes/novo traz o campo modelo com openai/gpt-4o-mini.
 criterio_aceite: O teste de rotas passa apos npm run build e cada pagina chama exigirUsuario.
 depende_de: [T-05.05]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: rotas, agentes-modelos e tokens: 89 passed apos build; tsc e lint 0
 ```
 
 ---

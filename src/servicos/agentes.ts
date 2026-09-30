@@ -5,6 +5,8 @@
 import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
 import { entradaInvalida, naoAutenticado, naoEncontrado } from '@/lib/erros'
+import { listarModelos } from '@/lib/openrouter'
+import { obterChaveDoOpenrouter } from '@/servicos/integracoes'
 import type { UsuarioAutenticado } from '@/servicos/autenticacao'
 
 export const MODELO_PADRAO = 'openai/gpt-4o-mini'
@@ -146,4 +148,36 @@ export async function excluir(autor: UsuarioAutenticado, id: string): Promise<vo
   exigirAutor(autor)
   const { count } = await prisma.agente.deleteMany({ where: { id } })
   if (count === 0) throw naoEncontrado('Agente não encontrado.')
+}
+
+export interface ModelosParaOSeletor {
+  modelos: Array<{ id: string; nome: string }>
+  /** Há chave do OpenRouter legível. Sem ela não há lista, só texto livre. */
+  temChave: boolean
+  /** A lista veio da reserva embutida porque o OpenRouter não respondeu. */
+  reserva: boolean
+}
+
+/**
+ * Os modelos que o seletor do formulário de agente sugere (PR-06). A chave
+ * fica no servidor: só id e nome dos modelos saem daqui. Chave ausente ou
+ * ilegível vale como "sem chave", e o formulário aceita texto livre.
+ */
+export async function modelosParaOSeletor(
+  autor: UsuarioAutenticado,
+): Promise<ModelosParaOSeletor> {
+  exigirAutor(autor)
+  let chave: string | null = null
+  try {
+    chave = await obterChaveDoOpenrouter()
+  } catch {
+    chave = null
+  }
+  if (!chave) return { modelos: [], temChave: false, reserva: false }
+  const lista = await listarModelos(chave)
+  return {
+    modelos: lista.modelos.map(({ id, nome }) => ({ id, nome })),
+    temChave: true,
+    reserva: lista.reserva,
+  }
 }
