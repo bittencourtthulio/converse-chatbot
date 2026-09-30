@@ -56,7 +56,7 @@ tasks:
   - id: T-04.04
     titulo: "Servico: adicionarArquivos"
     fase: F-04.2
-    status: pendente
+    status: concluida
     objetivo: "Validar cada arquivo e devolver um resultado por arquivo, aceito ou recusado com motivo."
     arquivos:
       cria: ["tests/fontes-arquivos.test.ts"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "tests/fontes-arquivos.test.ts passa e nenhum motivo contem caminho interno."
     depende_de: ["T-04.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-04.05
     titulo: "Servico: excluir e reprocessar"
     fase: F-04.2
@@ -175,7 +175,9 @@ teste_funcional: Um lote com um arquivo vazio, um .exe, um .pdf falso, um acima 
 criterio_aceite: tests/fontes-arquivos.test.ts passa e nenhum motivo contem caminho interno.
 depende_de: ["T-04.03"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 791 passed 791, 0 failed
 ```
 
 ---

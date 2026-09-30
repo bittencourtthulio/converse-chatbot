@@ -6,10 +6,16 @@ import { randomUUID } from 'node:crypto'
 import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
 import { ambiente } from '@/lib/ambiente'
-import { entradaInvalida, naoAutenticado, naoEncontrado } from '@/lib/erros'
+import { ErroDeAplicacao, entradaInvalida, naoAutenticado, naoEncontrado } from '@/lib/erros'
 import { criarArmazenamento } from '@/lib/armazenamento'
 import { LIMITES } from '@/lib/extracao/limites'
-import { mimeDoFormato } from '@/lib/extracao/formatos'
+import { validarConteudo } from '@/lib/extracao'
+import {
+  EXTENSOES_ACEITAS,
+  formatoDoNome,
+  mimeDoFormato,
+  sanitizarNome,
+} from '@/lib/extracao/formatos'
 import { obterFila } from '@/servicos/fontes-fila'
 import type { UsuarioAutenticado } from '@/servicos/autenticacao'
 
@@ -201,4 +207,96 @@ export async function trechosDaFonte(
     select: { id: true, indice: true, texto: true, caracteres: true },
   })
   return { fonte, trechos, pagina, porPagina: TRECHOS_POR_PAGINA, totalPaginas, totalTrechos }
+}
+
+export interface ArquivoEnviado {
+  nome: string
+  bytes: Uint8Array
+}
+
+export type ResultadoDeArquivo =
+  | { nome: string; aceito: true; fonte: FonteVisivel }
+  | { nome: string; aceito: false; codigo: string; motivo: string }
+
+function megabytes(bytes: number): string {
+  const mb = bytes / (1024 * 1024)
+  return `${Number.isInteger(mb) ? mb : mb.toFixed(1).replace('.', ',')} MB`
+}
+
+async function adicionarUmArquivo(
+  autor: UsuarioAutenticado,
+  agenteId: string,
+  arquivo: ArquivoEnviado,
+): Promise<ResultadoDeArquivo> {
+  const nome = sanitizarNome(arquivo.nome)
+  const recusa = (codigo: string, motivo: string): ResultadoDeArquivo => ({ nome, aceito: false, codigo, motivo })
+
+  const formato = formatoDoNome(nome)
+  if (!formato) {
+    return recusa(
+      'formato_nao_aceito',
+      `Formato não aceito. Formatos aceitos: ${EXTENSOES_ACEITAS.join(', ')}.`,
+    )
+  }
+  const tamanho = arquivo.bytes.length
+  if (tamanho === 0) return recusa('arquivo_vazio', 'O arquivo está vazio.')
+  const limite = ambiente.maxUploadBytes
+  if (tamanho > limite) {
+    return recusa(
+      'arquivo_grande_demais',
+      `O arquivo tem ${megabytes(tamanho)} e o limite é de ${megabytes(limite)}.`,
+    )
+  }
+
+  const id = novoIdDeFonte()
+  const armazenamento = armazenamentoPadrao()
+  try {
+    validarConteudo(formato, arquivo.bytes)
+    const caminho = await armazenamento.gravar(agenteId, id, arquivo.bytes)
+    try {
+      const fonte = await prisma.fonte.create({
+        data: {
+          id,
+          agenteId,
+          tipo: 'arquivo',
+          titulo: nome,
+          nomeOriginal: nome,
+          tipoMime: mimeDoFormato(formato),
+          tamanhoBytes: tamanho,
+          caminhoArquivo: caminho,
+          criadoPorId: autor.id,
+        },
+      })
+      return { nome, aceito: true, fonte: visaoDaFonte(fonte) }
+    } catch (erro) {
+      await armazenamento.apagarFonte(agenteId, id).catch(() => undefined)
+      throw erro
+    }
+  } catch (erro) {
+    if (erro instanceof ErroDeAplicacao) return recusa(erro.codigo, erro.message)
+    console.error(JSON.stringify({ evento: 'envio_falhou', agenteId }))
+    return recusa('erro_interno', 'Não foi possível guardar este arquivo. Tente de novo.')
+  }
+}
+
+/**
+ * Recebe um ou mais arquivos e devolve um resultado por arquivo: aceito (já
+ * `pendente` na fila) ou recusado com o motivo. Um arquivo recusado não
+ * derruba os outros (PR-45).
+ */
+export async function adicionarArquivos(
+  autor: UsuarioAutenticado,
+  agenteId: string,
+  arquivos: ArquivoEnviado[],
+): Promise<ResultadoDeArquivo[]> {
+  exigirAutor(autor)
+  if (!Array.isArray(arquivos) || arquivos.length === 0) throw entradaInvalida('Selecione ao menos um arquivo.')
+  if (arquivos.length > LIMITES.arquivosPorEnvio) {
+    throw entradaInvalida(`Envie no máximo ${LIMITES.arquivosPorEnvio} arquivos por vez.`)
+  }
+  await exigirAgente(agenteId)
+  const resultados: ResultadoDeArquivo[] = []
+  for (const arquivo of arquivos) resultados.push(await adicionarUmArquivo(autor, agenteId, arquivo))
+  if (resultados.some((r) => r.aceito)) obterFila().acordar()
+  return resultados
 }
