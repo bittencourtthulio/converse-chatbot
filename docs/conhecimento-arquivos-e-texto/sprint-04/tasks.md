@@ -11,7 +11,7 @@ tasks:
   - id: T-04.01
     titulo: "Fila: processar uma fonte"
     fase: F-04.1
-    status: pendente
+    status: concluida
     objetivo: "Ler o original, extrair, dividir e gravar trechos e pronto em transacao, ou gravar erro amigavel."
     arquivos:
       cria: ["src/servicos/fontes-fila.ts", "tests/apoio/fontes.ts", "tests/fontes-fila.test.ts"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/fontes-fila.test.ts passa e um log JSON de correlacao sai so em erro inesperado, sem conteudo do arquivo."
     depende_de: ["T-02.01", "T-02.02", "T-02.04", "T-03.09"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-04.02
     titulo: "Fila: concorrencia, retomada e singleton"
     fase: F-04.1
@@ -118,7 +118,9 @@ teste_funcional: Uma fonte cujo arquivo sumiu e uma de PDF escaneado viram statu
 criterio_aceite: tests/fontes-fila.test.ts passa e um log JSON de correlacao sai so em erro inesperado, sem conteudo do arquivo.
 depende_de: ["T-02.01", "T-02.02", "T-02.04", "T-03.09"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 765 passed 765, 0 failed
 ```
 
 ---
