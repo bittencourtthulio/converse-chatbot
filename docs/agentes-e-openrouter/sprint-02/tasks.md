@@ -70,7 +70,7 @@ tasks:
   - id: T-02.04
     titulo: "Cliente: conversar em stream"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Devolver AsyncIterable de trechos com timeout e cancelamento."
     arquivos:
       cria: []
@@ -80,8 +80,8 @@ tasks:
     criterio_aceite: "O teste passa e o limite de tempo e injetavel por parametro para o teste nao esperar 30 s."
     depende_de: [T-02.02, T-02.03]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
 ---
 
 # Plano — Sprint 02 — Adaptador OpenRouter em src/lib
@@ -131,7 +131,7 @@ flowchart LR
   class T_02_01 concluida
   class T_02_02 concluida
   class T_02_03 concluida
-  class T_02_04 pendente
+  class T_02_04 concluida
 ```
 
 ## Tasks
@@ -210,6 +210,9 @@ teste_funcional: conversar entrega os trechos na ordem e o corpo enviado tem mod
 criterio_aceite: O teste passa e o limite de tempo e injetavel por parametro para o teste nao esperar 30 s.
 depende_de: [T-02.02, T-02.03]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: openrouter-conversar 12 passed; tsc e lint 0
 ```
 

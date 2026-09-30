@@ -5,6 +5,7 @@
 // apontarem para `tests/apoio/openrouter-falso.ts`.
 import { ambiente } from '@/lib/ambiente'
 import { erroDoProvedor } from '@/lib/erros'
+import { lerTrechosDeSSE } from '@/lib/sse'
 
 export interface Modelo {
   id: string
@@ -131,4 +132,60 @@ export async function verificarChave(
   }
   const restante = corpo.data?.limit_remaining
   return { valida: true, saldoRestante: typeof restante === 'number' ? restante : null }
+}
+
+export interface MensagemDeChat {
+  role: 'system' | 'user' | 'assistant'
+  content: string
+}
+
+export interface PedidoDeConversa {
+  chave: string
+  modelo: string
+  mensagens: MensagemDeChat[]
+  temperatura?: number
+  maxTokens?: number
+  /** Cancela a conversa: a iteração termina sem erro e a conexão é fechada. */
+  sinal?: AbortSignal
+  /** Prazo até os cabeçalhos da resposta (padrão 30 s, PR-38). */
+  tempoPrimeiroByteMs?: number
+  /** Prazo da conversa inteira (padrão 120 s, PR-38). */
+  tempoTotalMs?: number
+}
+
+/**
+ * Conversa em streaming (`stream: true`): devolve os trechos de texto conforme
+ * o modelo os produz. Lança `ErroDeAplicacao` (códigos `provedor_*`), inclusive
+ * para erro que o provedor emite no meio do stream, depois dos trechos já
+ * entregues. Usada pela conversa de teste (FT-03) e pelos canais.
+ */
+export async function* conversar(pedido: PedidoDeConversa): AsyncGenerator<string> {
+  const total = new AbortController()
+  const temporizador = setTimeout(() => total.abort(), pedido.tempoTotalMs ?? 120_000)
+  const sinal = AbortSignal.any([total.signal, ...(pedido.sinal ? [pedido.sinal] : [])])
+
+  try {
+    const resposta = await chamarProvedor('/chat/completions', {
+      chave: pedido.chave,
+      metodo: 'POST',
+      corpo: {
+        model: pedido.modelo,
+        messages: pedido.mensagens,
+        ...(pedido.temperatura !== undefined && { temperature: pedido.temperatura }),
+        ...(pedido.maxTokens !== undefined && { max_tokens: pedido.maxTokens }),
+        stream: true,
+      },
+      tempoLimiteMs: pedido.tempoPrimeiroByteMs ?? 30_000,
+      sinal,
+    })
+    if (!resposta.body) throw erroDoProvedor('rede')
+    yield* lerTrechosDeSSE(resposta.body)
+  } catch (erro) {
+    if (pedido.sinal?.aborted) return
+    if (total.signal.aborted) throw erroDoProvedor('timeout')
+    if (erro instanceof Error && erro.name === 'ErroDeAplicacao') throw erro
+    throw erroDoProvedor('rede')
+  } finally {
+    clearTimeout(temporizador)
+  }
 }
