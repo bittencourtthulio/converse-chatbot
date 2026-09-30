@@ -55,3 +55,41 @@ describe('chave de criptografia', () => {
     expect(ambiente.chaveDeCriptografia).toBe(process.env.ENCRYPTION_KEY)
   })
 })
+
+describe('OpenRouter', () => {
+  const guardadas = {
+    base: process.env.OPENROUTER_BASE_URL,
+    app: process.env.APP_URL,
+  }
+  afterEach(() => {
+    for (const [nome, valor] of [
+      ['OPENROUTER_BASE_URL', guardadas.base],
+      ['APP_URL', guardadas.app],
+    ] as const) {
+      if (valor === undefined) delete process.env[nome]
+      else process.env[nome] = valor
+    }
+  })
+
+  it('a URL base tem o padrão do OpenRouter', () => {
+    delete process.env.OPENROUTER_BASE_URL
+    expect(ambiente.openrouterBaseUrl).toBe('https://openrouter.ai/api/v1')
+  })
+
+  it('lê OPENROUTER_BASE_URL e tira as barras finais', () => {
+    process.env.OPENROUTER_BASE_URL = 'http://127.0.0.1:9999/api/v1//'
+    expect(ambiente.openrouterBaseUrl).toBe('http://127.0.0.1:9999/api/v1')
+  })
+
+  it('OPENROUTER_BASE_URL só com espaços volta ao padrão', () => {
+    process.env.OPENROUTER_BASE_URL = '  '
+    expect(ambiente.openrouterBaseUrl).toBe('https://openrouter.ai/api/v1')
+  })
+
+  it('APP_URL tem padrão local e é lida sem barra final', () => {
+    delete process.env.APP_URL
+    expect(ambiente.appUrl).toBe('http://localhost:3000')
+    process.env.APP_URL = 'https://converse.exemplo.com.br/'
+    expect(ambiente.appUrl).toBe('https://converse.exemplo.com.br')
+  })
+})

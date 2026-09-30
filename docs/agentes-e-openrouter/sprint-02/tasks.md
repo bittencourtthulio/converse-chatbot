@@ -25,18 +25,18 @@ tasks:
   - id: T-02.01
     titulo: "Ambiente do OpenRouter e erros do provedor"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Ler OPENROUTER_BASE_URL e APP_URL em ambiente.ts e criar erroDoProvedor com mensagens em pt-BR."
     arquivos:
-      cria: []
+      cria: ["tests/erros.test.ts"]
       altera: ["src/lib/ambiente.ts", "src/lib/erros.ts", "tests/ambiente.test.ts", ".env.example", "tests/projeto.test.ts"]
     teste_integracao: "tests/ambiente.test.ts le ambiente com variaveis alteradas em process.env."
     teste_funcional: "openrouterBaseUrl tem padrao https://openrouter.ai/api/v1 e remove barra final, appUrl tem padrao http://localhost:3000, erroDoProvedor mapeia 401, 402, 400, 404, 429, 500 e timeout para ErroDeAplicacao 502 ou 504 com codigos provedor_* e mensagem sem o texto do corpo."
     criterio_aceite: "O teste de ambiente passa e o .env.example documenta OPENROUTER_BASE_URL e APP_URL sem valor secreto."
     depende_de: [T-01.04]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-02.02
     titulo: "Parser SSE"
     fase: F-02.1
@@ -128,7 +128,7 @@ flowchart LR
   classDef concluida fill:#DFF0D8,stroke:#4A6B3A,color:#1A1815
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
-  class T_02_01 pendente
+  class T_02_01 concluida
   class T_02_02 pendente
   class T_02_03 pendente
   class T_02_04 pendente
@@ -143,14 +143,17 @@ id: T-02.01
 titulo: Ambiente do OpenRouter e erros do provedor
 objetivo: Ler OPENROUTER_BASE_URL e APP_URL em ambiente.ts e criar erroDoProvedor com mensagens em pt-BR.
 arquivos:
-  cria: []
+  cria: [tests/erros.test.ts]
   altera: [src/lib/ambiente.ts, src/lib/erros.ts, tests/ambiente.test.ts, .env.example, tests/projeto.test.ts]
 teste_integracao: tests/ambiente.test.ts le ambiente com variaveis alteradas em process.env.
 teste_funcional: openrouterBaseUrl tem padrao https://openrouter.ai/api/v1 e remove barra final, appUrl tem padrao http://localhost:3000, erroDoProvedor mapeia 401, 402, 400, 404, 429, 500 e timeout para ErroDeAplicacao 502 ou 504 com codigos provedor_* e mensagem sem o texto do corpo.
 criterio_aceite: O teste de ambiente passa e o .env.example documenta OPENROUTER_BASE_URL e APP_URL sem valor secreto.
 depende_de: [T-01.04]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: ambiente, erros e projeto 34 passed; tsc e lint 0
 ```
 
 ---

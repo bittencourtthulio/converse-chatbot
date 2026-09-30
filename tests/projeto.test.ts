@@ -43,6 +43,12 @@ describe('exemplo de ambiente', () => {
     expect(valorDe('ENCRYPTION_KEY')).toBe('')
   })
 
+  it('documenta o endereço do OpenRouter e a URL pública, sem valor secreto', () => {
+    expect(exemplo).toContain('OPENROUTER_BASE_URL')
+    expect(exemplo).toContain('APP_URL')
+    expect(exemplo).not.toMatch(/sk-or-/)
+  })
+
   it('documenta a chave de criptografia e como gerá-la', () => {
     expect(exemplo).toContain('ENCRYPTION_KEY')
     expect(exemplo).toMatch(/randomBytes\(32\)/)

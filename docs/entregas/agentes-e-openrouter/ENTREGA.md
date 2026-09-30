@@ -16,7 +16,8 @@ branch_base: feat/fundacao-e-esqueleto
 commits: []
 modulo_afetado: []
 arquivos_alterados: []
-desvios: []
+desvios:
+  - "T-02.01: tests/erros.test.ts (arquivo novo nao previsto; os testes de erroDoProvedor nao cabiam em tests/ambiente.test.ts)"
 atualizado_em: 2026-09-30
 ---
 

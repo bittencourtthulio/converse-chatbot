@@ -46,6 +46,16 @@ export const ambiente = {
     const valor = process.env.ENCRYPTION_KEY?.trim()
     return valor ? valor : undefined
   },
+  /** Endereço da API do OpenRouter; os testes apontam para o servidor simulado. */
+  get openrouterBaseUrl(): string {
+    const url = process.env.OPENROUTER_BASE_URL?.trim()
+    return (url ? url : 'https://openrouter.ai/api/v1').replace(/\/+$/, '')
+  },
+  /** URL pública deste sistema, enviada ao OpenRouter em `HTTP-Referer` (PR-38). */
+  get appUrl(): string {
+    const url = process.env.APP_URL?.trim()
+    return (url ? url : 'http://localhost:3000').replace(/\/+$/, '')
+  },
   get ehProducao(): boolean {
     return process.env.NODE_ENV === 'production'
   },
