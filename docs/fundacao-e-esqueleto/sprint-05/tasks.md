@@ -55,7 +55,7 @@ tasks:
   - id: T-05.03
     titulo: "Conversao das convencoes"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Rodar stackx-detectar e transformar cada regra decidida pelo buildx em evidencia ou achado."
     arquivos:
       cria: []
@@ -65,8 +65,8 @@ tasks:
     criterio_aceite: "grep por decidido_pelo_buildx em CONVENCOES.md lista so regras sem codigo ainda existente, cada uma marcada como pendente de feature."
     depende_de: [T-05.02]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
 ---
 
 # Plano — Sprint 05 — Documentacao e verificacao final: README, copia limpa e convencoes
@@ -116,7 +116,7 @@ flowchart LR
   classDef critico stroke-width:3px
   class T_05_01 concluida
   class T_05_02 concluida
-  class T_05_03 pendente
+  class T_05_03 concluida
 ```
 
 ## Tasks
@@ -175,6 +175,9 @@ teste_funcional: Nenhuma regra restante em CONVENCOES.md fica marcada decidido_p
 criterio_aceite: grep por decidido_pelo_buildx em CONVENCOES.md lista so regras sem codigo ainda existente, cada uma marcada como pendente de feature.
 depende_de: [T-05.02]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: citacoes conferidas por arquivo e linha; regras restantes decidido_pelo_buildx nomeiam a feature
 ```
 
