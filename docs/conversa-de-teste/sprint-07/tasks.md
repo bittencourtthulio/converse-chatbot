@@ -40,7 +40,7 @@ tasks:
   - id: T-07.02
     titulo: "Convencoes e lacunas com a evidencia nova"
     fase: F-07.1
-    status: pendente
+    status: concluida
     objetivo: "Converter as lacunas do handler HTTP e do stream em regras com arquivo e linha."
     arquivos:
       cria: []
@@ -50,8 +50,8 @@ tasks:
     criterio_aceite: "grep das linhas citadas confirma cada referencia e o commit-referencia e atualizado."
     depende_de: [T-07.01]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-07.03
     titulo: "Fechamento no laco do buildx"
     fase: F-07.1
@@ -109,7 +109,7 @@ flowchart LR
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
   class T_07_01 concluida
-  class T_07_02 pendente
+  class T_07_02 concluida
   class T_07_03 pendente
 ```
 
@@ -149,7 +149,10 @@ teste_funcional: a linha de Handler HTTP cita src/app/api/agentes/[id]/conversar
 criterio_aceite: grep das linhas citadas confirma cada referencia e o commit-referencia e atualizado.
 depende_de: [T-07.01]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: verde
+resultado: evidencias conferidas por grep (arquivo:linha existentes); lacuna 7 resolvida
 ```
 
 ---

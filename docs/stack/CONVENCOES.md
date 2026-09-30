@@ -3,7 +3,7 @@ expx-schema: v1
 skill: stackx
 documento: convencoes
 gerado-em: 2026-09-30
-commit-referencia: 0e0fda1
+commit-referencia: 2e17786
 projeto-legado: nao
 origem-do-documento: buildx-b4-ft-01
 ---
@@ -80,7 +80,7 @@ Todos executados numa cópia limpa do commit de referência (T-05.02) e verdes.
 | HTTP de entrada | o servidor de produção sobe no teste de rotas | `tests/rotas.test.ts:59` |
 | Relógio | injetado por parâmetro: `criarLimitador(relogio)`; o limite de login recebe o limitador | `src/lib/limite-de-uso.ts:46`, `src/servicos/autenticacao.ts:36-40`, `tests/limite-de-login.test.ts` |
 | Sistema de arquivos | diretório temporário por teste, apontado por `STORAGE_DIR`. Ainda não há armazenamento | `decidido_pelo_buildx`; passa a valer na FT-04 |
-| Serviço externo | nenhum real: o OpenRouter é simulado, e o teste de conversa cancela e estoura prazo contra o servidor simulado | `tests/openrouter-conversar.test.ts`, `tests/apoio/openrouter-falso.ts:90` |
+| Serviço externo | nenhum real: o OpenRouter é simulado, e o teste de conversa cancela e estoura prazo contra o servidor simulado; os testes do turno reutilizam o falso por `tests/apoio/chat.ts:12` (`cenarioDeChat`) e o teste de rota o sobe junto de `next start` | `tests/openrouter-conversar.test.ts`, `tests/apoio/openrouter-falso.ts:90`, `tests/chat.test.ts`, `tests/conversar-rota.test.ts` |
 
 **Regra de TDD:** teste antes da implementação, sempre. Uma task só termina com
 teste de integração e teste funcional passando.
@@ -129,7 +129,10 @@ importa `next/headers` (só `headers()`), o que a regra permite para `src/lib`.
 | Adaptador de serviço externo | `src/lib/<provedor>.ts`: um ponto só que fala com o provedor, erro do provedor vira `ErroDeAplicacao` sem repassar o corpo, URL base por `src/lib/ambiente.ts` | `src/lib/openrouter.ts:49` (`chamarProvedor`), `src/lib/erros.ts:45` (`erroDoProvedor`), `src/lib/sse.ts:15` |
 | Segredo em repouso | `src/lib/cripto.ts` (AES-256-GCM, formato `v1:`), chave lida só ao cifrar ou decifrar; o serviço só devolve máscara | `src/lib/cripto.ts:44`, `src/servicos/integracoes.ts:69`, `tests/rotas.test.ts` (bloco Integrações) |
 | Módulo de infraestrutura reutilizável | `src/lib/<nome>.ts` | `src/lib/limite-de-uso.ts` |
-| Handler HTTP | `src/app/api/<recurso>/route.ts`, fino: valida no serviço, responde | `decidido_pelo_buildx` (ainda não existe; FT-06). Salvar, testar e remover a chave e as ações de agente são ações de servidor em `src/app/acoes.ts`, sem rota de API |
+| Handler HTTP | `src/app/api/<recurso>/route.ts`, fino: sessão por `usuarioAtual()` (401 em JSON, sem redirecionar), corpo, e a tradução do serviço para HTTP; `export const dynamic = 'force-dynamic'`; erro antes de gravar vira JSON com o status do `ErroDeAplicacao`. Salvar, testar e remover a chave e as ações de agente seguem como ações de servidor em `src/app/acoes.ts`, sem rota de API | `src/app/api/agentes/[id]/conversar/route.ts:10,30`, `src/app/sessao-servidor.ts:10`, `tests/conversar-rota.test.ts` |
+| Resposta em stream (SSE) | o serviço devolve um `AsyncGenerator` de eventos tipados e não conhece HTTP; a rota o converte com `fluxoDeEventos` (`event:` + `data:` em JSON, cancelar a leitura aborta o gerador) e cabeçalhos `text/event-stream`, `Cache-Control: no-store` e `X-Accel-Buffering: no`; o navegador lê com `lerEventos`, em módulo puro, sem `fetch`; o `fetch` mora só no componente cliente | `src/servicos/chat.ts:82`, `src/app/eventos-sse.ts:10,29`, `src/componentes/leitor-de-sse.ts:62`, `src/componentes/ChatDeTeste.tsx`, `tests/eventos-sse.test.ts`, `tests/leitor-de-sse.test.ts` |
+| Texto de origem não confiável na tela | analisador puro para uma árvore mínima (parágrafo, lista, código, negrito, link http/https) e componente que a vira em elementos React; nunca `dangerouslySetInnerHTML` (o único uso é o script constante do tema em `src/app/layout.tsx`) | `src/componentes/texto-seguro.ts:59`, `src/componentes/TextoDoModelo.tsx`, `tests/texto-seguro.test.tsx` |
+| Lógica de tela sem navegador | estado como reducer puro e regras de teclado em módulo próprio; o componente só liga ao DOM e à rede (o ambiente de teste é `node`, sem jsdom) | `src/componentes/estado-da-conversa.ts:68`, `tests/estado-da-conversa.test.ts` |
 | Ação de formulário | `src/app/acoes.ts` (um arquivo para o sistema) | `src/app/acoes.ts:35` |
 | Guarda de sessão e papel | `src/app/sessao-servidor.ts` | `src/app/sessao-servidor.ts` |
 | Componente de interface | `src/componentes/<Nome>.tsx`, PascalCase | `src/componentes/Formulario.tsx` |
@@ -160,13 +163,13 @@ e-mail para compor a chave do limite e não valida formato (a validação é de 
 **Evidência:** `src/servicos/usuarios.ts:8-27`, `src/servicos/autenticacao.ts:9-20`
 
 ### Log
-`decidido_pelo_buildx` (PR-21), implementado na FT-11. Hoje só existe
-`console.error` do erro inesperado em `src/app/acoes.ts:31`. Nunca vai para o log:
+`decidido_pelo_buildx` (PR-21), implementado na FT-11. Hoje existem o
+`console.error` do erro inesperado em `src/app/acoes.ts:31` e, no turno de conversa, uma linha JSON com `evento`, `correlacao`, `codigo`, `agenteId` e `conversaId` (PR-42), gravada só para falha do provedor e erro inesperado (`src/servicos/chat.ts`, função `registrarErro`; `tests/chat-falhas.test.ts`). Nunca vai para o log:
 senha, token, chave de API, corpo de mensagem de visitante, e-mail completo.
 
 ### Configuração e segredo
 Variável de ambiente da aplicação lida em `src/lib/ambiente.ts`; obrigatória ausente
-falha no start (L20); opcional tem padrão (`APP_NAME`, `TRUST_PROXY`, `OPENROUTER_BASE_URL`, `APP_URL`); `ENCRYPTION_KEY` é lida por getter e só validada quando um segredo é cifrado ou decifrado (`src/lib/ambiente.ts:45`, `src/lib/cripto.ts:29`). Exceções
+falha no start (L20); opcional tem padrão (`APP_NAME`, `TRUST_PROXY`, `OPENROUTER_BASE_URL`, `APP_URL`, `MAX_TOKENS_RESPOSTA`, esta em `src/lib/ambiente.ts:60`); `ENCRYPTION_KEY` é lida por getter e só validada quando um segredo é cifrado ou decifrado (`src/lib/ambiente.ts:45`, `src/lib/cripto.ts:29`). Exceções
 declaradas: `DATABASE_URL` é lida também por `src/lib/prisma.ts:7`, `prisma/seed.ts:5` e
 `prisma.config.ts` (o Prisma constrói a conexão fora do resto da aplicação), e
 `NODE_ENV` pela seed (`prisma/seed.ts:28`). Segredo só em variável de ambiente,
@@ -240,6 +243,7 @@ Nenhum.
 | 2026-09-30 | pendente | criação pelo B2 do buildx |
 | 2026-09-30 | d344de3 | conversão da FT-01: `decidido_pelo_buildx` virou evidência ou achado; regra de lint das camadas, limite de uso, cabeçalhos, tokens e CI incluídos |
 | 2026-09-30 | 0e0fda1 | FT-02: regras de HTTP de saída simulado, adaptador em `src/lib`, segredo cifrado e migração aditiva verificada passam a ter evidência; lacunas 5 (parte HTTP) e 9 resolvidas |
+| 2026-09-30 | 2e17786 | FT-03: primeiro handler em `src/app/api` e primeiro uso de stream (lacuna 7 resolvida); leitura de SSE do navegador, texto seguro e reducer de tela; `MAX_TOKENS_RESPOSTA`; log do turno de conversa |
 ---
 
 <!-- Lacunas: docs/stack/LACUNAS.md -->

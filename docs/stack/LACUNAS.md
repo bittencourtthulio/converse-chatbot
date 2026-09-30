@@ -15,9 +15,11 @@ gerado-em: 2026-09-30
 | 4 | sem `engines` no `package.json` | `npm install` em Node antigo não avisa; o CI e o README dizem 22, mas nada trava | acrescentar `engines` quando uma feature tocar o `package.json`; baixo |
 | 5 | armazenamento em teste ainda sem código | a regra de `STORAGE_DIR` por teste não tem exemplo para copiar | FT-04 (arquivos). A parte de HTTP de saída e serviço externo foi resolvida na FT-02 (`tests/apoio/openrouter-falso.ts:90`) |
 | 6 | sem log estruturado nem correlação própria | erro inesperado só vai para `console.error` e o operador não liga a tela ao log | FT-11 (PR-21) |
-| 7 | sem handler HTTP em `src/app/api` | a regra "handler fino" não tem exemplo | FT-06 |
+| 7 | ~~sem handler HTTP em `src/app/api`~~ | resolvida na FT-03: `src/app/api/agentes/[id]/conversar/route.ts:30` é o exemplo de handler fino, com stream SSE | — |
 | 8 | sem tarefa em segundo plano | `src/instrumentation.ts` e o padrão `-fila.ts` não têm exemplo | FT-04 |
 | 9 | ~~regra "migração só acrescenta" sem verificação automática~~ | resolvida na FT-02: `tests/migracoes.test.ts:14` falha em `DROP TABLE` ou `DROP COLUMN` sem a marca `-- destrutiva-autorizada` | — |
+
+Resolvidas na FT-03: lacuna 7 (handler HTTP, `src/app/api/agentes/[id]/conversar/route.ts:30`, testado em `tests/conversar-rota.test.ts`). Nova, baixa: sem ambiente de teste com DOM (jsdom), o comportamento interativo de componente cliente só é provado nos módulos puros e na verificação visual.
 
 Resolvidas na FT-02: lacuna 9 (teste do SQL das migrations) e a parte de HTTP de saída da 5.
 
