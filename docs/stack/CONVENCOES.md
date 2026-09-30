@@ -3,7 +3,7 @@ expx-schema: v1
 skill: stackx
 documento: convencoes
 gerado-em: 2026-09-30
-commit-referencia: d344de3
+commit-referencia: 0e0fda1
 projeto-legado: nao
 origem-do-documento: buildx-b4-ft-01
 ---
@@ -76,11 +76,11 @@ Todos executados numa cópia limpa do commit de referência (T-05.02) e verdes.
 
 | Eixo | Tratamento | Evidência |
 | ---- | ---------- | --------- |
-| HTTP de saída (OpenRouter, Telegram, YouTube) | servidor HTTP local de teste, URL base por variável de ambiente, nunca a rede real. Ainda não há chamada externa | `decidido_pelo_buildx` (PR-26); passa a valer na FT-02 |
+| HTTP de saída (OpenRouter, Telegram, YouTube) | servidor HTTP local de teste em porta livre, URL base por variável de ambiente (`OPENROUTER_BASE_URL`), nunca a rede real; o servidor de produção do teste de rotas também recebe a URL do servidor simulado | `tests/apoio/openrouter-falso.ts:90`, `src/lib/ambiente.ts:50`, `tests/openrouter.test.ts:22`, `tests/rotas.test.ts` (variável `falso`); Telegram e YouTube seguem `decidido_pelo_buildx` (FT-07, FT-08) |
 | HTTP de entrada | o servidor de produção sobe no teste de rotas | `tests/rotas.test.ts:59` |
 | Relógio | injetado por parâmetro: `criarLimitador(relogio)`; o limite de login recebe o limitador | `src/lib/limite-de-uso.ts:46`, `src/servicos/autenticacao.ts:36-40`, `tests/limite-de-login.test.ts` |
 | Sistema de arquivos | diretório temporário por teste, apontado por `STORAGE_DIR`. Ainda não há armazenamento | `decidido_pelo_buildx`; passa a valer na FT-04 |
-| Serviço externo | nenhum real (nenhum existe ainda) | `decidido_pelo_buildx` (PR-26) |
+| Serviço externo | nenhum real: o OpenRouter é simulado, e o teste de conversa cancela e estoura prazo contra o servidor simulado | `tests/openrouter-conversar.test.ts`, `tests/apoio/openrouter-falso.ts:90` |
 
 **Regra de TDD:** teste antes da implementação, sempre. Uma task só termina com
 teste de integração e teste funcional passando.
@@ -99,7 +99,7 @@ teste de integração e teste funcional passando.
 | Onde vivem as migrações | `prisma/migrations/` | `prisma.config.ts:9` |
 | Comando de rodar migração | `npm run db:migrate` (`prisma migrate deploy`) | `package.json:13` |
 | Comando de reverter migração | — (LACUNA): o Prisma não gera reversão; toda migração destrutiva precisa de backup antes (PR-20) | `decidido_pelo_buildx` |
-| Migrações têm reversão declarada? | não. Regra: migração só acrescenta (coluna nova, tabela nova); remoção exige duas migrações separadas por uma entrega | `decidido_pelo_buildx`; há uma só migração (`prisma/migrations/20260830193658_esquema_inicial`) e nada a contradiz |
+| Migrações têm reversão declarada? | não. Regra: migração só acrescenta (coluna nova, tabela nova); `DROP TABLE` e `DROP COLUMN` só com a marca `-- destrutiva-autorizada` na própria migration, e um teste lê o SQL de todas as migrations | `tests/migracoes.test.ts:14`; as três migrations (`prisma/migrations/20260830193658_esquema_inicial`, `20260930145651_configuracao_do_workspace`, `20260930150122_agentes`) só criam tabela |
 | Regra do `setup` | usa `migrate deploy`, não `db push` (o `db push` apaga tabelas virtuais FTS5) | `package.json:15`, `tests/projeto.test.ts` |
 
 **Evidência:** `tests/setup.ts`, `vitest.config.ts`
@@ -126,13 +126,15 @@ importa `next/headers` (só `headers()`), o que a regra permite para `src/lib`.
 | Tipo | Pasta | Arquivo exemplar |
 | ---- | ----- | ---------------- |
 | Caso de uso | `src/servicos/<assunto>.ts` | `src/servicos/usuarios.ts:52` |
-| Adaptador de serviço externo | `src/lib/<provedor>.ts` | `decidido_pelo_buildx` (ainda não existe; FT-02) |
+| Adaptador de serviço externo | `src/lib/<provedor>.ts`: um ponto só que fala com o provedor, erro do provedor vira `ErroDeAplicacao` sem repassar o corpo, URL base por `src/lib/ambiente.ts` | `src/lib/openrouter.ts:49` (`chamarProvedor`), `src/lib/erros.ts:45` (`erroDoProvedor`), `src/lib/sse.ts:15` |
+| Segredo em repouso | `src/lib/cripto.ts` (AES-256-GCM, formato `v1:`), chave lida só ao cifrar ou decifrar; o serviço só devolve máscara | `src/lib/cripto.ts:44`, `src/servicos/integracoes.ts:69`, `tests/rotas.test.ts` (bloco Integrações) |
 | Módulo de infraestrutura reutilizável | `src/lib/<nome>.ts` | `src/lib/limite-de-uso.ts` |
-| Handler HTTP | `src/app/api/<recurso>/route.ts`, fino: valida no serviço, responde | `decidido_pelo_buildx` (ainda não existe; FT-06) |
+| Handler HTTP | `src/app/api/<recurso>/route.ts`, fino: valida no serviço, responde | `decidido_pelo_buildx` (ainda não existe; FT-06). Salvar, testar e remover a chave e as ações de agente são ações de servidor em `src/app/acoes.ts`, sem rota de API |
 | Ação de formulário | `src/app/acoes.ts` (um arquivo para o sistema) | `src/app/acoes.ts:35` |
 | Guarda de sessão e papel | `src/app/sessao-servidor.ts` | `src/app/sessao-servidor.ts` |
 | Componente de interface | `src/componentes/<Nome>.tsx`, PascalCase | `src/componentes/Formulario.tsx` |
-| Item de menu | lista única em `src/componentes/itens-de-menu.ts` | `src/componentes/itens-de-menu.ts:35` |
+| Item de menu | lista única em `src/componentes/itens-de-menu.ts` | `src/componentes/itens-de-menu.ts:37` |
+| Aba da página de um agente | lista única em `src/componentes/abas-do-agente.ts`; a subrota mora em `src/app/(sistema)/agentes/[id]/<caminho>` | `src/componentes/abas-do-agente.ts:12` |
 | Cor, sombra, raio, fonte | tokens em `src/estilos/tokens.css`; nenhum valor literal fora dele | `tests/tokens.test.ts` |
 | Tarefa em segundo plano | `src/servicos/<assunto>-fila.ts`, iniciada por `src/instrumentation.ts` | `decidido_pelo_buildx` (ainda não existe; FT-04) |
 
@@ -148,7 +150,8 @@ funções de `src/lib/erros.ts` (inclusive `limiteExcedido`, 429). A ação conv
 mensagem para a tela; rastro de pilha nunca chega ao usuário (L17); erro inesperado
 vira frase genérica e a tela de erro do sistema mostra só o código de correlação
 (`digest`). O identificador de correlação próprio (PR-21) ainda não existe.
-**Evidência:** `src/lib/erros.ts:4`, `src/app/acoes.ts:29-33`, `src/app/(sistema)/error.tsx`
+Falha do provedor de IA: `erroDoProvedor` (status 502, ou 504 no tempo esgotado; códigos `provedor_*`; mensagem em português sem o corpo do provedor). Ação que lida com segredo usa `mensagemSemSegredo`, que registra só o nome do erro inesperado.
+**Evidência:** `src/lib/erros.ts:4`, `src/lib/erros.ts:45`, `src/app/acoes.ts:29-33`, `src/app/acoes.ts:46`, `src/app/(sistema)/error.tsx`
 
 ### Validação de entrada
 zod, na camada de aplicação (`src/servicos`). A ação repassa a entrada bruta ao
@@ -163,7 +166,7 @@ senha, token, chave de API, corpo de mensagem de visitante, e-mail completo.
 
 ### Configuração e segredo
 Variável de ambiente da aplicação lida em `src/lib/ambiente.ts`; obrigatória ausente
-falha no start (L20); opcional tem padrão (`APP_NAME`, `TRUST_PROXY`). Exceções
+falha no start (L20); opcional tem padrão (`APP_NAME`, `TRUST_PROXY`, `OPENROUTER_BASE_URL`, `APP_URL`); `ENCRYPTION_KEY` é lida por getter e só validada quando um segredo é cifrado ou decifrado (`src/lib/ambiente.ts:45`, `src/lib/cripto.ts:29`). Exceções
 declaradas: `DATABASE_URL` é lida também por `src/lib/prisma.ts:7`, `prisma/seed.ts:5` e
 `prisma.config.ts` (o Prisma constrói a conexão fora do resto da aplicação), e
 `NODE_ENV` pela seed (`prisma/seed.ts:28`). Segredo só em variável de ambiente,
@@ -236,7 +239,7 @@ Nenhum.
 | ---- | ------ | ----------- |
 | 2026-09-30 | pendente | criação pelo B2 do buildx |
 | 2026-09-30 | d344de3 | conversão da FT-01: `decidido_pelo_buildx` virou evidência ou achado; regra de lint das camadas, limite de uso, cabeçalhos, tokens e CI incluídos |
-
+| 2026-09-30 | 0e0fda1 | FT-02: regras de HTTP de saída simulado, adaptador em `src/lib`, segredo cifrado e migração aditiva verificada passam a ter evidência; lacunas 5 (parte HTTP) e 9 resolvidas |
 ---
 
 <!-- Lacunas: docs/stack/LACUNAS.md -->

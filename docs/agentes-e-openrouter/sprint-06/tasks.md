@@ -40,7 +40,7 @@ tasks:
   - id: T-06.02
     titulo: "Convencoes e lacunas com a evidencia nova"
     fase: F-06.1
-    status: pendente
+    status: concluida
     objetivo: "Converter regras que agora tem codigo e atualizar as lacunas 5 e 9."
     arquivos:
       cria: []
@@ -50,8 +50,8 @@ tasks:
     criterio_aceite: "grep das linhas citadas confirma cada referencia e o commit-referencia e atualizado."
     depende_de: [T-06.01]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-06.03
     titulo: "Fechamento no laco do buildx"
     fase: F-06.1
@@ -109,7 +109,7 @@ flowchart LR
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
   class T_06_01 concluida
-  class T_06_02 pendente
+  class T_06_02 concluida
   class T_06_03 pendente
 ```
 
@@ -149,7 +149,10 @@ teste_funcional: A regra de HTTP de saida simulado cita tests/apoio/openrouter-f
 criterio_aceite: grep das linhas citadas confirma cada referencia e o commit-referencia e atualizado.
 depende_de: [T-06.01]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: referencias conferidas por grep; commit-referencia 0e0fda1
 ```
 
 ---
