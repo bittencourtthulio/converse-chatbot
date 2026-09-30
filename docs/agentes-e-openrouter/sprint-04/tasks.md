@@ -25,18 +25,18 @@ tasks:
   - id: T-04.01
     titulo: "Modelo Agente e servico: listar, obter e criar"
     fase: F-04.1
-    status: pendente
+    status: concluida
     objetivo: "Criar a tabela de agentes e as tres primeiras operacoes com zod."
     arquivos:
-      cria: ["prisma/migrations/20260930130000_agentes/migration.sql", "src/servicos/agentes.ts", "tests/agentes.test.ts"]
+      cria: ["prisma/migrations/20260930150122_agentes/migration.sql", "src/servicos/agentes.ts", "tests/agentes.test.ts"]
       altera: ["prisma/schema.prisma", "tests/ajuda.ts"]
     teste_integracao: "tests/agentes.test.ts usa o banco de teste e usuarios de tests/ajuda.ts."
     teste_funcional: "criar grava nome, instrucoes, modelo, temperatura padrao 0.7 e criadoPorId, listar devolve todos por criadoEm decrescente para qualquer usuario, obter de id inexistente lanca 404, e nome vazio, nome acima de 80, instrucoes acima de 8000, temperatura fora de 0 a 2, modelo vazio e mensagem inicial acima de 500 lancam 422."
     criterio_aceite: "O teste passa e a migration so contem CREATE TABLE."
     depende_de: [T-01.02]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-04.02
     titulo: "Servico de agentes: editar e excluir"
     fase: F-04.1
@@ -110,7 +110,7 @@ flowchart LR
   classDef concluida fill:#DFF0D8,stroke:#4A6B3A,color:#1A1815
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
-  class T_04_01 pendente
+  class T_04_01 concluida
   class T_04_02 pendente
   class T_04_03 pendente
 ```
@@ -124,14 +124,17 @@ id: T-04.01
 titulo: Modelo Agente e servico: listar, obter e criar
 objetivo: Criar a tabela de agentes e as tres primeiras operacoes com zod.
 arquivos:
-  cria: [prisma/migrations/20260930130000_agentes/migration.sql, src/servicos/agentes.ts, tests/agentes.test.ts]
+  cria: [prisma/migrations/20260930150122_agentes/migration.sql, src/servicos/agentes.ts, tests/agentes.test.ts]
   altera: [prisma/schema.prisma, tests/ajuda.ts]
 teste_integracao: tests/agentes.test.ts usa o banco de teste e usuarios de tests/ajuda.ts.
 teste_funcional: criar grava nome, instrucoes, modelo, temperatura padrao 0.7 e criadoPorId, listar devolve todos por criadoEm decrescente para qualquer usuario, obter de id inexistente lanca 404, e nome vazio, nome acima de 80, instrucoes acima de 8000, temperatura fora de 0 a 2, modelo vazio e mensagem inicial acima de 500 lancam 422.
 criterio_aceite: O teste passa e a migration so contem CREATE TABLE.
 depende_de: [T-01.02]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: agentes 18 e migracoes 8 passed; tsc e lint 0
 ```
 
 ---

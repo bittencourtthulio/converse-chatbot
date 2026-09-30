@@ -25,6 +25,8 @@ model Usuario {
   criadoEm     DateTime @default(now())
   atualizadoEm DateTime @updatedAt
 
+  agentes Agente[]
+
   @@map("usuarios")
 }
 
@@ -39,4 +41,22 @@ model ConfiguracaoDoWorkspace {
   atualizadoPor          String?
 
   @@map("configuracao_do_workspace")
+}
+
+// Agente (PR-01): instruções, modelo do OpenRouter, temperatura e mensagem
+// inicial. Qualquer usuário autenticado gerencia qualquer agente (PR-12,
+// PR-40). As próximas features penduram base, canais e conversas nele.
+model Agente {
+  id              String   @id @default(cuid())
+  nome            String
+  instrucoes      String   @default("")
+  modelo          String
+  temperatura     Float    @default(0.7)
+  mensagemInicial String   @default("")
+  criadoPorId     String
+  criadoPor       Usuario  @relation(fields: [criadoPorId], references: [id])
+  criadoEm        DateTime @default(now())
+  atualizadoEm    DateTime @updatedAt
+
+  @@map("agentes")
 }
