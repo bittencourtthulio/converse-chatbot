@@ -101,7 +101,7 @@ tasks:
   - id: T-03.07
     titulo: "Adaptador de PDF"
     fase: F-03.2
-    status: pendente
+    status: concluida
     objetivo: "Extrair texto de PDF com unpdf, limitar paginas e tratar PDF sem texto."
     arquivos:
       cria: ["src/lib/extracao/pdf.ts", "tests/extracao-pdf.test.ts"]
@@ -111,8 +111,8 @@ tasks:
     criterio_aceite: "tests/extracao-pdf.test.ts passa."
     depende_de: ["T-01.04", "T-03.01"]
     paralelizavel: true
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-03.08
     titulo: "Adaptador de DOCX"
     fase: F-03.2
@@ -277,7 +277,9 @@ teste_funcional: escaneado.pdf lanca ErroDeAplicacao com a mensagem exata 'Este 
 criterio_aceite: tests/extracao-pdf.test.ts passa.
 depende_de: ["T-01.04", "T-03.01"]
 paralelizavel: true
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 735 passed, 0 failed
 ```
 
 ---
