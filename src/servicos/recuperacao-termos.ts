@@ -48,16 +48,25 @@ export function extrairTermos(texto: string): string[] {
   return termos
 }
 
+/** Plural comum do português para o singular, só em termos longos (cupons, devoluções, entregas). */
+function singular(termo: string): string {
+  if (termo.length < 5) return termo
+  if (termo.endsWith('oes') || termo.endsWith('aes')) return `${termo.slice(0, -3)}ao`
+  if (termo.endsWith('ns')) return `${termo.slice(0, -2)}m`
+  if (termo.endsWith('s')) return termo.slice(0, -1)
+  return termo
+}
+
 /**
  * A expressão `MATCH`: cada termo entre aspas, ligados por OR; termos longos
- * com prefixo, e o plural longo (terminado em "s") cai para o singular. Só
+ * com prefixo, e o plural longo cai para o singular (`singular`). Só
  * recebe termos de `extrairTermos` (letras e dígitos), por isso as aspas nunca
  * precisam de escape. Sem termos, devolve texto vazio.
  */
 export function montarExpressaoMatch(termos: string[]): string {
   return termos
     .map((termo) => {
-      const base = termo.length >= 5 && termo.endsWith('s') ? termo.slice(0, -1) : termo
+      const base = singular(termo)
       return base.length >= TAMANHO_PARA_PREFIXO ? `"${base}"*` : `"${base}"`
     })
     .join(' OR ')

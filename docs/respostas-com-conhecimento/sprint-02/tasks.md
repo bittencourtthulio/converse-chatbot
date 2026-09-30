@@ -26,7 +26,7 @@ tasks:
   - id: T-02.02
     titulo: "buscarTrechos com filtros e BM25"
     fase: F-02.2
-    status: pendente
+    status: concluida
     objetivo: "Implementar buscarTrechos por prisma.$queryRaw parametrizado, filtrando agente e fonte pronto, ordenando por BM25 e limitando a 6."
     arquivos:
       cria: ["src/servicos/recuperacao.ts", "tests/recuperacao.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/recuperacao.test.ts passa e grep em src/servicos/recuperacao.ts nao encontra $queryRawUnsafe nem concatenacao da pergunta no SQL."
     depende_de: ["T-02.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-02.03
     titulo: "Desempenho e reconstrucao do indice"
     fase: F-02.2
@@ -107,7 +107,9 @@ teste_funcional: Pergunta sem acento acha texto acentuado, pergunta so de saudac
 criterio_aceite: tests/recuperacao.test.ts passa e grep em src/servicos/recuperacao.ts nao encontra $queryRawUnsafe nem concatenacao da pergunta no SQL.
 depende_de: ["T-02.01"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial: recuperacao + recuperacao-termos 46 passed
 ```
 
 ---

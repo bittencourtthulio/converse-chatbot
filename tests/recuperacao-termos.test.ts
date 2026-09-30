@@ -65,6 +65,10 @@ describe('montarExpressaoMatch', () => {
     expect(montarExpressaoMatch(['trocas'])).toBe('"troca"*')
   })
 
+  it('plurais comuns voltam ao singular: ns, ões, s', () => {
+    expect(montarExpressaoMatch(['cupons', 'devolucoes'])).toBe('"cupom"* OR "devolucao"*')
+  })
+
   it('sem termos, expressão vazia', () => {
     expect(montarExpressaoMatch([])).toBe('')
   })
