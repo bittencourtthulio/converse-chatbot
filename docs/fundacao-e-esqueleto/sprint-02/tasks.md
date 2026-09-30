@@ -25,7 +25,7 @@ tasks:
   - id: T-02.01
     titulo: "Modulo limite-de-uso"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Criar a janela deslizante em memoria com relogio injetavel."
     arquivos:
       cria: ["src/lib/limite-de-uso.ts", "tests/limite-de-uso.test.ts"]
@@ -35,8 +35,8 @@ tasks:
     criterio_aceite: "O teste passa com casos de janela deslizante, chaves independentes e limpeza de chaves vencidas."
     depende_de: []
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-02.02
     titulo: "Nome do produto e confianca no proxy no ambiente"
     fase: F-02.1
@@ -149,7 +149,7 @@ flowchart LR
   classDef concluida fill:#DFF0D8,stroke:#4A6B3A,color:#1A1815
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
-  class T_02_01 pendente
+  class T_02_01 concluida
   class T_02_02 pendente
   class T_02_03 pendente
   class T_02_04 pendente
@@ -172,7 +172,10 @@ teste_funcional: Com max 3 e janela de 1000 ms, as tres primeiras chamadas devol
 criterio_aceite: O teste passa com casos de janela deslizante, chaves independentes e limpeza de chaves vencidas.
 depende_de: []
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: limite-de-uso.test 11 passed
 ```
 
 ---
