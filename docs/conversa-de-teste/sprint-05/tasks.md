@@ -55,7 +55,7 @@ tasks:
   - id: T-05.03
     titulo: "Estado da conversa e teclas"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Reducer da conversa (mensagens, envio, trecho, fim, erro, parada, nova conversa) e decisao de tecla do campo."
     arquivos:
       cria: ["src/componentes/estado-da-conversa.ts", "tests/estado-da-conversa.test.ts"]
@@ -65,8 +65,8 @@ tasks:
     criterio_aceite: "O teste passa e as constantes 4000 e 3500 vem de um unico lugar exportado."
     depende_de: []
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
 ---
 
 # Plano — Sprint 05 — Modulos testaveis da interface
@@ -109,7 +109,7 @@ flowchart LR
   classDef critico stroke-width:3px
   class T_05_01 concluida
   class T_05_02 concluida
-  class T_05_03 pendente
+  class T_05_03 concluida
 ```
 
 ## Tasks
@@ -168,6 +168,9 @@ teste_funcional: enviar adiciona a bolha do usuario e abre a do agente vazia em 
 criterio_aceite: O teste passa e as constantes 4000 e 3500 vem de um unico lugar exportado.
 depende_de: []
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: verde
+resultado: estado-da-conversa 16 testes; suite 545 verdes; tsc e lint 0
 ```
 
