@@ -83,8 +83,183 @@ desvios:
   - "T-02.01: tests/erros.test.ts (arquivo novo nao previsto; os testes de erroDoProvedor nao cabiam em tests/ambiente.test.ts)"
   - "T-03.04: src/estilos/global.css (classes novas do painel da chave, nao previstas na task)"
   - "T-03.01: a migration recebeu o nome real prisma/migrations/20260930145651_configuracao_do_workspace (o plano trazia um carimbo de tempo ilustrativo)"
-portao: pronto
+faixa_atencao:
+  - arquivo: "prisma/migrations/20260930145651_configuracao_do_workspace/migration.sql"
+    faixa: alta
+  - arquivo: "prisma/migrations/20260930150122_agentes/migration.sql"
+    faixa: alta
+  - arquivo: "prisma/schema.prisma"
+    faixa: alta
+  - arquivo: "src/app/(sistema)/configuracoes/integracoes/layout.tsx"
+    faixa: alta
+  - arquivo: "src/app/(sistema)/configuracoes/integracoes/page.tsx"
+    faixa: alta
+  - arquivo: "src/app/acoes.ts"
+    faixa: alta
+  - arquivo: "src/lib/ambiente.ts"
+    faixa: alta
+  - arquivo: "src/lib/cripto.ts"
+    faixa: alta
+  - arquivo: "src/lib/openrouter.ts"
+    faixa: alta
+  - arquivo: "src/servicos/agentes.ts"
+    faixa: alta
+  - arquivo: "src/servicos/integracoes.ts"
+    faixa: alta
+  - arquivo: ".env.example"
+    faixa: media
+  - arquivo: "README.md"
+    faixa: media
+  - arquivo: "prisma/seed.ts"
+    faixa: media
+  - arquivo: "src/app/(sistema)/agentes/(lista)/loading.tsx"
+    faixa: media
+  - arquivo: "src/app/(sistema)/agentes/(lista)/page.tsx"
+    faixa: media
+  - arquivo: "src/app/(sistema)/agentes/[id]/carregar-agente.ts"
+    faixa: media
+  - arquivo: "src/app/(sistema)/agentes/[id]/layout.tsx"
+    faixa: media
+  - arquivo: "src/app/(sistema)/agentes/[id]/loading.tsx"
+    faixa: media
+  - arquivo: "src/app/(sistema)/agentes/[id]/page.tsx"
+    faixa: media
+  - arquivo: "src/app/(sistema)/agentes/novo/loading.tsx"
+    faixa: media
+  - arquivo: "src/app/(sistema)/agentes/novo/page.tsx"
+    faixa: media
+  - arquivo: "src/app/(sistema)/configuracoes/integracoes/loading.tsx"
+    faixa: media
+  - arquivo: "src/componentes/AbasDoAgente.tsx"
+    faixa: media
+  - arquivo: "src/componentes/BotaoExcluirAgente.tsx"
+    faixa: media
+  - arquivo: "src/componentes/FormularioDeAgente.tsx"
+    faixa: media
+  - arquivo: "src/componentes/Icones.tsx"
+    faixa: media
+  - arquivo: "src/componentes/PainelDaChaveOpenrouter.tsx"
+    faixa: media
+  - arquivo: "src/componentes/SeletorDeModelo.tsx"
+    faixa: media
+  - arquivo: "src/componentes/abas-do-agente.ts"
+    faixa: media
+  - arquivo: "src/componentes/itens-de-menu.ts"
+    faixa: media
+  - arquivo: "src/lib/erros.ts"
+    faixa: media
+  - arquivo: "src/lib/sse.ts"
+    faixa: media
+  - arquivo: "docs/agentes-e-openrouter/00-AUDITORIA.md"
+    faixa: baixa
+  - arquivo: "docs/agentes-e-openrouter/00-BLOQUEIOS.md"
+    faixa: baixa
+  - arquivo: "docs/agentes-e-openrouter/00-DECISOES.md"
+    faixa: baixa
+  - arquivo: "docs/agentes-e-openrouter/BRIEFING-BUILDX.md"
+    faixa: baixa
+  - arquivo: "docs/agentes-e-openrouter/FECHAMENTO.md"
+    faixa: baixa
+  - arquivo: "docs/agentes-e-openrouter/ORQUESTRADOR.md"
+    faixa: baixa
+  - arquivo: "docs/agentes-e-openrouter/RELATORIO-FEATURE.md"
+    faixa: baixa
+  - arquivo: "docs/agentes-e-openrouter/VERIFICACAO-VISUAL.md"
+    faixa: baixa
+  - arquivo: "docs/agentes-e-openrouter/base/00-INDICE.md"
+    faixa: baixa
+  - arquivo: "docs/agentes-e-openrouter/base/00-LACUNAS.md"
+    faixa: baixa
+  - arquivo: "docs/agentes-e-openrouter/base/ambiente-e-segredos.md"
+    faixa: baixa
+  - arquivo: "docs/agentes-e-openrouter/base/banco-e-migrations.md"
+    faixa: baixa
+  - arquivo: "docs/agentes-e-openrouter/base/interface-e-menu.md"
+    faixa: baixa
+  - arquivo: "docs/agentes-e-openrouter/base/openrouter-api.md"
+    faixa: baixa
+  - arquivo: "docs/agentes-e-openrouter/sprint-01/tasks.md"
+    faixa: baixa
+  - arquivo: "docs/agentes-e-openrouter/sprint-02/tasks.md"
+    faixa: baixa
+  - arquivo: "docs/agentes-e-openrouter/sprint-03/tasks.md"
+    faixa: baixa
+  - arquivo: "docs/agentes-e-openrouter/sprint-04/tasks.md"
+    faixa: baixa
+  - arquivo: "docs/agentes-e-openrouter/sprint-05/tasks.md"
+    faixa: baixa
+  - arquivo: "docs/agentes-e-openrouter/sprint-06/tasks.md"
+    faixa: baixa
+  - arquivo: "docs/entregas/agentes-e-openrouter/ENTREGA.md"
+    faixa: baixa
+  - arquivo: "docs/projeto/MAPA.md"
+    faixa: baixa
+  - arquivo: "docs/projeto/PREMISSAS.md"
+    faixa: baixa
+  - arquivo: "docs/projeto/PROJETO.md"
+    faixa: baixa
+  - arquivo: "docs/projeto/RECURSAO.md"
+    faixa: baixa
+  - arquivo: "docs/stack/CONVENCOES.md"
+    faixa: baixa
+  - arquivo: "docs/stack/LACUNAS.md"
+    faixa: baixa
+  - arquivo: "src/estilos/global.css"
+    faixa: baixa
+  - arquivo: "tests/abas-do-agente.test.tsx"
+    faixa: baixa
+  - arquivo: "tests/acoes-de-agente.test.ts"
+    faixa: baixa
+  - arquivo: "tests/agentes-modelos.test.ts"
+    faixa: baixa
+  - arquivo: "tests/agentes.test.ts"
+    faixa: baixa
+  - arquivo: "tests/ajuda.ts"
+    faixa: baixa
+  - arquivo: "tests/ambiente.test.ts"
+    faixa: baixa
+  - arquivo: "tests/apoio/openrouter-falso.ts"
+    faixa: baixa
+  - arquivo: "tests/componentes.test.tsx"
+    faixa: baixa
+  - arquivo: "tests/cripto.test.ts"
+    faixa: baixa
+  - arquivo: "tests/erros.test.ts"
+    faixa: baixa
+  - arquivo: "tests/formulario-de-agente.test.tsx"
+    faixa: baixa
+  - arquivo: "tests/integracoes-conexao.test.ts"
+    faixa: baixa
+  - arquivo: "tests/integracoes.test.ts"
+    faixa: baixa
+  - arquivo: "tests/menu.test.ts"
+    faixa: baixa
+  - arquivo: "tests/migracoes.test.ts"
+    faixa: baixa
+  - arquivo: "tests/openrouter-conversar.test.ts"
+    faixa: baixa
+  - arquivo: "tests/openrouter-falso.test.ts"
+    faixa: baixa
+  - arquivo: "tests/openrouter.test.ts"
+    faixa: baixa
+  - arquivo: "tests/projeto.test.ts"
+    faixa: baixa
+  - arquivo: "tests/rotas.test.ts"
+    faixa: baixa
+  - arquivo: "tests/seed.test.ts"
+    faixa: baixa
+  - arquivo: "tests/seletor-de-modelo.test.tsx"
+    faixa: baixa
+  - arquivo: "tests/setup.ts"
+    faixa: baixa
+  - arquivo: "tests/sse.test.ts"
+    faixa: baixa
 raio: null
+atencao:
+  olho_obrigatorio: 11
+  leitura_rapida: 22
+  dispensavel: 52
+portao: pronto
 push_feito: false
 pr_url: null
 pr_estado: null
@@ -103,6 +278,7 @@ Trabalho na branch `feat/agentes-e-openrouter`, a partir de `feat/fundacao-e-esq
 
 ## Estado da entrega
 
+- Atenção humana: 11 olho obrigatório, 22 leitura rápida, 52 dispensável (`ATENCAO.md`)
 - Portão de prontidão: PRONTO (V1 a V3, V6, V7, V9 e V10 OK; V4, V5 e V8 n/a)
 - Push: não feito — não há remoto configurado; descrição em `PR.md`
 - Pull request: não aberto (sem remoto)
