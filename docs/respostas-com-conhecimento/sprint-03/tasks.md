@@ -26,7 +26,7 @@ tasks:
   - id: T-03.02
     titulo: "Fontes da resposta como funcoes puras"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Agrupar trechos por fonte, resumir, detectar citacao e ler o JSON gravado."
     arquivos:
       cria: ["src/servicos/fontes-da-resposta.ts", "tests/fontes-da-resposta.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/fontes-da-resposta.test.ts passa com ao menos 8 casos."
     depende_de: ["T-02.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-03.03
     titulo: "Modo fundamentado em responderMensagem"
     fase: F-03.2
@@ -122,7 +122,9 @@ teste_funcional: Resposta 'veja [2] e [9]' marca como citada so a fonte do trech
 criterio_aceite: tests/fontes-da-resposta.test.ts passa com ao menos 8 casos.
 depende_de: ["T-02.02"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial: fontes-da-resposta 16 passed
 ```
 
 ---
