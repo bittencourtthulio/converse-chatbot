@@ -55,7 +55,7 @@ tasks:
   - id: T-02.03
     titulo: "Cliente: listarModelos e verificarChave"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Listar modelos com cache curto e reserva e verificar a chave por GET /key."
     arquivos:
       cria: ["src/lib/openrouter.ts", "tests/openrouter.test.ts"]
@@ -65,8 +65,8 @@ tasks:
     criterio_aceite: "O teste passa e o texto da chave nao aparece em nenhuma mensagem de erro capturada."
     depende_de: [T-02.01]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-02.04
     titulo: "Cliente: conversar em stream"
     fase: F-02.1
@@ -130,7 +130,7 @@ flowchart LR
   classDef critico stroke-width:3px
   class T_02_01 concluida
   class T_02_02 concluida
-  class T_02_03 pendente
+  class T_02_03 concluida
   class T_02_04 pendente
 ```
 
@@ -190,7 +190,10 @@ teste_funcional: listarModelos devolve ids e nomes ordenados e usa cache na segu
 criterio_aceite: O teste passa e o texto da chave nao aparece em nenhuma mensagem de erro capturada.
 depende_de: [T-02.01]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: openrouter 12 passed; tsc e lint 0
 ```
 
 ---
