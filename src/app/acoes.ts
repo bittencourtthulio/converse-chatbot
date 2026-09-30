@@ -6,6 +6,11 @@ import { entrar, exigirLimiteDeLogin } from '@/servicos/autenticacao'
 import { ipDoCliente } from '@/lib/requisicao'
 import { criar, editar, desativar } from '@/servicos/usuarios'
 import { atualizarPerfil, trocarSenha } from '@/servicos/perfil'
+import {
+  salvarChaveDoOpenrouter,
+  removerChaveDoOpenrouter,
+  testarConexaoDoOpenrouter,
+} from '@/servicos/integracoes'
 import { ErroDeAplicacao } from '@/lib/erros'
 import {
   exigirUsuario,
@@ -29,6 +34,17 @@ export interface EstadoDoFormulario {
 function mensagemDe(erro: unknown): string {
   if (erro instanceof ErroDeAplicacao) return erro.message
   console.error(erro)
+  return 'Não foi possível concluir. Tente de novo.'
+}
+
+/**
+ * Como `mensagemDe`, para ações que lidam com segredo: um erro inesperado
+ * registra só o nome, nunca o objeto (que poderia carregar a chave, como o
+ * erro de validação do Prisma, que imprime os argumentos).
+ */
+function mensagemSemSegredo(erro: unknown): string {
+  if (erro instanceof ErroDeAplicacao) return erro.message
+  console.error('Erro inesperado numa ação de integração:', erro instanceof Error ? erro.name : 'desconhecido')
   return 'Não foi possível concluir. Tente de novo.'
 }
 
@@ -141,4 +157,44 @@ export async function salvarSenha(
     return { erro: mensagemDe(erro) }
   }
   return { sucesso: 'Senha alterada. As outras sessões foram encerradas.' }
+}
+
+export async function salvarChaveOpenrouter(
+  _estado: EstadoDoFormulario,
+  form: FormData,
+): Promise<EstadoDoFormulario> {
+  try {
+    const admin = await exigirUsuarioAdmin()
+    await salvarChaveDoOpenrouter(admin, { chave: form.get('chave') })
+  } catch (erro) {
+    return { erro: mensagemSemSegredo(erro) }
+  }
+  revalidatePath('/configuracoes/integracoes')
+  return { sucesso: 'Chave salva. Use "Testar conexão" para conferir.' }
+}
+
+export async function testarConexaoOpenrouter(): Promise<EstadoDoFormulario> {
+  try {
+    const admin = await exigirUsuarioAdmin()
+    const { saldoRestante } = await testarConexaoDoOpenrouter(admin)
+    return {
+      sucesso:
+        saldoRestante === null
+          ? 'Conexão funcionando: o OpenRouter aceitou a chave.'
+          : `Conexão funcionando. Crédito restante da chave: US$ ${saldoRestante.toFixed(2)}.`,
+    }
+  } catch (erro) {
+    return { erro: mensagemSemSegredo(erro) }
+  }
+}
+
+export async function removerChaveOpenrouter(): Promise<EstadoDoFormulario> {
+  try {
+    const admin = await exigirUsuarioAdmin()
+    await removerChaveDoOpenrouter(admin)
+  } catch (erro) {
+    return { erro: mensagemSemSegredo(erro) }
+  }
+  revalidatePath('/configuracoes/integracoes')
+  return { sucesso: 'Chave removida.' }
 }

@@ -70,18 +70,18 @@ tasks:
   - id: T-03.04
     titulo: "Tela Integracoes"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Formulario de chave, estado, testar conexao e remover."
     arquivos:
       cria: ["src/app/(sistema)/configuracoes/integracoes/layout.tsx", "src/app/(sistema)/configuracoes/integracoes/loading.tsx", "src/app/(sistema)/configuracoes/integracoes/page.tsx", "src/componentes/PainelDaChaveOpenrouter.tsx"]
-      altera: ["src/app/acoes.ts", "tests/componentes.test.tsx"]
+      altera: ["src/app/acoes.ts", "tests/componentes.test.tsx", "src/estilos/global.css"]
     teste_integracao: "tests/componentes.test.tsx renderiza PainelDaChaveOpenrouter com react-dom/server nos estados nao configurada e configurada."
     teste_funcional: "o campo de chave e do tipo password e vazio, o estado configurada mostra a mascara e os botoes Testar conexao e Remover chave, o estado nao configurada mostra o aviso, e o HTML nao contem nenhum valor de chave."
     criterio_aceite: "O teste passa e as acoes salvar, testar e remover chamam apenas o servico de integracoes."
     depende_de: [T-03.02, T-03.03]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-03.05
     titulo: "Rotas de Integracoes no servidor de producao"
     fase: F-03.1
@@ -147,7 +147,7 @@ flowchart LR
   class T_03_01 concluida
   class T_03_02 concluida
   class T_03_03 concluida
-  class T_03_04 pendente
+  class T_03_04 concluida
   class T_03_05 pendente
 ```
 
@@ -221,13 +221,16 @@ titulo: Tela Integracoes
 objetivo: Formulario de chave, estado, testar conexao e remover.
 arquivos:
   cria: [src/app/(sistema)/configuracoes/integracoes/layout.tsx, src/app/(sistema)/configuracoes/integracoes/loading.tsx, src/app/(sistema)/configuracoes/integracoes/page.tsx, src/componentes/PainelDaChaveOpenrouter.tsx]
-  altera: [src/app/acoes.ts, tests/componentes.test.tsx]
+  altera: [src/app/acoes.ts, tests/componentes.test.tsx, src/estilos/global.css]
 teste_integracao: tests/componentes.test.tsx renderiza PainelDaChaveOpenrouter com react-dom/server nos estados nao configurada e configurada.
 teste_funcional: o campo de chave e do tipo password e vazio, o estado configurada mostra a mascara e os botoes Testar conexao e Remover chave, o estado nao configurada mostra o aviso, e o HTML nao contem nenhum valor de chave.
 criterio_aceite: O teste passa e as acoes salvar, testar e remover chamam apenas o servico de integracoes.
 depende_de: [T-03.02, T-03.03]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: componentes 62 passed com tokens; tsc e lint 0
 ```
 
 ---

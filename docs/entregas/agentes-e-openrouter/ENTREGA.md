@@ -18,6 +18,8 @@ modulo_afetado: []
 arquivos_alterados: []
 desvios:
   - "T-02.01: tests/erros.test.ts (arquivo novo nao previsto; os testes de erroDoProvedor nao cabiam em tests/ambiente.test.ts)"
+  - "T-03.04: src/estilos/global.css (classes novas do painel da chave, nao previstas na task)"
+  - "T-03.01: a migration recebeu o nome real prisma/migrations/20260930145651_configuracao_do_workspace (o plano trazia um carimbo de tempo ilustrativo)"
 atualizado_em: 2026-09-30
 ---
 

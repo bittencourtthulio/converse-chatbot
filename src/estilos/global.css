@@ -576,3 +576,18 @@ tbody tr:hover { background: var(--bg-hover); }
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ---------- integrações e textos de apoio ---------- */
+
+.pilha-compacta { gap: 16px; }
+.linha-entre { justify-content: space-between; }
+.sem-margem { margin-bottom: 0; }
+.texto-de-apoio { color: var(--fg-muted); font-size: var(--texto-pequeno); max-width: 64ch; }
+.chave-mascarada {
+  padding: 2px 8px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--raio-pequeno);
+  font-family: var(--font-mono);
+  font-size: var(--texto-pequeno);
+}

@@ -6,6 +6,7 @@ import { EsqueletoDePagina } from '@/componentes/Esqueleto'
 import { Badge } from '@/componentes/Badge'
 import { Alerta } from '@/componentes/Alerta'
 import MensagemDeErro from '@/app/(sistema)/error'
+import { PainelDaChaveOpenrouter } from '@/componentes/PainelDaChaveOpenrouter'
 
 describe('CabecalhoDaPagina', () => {
   it('rende o título como h1 e o subtítulo', () => {
@@ -77,5 +78,56 @@ describe('tela de erro do sistema', () => {
     expect(html).not.toContain('SQLITE')
     expect(html).not.toContain('no such table')
     expect(html).toContain('role="alert"')
+  })
+})
+
+
+describe('PainelDaChaveOpenrouter', () => {
+  const acao = async () => ({})
+  const acoes = { salvar: acao, testar: acao, remover: acao }
+  const semChave = { configurada: false, mascara: null, atualizadoEm: null, problema: null }
+  const comChave = {
+    configurada: true,
+    mascara: 'sk-or-…a1b2',
+    atualizadoEm: '30/09/2026 10:15',
+    problema: null,
+  }
+
+  it('sem chave: aviso, campo de senha vazio e só o botão de salvar', () => {
+    const html = renderToStaticMarkup(<PainelDaChaveOpenrouter estado={semChave} acoes={acoes} />)
+    expect(html).toContain('Não configurada')
+    expect(html).toMatch(/<input[^>]*type="password"[^>]*name="chave"/)
+    expect(html).not.toMatch(/<input[^>]*value=/)
+    expect(html).toContain('Salvar chave')
+    expect(html).not.toContain('Testar conexão')
+    expect(html).not.toContain('Remover chave')
+  })
+
+  it('com chave: mostra só a máscara e oferece testar, substituir e remover', () => {
+    const html = renderToStaticMarkup(<PainelDaChaveOpenrouter estado={comChave} acoes={acoes} />)
+    expect(html).toContain('Configurada')
+    expect(html).toContain('sk-or-…a1b2')
+    expect(html).toContain('30/09/2026 10:15')
+    expect(html).toContain('Testar conexão')
+    expect(html).toContain('Remover chave')
+    expect(html).toContain('Substituir chave')
+    expect(html).not.toMatch(/<input[^>]*value=/)
+  })
+
+  it('chave gravada ilegível: mostra o problema e não mostra máscara', () => {
+    const html = renderToStaticMarkup(
+      <PainelDaChaveOpenrouter
+        estado={{ configurada: true, mascara: null, atualizadoEm: null, problema: 'Cadastre a chave de novo.' }}
+        acoes={acoes}
+      />,
+    )
+    expect(html).toContain('Cadastre a chave de novo.')
+    expect(html).not.toContain('<code')
+    expect(html).not.toContain('Chave cadastrada')
+  })
+
+  it('o campo desliga o preenchimento automático do navegador', () => {
+    const html = renderToStaticMarkup(<PainelDaChaveOpenrouter estado={semChave} acoes={acoes} />)
+    expect(html).toContain('autoComplete="off"')
   })
 })
