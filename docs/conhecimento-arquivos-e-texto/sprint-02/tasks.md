@@ -26,7 +26,7 @@ tasks:
   - id: T-02.02
     titulo: "Armazenamento em disco"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Gravar, ler e apagar o original de uma fonte com id validado e protecao contra travessia."
     arquivos:
       cria: ["src/lib/armazenamento.ts", "tests/armazenamento.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/armazenamento.test.ts passa e src/lib/armazenamento.ts nao importa nada com alias @/."
     depende_de: ["T-01.01"]
     paralelizavel: true
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-02.03
     titulo: "Excluir agente apaga o diretorio"
     fase: F-02.1
@@ -107,7 +107,9 @@ teste_funcional: Um id com .. ou barra lanca erro e nenhum arquivo aparece fora 
 criterio_aceite: tests/armazenamento.test.ts passa e src/lib/armazenamento.ts nao importa nada com alias @/.
 depende_de: ["T-01.01"]
 paralelizavel: true
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 602 passed, 0 failed
 ```
 
 ---
