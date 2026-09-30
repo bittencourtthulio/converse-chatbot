@@ -1,9 +1,11 @@
 import { describe, it, expect, afterEach } from 'vitest'
+import { existsSync } from 'node:fs'
+import path from 'node:path'
 import { ambiente } from '@/lib/ambiente'
 
 const original = { ...process.env }
 afterEach(() => {
-  for (const chave of ['APP_NAME', 'TRUST_PROXY', 'MAX_TOKENS_RESPOSTA']) {
+  for (const chave of ['APP_NAME', 'TRUST_PROXY', 'MAX_TOKENS_RESPOSTA', 'MAX_UPLOAD_MB']) {
     if (original[chave] === undefined) delete process.env[chave]
     else process.env[chave] = original[chave]
   }
@@ -113,5 +115,45 @@ describe('limite de tokens da resposta', () => {
   it('ler o ambiente sem a variável não lança', () => {
     delete process.env.MAX_TOKENS_RESPOSTA
     expect(() => ambiente.nomeDoProduto).not.toThrow()
+  })
+})
+
+describe('armazenamento e upload (PR-11, PR-45)', () => {
+  const guardada = process.env.STORAGE_DIR
+  afterEach(() => {
+    if (guardada === undefined) delete process.env.STORAGE_DIR
+    else process.env.STORAGE_DIR = guardada
+  })
+
+  it('o setup de teste aponta STORAGE_DIR para um diretório temporário que existe', () => {
+    expect(guardada).toBeTruthy()
+    expect(path.isAbsolute(guardada as string)).toBe(true)
+    expect(existsSync(guardada as string)).toBe(true)
+    expect(ambiente.storageDir).toBe(guardada)
+  })
+
+  it('sem STORAGE_DIR, o padrão é ./storage resolvido contra o diretório de execução', () => {
+    delete process.env.STORAGE_DIR
+    expect(ambiente.storageDir).toBe(path.resolve(process.cwd(), 'storage'))
+    expect(ambiente.storageDir.endsWith('/storage')).toBe(true)
+  })
+
+  it('STORAGE_DIR relativo é resolvido contra o diretório de execução', () => {
+    process.env.STORAGE_DIR = './dados/arquivos'
+    expect(ambiente.storageDir).toBe(path.resolve(process.cwd(), 'dados/arquivos'))
+  })
+
+  it('MAX_UPLOAD_MB tem padrão 25 e vira bytes', () => {
+    delete process.env.MAX_UPLOAD_MB
+    expect(ambiente.maxUploadBytes).toBe(26214400)
+    process.env.MAX_UPLOAD_MB = '2'
+    expect(ambiente.maxUploadBytes).toBe(2 * 1024 * 1024)
+  })
+
+  it('MAX_UPLOAD_MB inválido lança erro claro', () => {
+    process.env.MAX_UPLOAD_MB = 'abc'
+    expect(() => ambiente.maxUploadBytes).toThrow(/MAX_UPLOAD_MB/)
+    process.env.MAX_UPLOAD_MB = '0'
+    expect(() => ambiente.maxUploadBytes).toThrow(/MAX_UPLOAD_MB/)
   })
 })

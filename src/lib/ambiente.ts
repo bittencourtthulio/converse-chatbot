@@ -1,3 +1,5 @@
+import path from 'node:path'
+
 // Configuração por ambiente (L20). Variável obrigatória ausente falha aqui,
 // no start, e não em produção quando alguém tentar entrar.
 
@@ -59,6 +61,18 @@ export const ambiente = {
   /** Teto de tokens da resposta do modelo em cada turno de conversa (PR-41). */
   get maxTokensDaResposta(): number {
     return inteiroComPadrao('MAX_TOKENS_RESPOSTA', 1024)
+  },
+  /**
+   * Raiz dos arquivos enviados (PR-11, PR-47). Relativa ao diretório de
+   * execução; lida a cada uso para os testes trocarem por diretório temporário.
+   */
+  get storageDir(): string {
+    const dir = process.env.STORAGE_DIR?.trim()
+    return path.resolve(process.cwd(), dir ? dir : 'storage')
+  },
+  /** Tamanho máximo de um arquivo enviado, em bytes (PR-10, PR-45). Padrão 25 MB. */
+  get maxUploadBytes(): number {
+    return inteiroComPadrao('MAX_UPLOAD_MB', 25) * 1024 * 1024
   },
   get ehProducao(): boolean {
     return process.env.NODE_ENV === 'production'

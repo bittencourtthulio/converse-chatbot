@@ -2,7 +2,8 @@
 // partir do schema e apagado ao fim. É o que permite `test` rodar numa
 // máquina limpa sem serviço externo e sem um teste sujar o outro.
 import { execSync } from 'node:child_process'
-import { existsSync, rmSync } from 'node:fs'
+import { existsSync, mkdtempSync, rmSync } from 'node:fs'
+import os from 'node:os'
 import path from 'node:path'
 import { beforeAll, afterAll } from 'vitest'
 
@@ -17,6 +18,10 @@ process.env.ENCRYPTION_KEY =
 // NODE_ENV é somente-leitura nos tipos do Node; o vitest já o define como
 // 'test', e a atribuição direta não compila.
 Object.assign(process.env, { NODE_ENV: 'test' })
+// Arquivos enviados (PR-11): um diretório temporário por arquivo de teste,
+// apagado ao fim. Nenhum teste grava no ./storage do projeto.
+const diretorioDeArquivos = mkdtempSync(path.join(os.tmpdir(), 'converse-storage-'))
+process.env.STORAGE_DIR = diretorioDeArquivos
 
 beforeAll(() => {
   for (const sufixo of ['', '-journal']) {
@@ -32,6 +37,7 @@ beforeAll(() => {
 })
 
 afterAll(() => {
+  rmSync(diretorioDeArquivos, { recursive: true, force: true })
   for (const sufixo of ['', '-journal']) {
     if (existsSync(arquivo + sufixo)) rmSync(arquivo + sufixo)
   }

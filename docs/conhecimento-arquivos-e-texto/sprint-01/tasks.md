@@ -11,7 +11,7 @@ tasks:
   - id: T-01.01
     titulo: "Ambiente: STORAGE_DIR e MAX_UPLOAD_MB"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Ler as duas variaveis novas em ambiente.ts, documentar no exemplo de ambiente e apontar o armazenamento de teste para um diretorio temporario."
     arquivos:
       cria: []
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/ambiente.test.ts passa com os quatro casos (padrao, valor valido, valor invalido, STORAGE_DIR relativo resolvido contra o cwd) e .env.example documenta STORAGE_DIR e MAX_UPLOAD_MB."
     depende_de: []
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-01.02
     titulo: "Dependencias de extracao com versao fixa"
     fase: F-01.1
@@ -88,7 +88,9 @@ teste_funcional: Sem variaveis, ambiente.storageDir termina em /storage e ambien
 criterio_aceite: tests/ambiente.test.ts passa com os quatro casos (padrao, valor valido, valor invalido, STORAGE_DIR relativo resolvido contra o cwd) e .env.example documenta STORAGE_DIR e MAX_UPLOAD_MB.
 depende_de: []
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 579 passed, 0 failed
 ```
 
 ---

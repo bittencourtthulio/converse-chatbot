@@ -54,6 +54,11 @@ describe('exemplo de ambiente', () => {
     expect(valorDe('MAX_TOKENS_RESPOSTA')).toBe('1024')
   })
 
+  it('documenta o diretório de arquivos e o limite de upload', () => {
+    expect(valorDe('STORAGE_DIR')).toBe('./storage')
+    expect(valorDe('MAX_UPLOAD_MB')).toBe('25')
+  })
+
   it('documenta a chave de criptografia e como gerá-la', () => {
     expect(exemplo).toContain('ENCRYPTION_KEY')
     expect(exemplo).toMatch(/randomBytes\(32\)/)
