@@ -144,6 +144,39 @@ describe('com sessão de admin', () => {
   })
 })
 
+describe('casca SaaS', () => {
+  it('mostra logotipo, menu do usuário, gaveta e alternador de tema ao admin', async () => {
+    const r = await pedir('/', await cookieDe('admin.rota@teste.local'))
+    const html = await r.text()
+    expect(html).toContain('logotipo-nome')
+    expect(html).toContain('Converse')
+    expect(html).toContain('href="/configuracoes/usuarios"')
+    expect(html).toContain('Admin de Rota')
+    expect(html).toContain('>AR<')
+    expect(html).toContain('aria-label="Abrir menu"')
+    expect(html).toContain('aria-label="Alternar tema"')
+    expect(html).toContain('Sair')
+    expect(html).toContain('Administrador')
+  })
+
+  it('o usuário comum não recebe o link de Usuários e vê o próprio papel', async () => {
+    const r = await pedir('/', await cookieDe('comum.rota@teste.local'))
+    const html = await r.text()
+    expect(html).not.toContain('href="/configuracoes/usuarios"')
+    expect(html).toContain('>CR<')
+    expect(html).toContain('href="/perfil"')
+  })
+
+  it('marca o item da rota atual na navegação', async () => {
+    const r = await pedir('/perfil', await cookieDe('comum.rota@teste.local'))
+    const html = await r.text()
+    const tags = html.match(/<a [^>]*>/g) ?? []
+    const marcadas = tags.filter((t) => t.includes('aria-current="page"'))
+    expect(marcadas).toHaveLength(1)
+    expect(marcadas[0]).toContain('href="/perfil"')
+  })
+})
+
 describe('cabeçalhos de segurança', () => {
   const esperados = {
     'x-content-type-options': 'nosniff',

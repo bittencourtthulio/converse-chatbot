@@ -55,7 +55,7 @@ tasks:
   - id: T-03.03
     titulo: "Casca SaaS do sistema"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Montar barra lateral com logotipo, cabecalho, menu do usuario, gaveta abaixo de 768px e alternador de tema."
     arquivos:
       cria: ["src/componentes/CascaDoSistema.tsx", "src/componentes/BarraLateral.tsx", "src/componentes/Cabecalho.tsx", "src/componentes/MenuDoUsuario.tsx", "src/componentes/Logotipo.tsx"]
@@ -65,8 +65,8 @@ tasks:
     criterio_aceite: "O teste de rotas atualizado passa e src/componentes/Navegacao.tsx deixa de existir."
     depende_de: [T-03.02, T-02.02]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-03.04
     titulo: "Layout raiz com titulo do produto e tema sem flash"
     fase: F-03.1
@@ -134,7 +134,7 @@ flowchart LR
   classDef critico stroke-width:3px
   class T_03_01 concluida
   class T_03_02 concluida
-  class T_03_03 pendente
+  class T_03_03 concluida
   class T_03_04 pendente
 ```
 
@@ -194,7 +194,10 @@ teste_funcional: O HTML de admin traz o nome Converse no logotipo, o link /confi
 criterio_aceite: O teste de rotas atualizado passa e src/componentes/Navegacao.tsx deixa de existir.
 depende_de: [T-03.02, T-02.02]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: rotas 19 + iniciais 2 passed; tsc e lint ok
 ```
 
 ---

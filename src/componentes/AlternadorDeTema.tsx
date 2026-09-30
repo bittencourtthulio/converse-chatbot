@@ -1,47 +1,38 @@
 'use client'
 
-import { useSyncExternalStore } from 'react'
+import { Icone } from '@/componentes/Icones'
 
-type Tema = 'dark' | 'light'
-
-// O tema mora fora do React: no atributo do <html> e no localStorage. Ler
-// com useSyncExternalStore, em vez de copiar para um state num efeito,
-// evita a cascata de renders e mantém uma fonte de verdade só.
-const ouvintes = new Set<() => void>()
-
-function inscrever(ouvinte: () => void) {
-  ouvintes.add(ouvinte)
-  return () => ouvintes.delete(ouvinte)
-}
-
-function temaAtual(): Tema {
-  const marcado = document.documentElement.dataset.theme
-  if (marcado === 'dark' || marcado === 'light') return marcado
-  return window.matchMedia('(prefers-color-scheme: light)').matches
-    ? 'light'
-    : 'dark'
-}
-
-// No servidor não há preferência a consultar; o dark é o tema base.
-const temaNoServidor = (): Tema => 'dark'
-
+/**
+ * Alterna entre claro e escuro. Renderiza os dois ícones e deixa o CSS
+ * mostrar o certo a partir do `data-theme` que o script do <head> já
+ * resolveu antes da primeira pintura: o HTML do servidor é igual ao do
+ * cliente, então não há divergência de hidratação nem piscada.
+ */
 export function AlternadorDeTema() {
-  const tema = useSyncExternalStore(inscrever, temaAtual, temaNoServidor)
-
   function alternar() {
-    const novo: Tema = tema === 'light' ? 'dark' : 'light'
-    document.documentElement.dataset.theme = novo
+    const raiz = document.documentElement
+    const atual =
+      raiz.dataset.theme ??
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+    const novo = atual === 'dark' ? 'light' : 'dark'
+    raiz.dataset.theme = novo
     try {
       localStorage.setItem('tema', novo)
     } catch {
-      // Navegador com armazenamento bloqueado: o tema vale para esta aba.
+      // Armazenamento bloqueado: o tema vale só para esta aba.
     }
-    ouvintes.forEach((ouvir) => ouvir())
   }
 
   return (
-    <button type="button" onClick={alternar} aria-label="Alternar tema">
-      {tema === 'light' ? '☾ Escuro' : '☀ Claro'}
+    <button
+      type="button"
+      className="botao-icone"
+      onClick={alternar}
+      aria-label="Alternar tema"
+      title="Alternar entre tema claro e escuro"
+    >
+      <Icone nome="lua" className="icone-lua" />
+      <Icone nome="sol" className="icone-sol" />
     </button>
   )
 }
