@@ -10,14 +10,14 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-04.1
     titulo: "Logica e interface"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Modulos puros e componente de chat."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-04.01", "T-04.02"]
   - id: F-04.2
     titulo: "Mensagens e pagina"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "postMessage com o pai e a rota /embed/[id]."
     paralelizavel: false
     paralela_com: []
@@ -52,7 +52,7 @@ flowchart LR
   class T_04_01 concluida
   class T_04_02 concluida
   class T_04_03 concluida
-  class T_04_04 pendente
+  class T_04_04 concluida
   class T_04_01,T_04_02,T_04_03,T_04_04 critico
 ```
 

@@ -1272,7 +1272,13 @@ textarea { min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: verti
 }
 .embed > .alerta { margin: 0 12px 8px; }
 
+.embed-indisponivel { align-items: center; justify-content: center; padding: 24px; background: var(--bg-subtle); }
+.embed-indisponivel-corpo { max-width: 32ch; text-align: center; }
+.embed-indisponivel-corpo h1 { margin: 0 0 8px; font-size: var(--texto-grande); }
+.embed-indisponivel-corpo p { margin: 0; color: var(--fg-muted); }
+
 @media (max-width: 480px) {
+  .embed-ampliar { display: none; }
   .embed-mensagens { padding: 12px; }
   .embed .bolha { max-width: 92%; }
 }

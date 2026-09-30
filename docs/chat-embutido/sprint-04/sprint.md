@@ -7,7 +7,7 @@ origem_buildx: plataforma-chatbot-ia
 feature_id: FT-06
 sprint_id: sprint-04
 titulo: "Pagina do iframe"
-status: nao_iniciado
+status: concluido
 criterio_saida: "Os testes de logica, de interface e da pagina em producao passam e a suite inteira esta verde."
 fases: ["F-04.1", "F-04.2"]
 riscos: ["localStorage pode lancar em iframe de terceiro: todo acesso com try/catch (PR-61)", "a interacao do componente nao e testavel sem DOM no ambiente node: a logica vai em modulo puro (CONVENCOES secao 5)"]

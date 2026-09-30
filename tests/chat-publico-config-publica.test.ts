@@ -5,6 +5,7 @@
 import { describe, it, expect, beforeEach, afterAll } from 'vitest'
 import { prisma } from '@/lib/prisma'
 import {
+  configuracaoDaPrevia,
   configuracaoPublica,
   dominiosDoEmbed,
   salvarConfiguracao,
@@ -135,5 +136,34 @@ describe('dominiosDoEmbed', () => {
     const inexistente = await dominiosDoEmbed('nao-existe')
     expect(inativo).toEqual({ ativo: false, dominios: [] })
     expect(inexistente).toEqual(inativo)
+  })
+})
+
+describe('configuracaoDaPrevia (aba Publicar)', () => {
+  beforeEach(limparBanco)
+  afterAll(limparBanco)
+
+  it('mostra o chat mesmo inativo, com os padrões, e marca se está publicado', async () => {
+    const { autor, agente } = await cenario()
+    const inativo = await configuracaoDaPrevia(autor, agente.id)
+    expect(inativo).toMatchObject({ ativo: false, titulo: 'Assistente da Loja', mensagemInicial: 'Olá! Como posso ajudar?' })
+    await salvarConfiguracao(autor, agente.id, { ativo: true, titulo: 'Ana', cor: '#2563eb' })
+    expect(await configuracaoDaPrevia(autor, agente.id)).toMatchObject({ ativo: true, titulo: 'Ana', cor: '#2563eb' })
+  })
+
+  it('tem as mesmas chaves visuais da visão pública e nunca instruções nem modelo', async () => {
+    const { autor, agente } = await cenario()
+    await salvarConfiguracao(autor, agente.id, { ativo: true })
+    const previa = JSON.stringify(await configuracaoDaPrevia(autor, agente.id))
+    const publica = JSON.stringify(await configuracaoPublica(agente.id))
+    expect(previa).toBe(publica)
+    expect(previa).not.toContain('PROMO-INTERNO')
+    expect(previa).not.toContain('modelo-secreto')
+  })
+
+  it('exige autor e agente existente', async () => {
+    const { autor, agente } = await cenario()
+    await expect(configuracaoDaPrevia(null as never, agente.id)).rejects.toMatchObject({ status: 401 })
+    await expect(configuracaoDaPrevia(autor, 'nao-existe')).rejects.toMatchObject({ status: 404 })
   })
 })

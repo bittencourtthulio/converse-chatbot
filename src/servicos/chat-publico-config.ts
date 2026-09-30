@@ -277,6 +277,24 @@ export interface ConfiguracaoPublica {
   sugestoes: string[]
 }
 
+type AgenteParaExibir = { nome: string; mensagemInicial: string }
+
+/** O que se mostra do agente: os campos visuais, sem nada interno. */
+function paraExibir(c: ConfiguracaoDoChat, agente: AgenteParaExibir): Omit<ConfiguracaoPublica, 'ativo'> {
+  return {
+    titulo: c.titulo !== '' ? c.titulo : agente.nome,
+    cor: c.cor,
+    posicao: c.posicao,
+    avatar: c.avatar,
+    mensagemInicial: agente.mensagemInicial,
+    avisoDePrivacidade:
+      c.avisoDePrivacidade === ''
+        ? null
+        : { texto: c.avisoDePrivacidade, url: c.avisoDePrivacidadeUrl === '' ? null : c.avisoDePrivacidadeUrl },
+    sugestoes: c.sugestoes,
+  }
+}
+
 /**
  * O que o visitante pode ver (PR-56): só campos visuais. Agente inexistente e
  * agente com o chat inativo dão o mesmo resultado, `null`: quem chama responde
@@ -289,20 +307,30 @@ export async function configuracaoPublica(agenteId: string): Promise<Configuraca
     include: { agente: { select: { nome: true, mensagemInicial: true } } },
   })
   if (!linha || !linha.ativo) return null
-  const c = configuracaoDeLinha(linha)
-  return {
-    ativo: true,
-    titulo: c.titulo !== '' ? c.titulo : linha.agente.nome,
-    cor: c.cor,
-    posicao: c.posicao,
-    avatar: c.avatar,
-    mensagemInicial: linha.agente.mensagemInicial,
-    avisoDePrivacidade:
-      c.avisoDePrivacidade === ''
-        ? null
-        : { texto: c.avisoDePrivacidade, url: c.avisoDePrivacidadeUrl === '' ? null : c.avisoDePrivacidadeUrl },
-    sugestoes: c.sugestoes,
-  }
+  return { ativo: true, ...paraExibir(configuracaoDeLinha(linha), linha.agente) }
+}
+
+export interface ConfiguracaoDaPrevia extends Omit<ConfiguracaoPublica, 'ativo'> {
+  /** O chat está publicado? A prévia mostra o chat de qualquer jeito (PR-61). */
+  ativo: boolean
+}
+
+/**
+ * A configuração para a prévia da aba Publicar: a mesma visão do visitante, mas
+ * também para o agente com o chat inativo, e só para usuário autenticado.
+ */
+export async function configuracaoDaPrevia(
+  autor: UsuarioAutenticado,
+  agenteId: string,
+): Promise<ConfiguracaoDaPrevia> {
+  exigirAutor(autor)
+  const agente = await prisma.agente.findUnique({
+    where: { id: agenteId },
+    select: { nome: true, mensagemInicial: true },
+  })
+  if (!agente) throw naoEncontrado('Agente não encontrado.')
+  const c = await obterConfiguracao(autor, agenteId)
+  return { ativo: c.ativo, ...paraExibir(c, agente) }
 }
 
 export interface DominiosDoEmbed {
