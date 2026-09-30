@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest'
 import { renderToStaticMarkup } from 'react-dom/server'
+import { readFileSync } from 'node:fs'
 import { FormularioDeAgente } from '@/componentes/FormularioDeAgente'
+import { BotaoExcluirAgente, proximoEstadoDaExclusao } from '@/componentes/BotaoExcluirAgente'
 
 const acao = async () => ({})
 const seletor = {
@@ -70,5 +72,41 @@ describe('FormularioDeAgente: edição', () => {
   it('o contador mostra o tamanho atual das instruções', () => {
     expect(html).toContain(`${agente.instrucoes.length} de 8000 caracteres`)
     expect(html).toContain('Salvar alterações')
+  })
+})
+
+
+describe('BotaoExcluirAgente', () => {
+  const agente = { id: 'ck123', nome: 'Atendimento' }
+  const acao = async () => ({})
+
+  it('o estado inicial mostra só o botão Excluir agente', () => {
+    const html = renderToStaticMarkup(<BotaoExcluirAgente agente={agente} acao={acao} />)
+    expect(html).toContain('Excluir agente')
+    expect(html).not.toContain('Confirmar exclusão')
+    expect(html).not.toContain('Cancelar')
+  })
+
+  it('confirmando: mostra o nome do agente, Cancelar e Confirmar exclusão, com o id escondido', () => {
+    const html = renderToStaticMarkup(
+      <BotaoExcluirAgente agente={agente} acao={acao} confirmandoInicial />,
+    )
+    expect(html).toContain('Atendimento')
+    expect(html).toContain('Cancelar')
+    expect(html).toContain('Confirmar exclusão')
+    expect(html).toMatch(/<input[^>]*type="hidden"[^>]*name="id"[^>]*value="ck123"/)
+    expect(html).toContain('role="alertdialog"')
+  })
+
+  it('Excluir abre a confirmação e Cancelar volta ao estado inicial', () => {
+    expect(proximoEstadoDaExclusao('inicial', 'excluir')).toBe('confirmando')
+    expect(proximoEstadoDaExclusao('confirmando', 'cancelar')).toBe('inicial')
+    expect(proximoEstadoDaExclusao('inicial', 'cancelar')).toBe('inicial')
+  })
+
+  it('a confirmação é da tela: o código não usa window.confirm', () => {
+    const fonte = readFileSync('src/componentes/BotaoExcluirAgente.tsx', 'utf8')
+    expect(fonte).not.toContain('window.confirm')
+    expect(fonte).not.toMatch(/\bconfirm\(/)
   })
 })

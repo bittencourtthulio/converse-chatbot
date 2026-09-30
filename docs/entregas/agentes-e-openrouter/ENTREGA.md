@@ -17,6 +17,7 @@ commits: []
 modulo_afetado: []
 arquivos_alterados: []
 desvios:
+  - "T-05.05: src/estilos/global.css (estilos do bloco de confirmacao, nao previstos na task)"
   - "T-05.04: tests/acoes-de-agente.test.ts (arquivo novo: testes das acoes de servidor de agente, nao previsto)"
   - "T-05.03: src/estilos/global.css (estilos do campo com aviso, nao previstos na task)"
   - "T-02.01: tests/erros.test.ts (arquivo novo nao previsto; os testes de erroDoProvedor nao cabiam em tests/ambiente.test.ts)"

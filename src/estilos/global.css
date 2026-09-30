@@ -637,3 +637,14 @@ textarea { min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: verti
 .campo-ajuda { display: block; margin-top: 6px; color: var(--fg-muted); font-size: var(--texto-pequeno); font-weight: 400; }
 .campo > .campo-ajuda { margin-bottom: 0; font-weight: 400; color: var(--fg-muted); }
 .campo-curto input { max-width: 140px; }
+
+.confirmacao-de-exclusao {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: var(--danger-bg);
+  border: 1px solid var(--danger-border);
+  border-radius: var(--raio-controle);
+}
+.confirmacao-de-exclusao .secao-titulo { color: var(--danger-fg); }

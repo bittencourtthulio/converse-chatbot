@@ -85,18 +85,18 @@ tasks:
   - id: T-05.05
     titulo: "Botao de excluir com confirmacao na tela"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Excluir agente com bloco de confirmacao, sem window.confirm."
     arquivos:
       cria: ["src/componentes/BotaoExcluirAgente.tsx"]
-      altera: ["tests/formulario-de-agente.test.tsx"]
+      altera: ["tests/formulario-de-agente.test.tsx", "src/estilos/global.css"]
     teste_integracao: "tests/formulario-de-agente.test.tsx renderiza e aciona BotaoExcluirAgente."
     teste_funcional: "o estado inicial mostra so o botao Excluir agente, apos o clique aparecem o nome do agente, Cancelar e Confirmar exclusao, e o codigo-fonte nao contem window.confirm."
     criterio_aceite: "O teste passa e Cancelar volta ao estado inicial."
     depende_de: [T-05.04]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-05.06
     titulo: "Paginas /agentes e /agentes/novo"
     fase: F-05.1
@@ -182,7 +182,7 @@ flowchart LR
   class T_05_02 concluida
   class T_05_03 concluida
   class T_05_04 concluida
-  class T_05_05 pendente
+  class T_05_05 concluida
   class T_05_06 pendente
   class T_05_07 pendente
 ```
@@ -277,13 +277,16 @@ titulo: Botao de excluir com confirmacao na tela
 objetivo: Excluir agente com bloco de confirmacao, sem window.confirm.
 arquivos:
   cria: [src/componentes/BotaoExcluirAgente.tsx]
-  altera: [tests/formulario-de-agente.test.tsx]
+  altera: [tests/formulario-de-agente.test.tsx, src/estilos/global.css]
 teste_integracao: tests/formulario-de-agente.test.tsx renderiza e aciona BotaoExcluirAgente.
 teste_funcional: o estado inicial mostra so o botao Excluir agente, apos o clique aparecem o nome do agente, Cancelar e Confirmar exclusao, e o codigo-fonte nao contem window.confirm.
 criterio_aceite: O teste passa e Cancelar volta ao estado inicial.
 depende_de: [T-05.04]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: formulario-de-agente 10 passed; tsc e lint 0
 ```
 
 ---
