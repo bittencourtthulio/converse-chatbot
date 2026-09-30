@@ -41,7 +41,7 @@ tasks:
   - id: T-02.03
     titulo: "Desempenho e reconstrucao do indice"
     fase: F-02.2
-    status: pendente
+    status: concluida
     objetivo: "Medir a busca com 5.000 trechos e expor reconstruirIndiceDeTrechos."
     arquivos:
       cria: ["tests/recuperacao-desempenho.test.ts"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/recuperacao-desempenho.test.ts passa e termina em menos de 30 s."
     depende_de: ["T-02.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-02.04
     titulo: "Seed coberta pelo indice"
     fase: F-02.2
@@ -126,7 +126,9 @@ teste_funcional: Depois de corromper o indice (INSERT 'delete-all'), reconstruir
 criterio_aceite: tests/recuperacao-desempenho.test.ts passa e termina em menos de 30 s.
 depende_de: ["T-02.02"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial: recuperacao-desempenho 2 passed
 ```
 
 ---

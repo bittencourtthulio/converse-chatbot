@@ -92,3 +92,12 @@ export async function buscarTrechos(
     pontuacao: -Number(l.bm25),
   }))
 }
+
+/**
+ * Reconstrói o índice FTS5 a partir de `trechos` (comando `rebuild`). É o
+ * remédio se o `rowid` de `trechos` mudar (um `VACUUM` ou a restauração de um
+ * backup pode renumerá-lo) ou se o índice divergir por qualquer motivo (PR-50).
+ */
+export async function reconstruirIndiceDeTrechos(): Promise<void> {
+  await prisma.$executeRaw`INSERT INTO trechos_fts(trechos_fts) VALUES ('rebuild')`
+}
