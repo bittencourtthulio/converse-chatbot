@@ -11,7 +11,7 @@ tasks:
   - id: T-07.01
     titulo: "Convencoes, lacunas e README"
     fase: F-07.1
-    status: pendente
+    status: concluida
     objetivo: "Converter as lacunas de handler publico, CSP dinamico e proxy em regras com arquivo:linha e atualizar o README."
     arquivos:
       cria: ["docs/chat-embutido/sprint-07/sprint.md", "docs/chat-embutido/sprint-07/fases.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/projeto.test.ts passa e o grep de proxy.ts em CONVENCOES.md devolve a regra."
     depende_de: ["T-06.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-07.02
     titulo: "Verificacao ponta a ponta no navegador"
     fase: F-07.1
@@ -73,7 +73,7 @@ teste_funcional: "CONVENCOES.md traz as regras de rota publica sem sessao, CSP p
 criterio_aceite: "tests/projeto.test.ts passa e o grep de proxy.ts em CONVENCOES.md devolve a regra."
 depende_de: ["T-06.04"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: verde — 1481 passed
 ```
 
 ---

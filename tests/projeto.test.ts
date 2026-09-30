@@ -214,3 +214,66 @@ describe('convenções da busca textual (FT-05, PR-30)', () => {
     expect(lacunas).toMatch(/rowid/)
   })
 })
+
+describe('convenções do chat embutido (FT-06)', () => {
+  const convencoes = ler('docs/stack/CONVENCOES.md')
+  const lacunas = ler('docs/stack/LACUNAS.md')
+  const readme = ler('README.md')
+
+  // Cada citação `arquivo:linha` nova do CONVENCOES.md precisa apontar para a linha certa.
+  const CITACOES: Array<[string, RegExp]> = [
+    ['src/app/api/publico/agentes/[id]/conversar/route.ts:35', /export async function POST/],
+    ['src/app/api/publico/agentes/[id]/config/route.ts:12', /export async function GET/],
+    ['src/servicos/chat-publico.ts:115', /export async function\* conversarComoVisitante/],
+    ['src/servicos/chat-publico.ts:84', /export function erroParaVisitante/],
+    ['src/servicos/chat-publico-limites.ts:32', /export function exigirLimiteDeIp/],
+    ['src/servicos/chat-publico-limites.ts:75', /export async function exigirTetoDiario/],
+    ['src/proxy.ts:12', /export async function proxy/],
+    ['src/proxy.ts:28', /export const config/],
+    ['next.config.ts:18', /naoEmoldurar/],
+    ['next.config.ts:25', /embed/],
+    ['src/lib/dominios-permitidos.ts:109', /export function cabecalhoFrameAncestors/],
+    ['src/widget/widget.js:233', /e\.origin !== origem/],
+    ['src/app/widget.js/route.ts:12', /export function GET/],
+    ['src/componentes/embed-logica.ts:64', /export function criarGuardaDoVisitante/],
+    ['src/lib/ambiente.ts:66', /get appUrlPublica/],
+    ['src/lib/ambiente.ts:81', /get maxTokensDaResposta/],
+    ['src/lib/ambiente.ts:88', /get storageDir/],
+    ['src/lib/ambiente.ts:95', /get maxUploadBytes/],
+    ['src/app/eventos-sse.ts:15', /export type MapeadorDeErro/],
+    ['src/app/eventos-sse.ts:38', /export function fluxoDeEventos/],
+  ]
+
+  it.each(CITACOES)('%s existe e contém o que o CONVENCOES.md diz', (citacao, esperado) => {
+    expect(convencoes).toContain(citacao)
+    const [arquivo, linha] = citacao.split(':')
+    expect(ler(arquivo!).split('\n')[Number(linha) - 1]).toMatch(esperado)
+  })
+
+  it('registra a rota pública sem sessão, o proxy.ts com CSP por agente e a exceção de cor do script', () => {
+    expect(convencoes).toMatch(/Rota pública, sem sessão/)
+    expect(convencoes).toMatch(/frame-ancestors/)
+    expect(convencoes).toMatch(/`src\/proxy\.ts`/)
+    expect(convencoes).toMatch(/Exceção declarada à regra de cor literal/)
+    expect(convencoes).toMatch(/`appUrlPublica`/)
+    expect(convencoes).not.toContain('a FT-06 sobrescreve o `X-Frame-Options`')
+  })
+
+  it('as lacunas registram o que a FT-06 resolveu e o que ficou (375 px, proxy sem cache, limite em memória)', () => {
+    expect(lacunas).toMatch(/Resolvidas na FT-06/)
+    expect(lacunas).toMatch(/375 px/)
+    expect(lacunas).toMatch(/proxy\.ts/)
+    expect(lacunas).toMatch(/npm run build/)
+  })
+
+  it('o README explica a aba Publicar, o trecho, os domínios, os limites e o site de teste', () => {
+    expect(readme).toContain('Publicar')
+    expect(readme).toContain('/widget.js')
+    expect(readme).toContain('data-agent')
+    expect(readme).toContain('frame-ancestors')
+    expect(readme).toContain('Retry-After')
+    expect(readme).toContain('src/proxy.ts')
+    expect(readme).toContain('tests/apoio/servir-site-de-teste.ts')
+    expect(readme).toMatch(/TRUST_PROXY=1/)
+  })
+})

@@ -56,6 +56,15 @@ Só o administrador cadastra outros usuários (Configurações, Usuários) e a c
 4. Na aba **Conhecimento**, o cartão **Testar busca** mostra os trechos que o agente enxergaria para uma pergunta, com a fonte e a pontuação, sem gastar crédito (`POST /api/agentes/[id]/buscar`, exige sessão).
 5. O índice é a tabela virtual `trechos_fts`, criada por SQL cru numa migration escrita à mão e mantida por gatilhos em `trechos`. Nunca rode `prisma db push` (apaga tabelas FTS5); use `npm run db:migrate`. Se o índice divergir (por exemplo, depois de um `VACUUM` ou de restaurar um backup), `reconstruirIndiceDeTrechos()` o reconstrói.
 
+## Chat embutido no seu site (aba Publicar)
+
+1. Em Agentes, abra o agente e a aba **Publicar**. Ligue **Publicar chat**, escolha título, cor (as amostras já garantem texto legível; cor quase invisível gera aviso), posição do botão, avatar (ícone pronto ou iniciais, sem upload), até 3 perguntas sugeridas e o aviso de privacidade (texto de até 300 caracteres e link opcional), e salve. A **pré-visualização** ao lado é o chat de verdade e acompanha o que você digita, mesmo com o chat desligado; as mensagens dela não contam no limite.
+2. Copie o bloco **Código para incorporar** (`<script src="https://SEU-ENDEREÇO/widget.js" data-agent="ID" async></script>`) e cole no site, antes de `</body>`. Em produção o site e o endereço precisam ser HTTPS; defina `APP_URL` para o endereço público sair certo. `data-position` e `data-color` no trecho mudam o botão só naquela página.
+3. O `widget.js` (`src/widget/widget.js`, JavaScript puro, servido por `/widget.js`) busca a configuração (`GET /api/publico/agentes/[id]/config`), monta o botão e o painel em Shadow DOM e só carrega o iframe `/embed/[id]` ao abrir. Agente desligado ou inexistente: o botão não aparece e o site não recebe erro no console. O visitante conversa por `POST /api/publico/agentes/[id]/conversar` (stream SSE, sem login; o `visitanteId` é um identificador opaco guardado no navegador dele) e a conversa volta ao reabrir (`GET .../conversa`, últimas 50 mensagens).
+4. **Domínios permitidos** (um por linha: `seusite.com.br`, `*.seusite.com.br`, `localhost:3000`): só esses sites podem mostrar o chat. Isso é garantido pelo navegador: a página do chat sai com `Content-Security-Policy: frame-ancestors` conforme a lista (por `src/proxy.ts`; o `X-Frame-Options: DENY` continua no resto do sistema) e o CORS da configuração segue a mesma lista. Lista vazia libera qualquer site. Um cliente que não é navegador pode forjar cabeçalhos: quem segura o custo é o limite de uso.
+5. **Limites de uso** (PR-16): por IP e agente 10 mensagens por minuto, por IP 30 por minuto, 60 mensagens por conversa e o **limite diário** do agente (mensagens dos visitantes por dia, padrão 500); passou, o visitante vê uma mensagem amigável e a resposta leva `Retry-After`. Sem `TRUST_PROXY=1` o sistema não distingue os visitantes e o limite por minuto vale para o site inteiro. O erro que o visitante vê é sempre a mesma frase genérica; o detalhe fica só no log.
+6. Para ver o chat num site de outra origem: suba o app, o OpenRouter simulado (`npx tsx tests/apoio/servir-falso.ts`) e o site de teste `npx tsx tests/apoio/servir-site-de-teste.ts 4321 http://localhost:3000 agente-de-exemplo`, e abra `http://localhost:4321/`. O agente de exemplo da seed já vem com o chat publicado.
+
 ## Configuração
 
 Toda variável é lida em um ponto só, `src/lib/ambiente.ts`. O que cada uma faz está no `.env.example`.
@@ -66,10 +75,10 @@ Toda variável é lida em um ponto só, `src/lib/ambiente.ts`. O que cada uma fa
 | `JWT_SECRET` | assinatura da sessão | sim |
 | `JWT_TTL_SEGUNDOS` | vida da sessão (padrão 900) | não |
 | `APP_NAME` | nome do produto na interface (padrão Converse) | não |
-| `TRUST_PROXY` | `1` atrás de proxy, para o limite de login usar `X-Forwarded-For` | não |
+| `TRUST_PROXY` | `1` atrás de proxy, para os limites de login e do chat público usarem `X-Forwarded-For` (sem isso todos os visitantes dividem um IP só) | não |
 | `ENCRYPTION_KEY` | 32 bytes em hexadecimal ou base64; criptografa a chave do OpenRouter. Só é exigida ao gravar ou ler um segredo | para usar a chave do OpenRouter |
 | `OPENROUTER_BASE_URL` | endereço da API do OpenRouter (padrão `https://openrouter.ai/api/v1`) | não |
-| `APP_URL` | URL pública do sistema, enviada ao OpenRouter em `HTTP-Referer` (padrão `http://localhost:3000`) | não |
+| `APP_URL` | URL pública do sistema: endereço do trecho da aba Publicar (vazia, vale a origem da requisição) e `HTTP-Referer` do OpenRouter (padrão `http://localhost:3000`) | não, mas defina em produção |
 | `MAX_TOKENS_RESPOSTA` | teto de tokens da resposta do modelo em cada turno (padrão 1024) | não |
 | `STORAGE_DIR` | pasta dos arquivos enviados à base de conhecimento (padrão `./storage`); entra no backup | não |
 | `MAX_UPLOAD_MB` | tamanho máximo de cada arquivo enviado, em MB (padrão 25) | não |
