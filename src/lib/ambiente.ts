@@ -29,6 +29,15 @@ export const ambiente = {
   get jwtTtlSegundos(): number {
     return inteiroComPadrao('JWT_TTL_SEGUNDOS', 900)
   },
+  /** Nome do produto na interface (PR-03). Opcional: o padrão é "Converse". */
+  get nomeDoProduto(): string {
+    const nome = process.env.APP_NAME?.trim()
+    return nome ? nome : 'Converse'
+  },
+  /** Só com TRUST_PROXY=1 o IP vem de X-Forwarded-For (PR-36). */
+  get confiarNoProxy(): boolean {
+    return process.env.TRUST_PROXY === '1'
+  },
   get ehProducao(): boolean {
     return process.env.NODE_ENV === 'production'
   },

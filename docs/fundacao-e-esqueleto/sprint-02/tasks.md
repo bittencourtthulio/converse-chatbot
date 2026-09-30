@@ -40,7 +40,7 @@ tasks:
   - id: T-02.02
     titulo: "Nome do produto e confianca no proxy no ambiente"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Ler APP_NAME (padrao Converse) e TRUST_PROXY em src/lib/ambiente.ts."
     arquivos:
       cria: ["tests/ambiente.test.ts"]
@@ -50,8 +50,8 @@ tasks:
     criterio_aceite: "O teste de ambiente passa sem exigir variavel nova para o build."
     depende_de: []
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-02.03
     titulo: "IP do cliente a partir dos cabecalhos"
     fase: F-02.1
@@ -150,7 +150,7 @@ flowchart LR
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
   class T_02_01 concluida
-  class T_02_02 pendente
+  class T_02_02 concluida
   class T_02_03 pendente
   class T_02_04 pendente
   class T_02_05 pendente
@@ -192,7 +192,10 @@ teste_funcional: Sem APP_NAME, nomeDoProduto e Converse; com APP_NAME=Acme e Acm
 criterio_aceite: O teste de ambiente passa sem exigir variavel nova para o build.
 depende_de: []
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: ambiente.test 4 passed
 ```
 
 ---
