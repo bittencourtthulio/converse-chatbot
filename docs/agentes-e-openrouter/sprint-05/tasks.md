@@ -55,18 +55,18 @@ tasks:
   - id: T-05.03
     titulo: "SeletorDeModelo"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Campo de modelo com sugestoes, texto livre e aviso sem chave."
     arquivos:
       cria: ["src/componentes/SeletorDeModelo.tsx", "tests/seletor-de-modelo.test.tsx"]
-      altera: []
+      altera: ["src/estilos/global.css"]
     teste_integracao: "tests/seletor-de-modelo.test.tsx renderiza o componente com react-dom/server."
     teste_funcional: "com modelos ha um datalist com um option por modelo e o campo aceita texto livre, sem chave nao ha datalist e aparece o aviso, o link para Integracoes so aparece quando ehAdmin e verdadeiro, e lista de reserva mostra aviso de lista reduzida."
     criterio_aceite: "O teste passa e o campo se chama modelo e tem valor inicial."
     depende_de: [T-05.02]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-05.04
     titulo: "Formulario de agente e acoes de servidor"
     fase: F-05.1
@@ -180,7 +180,7 @@ flowchart LR
   classDef critico stroke-width:3px
   class T_05_01 concluida
   class T_05_02 concluida
-  class T_05_03 pendente
+  class T_05_03 concluida
   class T_05_04 pendente
   class T_05_05 pendente
   class T_05_06 pendente
@@ -237,13 +237,16 @@ titulo: SeletorDeModelo
 objetivo: Campo de modelo com sugestoes, texto livre e aviso sem chave.
 arquivos:
   cria: [src/componentes/SeletorDeModelo.tsx, tests/seletor-de-modelo.test.tsx]
-  altera: []
+  altera: [src/estilos/global.css]
 teste_integracao: tests/seletor-de-modelo.test.tsx renderiza o componente com react-dom/server.
 teste_funcional: com modelos ha um datalist com um option por modelo e o campo aceita texto livre, sem chave nao ha datalist e aparece o aviso, o link para Integracoes so aparece quando ehAdmin e verdadeiro, e lista de reserva mostra aviso de lista reduzida.
 criterio_aceite: O teste passa e o campo se chama modelo e tem valor inicial.
 depende_de: [T-05.02]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: seletor 6 passed, tokens ok; tsc e lint 0
 ```
 
 ---
