@@ -71,7 +71,7 @@ tasks:
   - id: T-01.05
     titulo: "happy-dom e apoio de teste de DOM"
     fase: F-01.2
-    status: pendente
+    status: concluida
     objetivo: "Adicionar happy-dom de versao fixa e um apoio que monta a pagina de teste com o script."
     arquivos:
       cria: ["tests/apoio/dom.ts", "tests/ambiente-dom.test.ts"]
@@ -81,8 +81,8 @@ tasks:
     criterio_aceite: "tests/ambiente-dom.test.ts passa e npm audit --audit-level=high termina sem vulnerabilidade alta."
     depende_de: ["T-01.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
 ---
 
 # Tasks — Sprint 01
@@ -171,5 +171,5 @@ teste_funcional: "No apoio, montar uma pagina com um elemento com Shadow DOM e d
 criterio_aceite: "tests/ambiente-dom.test.ts passa e npm audit --audit-level=high termina sem vulnerabilidade alta."
 depende_de: ["T-01.04"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: verde — 1150 passed
 ```

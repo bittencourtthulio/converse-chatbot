@@ -7,7 +7,7 @@ origem_buildx: plataforma-chatbot-ia
 feature_id: FT-06
 sprint_id: sprint-01
 titulo: "Capacidade de testar: dados, modulos puros e harness de DOM"
-status: nao_iniciado
+status: concluido
 criterio_saida: "A suite inteira esta verde com a migration nova, os modulos de dominio e cor testados e um teste de happy-dom rodando."
 fases: ["F-01.1", "F-01.2"]
 riscos: ["happy-dom pode nao cobrir Shadow DOM ou postMessage com origin (lacuna 4 da base); plano B e jsdom (D-11)", "migration tem de so acrescentar (tests/migracoes.test.ts)"]

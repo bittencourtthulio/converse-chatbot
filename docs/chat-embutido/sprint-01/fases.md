@@ -10,14 +10,14 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-01.1
     titulo: "Modelo e modulos puros"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Tabela, dominios e cor prontos e testados."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-01.01", "T-01.02", "T-01.03"]
   - id: F-01.2
     titulo: "Ambiente e harness de DOM"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "APP_URL publica e ambiente de teste com DOM."
     paralelizavel: false
     paralela_com: []
@@ -55,7 +55,7 @@ flowchart LR
   class T_01_02 concluida
   class T_01_03 concluida
   class T_01_04 concluida
-  class T_01_05 pendente
+  class T_01_05 concluida
   class T_01_01,T_01_02,T_01_03,T_01_04,T_01_05 critico
 ```
 
