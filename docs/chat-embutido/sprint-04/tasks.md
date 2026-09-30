@@ -11,7 +11,7 @@ tasks:
   - id: T-04.01
     titulo: "Logica pura do embed"
     fase: F-04.1
-    status: pendente
+    status: concluida
     objetivo: "Escrever geracao e guarda do visitanteId, cor e estilo do agente e estado da retomada em modulo puro."
     arquivos:
       cria: ["src/componentes/embed-logica.ts", "tests/embed-logica.test.ts", "docs/chat-embutido/sprint-04/sprint.md", "docs/chat-embutido/sprint-04/fases.md", "docs/chat-embutido/sprint-04/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/embed-logica.test.ts passa com ao menos 12 casos."
     depende_de: ["T-03.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-04.02
     titulo: "Componente ChatEmbutido"
     fase: F-04.1
@@ -88,7 +88,7 @@ teste_funcional: "O id gerado tem 32 hexadecimais aceitos por [A-Za-z0-9_-]{16,6
 criterio_aceite: "tests/embed-logica.test.ts passa com ao menos 12 casos."
 depende_de: ["T-03.04"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: verde — 1291 passed
 ```
 
 ---
