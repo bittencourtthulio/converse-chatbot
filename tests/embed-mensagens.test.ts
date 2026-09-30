@@ -7,6 +7,7 @@ import {
   avisarOPai,
   lerMensagemDePrevia,
   mensagemDeFechar,
+  mensagemDePronto,
   mensagemDePrevia,
   mensagemDeRedimensionar,
 } from '@/componentes/embed-mensagens'
@@ -102,5 +103,17 @@ describe('prévia do painel para o iframe', () => {
   it('montarMensagemDePrevia produz o que o leitor aceita', () => {
     const m = mensagemDePrevia({ cor: '#2563eb', titulo: 'X' })
     expect(lerMensagemDePrevia({ origin: ORIGEM, data: m }, ORIGEM)).toEqual({ cor: '#2563eb', titulo: 'X' })
+  })
+})
+
+describe('aviso de pronto da prévia (T-06.02)', () => {
+  it('o iframe da prévia avisa o painel que já pode receber a configuração', () => {
+    expect(mensagemDePronto()).toEqual({ origem: 'converse', tipo: 'pronto' })
+  })
+
+  it('o widget.js não trata a mensagem de pronto como fechar nem redimensionar', () => {
+    const postMessage = vi.fn()
+    avisarOPai(mensagemDePronto(), { parent: { postMessage }, location: {} } as never)
+    expect(postMessage).toHaveBeenCalledWith({ origem: 'converse', tipo: 'pronto' }, '*')
   })
 })

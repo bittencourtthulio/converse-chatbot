@@ -15,9 +15,15 @@ export const ORIGEM_DAS_MENSAGENS = 'converse'
 export type MensagemDoIframe =
   | { origem: typeof ORIGEM_DAS_MENSAGENS; tipo: 'fechar' }
   | { origem: typeof ORIGEM_DAS_MENSAGENS; tipo: 'redimensionar'; expandido: boolean }
+  /** Só na prévia: o iframe já hidratou e pode receber a configuração do painel. */
+  | { origem: typeof ORIGEM_DAS_MENSAGENS; tipo: 'pronto' }
 
 export function mensagemDeFechar(): MensagemDoIframe {
   return { origem: ORIGEM_DAS_MENSAGENS, tipo: 'fechar' }
+}
+
+export function mensagemDePronto(): MensagemDoIframe {
+  return { origem: ORIGEM_DAS_MENSAGENS, tipo: 'pronto' }
 }
 
 export function mensagemDeRedimensionar(expandido: boolean): MensagemDoIframe {

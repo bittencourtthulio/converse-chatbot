@@ -26,7 +26,7 @@ tasks:
   - id: T-06.02
     titulo: "Codigo para incorporar, previa e avisos"
     fase: F-06.1
-    status: em_andamento
+    status: concluida
     objetivo: "Criar o bloco do script com Copiar e fallback, a previa em iframe, a amostra de cor com aviso de contraste e os avisos."
     arquivos:
       cria: ["src/componentes/CodigoParaIncorporar.tsx", "src/componentes/PreviaDoChat.tsx", "src/componentes/PainelDePublicacao.tsx", "tests/publicar-logica.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/publicar-ui.test.tsx e tests/tokens.test.ts passam."
     depende_de: ["T-06.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-06.03
     titulo: "Seed com o chat publicado"
     fase: F-06.2
@@ -105,7 +105,7 @@ teste_funcional: "O snippet usa APP_URL quando definida e senao a origem da requ
 criterio_aceite: "tests/publicar-ui.test.tsx e tests/tokens.test.ts passam."
 depende_de: ["T-06.01"]
 paralelizavel: false
-status: em_andamento
+status: concluida   # 2026-09-30 · suíte: verde — 1445 passed
 ```
 
 ---

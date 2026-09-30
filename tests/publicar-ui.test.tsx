@@ -9,6 +9,10 @@ import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { FormularioDoChat, type ConfiguracaoDoFormulario } from '@/componentes/FormularioDoChat'
 import { AMOSTRAS_DE_COR } from '@/lib/cor'
+import { CodigoParaIncorporar } from '@/componentes/CodigoParaIncorporar'
+import { PainelDePublicacao } from '@/componentes/PainelDePublicacao'
+import { PreviaDoChat } from '@/componentes/PreviaDoChat'
+import { avisosDaPublicacao, montarSnippet } from '@/componentes/publicar-logica'
 
 const configuracao: ConfiguracaoDoFormulario = {
   ativo: true,
@@ -109,5 +113,108 @@ describe('FormularioDoChat', () => {
     const fonte = readFileSync(path.join(process.cwd(), 'src/componentes/FormularioDoChat.tsx'), 'utf8')
     expect(fonte).not.toContain('dangerouslySetInnerHTML')
     expect(fonte).not.toMatch(/#[0-9a-fA-F]{3,8}\b/)
+  })
+})
+
+const snippet = montarSnippet('https://converse.exemplo.com.br', 'ag1')
+
+describe('CodigoParaIncorporar', () => {
+  const saida = renderToStaticMarkup(<CodigoParaIncorporar snippet={snippet} />)
+
+  it('mostra o trecho de uma linha, escapado, com o id do agente', () => {
+    expect(saida).toContain('&lt;script src=&quot;https://converse.exemplo.com.br/widget.js&quot; data-agent=&quot;ag1&quot; async&gt;&lt;/script&gt;')
+    expect(saida).not.toContain('<script src=')
+  })
+
+  it('tem o botão Copiar código e uma região de status para o resultado', () => {
+    expect(saida).toMatch(/<button[^>]*type="button"[^>]*>Copiar código<\/button>/)
+    expect(saida).toMatch(/role="status"[^>]*aria-live="polite"/)
+  })
+
+  it('o bloco de código é focável e nomeado (para copiar com o teclado)', () => {
+    expect(saida).toMatch(/<pre[^>]*tabindex="0"[^>]*aria-label="Código para colar no site"|<pre[^>]*aria-label="Código para colar no site"[^>]*tabindex="0"/)
+  })
+
+  it('traz as instruções curtas: antes de </body>, HTTPS em produção e atributos opcionais', () => {
+    expect(saida).toContain('logo antes de <code>&lt;/body&gt;</code>')
+    expect(saida).toContain('HTTPS')
+    expect(saida).toContain('data-position')
+    expect(saida).toContain('data-color')
+  })
+})
+
+describe('PreviaDoChat', () => {
+  const saida = renderToStaticMarkup(<PreviaDoChat agenteId="ag1" versao="v1" />)
+
+  it('é um iframe da própria plataforma no modo prévia, com título', () => {
+    expect(saida).toMatch(/<iframe[^>]*src="\/embed\/ag1\?previa=1"/)
+    expect(saida).toMatch(/title="Pré-visualização do chat"/)
+  })
+
+  it('explica que as mensagens da prévia não contam no limite diário', () => {
+    expect(saida).toContain('não contam no limite')
+  })
+
+  it('o id do agente vai codificado na URL', () => {
+    expect(renderToStaticMarkup(<PreviaDoChat agenteId="a b/c" versao="v1" />)).toContain('/embed/a%20b%2Fc?previa=1')
+  })
+})
+
+describe('PainelDePublicacao', () => {
+  const avisos = avisosDaPublicacao({
+    ativo: false,
+    temChave: false,
+    fontesProntas: 0,
+    confiarNoProxy: false,
+    origem: 'http://converse.exemplo.com.br',
+  })
+  const painel = renderToStaticMarkup(
+    <PainelDePublicacao
+      acao={async () => ({})}
+      agente={{ id: 'ag1', nome: 'Assistente da Loja' }}
+      configuracao={configuracao}
+      versao="v1"
+      snippet={snippet}
+      avisos={avisos}
+    />,
+  )
+
+  it('junta formulário, código, prévia e avisos', () => {
+    expect(painel).toContain('Salvar configuração do chat')
+    expect(painel).toContain('Código para incorporar')
+    expect(painel).toContain('Pré-visualização')
+    expect(painel).toContain('publicar-grade')
+  })
+
+  it('mostra os avisos de chave, fonte, proxy, HTTPS e chat desligado', () => {
+    expect(painel).toContain('mensagem genérica')
+    expect(painel).toContain('só com as instruções')
+    expect(painel).toContain('TRUST_PROXY=1')
+    expect(painel).toContain('HTTPS')
+    expect(painel).toContain('desligado')
+  })
+
+  it('sem avisos não desenha a área de avisos', () => {
+    const limpo = renderToStaticMarkup(
+      <PainelDePublicacao
+        acao={async () => ({})}
+        agente={{ id: 'ag1', nome: 'A' }}
+        configuracao={configuracao}
+        versao="v1"
+        snippet={snippet}
+        avisos={[]}
+      />,
+    )
+    expect(limpo).not.toContain('avisos-da-publicacao')
+  })
+})
+
+describe('estilos da aba Publicar', () => {
+  const css = readFileSync(path.join(process.cwd(), 'src/estilos/global.css'), 'utf8')
+  it('a grade vira uma coluna em tela estreita e há estilo para cada peça', () => {
+    expect(css).toMatch(/@media \(max-width: 1000px\)\s*\{\s*\.publicar-grade \{ grid-template-columns: minmax\(0, 1fr\)/)
+    for (const classe of ['.amostra', '.codigo-bloco', '.previa-do-chat', '.campo-chave', '.campo-radio']) {
+      expect(css, classe).toContain(classe)
+    }
   })
 })

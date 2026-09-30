@@ -30,6 +30,7 @@ import {
   avisarOPai,
   lerMensagemDePrevia,
   mensagemDeFechar,
+  mensagemDePronto,
   mensagemDeRedimensionar,
 } from '@/componentes/embed-mensagens'
 
@@ -168,6 +169,8 @@ export function ChatEmbutido({ agenteId, configuracao: configuracaoInicial, modo
       if (nova) setConfiguracao((atual) => ({ ...atual, ...nova }))
     }
     window.addEventListener('message', ouvir)
+    // Só agora o iframe escuta: o painel espera este aviso para mandar a configuração.
+    avisarOPai(mensagemDePronto(), window)
     return () => window.removeEventListener('message', ouvir)
   }, [modo])
 

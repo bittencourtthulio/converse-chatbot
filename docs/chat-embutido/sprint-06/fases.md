@@ -50,7 +50,7 @@ flowchart LR
   classDef critico   stroke-width:3px
 
   class T_06_01 concluida
-  class T_06_02 pendente
+  class T_06_02 concluida
   class T_06_03 pendente
   class T_06_04 pendente
   class T_06_01,T_06_02,T_06_03,T_06_04 critico
