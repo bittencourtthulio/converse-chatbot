@@ -26,7 +26,7 @@ tasks:
   - id: T-04.02
     titulo: "Fila: concorrencia, retomada e singleton"
     fase: F-04.1
-    status: pendente
+    status: concluida
     objetivo: "Processar pendentes com concorrencia 2, retomar processando e ligar o acordar automatico."
     arquivos:
       cria: ["tests/fontes-fila-execucao.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/fontes-fila-execucao.test.ts passa."
     depende_de: ["T-04.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-04.03
     titulo: "Servico: texto, listar, obter, resumo e trechos"
     fase: F-04.2
@@ -137,7 +137,9 @@ teste_funcional: retomar() converte processando em pendente, uma fonte excluida 
 criterio_aceite: tests/fontes-fila-execucao.test.ts passa.
 depende_de: ["T-04.01"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 774 passed 774, 0 failed
 ```
 
 ---

@@ -25,6 +25,16 @@ export interface OpcoesDaFila {
 export interface Fila {
   /** Processa uma fonte pendente. `false` se não existe ou outra execução a reivindicou. */
   processarUma(fonteId: string): Promise<boolean>
+  /** Processa até não haver pendente, com a concorrência da fila. Devolve quantas processou. */
+  processarPendentes(): Promise<number>
+  /** Devolve a `pendente` as fontes que um reinício deixou em `processando`. */
+  retomar(): Promise<number>
+  /** Liga o processamento automático e começa a drenar, sem esperar. */
+  iniciar(): void
+  /** Avisa que há trabalho novo; só age depois de `iniciar`. */
+  acordar(): void
+  /** Resolve quando a drenagem em curso (se houver) terminar. */
+  ocioso(): Promise<void>
 }
 
 const MENSAGEM_GENERICA = 'Não foi possível processar este arquivo. Tente reprocessar ou envie outro arquivo.'
@@ -120,18 +130,89 @@ export function criarFila(opcoes: OpcoesDaFila = {}): Fila {
     }
   }
 
-  return {
-    async processarUma(fonteId) {
-      // Reivindicação atômica: só uma execução passa de `pendente` para `processando`.
-      const { count } = await prisma.fonte.updateMany({
-        where: { id: fonteId, status: 'pendente' },
-        data: { status: 'processando', mensagemErro: null },
+  const concorrencia = opcoes.concorrencia ?? 2
+  let ativa = false
+  let drenagem: Promise<void> | null = null
+  let reexecutar = false
+
+  async function trabalhador(): Promise<number> {
+    let feitas = 0
+    for (;;) {
+      const proxima = await prisma.fonte.findFirst({
+        where: { status: 'pendente' },
+        orderBy: { criadoEm: 'asc' },
+        select: { id: true },
       })
-      if (count === 0) return false
-      const fonte = await prisma.fonte.findUnique({ where: { id: fonteId } })
-      if (!fonte) return true
-      await processar(fonte)
-      return true
+      if (!proxima) return feitas
+      if (await processarUma(proxima.id)) feitas += 1
+    }
+  }
+
+  async function processarPendentes(): Promise<number> {
+    const parciais = await Promise.all(Array.from({ length: concorrencia }, () => trabalhador()))
+    return parciais.reduce((soma, n) => soma + n, 0)
+  }
+
+  async function drenar(): Promise<void> {
+    do {
+      reexecutar = false
+      await processarPendentes().catch(() => undefined)
+    } while (reexecutar)
+  }
+
+  function acordar(): void {
+    if (!ativa) return
+    if (drenagem) {
+      reexecutar = true
+      return
+    }
+    drenagem = drenar().finally(() => {
+      drenagem = null
+    })
+  }
+
+  async function processarUma(fonteId: string): Promise<boolean> {
+    // Reivindicação atômica: só uma execução passa de `pendente` para `processando`.
+    const { count } = await prisma.fonte.updateMany({
+      where: { id: fonteId, status: 'pendente' },
+      data: { status: 'processando', mensagemErro: null },
+    })
+    if (count === 0) return false
+    const fonte = await prisma.fonte.findUnique({ where: { id: fonteId } })
+    if (!fonte) return true
+    await processar(fonte)
+    return true
+  }
+
+  return {
+    processarUma,
+    processarPendentes,
+    async retomar() {
+      const { count } = await prisma.fonte.updateMany({
+        where: { status: 'processando' },
+        data: { status: 'pendente' },
+      })
+      return count
+    },
+    iniciar() {
+      ativa = true
+      acordar()
+    },
+    acordar,
+    async ocioso() {
+      while (drenagem) await drenagem
     },
   }
+}
+
+const CHAVE_DA_FILA = Symbol.for('converse.filaDeFontes')
+
+/**
+ * A fila do processo. Guardada em `globalThis` para sobreviver à recarga de
+ * módulos do `next dev` sem criar uma segunda fila (PR-48).
+ */
+export function obterFila(): Fila {
+  const global = globalThis as unknown as Record<symbol, Fila | undefined>
+  global[CHAVE_DA_FILA] ??= criarFila()
+  return global[CHAVE_DA_FILA]
 }
