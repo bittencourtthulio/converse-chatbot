@@ -56,7 +56,7 @@ tasks:
   - id: T-05.04
     titulo: "Cartao Testar busca na aba Conhecimento"
     fase: F-05.2
-    status: pendente
+    status: concluida
     objetivo: "Criar TestarBusca com campo, botao e estados vazio, carregando, erro e resultado, dentro do PainelDeConhecimento."
     arquivos:
       cria: ["src/componentes/TestarBusca.tsx", "src/componentes/busca-logica.ts", "tests/busca-logica.test.ts", "docs/respostas-com-conhecimento/sprint-05/sprint.md", "docs/respostas-com-conhecimento/sprint-05/fases.md", "docs/respostas-com-conhecimento/sprint-05/tasks.md"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "tests/busca-logica.test.ts, tests/painel-de-conhecimento.test.tsx e tests/tokens.test.ts passam."
     depende_de: ["T-04.03", "T-05.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
 ---
 
 # Tasks — Sprint 05
@@ -145,6 +145,8 @@ teste_funcional: busca-logica valida a pergunta (1 a 500), reduz os estados vazi
 criterio_aceite: tests/busca-logica.test.ts, tests/painel-de-conhecimento.test.tsx e tests/tokens.test.ts passam.
 depende_de: ["T-04.03", "T-05.03"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: verde: 1056 passed, 0 failed (fecha a sprint 05)
 ```
 

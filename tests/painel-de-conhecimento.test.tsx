@@ -134,3 +134,25 @@ describe('painel', () => {
     expect(html).not.toContain('class="fonte-item"')
   })
 })
+
+describe('cartão Testar busca (FT-05)', () => {
+  const saida = painel([fonte()])
+
+  it('o painel traz o cartão com título, campo rotulado e botão Buscar', () => {
+    expect(saida).toContain('Testar busca')
+    expect(saida).toMatch(/<label[^>]*class="campo busca-campo"[^>]*><span>Pergunta<\/span><input[^>]*name="pergunta"/)
+    expect(saida).toContain('maxLength="500"')
+    expect(saida).toMatch(/<button[^>]*type="submit"[^>]*>Buscar<\/button>/)
+  })
+
+  it('começa no estado inicial, sem resultado nem erro', () => {
+    expect(saida).toContain('Os trechos encontrados aparecem aqui.')
+    expect(saida).not.toContain('Buscando na base')
+    expect(saida).not.toContain('busca-lista')
+  })
+
+  it('vem depois de Adicionar e antes da lista de fontes', () => {
+    expect(saida.indexOf('Testar busca')).toBeGreaterThan(saida.indexOf('aria-label="Resumo da base"'))
+    expect(saida.indexOf('Testar busca')).toBeLessThan(saida.indexOf('id="titulo-das-fontes"'))
+  })
+})

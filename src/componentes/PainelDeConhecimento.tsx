@@ -6,6 +6,7 @@ import { Alerta } from '@/componentes/Alerta'
 import { CartoesDeResumo } from '@/componentes/CartoesDeResumo'
 import { EstadoVazio } from '@/componentes/EstadoVazio'
 import { LinhaDeFonte } from '@/componentes/LinhaDeFonte'
+import { TestarBusca } from '@/componentes/TestarBusca'
 import { INTERVALO_DO_POLLING_MS, deveContinuarPolling } from '@/componentes/conhecimento-logica'
 import { serializarFonte, type FonteDaTela, type ResumoDaTela } from '@/componentes/fonte-da-tela'
 
@@ -75,6 +76,8 @@ export function PainelDeConhecimento({
       <CartoesDeResumo resumo={resumo} />
 
       <AdicionarFontes agenteId={agenteId} limiteDeUploadBytes={limiteDeUploadBytes} aoAlterar={() => void atualizar()} />
+
+      <TestarBusca agenteId={agenteId} />
 
       {erroDeAtualizacao && <Alerta variante="erro">{erroDeAtualizacao}</Alerta>}
 

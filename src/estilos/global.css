@@ -1083,3 +1083,32 @@ textarea { min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: verti
   /* Referência no meio do texto: maior que o mínimo de 24px do WCAG 2.2, sem quebrar a linha. */
   .referencia-de-fonte { display: inline-block; min-width: 28px; min-height: 28px; }
 }
+
+/* ---------- cartão Testar busca (FT-05) ---------- */
+
+.busca-formulario { display: flex; align-items: flex-end; gap: 12px; }
+.busca-campo { flex: 1; min-width: 0; }
+.busca-resultado { min-height: 24px; }
+.busca-lista { display: flex; flex-direction: column; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.busca-trecho {
+  padding: 10px 12px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--raio-controle);
+}
+.busca-trecho-cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+  margin: 0 0 6px;
+}
+.busca-trecho-meta { color: var(--fg-muted); font-size: var(--texto-pequeno); font-variant-numeric: tabular-nums; }
+.busca-trecho-texto { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+@media (max-width: 480px) {
+  .busca-formulario { flex-direction: column; align-items: stretch; }
+  .busca-formulario .botao { width: 100%; }
+}
