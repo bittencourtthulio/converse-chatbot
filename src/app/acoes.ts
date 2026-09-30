@@ -6,6 +6,7 @@ import { entrar, exigirLimiteDeLogin } from '@/servicos/autenticacao'
 import { ipDoCliente } from '@/lib/requisicao'
 import { criar, editar, desativar } from '@/servicos/usuarios'
 import { atualizarPerfil, trocarSenha } from '@/servicos/perfil'
+import { criar as criarAgenteNoServico, editar as editarAgenteNoServico, excluir as excluirAgenteNoServico } from '@/servicos/agentes'
 import {
   salvarChaveDoOpenrouter,
   removerChaveDoOpenrouter,
@@ -197,4 +198,60 @@ export async function removerChaveOpenrouter(): Promise<EstadoDoFormulario> {
   }
   revalidatePath('/configuracoes/integracoes')
   return { sucesso: 'Chave removida.' }
+}
+
+/** Os campos do formulário de agente, como o serviço os valida. */
+function camposDoAgente(form: FormData) {
+  return {
+    nome: form.get('nome'),
+    instrucoes: form.get('instrucoes'),
+    modelo: form.get('modelo'),
+    temperatura: form.get('temperatura'),
+    mensagemInicial: form.get('mensagemInicial'),
+  }
+}
+
+export async function criarAgente(
+  _estado: EstadoDoFormulario,
+  form: FormData,
+): Promise<EstadoDoFormulario> {
+  let id: string
+  try {
+    const autor = await exigirUsuario()
+    id = (await criarAgenteNoServico(autor, camposDoAgente(form))).id
+  } catch (erro) {
+    return { erro: mensagemDe(erro) }
+  }
+  revalidatePath('/agentes')
+  // Fora do try/catch: `redirect` lança um sinal que não pode ser engolido.
+  redirect(`/agentes/${id}`)
+}
+
+export async function editarAgente(
+  _estado: EstadoDoFormulario,
+  form: FormData,
+): Promise<EstadoDoFormulario> {
+  try {
+    const autor = await exigirUsuario()
+    await editarAgenteNoServico(autor, String(form.get('id')), camposDoAgente(form))
+  } catch (erro) {
+    return { erro: mensagemDe(erro) }
+  }
+  revalidatePath('/agentes')
+  revalidatePath(`/agentes/${String(form.get('id'))}`)
+  return { sucesso: 'Alterações salvas.' }
+}
+
+export async function excluirAgente(
+  _estado: EstadoDoFormulario,
+  form: FormData,
+): Promise<EstadoDoFormulario> {
+  try {
+    const autor = await exigirUsuario()
+    await excluirAgenteNoServico(autor, String(form.get('id')))
+  } catch (erro) {
+    return { erro: mensagemDe(erro) }
+  }
+  revalidatePath('/agentes')
+  redirect('/agentes')
 }

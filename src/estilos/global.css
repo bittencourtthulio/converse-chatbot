@@ -366,6 +366,8 @@ button.perigo {
 input[type='text'],
 input[type='email'],
 input[type='password'],
+input[type='number'],
+textarea,
 select {
   width: 100%;
   min-height: var(--altura-controle);
@@ -378,8 +380,8 @@ select {
   transition: border-color var(--transicao);
 }
 input::placeholder { color: var(--fg-subtle); }
-input:hover, select:hover { border-color: var(--fg-muted); }
-input:focus-visible, select:focus-visible {
+input:hover, select:hover, textarea:hover { border-color: var(--fg-muted); }
+input:focus-visible, select:focus-visible, textarea:focus-visible {
   border-color: var(--border-focus);
   outline: 2px solid var(--border-focus);
   outline-offset: 0;
@@ -557,14 +559,14 @@ tbody tr:hover { background: var(--bg-hover); }
   button.primario, button.secundario, button.perigo,
   .botao-icone,
   .menu-do-usuario-gatilho,
-  input[type='text'], input[type='email'], input[type='password'], select {
+  input[type='text'], input[type='email'], input[type='password'], input[type='number'], textarea, select {
     min-height: var(--alvo-toque);
   }
   .botao-icone { width: var(--alvo-toque); height: var(--alvo-toque); }
   .botao-pequeno { min-height: var(--alvo-toque); }
 
   /* 16px evita o zoom automático de campo no iOS */
-  input[type='text'], input[type='email'], input[type='password'], select { font-size: 1rem; }
+  input[type='text'], input[type='email'], input[type='password'], input[type='number'], textarea, select { font-size: 1rem; }
 
   .login-cartao { padding: 24px; }
 }
@@ -628,3 +630,10 @@ tbody tr:hover { background: var(--bg-hover); }
   font-family: var(--font-mono);
   font-size: 0.92em;
 }
+
+/* ---------- formulário de agente ---------- */
+
+textarea { min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: vertical; }
+.campo-ajuda { display: block; margin-top: 6px; color: var(--fg-muted); font-size: var(--texto-pequeno); font-weight: 400; }
+.campo > .campo-ajuda { margin-bottom: 0; font-weight: 400; color: var(--fg-muted); }
+.campo-curto input { max-width: 140px; }

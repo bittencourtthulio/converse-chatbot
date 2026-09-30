@@ -70,18 +70,18 @@ tasks:
   - id: T-05.04
     titulo: "Formulario de agente e acoes de servidor"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Formulario com contador de instrucoes, temperatura e mensagem inicial, mais as acoes criar, editar e excluir."
     arquivos:
-      cria: ["src/componentes/FormularioDeAgente.tsx", "tests/formulario-de-agente.test.tsx"]
+      cria: ["src/componentes/FormularioDeAgente.tsx", "tests/formulario-de-agente.test.tsx", "tests/acoes-de-agente.test.ts"]
       altera: ["src/app/acoes.ts", "src/estilos/global.css"]
     teste_integracao: "tests/formulario-de-agente.test.tsx renderiza o formulario com react-dom/server."
     teste_funcional: "o formulario traz nome, instrucoes com contador 0 de 8000, seletor de modelo, temperatura de 0 a 2 com passo 0.1 e mensagem inicial com valores iniciais do agente, e as acoes usam exigirUsuario e o servico de agentes."
     criterio_aceite: "O teste passa e criarAgente redireciona para /agentes/<id> fora do try/catch."
     depende_de: [T-05.03, T-04.02]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-05.05
     titulo: "Botao de excluir com confirmacao na tela"
     fase: F-05.1
@@ -181,7 +181,7 @@ flowchart LR
   class T_05_01 concluida
   class T_05_02 concluida
   class T_05_03 concluida
-  class T_05_04 pendente
+  class T_05_04 concluida
   class T_05_05 pendente
   class T_05_06 pendente
   class T_05_07 pendente
@@ -256,14 +256,17 @@ id: T-05.04
 titulo: Formulario de agente e acoes de servidor
 objetivo: Formulario com contador de instrucoes, temperatura e mensagem inicial, mais as acoes criar, editar e excluir.
 arquivos:
-  cria: [src/componentes/FormularioDeAgente.tsx, tests/formulario-de-agente.test.tsx]
+  cria: [src/componentes/FormularioDeAgente.tsx, tests/formulario-de-agente.test.tsx, tests/acoes-de-agente.test.ts]
   altera: [src/app/acoes.ts, src/estilos/global.css]
 teste_integracao: tests/formulario-de-agente.test.tsx renderiza o formulario com react-dom/server.
 teste_funcional: o formulario traz nome, instrucoes com contador 0 de 8000, seletor de modelo, temperatura de 0 a 2 com passo 0.1 e mensagem inicial com valores iniciais do agente, e as acoes usam exigirUsuario e o servico de agentes.
 criterio_aceite: O teste passa e criarAgente redireciona para /agentes/<id> fora do try/catch.
 depende_de: [T-05.03, T-04.02]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: formulario 6 e acoes 6 passed, tokens ok; tsc e lint 0
 ```
 
 ---
