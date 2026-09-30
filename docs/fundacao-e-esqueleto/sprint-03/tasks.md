@@ -40,7 +40,7 @@ tasks:
   - id: T-03.02
     titulo: "Icones e itens de menu em arquivo unico"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Definir a lista unica de itens de menu, o filtro por papel e o caminho de titulo por rota, com icones SVG inline."
     arquivos:
       cria: ["src/componentes/itens-de-menu.ts", "src/componentes/Icones.tsx", "tests/menu.test.ts"]
@@ -50,8 +50,8 @@ tasks:
     criterio_aceite: "O teste de menu passa e acrescentar um item exige editar apenas itens-de-menu.ts."
     depende_de: [T-03.01]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-03.03
     titulo: "Casca SaaS do sistema"
     fase: F-03.1
@@ -133,7 +133,7 @@ flowchart LR
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
   class T_03_01 concluida
-  class T_03_02 pendente
+  class T_03_02 concluida
   class T_03_03 pendente
   class T_03_04 pendente
 ```
@@ -174,7 +174,10 @@ teste_funcional: itensVisiveis(false) nao contem Usuarios e itensVisiveis(true) 
 criterio_aceite: O teste de menu passa e acrescentar um item exige editar apenas itens-de-menu.ts.
 depende_de: [T-03.01]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: menu.test 9 passed
 ```
 
 ---
