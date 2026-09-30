@@ -40,7 +40,7 @@ tasks:
   - id: T-05.02
     titulo: "Verificacao em copia limpa"
     fase: F-05.1
-    status: pendente
+    status: em_andamento
     objetivo: "Provar a suite herdada e a nova num clone do estado commitado fora do repositorio."
     arquivos:
       cria: ["docs/fundacao-e-esqueleto/VERIFICACAO-COPIA-LIMPA.md"]
@@ -115,7 +115,7 @@ flowchart LR
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
   class T_05_01 concluida
-  class T_05_02 pendente
+  class T_05_02 em_andamento
   class T_05_03 pendente
 ```
 
@@ -155,7 +155,7 @@ teste_funcional: Todos os comandos terminam com codigo 0 e a contagem de testes 
 criterio_aceite: O arquivo de verificacao lista cada comando com o resultado e a contagem de testes.
 depende_de: [T-05.01]
 paralelizavel: false
-status: pendente
+status: em_andamento
 ```
 
 ---
