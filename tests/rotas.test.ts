@@ -144,6 +144,24 @@ describe('com sessão de admin', () => {
   })
 })
 
+describe('layout raiz', () => {
+  it('o título usa o nome do produto e a página é em português do Brasil', async () => {
+    const html = await (await pedir('/entrar')).text()
+    expect(html).toMatch(/<title>[^<]*Converse[^<]*<\/title>/)
+    expect(html).toContain('lang="pt-BR"')
+    expect(html).not.toContain('Gerado pelo buildx')
+  })
+
+  it('resolve o tema antes da primeira pintura: escolha salva, senão preferência do sistema', async () => {
+    const html = await (await pedir('/entrar')).text()
+    const script = html.match(/<script[^>]*>([^<]*localStorage[^<]*)<\/script>/)?.[1] ?? ''
+    expect(script).toContain("getItem('tema')")
+    expect(script).toContain('prefers-color-scheme: dark')
+    expect(script).toContain('dataset.theme')
+    expect(html.indexOf('localStorage')).toBeLessThan(html.indexOf('</head>'))
+  })
+})
+
 describe('casca SaaS', () => {
   it('mostra logotipo, menu do usuário, gaveta e alternador de tema ao admin', async () => {
     const r = await pedir('/', await cookieDe('admin.rota@teste.local'))

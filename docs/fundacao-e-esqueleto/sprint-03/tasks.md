@@ -70,7 +70,7 @@ tasks:
   - id: T-03.04
     titulo: "Layout raiz com titulo do produto e tema sem flash"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Usar APP_NAME no titulo e resolver o tema antes da primeira pintura."
     arquivos:
       cria: []
@@ -80,8 +80,8 @@ tasks:
     criterio_aceite: "O teste passa e o layout nao contem o texto Gerado pelo buildx."
     depende_de: [T-03.03]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
 ---
 
 # Plano — Sprint 03 — Base visual: tokens, componentes de estilo, menu e casca do sistema
@@ -135,7 +135,7 @@ flowchart LR
   class T_03_01 concluida
   class T_03_02 concluida
   class T_03_03 concluida
-  class T_03_04 pendente
+  class T_03_04 concluida
 ```
 
 ## Tasks
@@ -214,6 +214,9 @@ teste_funcional: O title contem Converse, o script inline do head le a chave tem
 criterio_aceite: O teste passa e o layout nao contem o texto Gerado pelo buildx.
 depende_de: [T-03.03]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: rotas 21 passed
 ```
 
