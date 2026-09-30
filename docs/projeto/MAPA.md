@@ -5,8 +5,8 @@ kind: mapa
 projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-09-30
 total_features: 11
-pendentes: 9
-em_andamento: 0
+pendentes: 8
+em_andamento: 1
 entregues: 2
 bloqueadas: 0
 ---
@@ -26,7 +26,7 @@ da feature de que depende (PRs empilhados).
 |---|---|---|---|
 | FT-01 | Fundação e esqueleto de aplicação | entregue | local (branch feat/fundacao-e-esqueleto) |
 | FT-02 | Agentes e chave do OpenRouter | entregue | local (branch feat/agentes-e-openrouter) |
-| FT-03 | Conversa de teste com o agente | pendente | — |
+| FT-03 | Conversa de teste com o agente | em_andamento | — |
 | FT-04 | Base de conhecimento: arquivos e textos | pendente | — |
 | FT-05 | Respostas com base no conhecimento | pendente | — |
 | FT-06 | Chat embutido por script | pendente | — |
@@ -84,7 +84,7 @@ Trabalho: adaptar o template (nome, layout e tokens SaaS no lugar do VS Code, te
 **Premissas que realiza:** [PR-22]
 **Módulo disponível:** -
 **Fatias candidatas:** -
-**Status:** pendente
+**Status:** em_andamento
 
 ---
 
