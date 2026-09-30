@@ -4,8 +4,16 @@ import Link from 'next/link'
 import { useCallback, useEffect, useId, useReducer, useRef, useState } from 'react'
 import { Alerta } from '@/componentes/Alerta'
 import { Icone } from '@/componentes/Icones'
+import { FontesDaResposta } from '@/componentes/FontesDaResposta'
 import { TextoDoModelo } from '@/componentes/TextoDoModelo'
-import { lerEventos } from '@/componentes/leitor-de-sse'
+import {
+  abrirFonte,
+  alternarAberta,
+  fonteDoNumero,
+  idDoChip,
+  numerosDeReferencia,
+} from '@/componentes/fontes-da-resposta-logica'
+import { lerEventos, type FonteDaResposta } from '@/componentes/leitor-de-sse'
 import {
   LIMITE_DA_MENSAGEM,
   contadorVisivel,
@@ -22,7 +30,7 @@ export interface ChatDeTesteProps {
   /** A última conversa do painel deste usuário com o agente, se houver. */
   retomada?: {
     conversaId: string
-    mensagens: Array<{ id: string; papel: 'user' | 'assistant'; conteudo: string }>
+    mensagens: Array<{ id: string; papel: 'user' | 'assistant'; conteudo: string; fontes?: FonteDaResposta[] }>
   }
   /** Há chave do OpenRouter cadastrada. Sem ela o envio falharia, e a tela avisa antes. */
   temChave: boolean
@@ -38,6 +46,18 @@ function ehProblemaDeChave(erro: ErroDaConversa): boolean {
 function BolhaDeMensagem({ bolha, nome }: { bolha: Bolha; nome: string }) {
   const doUsuario = bolha.papel === 'user'
   const digitando = bolha.estado === 'digitando'
+  const fontes = bolha.fontes ?? []
+  const [abertas, setAbertas] = useState<string[]>([])
+  const idBase = useId()
+  const referencias = fontes.length > 0 ? numerosDeReferencia(fontes) : undefined
+
+  // Clicar em [n] no texto abre o trecho da fonte e leva o foco até o chip dela.
+  const aoReferenciar = (n: number) => {
+    const fonteId = fonteDoNumero(fontes, n)
+    if (!fonteId) return
+    setAbertas((atuais) => abrirFonte(atuais, fonteId))
+    requestAnimationFrame(() => document.getElementById(idDoChip(idBase, fonteId))?.focus())
+  }
   return (
     <div className={`chat-linha ${doUsuario ? 'chat-linha-usuario' : 'chat-linha-agente'}`}>
       <div className={`bolha ${doUsuario ? 'bolha-usuario' : 'bolha-agente'}`}>
@@ -52,7 +72,15 @@ function BolhaDeMensagem({ bolha, nome }: { bolha: Bolha; nome: string }) {
             <span aria-hidden="true" />
           </span>
         ) : (
-          <TextoDoModelo texto={bolha.texto} />
+          <TextoDoModelo texto={bolha.texto} referencias={referencias} aoReferenciar={aoReferenciar} />
+        )}
+        {!doUsuario && fontes.length > 0 && (
+          <FontesDaResposta
+            fontes={fontes}
+            idBase={idBase}
+            abertas={abertas}
+            aoAlternar={(fonteId) => setAbertas((atuais) => alternarAberta(atuais, fonteId))}
+          />
         )}
         {bolha.estado === 'interrompida' && <span className="bolha-nota">Resposta interrompida.</span>}
         {bolha.estado === 'erro' && <span className="bolha-nota">Resposta incompleta.</span>}
@@ -135,6 +163,7 @@ export function ChatDeTeste({ agente, retomada, temChave, ehAdmin }: ChatDeTeste
       if (conversaId) despachar({ tipo: 'conversa', conversaId })
       for await (const evento of lerEventos(resposta.body, abortar.signal)) {
         if (evento.tipo === 'trecho') despachar({ tipo: 'trecho', texto: evento.texto })
+        else if (evento.tipo === 'fontes') despachar({ tipo: 'fontes', fontes: evento.fontes })
         else if (evento.tipo === 'fim') {
           despachar({ tipo: 'fim', conversaId: evento.conversaId, mensagemId: evento.mensagemId })
         } else if (evento.tipo === 'erro') {

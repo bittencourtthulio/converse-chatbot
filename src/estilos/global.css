@@ -996,3 +996,90 @@ textarea { min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: verti
 @media (prefers-reduced-motion: reduce) {
   .spinner { animation: none; border-right-color: currentColor; }
 }
+
+/* ---------- fontes da resposta (FT-05) ---------- */
+
+.fontes-da-resposta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  font-size: var(--texto-pequeno);
+}
+.fontes-titulo { margin: 0; color: var(--fg-muted); font-weight: 650; letter-spacing: 0.02em; }
+.fontes-lista { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.fonte-item { display: flex; flex-direction: column; gap: 6px; max-width: 100%; }
+
+.chip-de-fonte {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  min-height: 32px;
+  padding: 4px 10px;
+  background: var(--bg-subtle);
+  color: var(--fg-default);
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  font: inherit;
+  cursor: pointer;
+}
+.chip-de-fonte:hover { background: var(--bg-hover); }
+.chip-de-fonte:focus-visible { outline: 2px solid var(--border-focus); outline-offset: 2px; }
+.chip-de-fonte[aria-expanded='true'] { border-color: var(--accent); }
+.chip-de-fonte-citada {
+  background: var(--accent-soft);
+  color: var(--accent-soft-fg);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+.chip-de-fonte-titulo { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chip-de-fonte-numeros { font-weight: 500; font-variant-numeric: tabular-nums; }
+
+.fonte-trechos { display: flex; flex-direction: column; gap: 6px; }
+.fonte-trecho {
+  margin: 0;
+  padding: 8px 10px;
+  background: var(--bg-subtle);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--raio-pequeno);
+}
+.fonte-trecho p { margin: 0; }
+.fonte-trecho-rotulo { color: var(--fg-muted); font-weight: 600; }
+.fonte-trecho-texto { margin-top: 4px; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+.fontes-consultadas summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  color: var(--fg-muted);
+  cursor: pointer;
+}
+.fontes-consultadas summary:focus-visible { outline: 2px solid var(--border-focus); outline-offset: 2px; border-radius: var(--raio-pequeno); }
+.fontes-consultadas[open] summary { margin-bottom: 6px; }
+
+.referencia-de-fonte {
+  display: inline;
+  margin: 0 1px;
+  padding: 0 4px;
+  background: var(--accent-soft);
+  color: var(--accent-soft-fg);
+  border: 1px solid var(--accent);
+  border-radius: var(--raio-pequeno);
+  font: inherit;
+  font-size: 0.8em;
+  font-weight: 600;
+  line-height: 1.4;
+  vertical-align: baseline;
+  cursor: pointer;
+}
+.referencia-de-fonte:hover { background: var(--bg-selected); }
+.referencia-de-fonte:focus-visible { outline: 2px solid var(--border-focus); outline-offset: 2px; }
+
+@media (max-width: 768px) {
+  .chip-de-fonte, .fontes-consultadas summary { min-height: var(--alvo-toque); }
+  /* Referência no meio do texto: maior que o mínimo de 24px do WCAG 2.2, sem quebrar a linha. */
+  .referencia-de-fonte { display: inline-block; min-width: 28px; min-height: 28px; }
+}

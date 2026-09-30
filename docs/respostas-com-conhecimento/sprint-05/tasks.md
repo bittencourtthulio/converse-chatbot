@@ -41,7 +41,7 @@ tasks:
   - id: T-05.03
     titulo: "Fontes da resposta na aba Testar"
     fase: F-05.2
-    status: pendente
+    status: concluida
     objetivo: "Criar FontesDaResposta (chips, citadas em destaque, consultadas recolhidas, trecho expansivel), ligar ao chat e a pagina Testar, com estilos."
     arquivos:
       cria: ["src/componentes/FontesDaResposta.tsx", "src/componentes/fontes-da-resposta-logica.ts", "tests/fontes-da-resposta-ui.test.tsx"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/fontes-da-resposta-ui.test.tsx, tests/chat-de-teste.test.tsx e tests/tokens.test.ts passam."
     depende_de: ["T-05.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-05.04
     titulo: "Cartao Testar busca na aba Conhecimento"
     fase: F-05.2
@@ -126,7 +126,9 @@ teste_funcional: fontes-da-resposta-logica separa citadas e consultadas e nenhum
 criterio_aceite: tests/fontes-da-resposta-ui.test.tsx, tests/chat-de-teste.test.tsx e tests/tokens.test.ts passam.
 depende_de: ["T-05.02"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial: fontes-da-resposta-ui + tokens + chat-de-teste 79 passed; testar/page.tsx nao precisou mudar
 ```
 
 ---
