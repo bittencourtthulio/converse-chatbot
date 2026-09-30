@@ -7,7 +7,7 @@ origem_buildx: plataforma-chatbot-ia
 feature_id: FT-05
 sprint_id: sprint-03
 titulo: "Prompt fundamentado e turno de chat"
-status: pendente
+status: concluido
 criterio_saida: "tests/chat-prompt-fundamentado.test.ts, tests/fontes-da-resposta.test.ts, tests/chat-fundamentado.test.ts, tests/chat-fontes.test.ts e tests/conversas.test.ts passam e a suite inteira esta verde."
 fases: ["F-03.1", "F-03.2"]
 riscos: ["o comportamento do modelo real nao e testavel: so a estrutura do prompt (limite conhecido, PR-52)", "falha de gravacao das fontes nao pode derrubar a resposta (PR-53)"]

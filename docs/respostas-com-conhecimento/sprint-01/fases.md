@@ -10,14 +10,14 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-01.1
     titulo: "Migration e gatilhos"
-    status: pendente
+    status: concluido
     criterio_saida: "A migration aplica do zero e o indice acompanha insert, update, delete e rebuild."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-01.01"]
   - id: F-01.2
     titulo: "Cascata, reprocessamento e apoio"
-    status: pendente
+    status: concluido
     criterio_saida: "O indice acompanha cascata e reprocessamento e ha helper de base pronta para os testes seguintes."
     paralelizavel: false
     paralela_com: []

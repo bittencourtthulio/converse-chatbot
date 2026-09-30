@@ -10,14 +10,14 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-02.1
     titulo: "Termos e expressao MATCH"
-    status: pendente
+    status: concluido
     criterio_saida: "Funcoes puras de termos e expressao seguras."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-02.01"]
   - id: F-02.2
     titulo: "Busca, desempenho e seed"
-    status: pendente
+    status: concluido
     criterio_saida: "buscarTrechos filtra, ordena, limita e e rapido; a seed e recuperavel."
     paralelizavel: false
     paralela_com: []

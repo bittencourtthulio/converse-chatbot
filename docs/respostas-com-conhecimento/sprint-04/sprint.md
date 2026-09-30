@@ -7,7 +7,7 @@ origem_buildx: plataforma-chatbot-ia
 feature_id: FT-05
 sprint_id: sprint-04
 titulo: "Protocolo SSE e rotas"
-status: pendente
+status: concluido
 criterio_saida: "tests/eventos-sse.test.ts, tests/leitor-de-sse.test.ts, tests/conversar-rota.test.ts, tests/buscar-rota.test.ts e tests/rotas.test.ts passam (apos npm run build) e a suite inteira esta verde."
 fases: ["F-04.1", "F-04.2"]
 riscos: ["os testes de rota exigem npm run build antes", "evento novo nao pode encerrar o stream nem quebrar cliente antigo"]

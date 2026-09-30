@@ -7,7 +7,7 @@ origem_buildx: plataforma-chatbot-ia
 feature_id: FT-05
 sprint_id: sprint-02
 titulo: "Servico de recuperacao"
-status: pendente
+status: concluido
 criterio_saida: "tests/recuperacao-termos.test.ts, tests/recuperacao.test.ts, tests/recuperacao-desempenho.test.ts e tests/seed.test.ts passam e a suite inteira esta verde."
 fases: ["F-02.1", "F-02.2"]
 riscos: ["stopwords em portugues sao lista propria e podem esconder termo util (D-05)", "desempenho com 5.000 trechos depende da maquina: limite folgado de 500 ms"]

@@ -8,11 +8,11 @@ feature_id: FT-05
 titulo: Respostas com base no conhecimento
 tipo_trabalho: feature
 tipo_ocorrencia: null
-estagio: f4
-status: nao_iniciado
+estagio: f6
+status: concluido
 criado_em: 2026-09-30
 atualizado_em: 2026-09-30
-concluido_em: null
+concluido_em: 2026-09-30
 sprints: [sprint-01, sprint-02, sprint-03, sprint-04, sprint-05, sprint-06]
 caminho_critico: [T-01.01, T-01.03, T-02.01, T-02.02, T-03.01, T-03.03, T-03.04, T-04.01, T-05.01, T-05.02, T-05.03, T-05.04, T-06.01, T-06.02, T-06.03]
 modulo_afetado: [apresentacao, aplicacao, infraestrutura, banco, testes, documentacao]

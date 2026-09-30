@@ -10,14 +10,14 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-03.1
     titulo: "Pecas puras"
-    status: pendente
+    status: concluido
     criterio_saida: "Prompt fundamentado e fontes da resposta como funcoes puras."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-03.01", "T-03.02"]
   - id: F-03.2
     titulo: "Integracao no turno"
-    status: pendente
+    status: concluido
     criterio_saida: "Modo fundamentado, evento e gravacao das fontes, retomada."
     paralelizavel: false
     paralela_com: []

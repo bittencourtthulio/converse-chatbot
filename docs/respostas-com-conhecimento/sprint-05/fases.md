@@ -10,14 +10,14 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-05.1
     titulo: "Logica pura da conversa"
-    status: pendente
+    status: concluido
     criterio_saida: "Referencias [n] e estado com fontes."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-05.01", "T-05.02"]
   - id: F-05.2
     titulo: "Componentes e estilos"
-    status: pendente
+    status: concluido
     criterio_saida: "Fontes da resposta, chat integrado e Testar busca."
     paralelizavel: false
     paralela_com: []

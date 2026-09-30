@@ -7,7 +7,7 @@ origem_buildx: plataforma-chatbot-ia
 feature_id: FT-05
 sprint_id: sprint-06
 titulo: "Convencoes, verificacao e fechamento"
-status: pendente
+status: concluido
 criterio_saida: "a suite inteira, tsc, lint, build e npm audit --audit-level=high passam, o portao de prontidao da mergex devolve PRONTO e o MAPA.md mostra a FT-05 entregue."
 fases: ["F-06.1", "F-06.2"]
 riscos: ["a verificacao visual depende de navegador disponivel; se faltar, registra-se", "linhas citadas em CONVENCOES.md precisam ser conferidas depois das ultimas edicoes"]

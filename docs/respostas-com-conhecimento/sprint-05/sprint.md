@@ -7,7 +7,7 @@ origem_buildx: plataforma-chatbot-ia
 feature_id: FT-05
 sprint_id: sprint-05
 titulo: "Interface: fontes na conversa e Testar busca"
-status: pendente
+status: concluido
 criterio_saida: "tests/texto-seguro.test.tsx, tests/estado-da-conversa.test.ts, tests/fontes-da-resposta-ui.test.tsx, tests/chat-de-teste.test.tsx, tests/busca-logica.test.ts e tests/painel-de-conhecimento.test.tsx passam e a suite inteira esta verde."
 fases: ["F-05.1", "F-05.2"]
 riscos: ["sem jsdom: o comportamento interativo e provado em modulos puros e por renderToStaticMarkup", "cor literal em CSS reprova tests/tokens.test.ts"]

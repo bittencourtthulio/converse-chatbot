@@ -10,14 +10,14 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-04.1
     titulo: "SSE compativel"
-    status: pendente
+    status: concluido
     criterio_saida: "Tradutor e leitor aceitam fontes."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-04.01", "T-04.02"]
   - id: F-04.2
     titulo: "Rota de busca"
-    status: pendente
+    status: concluido
     criterio_saida: "Handler fino de busca com sessao e validacao."
     paralelizavel: false
     paralela_com: []

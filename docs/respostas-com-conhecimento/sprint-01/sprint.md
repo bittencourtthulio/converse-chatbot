@@ -7,7 +7,7 @@ origem_buildx: plataforma-chatbot-ia
 feature_id: FT-05
 sprint_id: sprint-01
 titulo: "Indice FTS5 por migration"
-status: pendente
+status: concluido
 criterio_saida: "tests/indice-fts5.test.ts, tests/indice-fts5-cascata.test.ts e tests/apoio-conhecimento.test.ts passam, migrate deploy aplica do zero e a suite inteira esta verde."
 fases: ["F-01.1", "F-01.2"]
 riscos: ["gatilhos podem nao disparar na cascata de chave estrangeira (base/00-LACUNAS.md, lacuna 1): o teste decide e, se falhar, fontes.excluir e agentes.excluir apagam os trechos antes", "prisma migrate dev pode estranhar a tabela virtual (lacuna 2): a migration e escrita a mao e aplicada por migrate deploy"]

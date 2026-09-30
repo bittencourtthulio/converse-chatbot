@@ -10,14 +10,14 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-06.1
     titulo: "Convencoes e verificacao visual"
-    status: pendente
+    status: concluido
     criterio_saida: "Evidencia em docs/stack, README e verificacao visual."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-06.01", "T-06.02"]
   - id: F-06.2
     titulo: "Fechamento"
-    status: pendente
+    status: concluido
     criterio_saida: "Registro da feature no laco do buildx."
     paralelizavel: false
     paralela_com: []
