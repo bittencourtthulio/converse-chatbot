@@ -137,6 +137,69 @@ export async function iniciarOpenRouterFalso(
     }
   }
 
+  /** Responde em SSE, como o OpenRouter com `stream: true`. */
+  async function transmitir(res: ServerResponse, modelo: string) {
+    let encerrada = false
+    res.on('close', () => {
+      if (!res.writableEnded) {
+        encerrada = true
+        cancelamentos += 1
+      }
+    })
+    res.writeHead(200, {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      Connection: 'keep-alive',
+    })
+    const evento = (dados: unknown) => `data: ${JSON.stringify(dados)}\n\n`
+    const base = { id: 'gen-falso', object: 'chat.completion.chunk', model: modelo }
+    const enviar = async (texto: string) => {
+      if (encerrada) return
+      if (opcoes.partirChunks && texto.length > 10) {
+        const meio = Math.floor(texto.length / 2)
+        res.write(texto.slice(0, meio))
+        await dormir(15)
+        if (!encerrada) res.write(texto.slice(meio))
+      } else {
+        res.write(texto)
+      }
+    }
+
+    if (opcoes.comentarioDeProcessamento) await enviar(': OPENROUTER PROCESSING\n\n')
+    const trechos = opcoes.trechos ?? (opcoes.resposta ?? '').split(/(?<= )/)
+    for (const [i, trecho] of trechos.entries()) {
+      if (encerrada) return
+      if (opcoes.erroNoMeioApos != null && i >= opcoes.erroNoMeioApos) {
+        await enviar(
+          evento({
+            ...base,
+            error: { code: 'server_error', message: 'Provider disconnected unexpectedly' },
+            choices: [{ index: 0, delta: { content: '' }, finish_reason: 'error' }],
+          }),
+        )
+        res.end()
+        return
+      }
+      await enviar(
+        evento({ ...base, choices: [{ index: 0, delta: { content: trecho }, finish_reason: null }] }),
+      )
+      if (opcoes.intervaloEntreTrechosMs) await dormir(opcoes.intervaloEntreTrechosMs)
+    }
+    if (encerrada) return
+    await enviar(
+      evento({ ...base, choices: [{ index: 0, delta: { content: '' }, finish_reason: 'stop' }] }),
+    )
+    await enviar(
+      evento({
+        ...base,
+        choices: [{ index: 0, delta: { content: '' }, finish_reason: 'stop' }],
+        usage: { prompt_tokens: 1, completion_tokens: trechos.length, total_tokens: trechos.length + 1 },
+      }),
+    )
+    await enviar('data: [DONE]\n\n')
+    res.end()
+  }
+
   async function tratar(req: IncomingMessage, res: ServerResponse) {
     const caminho = (req.url ?? '').split('?')[0] ?? ''
     const corpo = await lerCorpo(req)
@@ -163,6 +226,7 @@ export async function iniciarOpenRouterFalso(
       if (opcoes.erroHttp) return erro(res, opcoes.erroHttp)
       const pedido = (corpo ?? {}) as { model?: string; stream?: boolean }
       if (!(opcoes.modelos ?? []).some((m) => m.id === pedido.model)) return erro(res, 400)
+      if (pedido.stream) return transmitir(res, String(pedido.model))
       return json(res, {
         id: 'gen-falso',
         object: 'chat.completion',

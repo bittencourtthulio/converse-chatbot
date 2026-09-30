@@ -70,7 +70,7 @@ tasks:
   - id: T-01.04
     titulo: "Servidor OpenRouter simulado: stream"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar o modo stream: SSE com comentario, chunks partidos, [DONE], erro no meio do stream e stream lento."
     arquivos:
       cria: []
@@ -80,8 +80,8 @@ tasks:
     criterio_aceite: "O teste passa e a API do servidor esta documentada em comentario no topo do arquivo."
     depende_de: [T-01.03]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
 ---
 
 # Plano — Sprint 01 — Capacidade de testar: cripto, servidor simulado e regra de migracao
@@ -129,7 +129,7 @@ flowchart LR
   class T_01_01 concluida
   class T_01_02 concluida
   class T_01_03 concluida
-  class T_01_04 pendente
+  class T_01_04 concluida
 ```
 
 ## Tasks
@@ -208,6 +208,9 @@ teste_funcional: com stream true o corpo traz linhas data: com delta.content, co
 criterio_aceite: O teste passa e a API do servidor esta documentada em comentario no topo do arquivo.
 depende_de: [T-01.03]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: openrouter-falso 19 passed; tsc e lint 0
 ```
 
