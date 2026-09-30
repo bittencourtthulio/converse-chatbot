@@ -41,7 +41,7 @@ tasks:
   - id: T-04.03
     titulo: "POST /api/agentes/[id]/buscar"
     fase: F-04.2
-    status: pendente
+    status: concluida
     objetivo: "Criar o handler fino e o servico buscarNaBase com validacao."
     arquivos:
       cria: ["src/app/api/agentes/[id]/buscar/route.ts", "tests/buscar-rota.test.ts", "docs/respostas-com-conhecimento/sprint-04/sprint.md", "docs/respostas-com-conhecimento/sprint-04/fases.md", "docs/respostas-com-conhecimento/sprint-04/tasks.md"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/buscar-rota.test.ts e tests/rotas.test.ts passam apos npm run build."
     depende_de: ["T-02.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
 ---
 
 # Tasks — Sprint 04
@@ -111,6 +111,8 @@ teste_funcional: Sem sessao 401, agente inexistente 404, pergunta vazia ou com m
 criterio_aceite: tests/buscar-rota.test.ts e tests/rotas.test.ts passam apos npm run build.
 depende_de: ["T-02.02"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: verde: 1016 passed, 0 failed (fecha a sprint 04; tests/rotas.test.ts nao precisou mudar)
 ```
 

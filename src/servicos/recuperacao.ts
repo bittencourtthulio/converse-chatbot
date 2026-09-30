@@ -5,7 +5,9 @@
 // SQL cru só por `prisma.$queryRaw` com template tagueado: a expressão MATCH já
 // limpa e o `agenteId` vão como parâmetros; o texto do usuário nunca é
 // concatenado em SQL (PR-13, PR-30).
+import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
+import { entradaInvalida, naoEncontrado } from '@/lib/erros'
 import { LIMITE_DE_TERMOS, extrairTermos, montarExpressaoMatch } from '@/servicos/recuperacao-termos'
 
 export { extrairTermos, montarExpressaoMatch } from '@/servicos/recuperacao-termos'
@@ -91,6 +93,29 @@ export async function buscarTrechos(
     texto: l.texto,
     pontuacao: -Number(l.bm25),
   }))
+}
+
+/** Tamanho máximo da pergunta da busca do painel (PR-54). */
+export const LIMITE_DA_PERGUNTA_DA_BUSCA = 500
+
+const perguntaDaBusca = z
+  .string({ message: 'Escreva uma pergunta.' })
+  .trim()
+  .min(1, 'Escreva uma pergunta.')
+  .max(LIMITE_DA_PERGUNTA_DA_BUSCA, `A pergunta pode ter até ${LIMITE_DA_PERGUNTA_DA_BUSCA} caracteres.`)
+
+/**
+ * A busca do cartão "Testar busca" (PR-54): valida a pergunta, confere que o
+ * agente existe e devolve o que o agente enxergaria. Não usa pergunta anterior.
+ * A sessão é conferida por quem chama.
+ */
+export async function buscarNaBase(agenteId: string, pergunta: unknown): Promise<TrechoEncontrado[]> {
+  const valida = perguntaDaBusca.safeParse(pergunta)
+  if (!valida.success) throw entradaInvalida(valida.error.issues[0]?.message ?? 'Pergunta inválida.')
+  if (!(await prisma.agente.findUnique({ where: { id: agenteId }, select: { id: true } }))) {
+    throw naoEncontrado('Agente não encontrado.')
+  }
+  return buscarTrechos(agenteId, valida.data)
 }
 
 /**
