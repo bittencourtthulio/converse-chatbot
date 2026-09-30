@@ -40,7 +40,7 @@ tasks:
   - id: T-04.02
     titulo: "Rota POST /api/agentes/[id]/conversar"
     fase: F-04.1
-    status: pendente
+    status: concluida
     objetivo: "Handler fino com sessao no servidor, erro pre-stream em JSON e stream SSE com os cabecalhos definidos."
     arquivos:
       cria: ["src/app/api/agentes/[id]/conversar/route.ts", "tests/conversar-rota.test.ts"]
@@ -50,8 +50,8 @@ tasks:
     criterio_aceite: "O teste passa depois de npm run build e o handler tem menos de 80 linhas, sem regra de negocio."
     depende_de: [T-04.01]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
 ---
 
 # Plano — Sprint 04 — Handler de streaming
@@ -94,7 +94,7 @@ flowchart LR
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
   class T_04_01 concluida
-  class T_04_02 pendente
+  class T_04_02 concluida
 ```
 
 ## Tasks
@@ -133,6 +133,9 @@ teste_funcional: sem sessao 401, agente inexistente 404, mensagem invalida 422, 
 criterio_aceite: O teste passa depois de npm run build e o handler tem menos de 80 linhas, sem regra de negocio.
 depende_de: [T-04.01]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: verde
+resultado: conversar-rota 16 testes contra next start; build verde; suite 518 verdes; tsc e lint 0
 ```
 
