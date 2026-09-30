@@ -26,7 +26,7 @@ tasks:
   - id: T-07.02
     titulo: "Verificacao visual da aba Conhecimento"
     fase: F-07.1
-    status: pendente
+    status: concluida
     objetivo: "Abrir a aba nos dois temas com upload real de arquivo pequeno, ou registrar por que nao foi possivel."
     arquivos:
       cria: ["docs/conhecimento-arquivos-e-texto/VERIFICACAO-VISUAL.md"]
@@ -36,12 +36,12 @@ tasks:
     criterio_aceite: "O arquivo existe e cita os temas claro e escuro, a largura de 375px e o resultado do upload."
     depende_de: ["T-07.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-07.03
     titulo: "Convencoes e lacunas com a evidencia nova"
     fase: F-07.1
-    status: pendente
+    status: em_andamento
     objetivo: "Converter as lacunas 5 e 8 e o armazenamento em regras com arquivo e linha."
     arquivos:
       cria: []
@@ -107,7 +107,9 @@ teste_funcional: O registro traz, por tema, o que foi visto e o resultado do upl
 criterio_aceite: O arquivo existe e cita os temas claro e escuro, a largura de 375px e o resultado do upload.
 depende_de: ["T-07.01"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 890 passed, 0 failed
 ```
 
 ---
@@ -124,7 +126,7 @@ teste_funcional: A linha de tarefa em segundo plano cita src/servicos/fontes-fil
 criterio_aceite: grep das linhas citadas confirma cada referencia e o commit-referencia e atualizado.
 depende_de: ["T-07.02"]
 paralelizavel: false
-status: pendente
+status: em_andamento
 ```
 
 ---
