@@ -26,7 +26,7 @@ tasks:
   - id: T-01.02
     titulo: "Dependencias de extracao com versao fixa"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Instalar unpdf 1.8.1, mammoth 1.13.0 e parse5 8.0.1 sem faixa de versao e auditar."
     arquivos:
       cria: ["tests/dependencias-extracao.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/dependencias-extracao.test.ts passa e npm audit --audit-level=high devolve 0."
     depende_de: ["T-01.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-01.03
     titulo: "Fixtures de texto e gerador"
     fase: F-01.2
@@ -107,7 +107,9 @@ teste_funcional: package.json fixa as tres versoes exatas sem ^ nem ~ e npm audi
 criterio_aceite: tests/dependencias-extracao.test.ts passa e npm audit --audit-level=high devolve 0.
 depende_de: ["T-01.01"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 581 passed, 0 failed
 ```
 
 ---

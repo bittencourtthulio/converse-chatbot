@@ -39,3 +39,7 @@ Branch aberta a partir de `feat/conversa-de-teste` (PRs empilhados; base indicad
 ## Avisos
 
 - O `ORQUESTRADOR.md` da feature ainda não existe (a F4 vem depois): a linha da branch será acrescentada quando ele for criado.
+
+## Desvios
+
+- T-01.02: `npm audit --audit-level=high` já acusava 1 vulnerabilidade crítica no `next` 16.3.3 (advisory publicado depois da FT-03). Atualizados, com versão fixa, `next` e `eslint-config-next` para 16.3.8 (patch dentro de 16.3); `package.json` e o lockfile já constavam na task. Build, testes e auditoria verdes depois.

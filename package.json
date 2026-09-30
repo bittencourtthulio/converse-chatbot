@@ -23,9 +23,12 @@
     "bcryptjs": "3.0.3",
     "dotenv": "^17.4.2",
     "jose": "6.2.10",
-    "next": "16.3.3",
+    "mammoth": "1.13.0",
+    "next": "16.3.8",
+    "parse5": "8.0.1",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "unpdf": "1.8.1",
     "zod": "4.5.4"
   },
   "devDependencies": {
@@ -33,7 +36,7 @@
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.5",
     "eslint": "9.39.1",
-    "eslint-config-next": "16.3.3",
+    "eslint-config-next": "16.3.8",
     "prisma": "7.10.0",
     "tsx": "4.23.13",
     "typescript": "5.9.3",
