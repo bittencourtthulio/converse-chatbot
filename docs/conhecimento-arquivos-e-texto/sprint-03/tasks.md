@@ -41,7 +41,7 @@ tasks:
   - id: T-03.03
     titulo: "Conferencia do ZIP do DOCX"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Ler o diretorio central do ZIP e descompactar cada entrada com teto para barrar zip bomb."
     arquivos:
       cria: ["src/lib/extracao/zip.ts", "tests/extracao-zip.test.ts"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/extracao-zip.test.ts passa e src/lib/extracao/zip.ts nao usa jszip."
     depende_de: ["T-01.04", "T-03.01"]
     paralelizavel: true
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-03.04
     titulo: "Adaptadores de texto e legenda"
     fase: F-03.2
@@ -201,7 +201,9 @@ teste_funcional: Um ZIP de 200 KB que descompacta para mais de 100 MB e recusado
 criterio_aceite: tests/extracao-zip.test.ts passa e src/lib/extracao/zip.ts nao usa jszip.
 depende_de: ["T-01.04", "T-03.01"]
 paralelizavel: true
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 702 passed, 0 failed
 ```
 
 ---
