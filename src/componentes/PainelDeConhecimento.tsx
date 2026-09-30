@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { AdicionarFontes } from '@/componentes/AdicionarFontes'
 import { Alerta } from '@/componentes/Alerta'
 import { CartoesDeResumo } from '@/componentes/CartoesDeResumo'
 import { EstadoVazio } from '@/componentes/EstadoVazio'
@@ -17,6 +18,7 @@ export function PainelDeConhecimento({
   agenteId,
   fontesIniciais,
   resumoInicial,
+  limiteDeUploadBytes,
 }: {
   agenteId: string
   fontesIniciais: FonteDaTela[]
@@ -71,6 +73,8 @@ export function PainelDeConhecimento({
   return (
     <div className="pilha">
       <CartoesDeResumo resumo={resumo} />
+
+      <AdicionarFontes agenteId={agenteId} limiteDeUploadBytes={limiteDeUploadBytes} aoAlterar={() => void atualizar()} />
 
       {erroDeAtualizacao && <Alerta variante="erro">{erroDeAtualizacao}</Alerta>}
 

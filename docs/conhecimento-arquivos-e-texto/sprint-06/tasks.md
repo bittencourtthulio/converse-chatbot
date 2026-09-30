@@ -71,18 +71,18 @@ tasks:
   - id: T-06.05
     titulo: "Adicionar: arquivos e texto"
     fase: F-06.4
-    status: pendente
+    status: concluida
     objetivo: "Zona de soltar com varios arquivos, progresso e erro por arquivo, e formulario de texto com contador."
     arquivos:
-      cria: ["src/componentes/AdicionarFontes.tsx", "src/componentes/ZonaDeArquivos.tsx", "src/componentes/FormularioDeTexto.tsx", "tests/adicionar-fontes.test.tsx"]
+      cria: ["src/componentes/AdicionarFontes.tsx", "src/componentes/ZonaDeArquivos.tsx", "src/componentes/FormularioDeTexto.tsx", "tests/adicionar-fontes.test.tsx", "src/componentes/enviar-arquivo.ts"]
       altera: ["src/componentes/PainelDeConhecimento.tsx"]
     teste_integracao: "AdicionarFontes renderizado mostra as duas opcoes vindas de opcoes-de-fonte, a zona com a lista de formatos e o limite em MB e o formulario com o contador de 0 de 200000."
     teste_funcional: "O formulario recusa titulo vazio antes de enviar, e a zona de arquivos tem input file multiple, aria-label e alvo de toque de 44px pelas classes do estilo."
     criterio_aceite: "tests/adicionar-fontes.test.tsx passa."
     depende_de: ["T-06.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-06.06
     titulo: "Estilos da aba Conhecimento"
     fase: F-06.4
@@ -187,14 +187,16 @@ id: T-06.05
 titulo: Adicionar: arquivos e texto
 objetivo: Zona de soltar com varios arquivos, progresso e erro por arquivo, e formulario de texto com contador.
 arquivos:
-  cria: ["src/componentes/AdicionarFontes.tsx", "src/componentes/ZonaDeArquivos.tsx", "src/componentes/FormularioDeTexto.tsx", "tests/adicionar-fontes.test.tsx"]
+  cria: ["src/componentes/AdicionarFontes.tsx", "src/componentes/ZonaDeArquivos.tsx", "src/componentes/FormularioDeTexto.tsx", "tests/adicionar-fontes.test.tsx", "src/componentes/enviar-arquivo.ts"]
   altera: ["src/componentes/PainelDeConhecimento.tsx"]
 teste_integracao: AdicionarFontes renderizado mostra as duas opcoes vindas de opcoes-de-fonte, a zona com a lista de formatos e o limite em MB e o formulario com o contador de 0 de 200000.
 teste_funcional: O formulario recusa titulo vazio antes de enviar, e a zona de arquivos tem input file multiple, aria-label e alvo de toque de 44px pelas classes do estilo.
 criterio_aceite: tests/adicionar-fontes.test.tsx passa.
 depende_de: ["T-06.04"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 879 passed 879, 0 failed
 ```
 
 ---
