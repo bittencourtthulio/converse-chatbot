@@ -58,8 +58,8 @@ tasks:
     status: concluida
     objetivo: "Montar barra lateral com logotipo, cabecalho, menu do usuario, gaveta abaixo de 768px e alternador de tema."
     arquivos:
-      cria: ["src/componentes/CascaDoSistema.tsx", "src/componentes/BarraLateral.tsx", "src/componentes/Cabecalho.tsx", "src/componentes/MenuDoUsuario.tsx", "src/componentes/Logotipo.tsx"]
-      altera: ["src/componentes/AlternadorDeTema.tsx", "src/app/(sistema)/layout.tsx", "tests/rotas.test.ts"]
+      cria: ["src/componentes/CascaDoSistema.tsx", "src/componentes/BarraLateral.tsx", "src/componentes/Cabecalho.tsx", "src/componentes/MenuDoUsuario.tsx", "src/componentes/Logotipo.tsx", "src/componentes/iniciais.ts", "tests/iniciais.test.ts"]
+      altera: ["src/componentes/AlternadorDeTema.tsx", "src/app/(sistema)/layout.tsx", "tests/rotas.test.ts", "src/componentes/Navegacao.tsx"]
     teste_integracao: "tests/rotas.test.ts pede / ao servidor de producao com sessao de admin e de usuario comum e le o HTML."
     teste_funcional: "O HTML de admin traz o nome Converse no logotipo, o link /configuracoes/usuarios, as iniciais e o nome do usuario, um botao Abrir menu e um formulario de sair; o de usuario comum nao traz o link de Usuarios."
     criterio_aceite: "O teste de rotas atualizado passa e src/componentes/Navegacao.tsx deixa de existir."
@@ -187,8 +187,8 @@ id: T-03.03
 titulo: Casca SaaS do sistema
 objetivo: Montar barra lateral com logotipo, cabecalho, menu do usuario, gaveta abaixo de 768px e alternador de tema.
 arquivos:
-  cria: [src/componentes/CascaDoSistema.tsx, src/componentes/BarraLateral.tsx, src/componentes/Cabecalho.tsx, src/componentes/MenuDoUsuario.tsx, src/componentes/Logotipo.tsx]
-  altera: [src/componentes/AlternadorDeTema.tsx, src/app/(sistema)/layout.tsx, tests/rotas.test.ts]
+  cria: [src/componentes/CascaDoSistema.tsx, src/componentes/BarraLateral.tsx, src/componentes/Cabecalho.tsx, src/componentes/MenuDoUsuario.tsx, src/componentes/Logotipo.tsx, src/componentes/iniciais.ts, tests/iniciais.test.ts]
+  altera: [src/componentes/AlternadorDeTema.tsx, src/app/(sistema)/layout.tsx, tests/rotas.test.ts, src/componentes/Navegacao.tsx]
 teste_integracao: tests/rotas.test.ts pede / ao servidor de producao com sessao de admin e de usuario comum e le o HTML.
 teste_funcional: O HTML de admin traz o nome Converse no logotipo, o link /configuracoes/usuarios, as iniciais e o nome do usuario, um botao Abrir menu e um formulario de sair; o de usuario comum nao traz o link de Usuarios.
 criterio_aceite: O teste de rotas atualizado passa e src/componentes/Navegacao.tsx deixa de existir.

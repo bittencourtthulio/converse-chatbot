@@ -20,7 +20,7 @@ fases:
     criterio_saida: "os tres artefatos existem e a copia limpa esta verde"
     paralelizavel: false
     paralela_com: []
-    tasks: [T-05.01, T-05.02, T-05.03]
+    tasks: [T-05.01, T-05.02, T-05.03, T-05.04]
 tasks:
   - id: T-05.01
     titulo: "README do projeto"
@@ -67,6 +67,21 @@ tasks:
     paralelizavel: false
     concluida_em: 2026-09-30
     suite: parcial
+  - id: T-05.04
+    titulo: "Fechamento no laco do buildx"
+    fase: F-05.1
+    status: concluida
+    objetivo: "Registrar a feature no mapa, nas premissas e na recursao do projeto e manter o gitignore do rastro."
+    arquivos:
+      cria: []
+      altera: [".gitignore", "docs/projeto/MAPA.md", "docs/projeto/PREMISSAS.md", "docs/projeto/RECURSAO.md"]
+    teste_integracao: "Os arquivos de estado do projeto abrem com frontmatter valido e os contadores do MAPA.md batem com a tabela do painel."
+    teste_funcional: "O MAPA.md mostra FT-01 entregue com sprints, testes e PR local; PREMISSAS.md traz PR-35 a PR-37 com total 37."
+    criterio_aceite: "grep de FT-01 no painel do MAPA.md devolve entregue e o total de premissas do frontmatter e 37."
+    depende_de: ["T-05.03"]
+    paralelizavel: false
+    concluida_em: 2026-09-30
+    suite: parcial
 ---
 
 # Plano — Sprint 05 — Documentacao e verificacao final: README, copia limpa e convencoes
@@ -91,7 +106,7 @@ A copia limpa passa npm ci, prisma generate, migrate deploy, lint, tsc, build, t
 
 **Objetivo:** README, copia limpa e convencoes.
 
-**Tasks:** T-05.01, T-05.02, T-05.03
+**Tasks:** T-05.01, T-05.02, T-05.03, T-05.04
 
 **Critério de saída:** os tres artefatos existem e a copia limpa esta verde
 
@@ -106,9 +121,11 @@ flowchart LR
     T_05_01["T-05.01<br/>README do projeto"]
     T_05_02["T-05.02<br/>Verificacao em copia limpa"]
     T_05_03["T-05.03<br/>Conversao das convencoes"]
+    T_05_04["T-05.04<br/>Fechamento no laco do buildx"]
   end
   T_05_01 --> T_05_02
   T_05_02 --> T_05_03
+  T_05_03 --> T_05_04
   classDef pendente fill:#F3F0EA,stroke:#8A7F70,color:#1A1815
   classDef em_andamento fill:#FDF0D5,stroke:#B4541E,color:#1A1815
   classDef concluida fill:#DFF0D8,stroke:#4A6B3A,color:#1A1815
@@ -117,6 +134,7 @@ flowchart LR
   class T_05_01 concluida
   class T_05_02 concluida
   class T_05_03 concluida
+  class T_05_04 concluida
 ```
 
 ## Tasks
@@ -181,3 +199,22 @@ suite: parcial
 resultado: citacoes conferidas por arquivo e linha; regras restantes decidido_pelo_buildx nomeiam a feature
 ```
 
+---
+
+```yaml
+id: T-05.04
+titulo: Fechamento no laço do buildx
+objetivo: Registrar a feature no mapa, nas premissas e na recursão do projeto e manter o gitignore do rastro.
+arquivos:
+  cria: []
+  altera: [.gitignore, docs/projeto/MAPA.md, docs/projeto/PREMISSAS.md, docs/projeto/RECURSAO.md]
+teste_integracao: Os arquivos de estado do projeto abrem com frontmatter válido e os contadores do MAPA.md batem com a tabela do painel.
+teste_funcional: O MAPA.md mostra FT-01 entregue com sprints, testes e PR local; PREMISSAS.md traz PR-35 a PR-37 com total 37.
+criterio_aceite: grep de FT-01 no painel do MAPA.md devolve entregue e o total de premissas do frontmatter é 37.
+depende_de: [T-05.03]
+paralelizavel: false
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: conferido por leitura dos arquivos; suíte inteira 184 passed
+```

@@ -6,8 +6,8 @@ projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-09-30
 total_features: 11
 pendentes: 10
-em_andamento: 1
-entregues: 0
+em_andamento: 0
+entregues: 1
 bloqueadas: 0
 ---
 
@@ -24,7 +24,7 @@ da feature de que depende (PRs empilhados).
 
 | ID | Feature | Status | PR |
 |---|---|---|---|
-| FT-01 | Fundação e esqueleto de aplicação | em_andamento | — |
+| FT-01 | Fundação e esqueleto de aplicação | entregue | local (branch feat/fundacao-e-esqueleto) |
 | FT-02 | Agentes e chave do OpenRouter | pendente | — |
 | FT-03 | Conversa de teste com o agente | pendente | — |
 | FT-04 | Base de conhecimento: arquivos e textos | pendente | — |
@@ -48,7 +48,10 @@ da feature de que depende (PRs empilhados).
 **Premissas que realiza:** [PR-02, PR-03, PR-12, PR-13, PR-16, PR-23, PR-25, PR-26, PR-27, PR-28, PR-29, PR-31, PR-32, PR-33, PR-34]
 **Módulo disponível:** -
 **Fatias candidatas:** -
-**Status:** em_andamento
+**Status:** entregue
+**Sprints:** 5 (21 tasks)
+**Testes:** 184 (suíte inteira)
+**PR:** local (branch feat/fundacao-e-esqueleto)
 
 Trabalho: adaptar o template (nome, layout e tokens SaaS no lugar do VS Code, tema claro e escuro, tela de login), semear demonstração, limite de tentativas de login (PR-16, parte de login), regra de lint para a direção das camadas, pipeline de CI, `README`, verificar a suíte herdada e converter as convenções (`stackx-detectar`).
 

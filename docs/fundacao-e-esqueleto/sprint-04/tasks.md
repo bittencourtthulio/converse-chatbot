@@ -28,7 +28,7 @@ tasks:
     status: concluida
     objetivo: "Criar CabecalhoDaPagina, EstadoVazio, Esqueleto, Badge e Alerta e os arquivos loading e error do sistema."
     arquivos:
-      cria: ["src/componentes/CabecalhoDaPagina.tsx", "src/componentes/EstadoVazio.tsx", "src/componentes/Esqueleto.tsx", "src/componentes/Badge.tsx", "src/componentes/Alerta.tsx", "src/app/(sistema)/loading.tsx", "src/app/(sistema)/error.tsx", "tests/componentes.test.tsx"]
+      cria: ["src/componentes/CabecalhoDaPagina.tsx", "src/componentes/EstadoVazio.tsx", "src/componentes/Esqueleto.tsx", "src/componentes/Badge.tsx", "src/componentes/Alerta.tsx", "src/app/(sistema)/configuracoes/usuarios/loading.tsx", "src/app/(sistema)/error.tsx", "tests/componentes.test.tsx"]
       altera: ["vitest.config.ts"]
     teste_integracao: "tests/componentes.test.tsx renderiza os componentes com renderToStaticMarkup, com o Vitest incluindo arquivos tsx."
     teste_funcional: "EstadoVazio com titulo e descricao rende o texto e role status, Alerta de erro rende role alert, Esqueleto rende aria-busy, Badge rende o texto com a variante, CabecalhoDaPagina rende h1 e subtitulo."
@@ -43,7 +43,7 @@ tasks:
     status: concluida
     objetivo: "Refazer o login como cartao centralizado com o nome do produto e erro claro."
     arquivos:
-      cria: []
+      cria: ["src/componentes/FormularioDeLogin.tsx", "src/app/(sistema)/configuracoes/usuarios/layout.tsx"]
       altera: ["src/app/entrar/page.tsx", "src/componentes/Formulario.tsx", "tests/rotas.test.ts"]
     teste_integracao: "tests/rotas.test.ts le o HTML de /entrar do servidor de producao."
     teste_funcional: "O HTML traz o nome Converse, os campos e-mail e senha com rotulo, o botao Entrar e nenhum estilo inline de cor."
@@ -148,7 +148,7 @@ id: T-04.01
 titulo: Componentes de pagina e estados
 objetivo: Criar CabecalhoDaPagina, EstadoVazio, Esqueleto, Badge e Alerta e os arquivos loading e error do sistema.
 arquivos:
-  cria: [src/componentes/CabecalhoDaPagina.tsx, src/componentes/EstadoVazio.tsx, src/componentes/Esqueleto.tsx, src/componentes/Badge.tsx, src/componentes/Alerta.tsx, src/app/(sistema)/loading.tsx, src/app/(sistema)/error.tsx, tests/componentes.test.tsx]
+  cria: [src/componentes/CabecalhoDaPagina.tsx, src/componentes/EstadoVazio.tsx, src/componentes/Esqueleto.tsx, src/componentes/Badge.tsx, src/componentes/Alerta.tsx, src/app/(sistema)/configuracoes/usuarios/loading.tsx, src/app/(sistema)/error.tsx, tests/componentes.test.tsx]
   altera: [vitest.config.ts]
 teste_integracao: tests/componentes.test.tsx renderiza os componentes com renderToStaticMarkup, com o Vitest incluindo arquivos tsx.
 teste_funcional: EstadoVazio com titulo e descricao rende o texto e role status, Alerta de erro rende role alert, Esqueleto rende aria-busy, Badge rende o texto com a variante, CabecalhoDaPagina rende h1 e subtitulo.
@@ -168,7 +168,7 @@ id: T-04.02
 titulo: Tela de login em cartao
 objetivo: Refazer o login como cartao centralizado com o nome do produto e erro claro.
 arquivos:
-  cria: []
+  cria: [src/componentes/FormularioDeLogin.tsx, src/app/(sistema)/configuracoes/usuarios/layout.tsx]
   altera: [src/app/entrar/page.tsx, src/componentes/Formulario.tsx, tests/rotas.test.ts]
 teste_integracao: tests/rotas.test.ts le o HTML de /entrar do servidor de producao.
 teste_funcional: O HTML traz o nome Converse, os campos e-mail e senha com rotulo, o botao Entrar e nenhum estilo inline de cor.

@@ -6,7 +6,7 @@ projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-09-30
 ciclo_atual: 1
 teto_ciclos: 3
-pendencias_abertas: 6
+pendencias_abertas: 7
 pendencias_resolvidas: 0
 ---
 
@@ -19,7 +19,7 @@ houver pendência resolvível, até o teto.
 
 | Ciclo | Pendências entraram | Viraram feature | Replanejadas | Ficaram para o humano |
 |---|---|---|---|---|
-| 1 | 6 (até o B3) | 0 | 0 | 6 |
+| 1 | 7 (6 até o B3, 1 na FT-01) | 0 | 0 | 7 |
 
 ---
 
@@ -79,6 +79,14 @@ houver pendência resolvível, até o teto.
 **O que falta:** chave do OpenRouter (com saldo), token de um bot do Telegram (BotFather), e uma URL pública HTTPS para o servidor (o script embutido e o webhook do Telegram só funcionam com ela). Para vídeo, `ffmpeg` no servidor (o contêiner o inclui).
 **O que destrava:** respostas reais de IA, o canal Telegram funcionando e o chat em sites de verdade.
 **Estado atual:** tudo construído e testado contra servidores simulados de OpenRouter e Telegram; nenhuma chamada real foi feita.
+
+### PEND-07 — Verificação visual em celular real e dos fluxos interativos
+
+**Classe:** `recurso_externo`
+**Origem:** B4, FT-01 (`docs/fundacao-e-esqueleto/VERIFICACAO-VISUAL.md`)
+**O que falta:** abrir o sistema num celular ou com a janela do navegador realmente a 375px e acionar o menu do usuário, a gaveta, o alternador de tema e a mensagem de excesso de tentativas de login. A janela do navegador da sessão não reduziu a largura, e os quadros de 375px foram feitos sem JavaScript.
+**O que destrava:** confirmação visual completa; o comportamento tem teste automatizado, o que falta é o olho.
+**Estado atual:** contraste 4,5:1 e ausência de cor literal provados por `tests/tokens.test.ts`; rotas e cabeçalhos por `tests/rotas.test.ts`.
 
 ---
 
