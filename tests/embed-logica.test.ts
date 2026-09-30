@@ -17,10 +17,12 @@ import {
   gerarIdDeVisitante,
   lerRetomada,
   podeEnviarNoEmbed,
+  reduzirEmbed,
   sugestoesVisiveis,
   type ArmazenamentoSimples,
 } from '@/componentes/embed-logica'
 import { razaoDeContraste } from '@/lib/cor'
+import { estadoInicial, reduzir } from '@/componentes/estado-da-conversa'
 
 function armazenamentoEmMemoria(inicial: Record<string, string> = {}): ArmazenamentoSimples & { dados: Record<string, string> } {
   const dados = { ...inicial }
@@ -235,5 +237,35 @@ describe('campo e sugestões', () => {
   it('as sugestões somem quando a conversa começa', () => {
     expect(sugestoesVisiveis(['a', 'b'], 0)).toEqual(['a', 'b'])
     expect(sugestoesVisiveis(['a', 'b'], 1)).toEqual([])
+  })
+})
+
+describe('reduzirEmbed', () => {
+  const retomada = {
+    conversaId: 'cv1',
+    truncada: false,
+    mensagens: [
+      { id: 'm1', papel: 'user' as const, conteudo: 'Oi' },
+      { id: 'm2', papel: 'assistant' as const, conteudo: 'Olá' },
+    ],
+  }
+
+  it('retomar troca o estado pela conversa do servidor', () => {
+    const e = reduzirEmbed(estadoInicial(), { tipo: 'retomar', retomada })
+    expect(e.conversaId).toBe('cv1')
+    expect(e.bolhas.map((b) => [b.papel, b.texto, b.estado])).toEqual([
+      ['user', 'Oi', 'completa'],
+      ['assistant', 'Olá', 'completa'],
+    ])
+  })
+
+  it('retomar não apaga o que o visitante já escreveu enquanto a conversa carregava', () => {
+    const digitando = reduzirEmbed(estadoInicial(), { tipo: 'enviar', texto: 'Nova', idDoUsuario: 'u', idDoAgente: 'a' })
+    expect(reduzirEmbed(digitando, { tipo: 'retomar', retomada })).toBe(digitando)
+  })
+
+  it('as demais ações seguem o reducer do painel', () => {
+    const a = { tipo: 'enviar' as const, texto: 'Oi', idDoUsuario: 'u', idDoAgente: 'a' }
+    expect(reduzirEmbed(estadoInicial(), a)).toEqual(reduzir(estadoInicial(), a))
   })
 })

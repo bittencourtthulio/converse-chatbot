@@ -26,18 +26,18 @@ tasks:
   - id: T-04.02
     titulo: "Componente ChatEmbutido"
     fase: F-04.1
-    status: pendente
+    status: concluida
     objetivo: "Criar o componente cliente do chat compacto reusando o reducer, lerEventos e o renderizador seguro."
     arquivos:
-      cria: ["src/componentes/ChatEmbutido.tsx", "tests/chat-embutido-ui.test.tsx"]
-      altera: ["src/estilos/global.css"]
+      cria: ["src/componentes/ChatEmbutido.tsx", "src/componentes/AvatarDoChat.tsx", "tests/chat-embutido-ui.test.tsx"]
+      altera: ["src/estilos/global.css", "src/componentes/embed-logica.ts", "tests/embed-logica.test.ts"]
     teste_integracao: "Renderizado no servidor com configuracao e sem historico, o componente mostra cabecalho com avatar e titulo, mensagem inicial, sugestoes como botoes, aviso de privacidade e campo rotulado."
     teste_funcional: "Com configuracao sem aviso e sem sugestoes esses blocos nao aparecem, a cor do agente entra como variavel de CSS, nenhum dangerouslySetInnerHTML existe no arquivo e nenhuma cor literal existe no CSS novo."
     criterio_aceite: "tests/chat-embutido-ui.test.tsx e tests/tokens.test.ts passam."
     depende_de: ["T-04.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-04.03
     titulo: "Mensagens do iframe e previa"
     fase: F-04.2
@@ -98,14 +98,14 @@ id: T-04.02
 titulo: "Componente ChatEmbutido"
 objetivo: "Criar o componente cliente do chat compacto reusando o reducer, lerEventos e o renderizador seguro."
 arquivos:
-  cria: ["src/componentes/ChatEmbutido.tsx", "tests/chat-embutido-ui.test.tsx"]
-  altera: ["src/estilos/global.css"]
+  cria: ["src/componentes/ChatEmbutido.tsx", "src/componentes/AvatarDoChat.tsx", "tests/chat-embutido-ui.test.tsx"]
+  altera: ["src/estilos/global.css", "src/componentes/embed-logica.ts", "tests/embed-logica.test.ts"]
 teste_integracao: "Renderizado no servidor com configuracao e sem historico, o componente mostra cabecalho com avatar e titulo, mensagem inicial, sugestoes como botoes, aviso de privacidade e campo rotulado."
 teste_funcional: "Com configuracao sem aviso e sem sugestoes esses blocos nao aparecem, a cor do agente entra como variavel de CSS, nenhum dangerouslySetInnerHTML existe no arquivo e nenhuma cor literal existe no CSS novo."
 criterio_aceite: "tests/chat-embutido-ui.test.tsx e tests/tokens.test.ts passam."
 depende_de: ["T-04.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: verde — 1317 passed
 ```
 
 ---

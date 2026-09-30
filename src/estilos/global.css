@@ -1113,3 +1113,169 @@ textarea { min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: verti
   .busca-formulario { flex-direction: column; align-items: stretch; }
   .busca-formulario .botao { width: 100%; }
 }
+
+/* ---------- chat embutido (FT-06) ---------- */
+/* A cor do agente chega por --cor-do-agente e o texto de maior contraste sobre ela
+   por --cor-do-agente-fg (definidas em linha pelo componente); o resto é token. */
+
+.embed {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  min-height: 0;
+  background: var(--bg-surface);
+  color: var(--fg-default);
+}
+
+.avatar-do-chat {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: 700;
+  line-height: 1;
+  background: var(--cor-do-agente-fg);
+  color: var(--cor-do-agente);
+}
+
+.embed-cabecalho {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 8px 10px 14px;
+  background: var(--cor-do-agente);
+  color: var(--cor-do-agente-fg);
+}
+.embed-titulo { display: flex; flex: 1; align-items: center; gap: 8px; min-width: 0; }
+.embed-titulo h1 {
+  margin: 0;
+  overflow: hidden;
+  font-size: var(--texto-grande);
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.embed-selo {
+  flex: none;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: var(--texto-pequeno);
+  font-weight: 600;
+  background: var(--cor-do-agente-fg);
+  color: var(--cor-do-agente);
+}
+.embed-botao-icone {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--alvo-toque);
+  height: var(--alvo-toque);
+  padding: 0;
+  border: 0;
+  border-radius: var(--raio-controle);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.embed-botao-icone:hover:not(:disabled) { background: var(--overlay); }
+.embed-botao-icone:disabled { opacity: 0.5; cursor: not-allowed; }
+.embed-botao-icone:focus-visible { outline-color: var(--cor-do-agente-fg); }
+
+.embed-mensagens {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  padding: 16px;
+  overflow-y: auto;
+  background: var(--bg-subtle);
+}
+.embed .bolha-usuario { background: var(--cor-do-agente); color: var(--cor-do-agente-fg); }
+.embed-carregando { margin: auto; color: var(--fg-muted); font-size: var(--texto-pequeno); }
+
+.embed-sugestoes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.embed-sugestao {
+  min-height: var(--alvo-toque);
+  padding: 8px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--bg-surface);
+  color: var(--fg-default);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--transicao);
+}
+.embed-sugestao:hover { background: var(--bg-hover); }
+
+.embed-fontes { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 0; padding: 0; list-style: none; }
+.embed-chip {
+  padding: 2px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--bg-subtle);
+  color: var(--fg-muted);
+  font-size: var(--texto-pequeno);
+}
+.embed-chip-citada { border-color: var(--border-focus); color: var(--fg-default); }
+.embed-chip:focus { outline: 2px solid var(--border-focus); outline-offset: 2px; }
+
+.embed-campo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-surface);
+}
+.embed-campo textarea {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--alvo-toque);
+  max-height: 120px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-input);
+  border-radius: var(--raio-controle);
+  background: var(--bg-surface);
+  color: var(--fg-default);
+  font: inherit;
+  resize: none;
+  field-sizing: content;
+}
+.embed-enviar {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--alvo-toque);
+  height: var(--alvo-toque);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--cor-do-agente);
+  color: var(--cor-do-agente-fg);
+  cursor: pointer;
+}
+.embed-enviar:disabled { opacity: 0.45; cursor: not-allowed; }
+.embed-contador { flex-basis: 100%; color: var(--fg-muted); font-size: var(--texto-pequeno); }
+.embed-contador-limite { color: var(--danger-fg); font-weight: 600; }
+.embed-aviso {
+  margin: 0;
+  padding: 0 14px 10px;
+  background: var(--bg-surface);
+  color: var(--fg-muted);
+  font-size: var(--texto-pequeno);
+}
+.embed > .alerta { margin: 0 12px 8px; }
+
+@media (max-width: 480px) {
+  .embed-mensagens { padding: 12px; }
+  .embed .bolha { max-width: 92%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .embed * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}

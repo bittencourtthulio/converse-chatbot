@@ -4,6 +4,12 @@
 // texto para o visitante, a leitura da retomada e o estilo da cor do agente. O
 // componente `ChatEmbutido` só liga isto ao DOM e ao `fetch`.
 import { COR_PADRAO, corDoTextoSobre, normalizarCor } from '@/lib/cor'
+import {
+  estadoInicial,
+  reduzir,
+  type AcaoDaConversa,
+  type EstadoDaConversa,
+} from '@/componentes/estado-da-conversa'
 import type { FonteDaResposta } from '@/componentes/leitor-de-sse'
 
 /** Espelha `LIMITE_DA_MENSAGEM_PUBLICA` de `src/servicos/chat-publico.ts`, que o cliente não importa. */
@@ -205,4 +211,17 @@ export function podeEnviarNoEmbed(texto: string, transmitindo: boolean): boolean
 /** As sugestões só aparecem enquanto a conversa não começou. */
 export function sugestoesVisiveis(sugestoes: string[], quantasBolhas: number): string[] {
   return quantasBolhas === 0 ? sugestoes : []
+}
+
+export type AcaoDoEmbed = AcaoDaConversa | { tipo: 'retomar'; retomada: RetomadaDoEmbed }
+
+/**
+ * O reducer da conversa do painel mais a retomada do servidor. A retomada chega
+ * depois de a tela abrir: se o visitante já escreveu nesse meio-tempo, a conversa
+ * dele vale e a retomada é descartada.
+ */
+export function reduzirEmbed(estado: EstadoDaConversa, acao: AcaoDoEmbed): EstadoDaConversa {
+  if (acao.tipo !== 'retomar') return reduzir(estado, acao)
+  if (estado.bolhas.length > 0) return estado
+  return estadoInicial({ conversaId: acao.retomada.conversaId, mensagens: acao.retomada.mensagens })
 }
