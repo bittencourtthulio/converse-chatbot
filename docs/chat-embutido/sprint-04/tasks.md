@@ -41,7 +41,7 @@ tasks:
   - id: T-04.03
     titulo: "Mensagens do iframe e previa"
     fase: F-04.2
-    status: pendente
+    status: concluida
     objetivo: "Escrever o protocolo puro de postMessage (fechar, redimensionar, previa) e ligar ao componente."
     arquivos:
       cria: ["src/componentes/embed-mensagens.ts", "tests/embed-mensagens.test.ts"]
@@ -51,16 +51,16 @@ tasks:
     criterio_aceite: "tests/embed-mensagens.test.ts passa com ao menos 8 casos."
     depende_de: ["T-04.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-04.04
     titulo: "Pagina /embed/[id]"
     fase: F-04.2
     status: pendente
     objetivo: "Criar a pagina fora do grupo sistema, com estado indisponivel neutro e previa por sessao."
     arquivos:
-      cria: ["src/app/embed/[id]/page.tsx", "src/app/embed/[id]/loading.tsx", "tests/embed-pagina.test.ts"]
-      altera: []
+      cria: ["src/app/embed/[id]/page.tsx", "src/app/embed/[id]/loading.tsx", "src/app/embed/[id]/not-found.tsx", "tests/embed-pagina.test.ts"]
+      altera: ["src/servicos/chat-publico-config.ts", "tests/chat-publico-config-publica.test.ts", "src/estilos/global.css"]
     teste_integracao: "Contra next start, /embed/<id> de agente ativo abre sem login e sem barra lateral com titulo, cor e mensagem inicial e o de agente inativo e inexistente mostra o mesmo texto neutro sem nome do agente."
     teste_funcional: "Com ?previa=1 sem sessao a pagina mostra a mensagem neutra, com sessao e agente inativo mostra o chat com o aviso de previa, e o HTML nunca contem instrucoes nem modelo."
     criterio_aceite: "tests/embed-pagina.test.ts passa e a resposta nao contem as instrucoes do agente."
@@ -122,7 +122,7 @@ teste_funcional: "montarMensagem('fechar') devolve {origem:'converse', tipo:'fec
 criterio_aceite: "tests/embed-mensagens.test.ts passa com ao menos 8 casos."
 depende_de: ["T-04.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: verde — 1328 passed
 ```
 
 ---
@@ -132,8 +132,8 @@ id: T-04.04
 titulo: "Pagina /embed/[id]"
 objetivo: "Criar a pagina fora do grupo sistema, com estado indisponivel neutro e previa por sessao."
 arquivos:
-  cria: ["src/app/embed/[id]/page.tsx", "src/app/embed/[id]/loading.tsx", "tests/embed-pagina.test.ts"]
-  altera: []
+  cria: ["src/app/embed/[id]/page.tsx", "src/app/embed/[id]/loading.tsx", "src/app/embed/[id]/not-found.tsx", "tests/embed-pagina.test.ts"]
+  altera: ["src/servicos/chat-publico-config.ts", "tests/chat-publico-config-publica.test.ts", "src/estilos/global.css"]
 teste_integracao: "Contra next start, /embed/<id> de agente ativo abre sem login e sem barra lateral com titulo, cor e mensagem inicial e o de agente inativo e inexistente mostra o mesmo texto neutro sem nome do agente."
 teste_funcional: "Com ?previa=1 sem sessao a pagina mostra a mensagem neutra, com sessao e agente inativo mostra o chat com o aviso de previa, e o HTML nunca contem instrucoes nem modelo."
 criterio_aceite: "tests/embed-pagina.test.ts passa e a resposta nao contem as instrucoes do agente."

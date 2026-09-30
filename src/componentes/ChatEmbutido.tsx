@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useId, useReducer, useRef, useState } from 'react'
+import { useCallback, useEffect, useId, useReducer, useRef, useState, useSyncExternalStore } from 'react'
 import { Alerta } from '@/componentes/Alerta'
 import { AvatarDoChat, type AvatarDoChatNome } from '@/componentes/AvatarDoChat'
 import { Icone } from '@/componentes/Icones'
@@ -26,6 +26,12 @@ import {
 import { estadoInicial } from '@/componentes/estado-da-conversa'
 import { fonteDoNumero, numerosDeReferencia } from '@/componentes/fontes-da-resposta-logica'
 import { lerEventos } from '@/componentes/leitor-de-sse'
+import {
+  avisarOPai,
+  lerMensagemDePrevia,
+  mensagemDeFechar,
+  mensagemDeRedimensionar,
+} from '@/componentes/embed-mensagens'
 
 /** O que a página do iframe mostra do agente: só campos visuais (PR-56). */
 export interface ConfiguracaoDoEmbed {
@@ -107,7 +113,16 @@ function BolhaDoEmbed({ bolha, titulo }: { bolha: Bolha; titulo: string }) {
  * retomada. Modo `previa`: endpoint do painel, para o usuário logado ver o chat
  * sem gastar o limite público.
  */
-export function ChatEmbutido({ agenteId, configuracao, modo, aoFechar }: ChatEmbutidoProps) {
+export function ChatEmbutido({ agenteId, configuracao: configuracaoInicial, modo, aoFechar }: ChatEmbutidoProps) {
+  // A prévia do painel muda a configuração ao vivo por postMessage; o público não.
+  const [configuracao, setConfiguracao] = useState(configuracaoInicial)
+  // No servidor é falso; no navegador, verdadeiro se a página está dentro de um iframe.
+  const moldurado = useSyncExternalStore(
+    () => () => undefined,
+    () => window.parent !== window,
+    () => false,
+  )
+  const [expandido, setExpandido] = useState(false)
   const [estado, despachar] = useReducer(reduzirEmbed, undefined, () => estadoInicial())
   const [texto, setTexto] = useState('')
   const [retomando, setRetomando] = useState(false)
@@ -144,6 +159,17 @@ export function ChatEmbutido({ agenteId, configuracao, modo, aoFechar }: ChatEmb
     return () => abortar.abort()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agenteId, modo])
+
+  // Prévia: a configuração ainda não salva chega do painel, da mesma origem.
+  useEffect(() => {
+    if (modo !== 'previa') return
+    const ouvir = (evento: MessageEvent) => {
+      const nova = lerMensagemDePrevia(evento, window.location.origin)
+      if (nova) setConfiguracao((atual) => ({ ...atual, ...nova }))
+    }
+    window.addEventListener('message', ouvir)
+    return () => window.removeEventListener('message', ouvir)
+  }, [modo])
 
   // Foco no campo ao abrir e depois de cada resposta.
   useEffect(() => {
@@ -228,13 +254,29 @@ export function ChatEmbutido({ agenteId, configuracao, modo, aoFechar }: ChatEmb
     campo.current?.focus()
   }
 
+  const fechar = aoFechar ?? (() => void avisarOPai(mensagemDeFechar(), window))
+  const podeFechar = Boolean(aoFechar) || moldurado
+  const alternarTamanho = () => {
+    const proximo = !expandido
+    setExpandido(proximo)
+    avisarOPai(mensagemDeRedimensionar(proximo), window)
+  }
+
   const { titulo, cor, avatar, mensagemInicial, avisoDePrivacidade, sugestoes } = configuracao
   const vazio = estado.bolhas.length === 0
   const excedeu = texto.length > LIMITE_DA_MENSAGEM_DO_EMBED
   const ofertadas = retomando ? [] : sugestoesVisiveis(sugestoes, estado.bolhas.length)
 
   return (
-    <section className="embed" style={estiloDoAgente(cor)} data-modo={modo} aria-label={`Chat com ${titulo}`}>
+    <section
+      className="embed"
+      style={estiloDoAgente(cor)}
+      data-modo={modo}
+      aria-label={`Chat com ${titulo}`}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape' && podeFechar) fechar()
+      }}
+    >
       <header className="embed-cabecalho">
         <AvatarDoChat avatar={avatar} titulo={titulo} />
         <div className="embed-titulo">
@@ -251,8 +293,26 @@ export function ChatEmbutido({ agenteId, configuracao, modo, aoFechar }: ChatEmb
         >
           <Icone nome="atualizar" tamanho={18} />
         </button>
-        {aoFechar && (
-          <button type="button" className="embed-botao-icone" onClick={aoFechar} aria-label="Fechar o chat" title="Fechar">
+        {moldurado && modo === 'publico' && (
+          <button
+            type="button"
+            className="embed-botao-icone embed-ampliar"
+            onClick={alternarTamanho}
+            aria-label={expandido ? 'Reduzir o chat' : 'Ampliar o chat'}
+            aria-pressed={expandido}
+            title={expandido ? 'Reduzir' : 'Ampliar'}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+              {expandido ? (
+                <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" />
+              ) : (
+                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+              )}
+            </svg>
+          </button>
+        )}
+        {podeFechar && (
+          <button type="button" className="embed-botao-icone" onClick={fechar} aria-label="Fechar o chat" title="Fechar">
             <Icone nome="fechar" tamanho={18} />
           </button>
         )}
