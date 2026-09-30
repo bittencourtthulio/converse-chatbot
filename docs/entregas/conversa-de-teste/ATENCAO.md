@@ -8,7 +8,7 @@ feature_id: FT-03
 raio: null
 olho_obrigatorio: 9
 leitura_rapida: 14
-dispensavel: 51
+dispensavel: 52
 atualizado_em: 2026-09-30
 ---
 
@@ -31,7 +31,7 @@ Sem modo legado e sem raio calculado: a classificação vem do tipo de arquivo e
 ### LEITURA RÁPIDA — conferir intenção, não implementação
 
 - `.env.example` (M, +4/-0) — L2 documenta MAX_TOKENS_RESPOSTA sem valor secreto; conferido por tests/projeto.test.ts
-- `README.md` (M, +7/-0) — L2 documentação de uso conferida por tests/projeto.test.ts
+- `README.md` (M, +8/-0) — L2 documentação de uso conferida por tests/projeto.test.ts
 - `src/app/(sistema)/agentes/[id]/page.tsx` (M, +1/-1) — L1 interface ou componente coberto por teste de rota ou de componente
 - `src/app/(sistema)/agentes/[id]/testar/loading.tsx` (A, +15/-0) — L1 interface ou componente coberto por teste de rota ou de componente
 - `src/app/(sistema)/agentes/[id]/testar/page.tsx` (A, +29/-0) — L1 interface ou componente coberto por teste de rota ou de componente
@@ -68,10 +68,10 @@ Sem modo legado e sem raio calculado: a classificação vem do tipo de arquivo e
 - `docs/conversa-de-teste/sprint-05/tasks.md` (A, +176/-0)
 - `docs/conversa-de-teste/sprint-06/tasks.md` (A, +140/-0)
 - `docs/conversa-de-teste/sprint-07/tasks.md` (A, +177/-0)
-- `docs/entregas/conversa-de-teste/ATENCAO.md` (A)
-- `docs/entregas/conversa-de-teste/ENTREGA.md` (A, +46/-0)
-- `docs/entregas/conversa-de-teste/PR.md` (A)
-- `docs/entregas/conversa-de-teste/QA-PACOTE.md` (A)
+- `docs/entregas/conversa-de-teste/ATENCAO.md` (A, +100/-0)
+- `docs/entregas/conversa-de-teste/ENTREGA.md` (A, +253/-0)
+- `docs/entregas/conversa-de-teste/PR.md` (A, +185/-0)
+- `docs/entregas/conversa-de-teste/QA-PACOTE.md` (A, +110/-0)
 - `docs/projeto/MAPA.md` (M, +7/-4)
 - `docs/projeto/PREMISSAS.md` (M, +54/-2)
 - `docs/projeto/PROJETO.md` (M, +1/-1)
@@ -83,6 +83,7 @@ Sem modo legado e sem raio calculado: a classificação vem do tipo de arquivo e
 - `tests/ajuda.ts` (M, +2/-0)
 - `tests/ambiente.test.ts` (M, +23/-1)
 - `tests/apoio/chat.ts` (A, +39/-0)
+- `tests/apoio/servir-falso.ts` (A, +29/-0)
 - `tests/chat-de-teste.test.tsx` (A, +139/-0)
 - `tests/chat-erros.test.ts` (A, +93/-0)
 - `tests/chat-falhas.test.ts` (A, +172/-0)

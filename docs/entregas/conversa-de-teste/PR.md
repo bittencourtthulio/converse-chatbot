@@ -119,9 +119,10 @@ tests/
   A texto-seguro.test.tsx
 tests/apoio/
   A chat.ts
+  A servir-falso.ts
 ```
 
-Total: 74 arquivos.
+Total: 75 arquivos.
 
 ## Origem
 
@@ -168,7 +169,7 @@ Reverter os commits da branch `feat/conversa-de-teste`. A migration só cria tab
 ### LEITURA RÁPIDA — conferir intenção, não implementação
 
 - `.env.example` (M, +4/-0)
-- `README.md` (M, +7/-0)
+- `README.md` (M, +8/-0)
 - `src/app/(sistema)/agentes/[id]/page.tsx` (M, +1/-1)
 - `src/app/(sistema)/agentes/[id]/testar/loading.tsx` (A, +15/-0)
 - `src/app/(sistema)/agentes/[id]/testar/page.tsx` (A, +29/-0)
@@ -182,4 +183,4 @@ Reverter os commits da branch `feat/conversa-de-teste`. A migration só cria tab
 - `src/componentes/texto-seguro.ts` (A, +112/-0)
 - `src/servicos/chat-prompt.ts` (A, +57/-0)
 
-Os 51 arquivos dispensáveis (testes, estilos e documentos) estão em [ATENCAO.md](ATENCAO.md).
+Os 52 arquivos dispensáveis (testes, estilos e documentos) estão em [ATENCAO.md](ATENCAO.md).
