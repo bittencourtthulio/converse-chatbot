@@ -591,3 +591,31 @@ tbody tr:hover { background: var(--bg-hover); }
   font-family: var(--font-mono);
   font-size: var(--texto-pequeno);
 }
+
+/* ---------- abas do agente ---------- */
+
+.abas {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--border);
+}
+.aba {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--altura-controle);
+  padding: 0 14px;
+  margin-bottom: -1px;
+  border-bottom: 2px solid transparent;
+  color: var(--fg-muted);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--transicao), border-color var(--transicao);
+}
+.aba:hover { color: var(--fg-default); }
+.aba[aria-current='page'] { color: var(--accent); border-bottom-color: var(--accent); }
+.aba:focus-visible { outline: 2px solid var(--border-focus); outline-offset: -2px; border-radius: var(--raio-pequeno); }
+@media (max-width: 768px) {
+  .aba { min-height: var(--alvo-toque); }
+}

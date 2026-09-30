@@ -40,7 +40,7 @@ tasks:
   - id: T-05.02
     titulo: "AbasDoAgente e lista extensivel de abas"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Componente de abas alimentado por lista propria, so com Configuracoes."
     arquivos:
       cria: ["src/componentes/abas-do-agente.ts", "src/componentes/AbasDoAgente.tsx", "tests/abas-do-agente.test.tsx"]
@@ -50,8 +50,8 @@ tasks:
     criterio_aceite: "O teste passa e o global.css nao ganha cor literal (tests/tokens.test.ts verde)."
     depende_de: [T-05.01]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-05.03
     titulo: "SeletorDeModelo"
     fase: F-05.1
@@ -179,7 +179,7 @@ flowchart LR
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
   class T_05_01 concluida
-  class T_05_02 pendente
+  class T_05_02 concluida
   class T_05_03 pendente
   class T_05_04 pendente
   class T_05_05 pendente
@@ -223,7 +223,10 @@ teste_funcional: a lista tem uma aba Configuracoes com href /agentes/<id>, a aba
 criterio_aceite: O teste passa e o global.css nao ganha cor literal (tests/tokens.test.ts verde).
 depende_de: [T-05.01]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: abas 5 passed, tokens ok; tsc e lint 0
 ```
 
 ---
