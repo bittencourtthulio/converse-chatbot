@@ -4,7 +4,7 @@ import path from 'node:path'
 export default defineConfig({
   test: {
     environment: 'node',
-    include: ['tests/**/*.test.ts'],
+    include: ['tests/**/*.test.{ts,tsx}'],
     // O teste de rotas sobe o servidor de produção e espera por ele.
     testTimeout: 30_000,
     hookTimeout: 180_000,
