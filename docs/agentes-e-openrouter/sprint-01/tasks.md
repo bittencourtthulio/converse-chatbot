@@ -25,7 +25,7 @@ tasks:
   - id: T-01.01
     titulo: "Cripto de segredo AES-256-GCM"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Cifrar e decifrar segredo com ENCRYPTION_KEY validada so no uso e documentar a variavel."
     arquivos:
       cria: ["src/lib/cripto.ts", "tests/cripto.test.ts"]
@@ -35,8 +35,8 @@ tasks:
     criterio_aceite: "O teste de cripto passa, o teste de ambiente prova que importar ambiente sem ENCRYPTION_KEY nao lanca, e o .env.example lista ENCRYPTION_KEY vazio com o comando de geracao."
     depende_de: []
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-01.02
     titulo: "Teste das migracoes contra remocao sem marca"
     fase: F-01.1
@@ -126,7 +126,7 @@ flowchart LR
   classDef concluida fill:#DFF0D8,stroke:#4A6B3A,color:#1A1815
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
-  class T_01_01 pendente
+  class T_01_01 concluida
   class T_01_02 pendente
   class T_01_03 pendente
   class T_01_04 pendente
@@ -148,7 +148,10 @@ teste_funcional: cifrar e decifrar devolvem o texto original, dois cifrar do mes
 criterio_aceite: O teste de cripto passa, o teste de ambiente prova que importar ambiente sem ENCRYPTION_KEY nao lanca, e o .env.example lista ENCRYPTION_KEY vazio com o comando de geracao.
 depende_de: []
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: cripto 16, ambiente e projeto verdes; tsc e lint 0
 ```
 
 ---

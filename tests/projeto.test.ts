@@ -40,6 +40,12 @@ describe('exemplo de ambiente', () => {
 
   it('não traz segredo real', () => {
     expect(valorDe('JWT_SECRET')).toBe('')
+    expect(valorDe('ENCRYPTION_KEY')).toBe('')
+  })
+
+  it('documenta a chave de criptografia e como gerá-la', () => {
+    expect(exemplo).toContain('ENCRYPTION_KEY')
+    expect(exemplo).toMatch(/randomBytes\(32\)/)
   })
 })
 

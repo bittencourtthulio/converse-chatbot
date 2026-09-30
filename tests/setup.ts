@@ -11,6 +11,9 @@ const arquivo = path.resolve(process.cwd(), 'prisma/test.db')
 process.env.DATABASE_URL = `file:${arquivo}`
 process.env.JWT_SECRET = 'segredo-de-teste-nao-usar-em-producao'
 process.env.JWT_TTL_SEGUNDOS = '900'
+// Chave de teste do AES-256-GCM (32 bytes em hexadecimal). Nunca usar em produção.
+process.env.ENCRYPTION_KEY =
+  '00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff'
 // NODE_ENV é somente-leitura nos tipos do Node; o vitest já o define como
 // 'test', e a atribuição direta não compila.
 Object.assign(process.env, { NODE_ENV: 'test' })

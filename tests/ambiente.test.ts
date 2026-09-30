@@ -38,3 +38,20 @@ describe('confiança no proxy', () => {
     expect(ambiente.confiarNoProxy).toBe(true)
   })
 })
+
+describe('chave de criptografia', () => {
+  it('ler ambiente sem ENCRYPTION_KEY não lança: só o uso do segredo falha', () => {
+    const guardada = process.env.ENCRYPTION_KEY
+    delete process.env.ENCRYPTION_KEY
+    try {
+      expect(() => ambiente.nomeDoProduto).not.toThrow()
+      expect(ambiente.chaveDeCriptografia).toBeUndefined()
+    } finally {
+      process.env.ENCRYPTION_KEY = guardada
+    }
+  })
+
+  it('devolve o valor bruto quando definido', () => {
+    expect(ambiente.chaveDeCriptografia).toBe(process.env.ENCRYPTION_KEY)
+  })
+})

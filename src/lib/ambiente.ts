@@ -38,6 +38,14 @@ export const ambiente = {
   get confiarNoProxy(): boolean {
     return process.env.TRUST_PROXY === '1'
   },
+  /**
+   * Chave do AES-256-GCM (PR-39), valor bruto. Não é obrigatória no start:
+   * só `src/lib/cripto.ts` a valida, quando um segredo é gravado ou lido.
+   */
+  get chaveDeCriptografia(): string | undefined {
+    const valor = process.env.ENCRYPTION_KEY?.trim()
+    return valor ? valor : undefined
+  },
   get ehProducao(): boolean {
     return process.env.NODE_ENV === 'production'
   },
