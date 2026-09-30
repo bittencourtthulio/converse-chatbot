@@ -40,7 +40,7 @@ tasks:
   - id: T-05.02
     titulo: "Leitor de SSE do navegador"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Modulo que le um ReadableStream SSE e devolve eventos tipados, tolerante a pacotes partidos."
     arquivos:
       cria: ["src/componentes/leitor-de-sse.ts", "tests/leitor-de-sse.test.ts"]
@@ -50,8 +50,8 @@ tasks:
     criterio_aceite: "O teste passa e o modulo nao usa fetch."
     depende_de: [T-04.01]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-05.03
     titulo: "Estado da conversa e teclas"
     fase: F-05.1
@@ -108,7 +108,7 @@ flowchart LR
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
   class T_05_01 concluida
-  class T_05_02 pendente
+  class T_05_02 concluida
   class T_05_03 pendente
 ```
 
@@ -148,7 +148,10 @@ teste_funcional: le trecho, fim e erro na ordem, junta um evento partido em dois
 criterio_aceite: O teste passa e o modulo nao usa fetch.
 depende_de: [T-04.01]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: verde
+resultado: leitor-de-sse 11 testes; suite 545 verdes; tsc e lint 0
 ```
 
 ---
