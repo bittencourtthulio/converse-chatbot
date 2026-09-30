@@ -1,0 +1,102 @@
+---
+expx_schema: 1
+expx_tool: buildx
+kind: recursao
+projeto_id: plataforma-chatbot-ia
+atualizado_em: 2026-09-30
+ciclo_atual: 1
+teto_ciclos: 3
+pendencias_abertas: 6
+pendencias_resolvidas: 0
+---
+
+# Plataforma de chatbot com IA e base de conhecimento — Recursão
+
+Tudo que ficou pelo caminho, classificado. O ciclo B4 → B5 repete enquanto
+houver pendência resolvível, até o teto.
+
+## Ciclos
+
+| Ciclo | Pendências entraram | Viraram feature | Replanejadas | Ficaram para o humano |
+|---|---|---|---|---|
+| 1 | 6 (até o B3) | 0 | 0 | 6 |
+
+---
+
+## Aberto — o que exige decisão humana
+
+### PEND-01 — Modelo de negócio: instalação própria ou serviço com várias contas
+
+**Classe:** `decisao_humana`
+**Origem:** B1 (PR-02)
+**A decisão:** o sistema serve a uma empresa por instalação, ou vende contas isoladas a terceiros?
+**As opções:** (a) instalação própria, o que está construído; (b) multi-conta com cadastro público, isolamento de dados por conta, planos e cobrança, o que exige mudar o modelo de dados inteiro.
+**O que o buildx fez enquanto isso:** um workspace por instalação; usuários criados por um admin.
+**Reversibilidade:** ir de (a) para (b) é uma reescrita do modelo de dados e das rotas; por isso é a primeira coisa a confirmar.
+
+### PEND-02 — Nome e identidade do produto
+
+**Classe:** `decisao_humana`
+**Origem:** B1 (PR-03)
+**A decisão:** qual o nome do produto e a identidade visual (logotipo, cor de marca)?
+**As opções:** manter "Converse" com a paleta padrão, ou informar nome e marca.
+**O que o buildx fez enquanto isso:** nome "Converse" configurável por `APP_NAME`; cor de destaque padrão em tokens.
+**Reversibilidade:** baixo custo: nome em variável de ambiente e cor em um arquivo de tokens.
+
+### PEND-03 — Confirmar as interpretações do pedido
+
+**Classe:** `decisao_humana`
+**Origem:** B1 (PR-01, PR-04, PR-05, PR-06, PR-07, PR-08, PR-09, PR-10, PR-11, PR-24)
+**A decisão:** confirmar que o pedido significa: vários agentes; busca por texto (sem embeddings); vídeo como transcrição da fala (sem análise de imagem); PDF com texto (sem OCR); OpenRouter com uma chave por instalação; Telegram por webhook; hospedagem em contêiner com disco persistente (não serverless).
+**As opções:** confirmar, ou pedir a alternativa de cada item (ver "O que invalida" em cada premissa).
+**O que o buildx fez enquanto isso:** construiu a leitura mais simples de cada uma, marcada `Provisória: true` no `PREMISSAS.md`.
+**Reversibilidade:** varia; embeddings e OCR entram como features novas sem quebrar o que existe; hospedagem serverless exige trocar banco e armazenamento.
+
+---
+
+## Aberto — o que exige recurso externo
+
+### PEND-04 — Arquivo `.env` local não foi criado
+
+**Classe:** `recurso_externo`
+**Origem:** B2
+**O que falta:** uma pessoa copiar `.env.example` para `.env` e preencher os segredos (`JWT_SECRET` e, conforme as features, `ENCRYPTION_KEY`). Um hook de segurança do ambiente do usuário bloqueia qualquer comando do agente que toque `.env`, por isso o buildx não o criou nem contornou o bloqueio.
+**O que destrava:** rodar `npm run dev` e `npm run start` diretamente. Os testes e o build não dependem dele: recebem os segredos por variável inline ou definem os próprios.
+**Estado atual:** código completo e testado; o `.env.example` documenta cada variável.
+
+### PEND-05 — Repositório remoto inexistente: PRs não puderam ser abertos
+
+**Classe:** `recurso_externo`
+**Origem:** B2 (`git remote -v` vazio)
+**O que falta:** um repositório remoto (`origin`) e `gh auth`. Criar repositório na conta do usuário e publicar código é ação externa que o buildx não faz sem autorização.
+**O que destrava:** `git push` das branches de feature e abertura dos PRs; a descrição de cada PR está pronta em `docs/<slug>/PR.md`.
+**Estado atual:** uma branch local por feature, empilhadas na ordem do mapa, cada uma verde. Nenhum merge foi feito (regra 8).
+
+### PEND-06 — Credenciais e URL pública que só o usuário tem
+
+**Classe:** `recurso_externo`
+**Origem:** B1
+**O que falta:** chave do OpenRouter (com saldo), token de um bot do Telegram (BotFather), e uma URL pública HTTPS para o servidor (o script embutido e o webhook do Telegram só funcionam com ela). Para vídeo, `ffmpeg` no servidor (o contêiner o inclui).
+**O que destrava:** respostas reais de IA, o canal Telegram funcionando e o chat em sites de verdade.
+**Estado atual:** tudo construído e testado contra servidores simulados de OpenRouter e Telegram; nenhuma chamada real foi feita.
+
+---
+
+## Resolvido nos ciclos
+
+| ID | Assunto | Classe | Ciclo | Como resolveu |
+|---|---|---|---|---|
+
+---
+
+<!--
+AS QUATRO CLASSES
+
+  trabalho_novo    → vira feature nova no MAPA.md, volta ao B4
+  replanejamento   → a feature volta à F3 do sprintx (teto próprio: 2 voltas)
+  decisao_humana   → fica aqui, vai para o relatório. NUNCA vira feature
+  recurso_externo  → fica aqui, vai para o relatório
+
+O TETO: padrão 3 ciclos. Atingido o teto, toda pendência aberta vira
+decisao_humana e o buildx segue para o B6.
+-->
