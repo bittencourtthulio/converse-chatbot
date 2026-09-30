@@ -125,8 +125,8 @@ id: T-06.02
 titulo: Aba, subrota e aviso de exclusao
 objetivo: Acrescentar a aba Testar, a pagina de servidor com a ultima conversa do painel, o loading e o aviso de exclusao.
 arquivos:
-  cria: [src/app/(sistema)/agentes/[id]/testar/page.tsx, src/app/(sistema)/agentes/[id]/testar/loading.tsx]
-  altera: [src/componentes/abas-do-agente.ts, src/app/(sistema)/agentes/[id]/page.tsx, tests/abas-do-agente.test.tsx, tests/rotas.test.ts, src/servicos/conversas.ts, tests/conversas.test.ts, src/servicos/integracoes.ts, tests/integracoes.test.ts]
+  cria: ["src/app/(sistema)/agentes/[id]/testar/page.tsx", "src/app/(sistema)/agentes/[id]/testar/loading.tsx"]
+  altera: ["src/componentes/abas-do-agente.ts", "src/app/(sistema)/agentes/[id]/page.tsx", "tests/abas-do-agente.test.tsx", "tests/rotas.test.ts", "src/servicos/conversas.ts", "tests/conversas.test.ts", "src/servicos/integracoes.ts", "tests/integracoes.test.ts"]
 teste_integracao: tests/rotas.test.ts pede /agentes/<id>/testar ao servidor de producao com e sem sessao, com conversa gravada no banco de teste.
 teste_funcional: sem sessao 307 para o login, com sessao 200 com a mensagem inicial e a aba Testar marcada, agente inexistente 404, a conversa mais recente do usuario e retomada e a de outro usuario nao aparece, e a pagina de configuracoes avisa que excluir apaga as conversas.
 criterio_aceite: O teste de rotas passa depois de npm run build e ABAS_DO_AGENTE tem Configuracoes e Testar nessa ordem.

@@ -126,7 +126,7 @@ id: T-04.02
 titulo: Rota POST /api/agentes/[id]/conversar
 objetivo: Handler fino com sessao no servidor, erro pre-stream em JSON e stream SSE com os cabecalhos definidos.
 arquivos:
-  cria: [src/app/api/agentes/[id]/conversar/route.ts, tests/conversar-rota.test.ts]
+  cria: ["src/app/api/agentes/[id]/conversar/route.ts", "tests/conversar-rota.test.ts"]
   altera: []
 teste_integracao: tests/conversar-rota.test.ts sobe next start em porta propria com o OpenRouter falso e o banco de teste, e chama a rota com fetch e cookie de sessao real.
 teste_funcional: sem sessao 401, agente inexistente 404, mensagem invalida 422, sem chave 409 com codigo chat_sem_chave, stream completo com cabecalhos text/event-stream, no-store, X-Accel-Buffering no e X-Conversa-Id, eventos trecho e fim e resposta gravada, erro no meio do stream com evento erro e nada gravado do assistente, chave invalida do provedor com evento erro em pt-BR sem o corpo bruto, conversa de outro usuario 404, e abortar a leitura aumenta os cancelamentos do falso.

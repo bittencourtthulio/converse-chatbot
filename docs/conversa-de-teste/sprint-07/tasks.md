@@ -55,7 +55,7 @@ tasks:
   - id: T-07.03
     titulo: "Fechamento no laco do buildx"
     fase: F-07.1
-    status: pendente
+    status: concluida
     objetivo: "Registrar a feature no mapa, premissas e recursao e conferir arquivos de ambiente e dependencias."
     arquivos:
       cria: ["docs/conversa-de-teste/FECHAMENTO.md", "docs/conversa-de-teste/RELATORIO-FEATURE.md", "docs/conversa-de-teste/00-AUDITORIA.md", "docs/conversa-de-teste/ORQUESTRADOR.md", "docs/conversa-de-teste/BRIEFING-BUILDX.md", "docs/conversa-de-teste/00-DECISOES.md", "docs/conversa-de-teste/00-BLOQUEIOS.md", "docs/conversa-de-teste/base/00-INDICE.md", "docs/conversa-de-teste/base/00-LACUNAS.md", "docs/conversa-de-teste/base/streaming-e-openrouter.md", "docs/conversa-de-teste/base/banco-e-testes.md", "docs/conversa-de-teste/base/servicos-handlers-e-sessao.md", "docs/conversa-de-teste/base/interface-do-agente.md", "docs/entregas/conversa-de-teste/ENTREGA.md", "docs/entregas/conversa-de-teste/PR.md", "docs/entregas/conversa-de-teste/QA-PACOTE.md", "docs/entregas/conversa-de-teste/ATENCAO.md"]
@@ -65,8 +65,8 @@ tasks:
     criterio_aceite: "grep de FT-03 no painel do MAPA.md devolve entregue e o total de premissas do frontmatter e 44."
     depende_de: [T-07.02]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
 ---
 
 # Plano — Sprint 07 — Verificacao, convencoes e fechamento
@@ -110,7 +110,7 @@ flowchart LR
   classDef critico stroke-width:3px
   class T_07_01 concluida
   class T_07_02 concluida
-  class T_07_03 pendente
+  class T_07_03 concluida
 ```
 
 ## Tasks
@@ -169,6 +169,9 @@ teste_funcional: O MAPA.md mostra FT-03 entregue com sprints, testes e PR local,
 criterio_aceite: grep de FT-03 no painel do MAPA.md devolve entregue e o total de premissas do frontmatter e 44.
 depende_de: [T-07.02]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: verde
+resultado: suite 573 verdes; tsc, lint, build e audit (0) verdes; MAPA com FT-03 entregue; PREMISSAS total 44
 ```
 

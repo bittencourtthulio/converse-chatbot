@@ -124,9 +124,16 @@ describe('README do projeto', () => {
       'ENCRYPTION_KEY',
       'OPENROUTER_BASE_URL',
       'APP_URL',
+      'MAX_TOKENS_RESPOSTA',
     ]) {
       expect(readme, variavel).toContain(variavel)
     }
+  })
+
+  it('explica a aba Testar e a conversa em tempo real', () => {
+    expect(readme).toContain('Testar')
+    expect(readme).toContain('/api/agentes/[id]/conversar')
+    expect(readme).toContain('Nova conversa')
   })
 
   it('explica como cadastrar a chave do OpenRouter e criar agentes', () => {

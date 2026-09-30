@@ -8,15 +8,15 @@ feature_id: FT-03
 titulo: Conversa de teste com o agente
 tipo_trabalho: feature
 tipo_ocorrencia: null
-estagio: f4
-status: em_andamento
+estagio: f6
+status: concluido
 criado_em: 2026-09-30
 atualizado_em: 2026-09-30
-concluido_em: null
+concluido_em: 2026-09-30
 sprints: [sprint-01, sprint-02, sprint-03, sprint-04, sprint-05, sprint-06, sprint-07]
 caminho_critico: [T-01.01, T-02.01, T-03.01, T-03.02, T-04.01, T-04.02, T-06.02, T-07.01, T-07.02, T-07.03]
 modulo_afetado: [apresentacao, aplicacao, infraestrutura, banco, testes, documentacao]
-arquivos_alterados: []
+arquivos_alterados: [".env.example", "README.md", "docs/conversa-de-teste/00-AUDITORIA.md", "docs/conversa-de-teste/00-BLOQUEIOS.md", "docs/conversa-de-teste/00-DECISOES.md", "docs/conversa-de-teste/BRIEFING-BUILDX.md", "docs/conversa-de-teste/FECHAMENTO.md", "docs/conversa-de-teste/ORQUESTRADOR.md", "docs/conversa-de-teste/RELATORIO-FEATURE.md", "docs/conversa-de-teste/VERIFICACAO-VISUAL.md", "docs/conversa-de-teste/base/00-INDICE.md", "docs/conversa-de-teste/base/00-LACUNAS.md", "docs/conversa-de-teste/base/banco-e-testes.md", "docs/conversa-de-teste/base/interface-do-agente.md", "docs/conversa-de-teste/base/servicos-handlers-e-sessao.md", "docs/conversa-de-teste/base/streaming-e-openrouter.md", "docs/conversa-de-teste/sprint-01/tasks.md", "docs/conversa-de-teste/sprint-02/tasks.md", "docs/conversa-de-teste/sprint-03/tasks.md", "docs/conversa-de-teste/sprint-04/tasks.md", "docs/conversa-de-teste/sprint-05/tasks.md", "docs/conversa-de-teste/sprint-06/tasks.md", "docs/conversa-de-teste/sprint-07/tasks.md", "docs/entregas/conversa-de-teste/ATENCAO.md", "docs/entregas/conversa-de-teste/ENTREGA.md", "docs/entregas/conversa-de-teste/PR.md", "docs/entregas/conversa-de-teste/QA-PACOTE.md", "docs/projeto/MAPA.md", "docs/projeto/PREMISSAS.md", "docs/projeto/PROJETO.md", "docs/projeto/RECURSAO.md", "docs/stack/CONVENCOES.md", "docs/stack/LACUNAS.md", "prisma/migrations/20260930170000_conversas/migration.sql", "prisma/schema.prisma", "src/app/(sistema)/agentes/[id]/page.tsx", "src/app/(sistema)/agentes/[id]/testar/loading.tsx", "src/app/(sistema)/agentes/[id]/testar/page.tsx", "src/app/api/agentes/[id]/conversar/route.ts", "src/app/eventos-sse.ts", "src/componentes/ChatDeTeste.tsx", "src/componentes/Icones.tsx", "src/componentes/TextoDoModelo.tsx", "src/componentes/abas-do-agente.ts", "src/componentes/estado-da-conversa.ts", "src/componentes/itens-de-menu.ts", "src/componentes/leitor-de-sse.ts", "src/componentes/texto-seguro.ts", "src/estilos/global.css", "src/lib/ambiente.ts", "src/servicos/chat-erros.ts", "src/servicos/chat-prompt.ts", "src/servicos/chat.ts", "src/servicos/conversas.ts", "src/servicos/integracoes.ts", "tests/abas-do-agente.test.tsx", "tests/ajuda.ts", "tests/ambiente.test.ts", "tests/apoio/chat.ts", "tests/chat-de-teste.test.tsx", "tests/chat-erros.test.ts", "tests/chat-falhas.test.ts", "tests/chat-prompt.test.ts", "tests/chat.test.ts", "tests/conversar-rota.test.ts", "tests/conversas-modelo.test.ts", "tests/conversas.test.ts", "tests/estado-da-conversa.test.ts", "tests/eventos-sse.test.ts", "tests/integracoes.test.ts", "tests/leitor-de-sse.test.ts", "tests/projeto.test.ts", "tests/rotas.test.ts", "tests/texto-seguro.test.tsx"]
 palavras_chave: [conversa, chat, streaming, sse, openrouter, mensagens, erro, painel]
 worktree: null
 ---
