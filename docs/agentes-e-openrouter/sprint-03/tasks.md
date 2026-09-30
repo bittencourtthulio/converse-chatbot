@@ -40,7 +40,7 @@ tasks:
   - id: T-03.02
     titulo: "Teste de conexao e leitura interna da chave"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Testar a conexao com a chave gravada e oferecer a chave decifrada a outros servicos."
     arquivos:
       cria: []
@@ -50,8 +50,8 @@ tasks:
     criterio_aceite: "O teste passa e nenhuma mensagem de erro contem a chave."
     depende_de: [T-03.01, T-02.03]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-03.03
     titulo: "Item Integracoes no menu"
     fase: F-03.1
@@ -145,7 +145,7 @@ flowchart LR
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
   class T_03_01 concluida
-  class T_03_02 pendente
+  class T_03_02 concluida
   class T_03_03 pendente
   class T_03_04 pendente
   class T_03_05 pendente
@@ -187,7 +187,10 @@ teste_funcional: testarConexaoDoOpenrouter devolve sucesso com chave valida, lan
 criterio_aceite: O teste passa e nenhuma mensagem de erro contem a chave.
 depende_de: [T-03.01, T-02.03]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: integracoes-conexao 7 e integracoes 18 passed; tsc e lint 0
 ```
 
 ---

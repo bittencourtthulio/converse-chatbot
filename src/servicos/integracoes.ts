@@ -5,6 +5,7 @@ import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
 import { cifrar, decifrar, mascararSegredo } from '@/lib/cripto'
 import { ErroDeAplicacao, entradaInvalida } from '@/lib/erros'
+import { verificarChave } from '@/lib/openrouter'
 import { exigirAdmin, type UsuarioAutenticado } from '@/servicos/autenticacao'
 
 const ID_DA_CONFIGURACAO = 'unica'
@@ -104,4 +105,35 @@ export async function removerChaveDoOpenrouter(
     update: { openrouterChaveCifrada: null, atualizadoPor: autor.id },
   })
   return lerEstado()
+}
+
+/**
+ * A chave do OpenRouter em claro, para os serviços que falam com o provedor
+ * (a conversa de teste da FT-03 e os canais). Nunca chega ao navegador: quem
+ * chama não a devolve. `null` se não houver chave; erro claro se ela for
+ * ilegível (ENCRYPTION_KEY ausente ou trocada).
+ */
+export async function obterChaveDoOpenrouter(): Promise<string | null> {
+  const linha = await prisma.configuracaoDoWorkspace.findUnique({
+    where: { id: ID_DA_CONFIGURACAO },
+  })
+  if (!linha?.openrouterChaveCifrada) return null
+  return decifrar(linha.openrouterChaveCifrada)
+}
+
+/** Testa a chave gravada contra o OpenRouter. Só admin. */
+export async function testarConexaoDoOpenrouter(
+  autor: UsuarioAutenticado,
+): Promise<{ ok: true; saldoRestante: number | null }> {
+  exigirAdmin(autor)
+  const chave = await obterChaveDoOpenrouter()
+  if (!chave) {
+    throw new ErroDeAplicacao(
+      'Nenhuma chave do OpenRouter cadastrada. Cadastre uma antes de testar.',
+      409,
+      'chave_nao_configurada',
+    )
+  }
+  const { saldoRestante } = await verificarChave(chave)
+  return { ok: true, saldoRestante }
 }
