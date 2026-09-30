@@ -1,12 +1,9 @@
 import type { NextConfig } from 'next'
 
-// Cabeçalhos de segurança em toda resposta (PR-37). A Content-Security-Policy
-// e o `frame-ancestors` do chat embutido chegam com a FT-06, que também
-// sobrescreve o X-Frame-Options na rota do iframe.
+// Cabeçalhos de segurança em toda resposta (PR-37).
 const cabecalhosDeSeguranca = [
   { key: 'X-Content-Type-Options', value: 'nosniff' },
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-  { key: 'X-Frame-Options', value: 'DENY' },
   {
     key: 'Permissions-Policy',
     value:
@@ -14,10 +11,19 @@ const cabecalhosDeSeguranca = [
   },
 ]
 
+// O X-Frame-Options: DENY vale para tudo, menos /embed (FT-06, PR-59): a página do
+// iframe é emoldurada de propósito, e quem decide por quem é o `frame-ancestors`
+// que o `src/proxy.ts` define conforme os domínios do agente. Caminho que só
+// começa com a palavra (`/embedded`) continua negado.
+const naoEmoldurar = [{ key: 'X-Frame-Options', value: 'DENY' }]
+
 const config: NextConfig = {
   reactStrictMode: true,
   async headers() {
-    return [{ source: '/:path*', headers: cabecalhosDeSeguranca }]
+    return [
+      { source: '/:path*', headers: cabecalhosDeSeguranca },
+      { source: '/((?!embed$|embed/).*)', headers: naoEmoldurar },
+    ]
   },
 }
 

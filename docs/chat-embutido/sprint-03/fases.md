@@ -10,14 +10,14 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-03.1
     titulo: "API publica"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "As tres rotas publicas por HTTP real."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-03.01", "T-03.02", "T-03.03"]
   - id: F-03.2
     titulo: "Cabecalhos de /embed"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "proxy.ts e next.config.ts."
     paralelizavel: false
     paralela_com: []
@@ -52,7 +52,7 @@ flowchart LR
   class T_03_01 concluida
   class T_03_02 concluida
   class T_03_03 concluida
-  class T_03_04 pendente
+  class T_03_04 concluida
   class T_03_01,T_03_02,T_03_03,T_03_04 critico
 ```
 

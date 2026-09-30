@@ -7,7 +7,7 @@ origem_buildx: plataforma-chatbot-ia
 feature_id: FT-06
 sprint_id: sprint-03
 titulo: "Rotas publicas e cabecalhos do iframe"
-status: nao_iniciado
+status: concluido
 criterio_saida: "Os testes de producao das rotas publicas e dos cabecalhos de /embed passam e a suite inteira esta verde."
 fases: ["F-03.1", "F-03.2"]
 riscos: ["Prisma dentro do proxy.ts pode nao funcionar (lacuna 1, D-09)", "o next start dos testes precisa de npm run build antes", "sem TRUST_PROXY todos os testes compartilham o IP desconhecido: os testes usam X-Forwarded-For com TRUST_PROXY=1"]

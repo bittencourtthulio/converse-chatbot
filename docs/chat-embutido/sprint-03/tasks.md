@@ -56,7 +56,7 @@ tasks:
   - id: T-03.04
     titulo: "proxy.ts e X-Frame-Options fora de /embed"
     fase: F-03.2
-    status: pendente
+    status: concluida
     objetivo: "Criar src/proxy.ts com frame-ancestors dinamico e separar o X-Frame-Options no next.config.ts."
     arquivos:
       cria: ["src/proxy.ts", "tests/embed-cabecalhos.test.ts"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "tests/embed-cabecalhos.test.ts e tests/rotas.test.ts passam."
     depende_de: ["T-03.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
 ---
 
 # Tasks — Sprint 03
@@ -139,5 +139,5 @@ teste_funcional: "Lista vazia devolve \"frame-ancestors *\", lista com dominios 
 criterio_aceite: "tests/embed-cabecalhos.test.ts e tests/rotas.test.ts passam."
 depende_de: ["T-03.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: verde — 1272 passed
 ```
