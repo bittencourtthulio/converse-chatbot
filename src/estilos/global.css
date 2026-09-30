@@ -1285,3 +1285,98 @@ textarea { min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: verti
 @media (prefers-reduced-motion: reduce) {
   .embed * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+
+/* ---------- aba Publicar (FT-06) ---------- */
+
+.publicar-grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 400px);
+  gap: 24px;
+  align-items: start;
+}
+.publicar-grade .cartao-largo { max-width: none; }
+.publicar-lateral { position: sticky; top: 16px; display: flex; flex-direction: column; gap: 16px; }
+
+.campo-grupo { margin: 0; padding: 0; border: 0; min-width: 0; }
+.campo-grupo > legend { margin-bottom: 6px; padding: 0; font-weight: 600; font-size: var(--texto-pequeno); }
+.campo-radios { display: flex; flex-wrap: wrap; gap: 8px; }
+.campo-radio {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--alvo-toque);
+  padding: 4px 12px;
+  border: 1px solid var(--border-input);
+  border-radius: var(--raio-controle);
+  background: var(--bg-surface);
+  cursor: pointer;
+}
+.campo-radio input { width: 18px; height: 18px; margin: 0; accent-color: var(--accent); }
+.campo-radio:has(input:checked) { border-color: var(--border-focus); background: var(--bg-selected); }
+.campo-radio:has(input:focus-visible) { outline: 2px solid var(--border-focus); outline-offset: 2px; }
+.campo-avatar { padding: 4px 10px 4px 8px; }
+.campo-avatar-corpo { display: inline-flex; border-radius: 50%; }
+
+.campo-chave {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--raio-cartao);
+  background: var(--bg-subtle);
+  cursor: pointer;
+}
+.campo-chave input { flex: none; width: 44px; height: 24px; margin: 2px 0 0; accent-color: var(--accent); cursor: pointer; }
+.campo-chave .campo-ajuda { margin-top: 2px; }
+.campo-erro { color: var(--danger-fg); font-weight: 600; }
+
+.amostras { display: flex; flex-wrap: wrap; gap: 8px; }
+.amostra {
+  width: var(--alvo-toque);
+  height: var(--alvo-toque);
+  padding: 0;
+  border: 2px solid var(--bg-surface);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--border-strong);
+  cursor: pointer;
+}
+.amostra[aria-pressed='true'] { box-shadow: 0 0 0 2px var(--border-focus); }
+.campo-de-cor-linha { align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+.campo-de-cor-linha .campo { margin: 0; }
+.seletor-de-cor { width: var(--alvo-toque); height: var(--alvo-toque); padding: 2px; border: 1px solid var(--border-input); border-radius: var(--raio-controle); background: var(--bg-surface); cursor: pointer; }
+.amostra-do-botao { padding: 8px 14px; border-radius: 999px; font-size: var(--texto-pequeno); font-weight: 600; }
+
+.previa-do-chat { padding: 0; overflow: hidden; }
+.previa-do-chat-topo { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+.previa-do-chat-topo h2 { margin: 0; font-size: var(--texto-grande); }
+.previa-do-chat iframe { display: block; width: 100%; height: 560px; border: 0; background: var(--bg-surface); }
+.previa-do-chat-nota { margin: 0; padding: 10px 16px 12px; color: var(--fg-muted); font-size: var(--texto-pequeno); }
+
+.codigo-para-incorporar { display: flex; flex-direction: column; gap: 12px; }
+.codigo-bloco {
+  margin: 0;
+  padding: 12px 14px;
+  overflow-x: auto;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--raio-controle);
+  font-family: var(--font-mono);
+  font-size: var(--texto-pequeno);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+.codigo-acoes { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.codigo-instrucoes { margin: 0; padding-left: 20px; color: var(--fg-muted); font-size: var(--texto-pequeno); }
+.avisos-da-publicacao { display: flex; flex-direction: column; gap: 8px; }
+
+@media (max-width: 1000px) {
+  .publicar-grade { grid-template-columns: minmax(0, 1fr); }
+  .publicar-lateral { position: static; }
+}
+@media (max-width: 480px) {
+  .previa-do-chat iframe { height: 480px; }
+  .campo-radios { gap: 6px; }
+}

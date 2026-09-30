@@ -11,26 +11,26 @@ tasks:
   - id: T-06.01
     titulo: "Aba, subrota e acao de salvar"
     fase: F-06.1
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar a aba Publicar, a subrota com formulario e a Server Action salvarChat."
     arquivos:
-      cria: ["src/app/(sistema)/agentes/[id]/publicar/page.tsx", "src/app/(sistema)/agentes/[id]/publicar/loading.tsx", "src/componentes/FormularioDoChat.tsx", "tests/publicar-acao.test.ts", "docs/chat-embutido/sprint-06/sprint.md", "docs/chat-embutido/sprint-06/fases.md", "docs/chat-embutido/sprint-06/tasks.md"]
-      altera: ["src/componentes/abas-do-agente.ts", "src/app/acoes.ts", "tests/abas-do-agente.test.tsx"]
+      cria: ["src/app/(sistema)/agentes/[id]/publicar/page.tsx", "src/app/(sistema)/agentes/[id]/publicar/loading.tsx", "src/componentes/FormularioDoChat.tsx", "src/componentes/publicar-logica.ts", "tests/publicar-acao.test.ts", "tests/publicar-ui.test.tsx", "docs/chat-embutido/sprint-06/sprint.md", "docs/chat-embutido/sprint-06/fases.md", "docs/chat-embutido/sprint-06/tasks.md"]
+      altera: ["src/componentes/abas-do-agente.ts", "src/app/acoes.ts", "tests/abas-do-agente.test.tsx", "src/estilos/global.css"]
     teste_integracao: "Contra o banco, a acao salvarChat grava a configuracao do agente e recusa entrada invalida com a mensagem do servico."
     teste_funcional: "A lista de abas tem Publicar depois de Testar, salvar com ativo ligado e cor valida devolve sucesso, com cor 'azul' devolve o erro de cor e a pagina nao exibe chave do OpenRouter."
     criterio_aceite: "tests/publicar-acao.test.ts e tests/abas-do-agente.test.tsx passam."
     depende_de: ["T-05.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-06.02
     titulo: "Codigo para incorporar, previa e avisos"
     fase: F-06.1
-    status: pendente
+    status: em_andamento
     objetivo: "Criar o bloco do script com Copiar e fallback, a previa em iframe, a amostra de cor com aviso de contraste e os avisos."
     arquivos:
-      cria: ["src/componentes/CodigoParaIncorporar.tsx", "src/componentes/PreviaDoChat.tsx", "src/componentes/publicar-logica.ts", "tests/publicar-ui.test.tsx"]
-      altera: ["src/app/(sistema)/agentes/[id]/publicar/page.tsx", "src/estilos/global.css"]
+      cria: ["src/componentes/CodigoParaIncorporar.tsx", "src/componentes/PreviaDoChat.tsx", "src/componentes/PainelDePublicacao.tsx", "tests/publicar-logica.test.ts"]
+      altera: ["src/app/(sistema)/agentes/[id]/publicar/page.tsx", "src/estilos/global.css", "tests/publicar-ui.test.tsx", "src/componentes/FormularioDoChat.tsx", "src/componentes/embed-mensagens.ts", "src/componentes/ChatEmbutido.tsx", "tests/embed-mensagens.test.ts"]
     teste_integracao: "Renderizado no servidor, o bloco mostra o snippet com a origem informada e o id do agente e a previa aponta para /embed/<id>?previa=1."
     teste_funcional: "O snippet usa APP_URL quando definida e senao a origem da requisicao, cor clara demais gera o aviso de baixo contraste, sem navigator.clipboard o botao seleciona o texto, e os avisos de HTTPS, TRUST_PROXY, fonte pronta e chave aparecem."
     criterio_aceite: "tests/publicar-ui.test.tsx e tests/tokens.test.ts passam."
@@ -81,14 +81,14 @@ id: T-06.01
 titulo: "Aba, subrota e acao de salvar"
 objetivo: "Acrescentar a aba Publicar, a subrota com formulario e a Server Action salvarChat."
 arquivos:
-  cria: ["src/app/(sistema)/agentes/[id]/publicar/page.tsx", "src/app/(sistema)/agentes/[id]/publicar/loading.tsx", "src/componentes/FormularioDoChat.tsx", "tests/publicar-acao.test.ts", "docs/chat-embutido/sprint-06/sprint.md", "docs/chat-embutido/sprint-06/fases.md", "docs/chat-embutido/sprint-06/tasks.md"]
-  altera: ["src/componentes/abas-do-agente.ts", "src/app/acoes.ts", "tests/abas-do-agente.test.tsx"]
+  cria: ["src/app/(sistema)/agentes/[id]/publicar/page.tsx", "src/app/(sistema)/agentes/[id]/publicar/loading.tsx", "src/componentes/FormularioDoChat.tsx", "src/componentes/publicar-logica.ts", "tests/publicar-acao.test.ts", "tests/publicar-ui.test.tsx", "docs/chat-embutido/sprint-06/sprint.md", "docs/chat-embutido/sprint-06/fases.md", "docs/chat-embutido/sprint-06/tasks.md"]
+  altera: ["src/componentes/abas-do-agente.ts", "src/app/acoes.ts", "tests/abas-do-agente.test.tsx", "src/estilos/global.css"]
 teste_integracao: "Contra o banco, a acao salvarChat grava a configuracao do agente e recusa entrada invalida com a mensagem do servico."
 teste_funcional: "A lista de abas tem Publicar depois de Testar, salvar com ativo ligado e cor valida devolve sucesso, com cor 'azul' devolve o erro de cor e a pagina nao exibe chave do OpenRouter."
 criterio_aceite: "tests/publicar-acao.test.ts e tests/abas-do-agente.test.tsx passam."
 depende_de: ["T-05.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: verde — 1413 passed
 ```
 
 ---
@@ -98,14 +98,14 @@ id: T-06.02
 titulo: "Codigo para incorporar, previa e avisos"
 objetivo: "Criar o bloco do script com Copiar e fallback, a previa em iframe, a amostra de cor com aviso de contraste e os avisos."
 arquivos:
-  cria: ["src/componentes/CodigoParaIncorporar.tsx", "src/componentes/PreviaDoChat.tsx", "src/componentes/publicar-logica.ts", "tests/publicar-ui.test.tsx"]
-  altera: ["src/app/(sistema)/agentes/[id]/publicar/page.tsx", "src/estilos/global.css"]
+  cria: ["src/componentes/CodigoParaIncorporar.tsx", "src/componentes/PreviaDoChat.tsx", "src/componentes/PainelDePublicacao.tsx", "tests/publicar-logica.test.ts"]
+  altera: ["src/app/(sistema)/agentes/[id]/publicar/page.tsx", "src/estilos/global.css", "tests/publicar-ui.test.tsx", "src/componentes/FormularioDoChat.tsx", "src/componentes/embed-mensagens.ts", "src/componentes/ChatEmbutido.tsx", "tests/embed-mensagens.test.ts"]
 teste_integracao: "Renderizado no servidor, o bloco mostra o snippet com a origem informada e o id do agente e a previa aponta para /embed/<id>?previa=1."
 teste_funcional: "O snippet usa APP_URL quando definida e senao a origem da requisicao, cor clara demais gera o aviso de baixo contraste, sem navigator.clipboard o botao seleciona o texto, e os avisos de HTTPS, TRUST_PROXY, fonte pronta e chave aparecem."
 criterio_aceite: "tests/publicar-ui.test.tsx e tests/tokens.test.ts passam."
 depende_de: ["T-06.01"]
 paralelizavel: false
-status: pendente
+status: em_andamento
 ```
 
 ---

@@ -6,6 +6,7 @@ import { entrar, exigirLimiteDeLogin } from '@/servicos/autenticacao'
 import { ipDoCliente } from '@/lib/requisicao'
 import { criar, editar, desativar } from '@/servicos/usuarios'
 import { atualizarPerfil, trocarSenha } from '@/servicos/perfil'
+import { salvarConfiguracao as salvarConfiguracaoDoChat } from '@/servicos/chat-publico-config'
 import { criar as criarAgenteNoServico, editar as editarAgenteNoServico, excluir as excluirAgenteNoServico } from '@/servicos/agentes'
 import {
   salvarChaveDoOpenrouter,
@@ -254,4 +255,37 @@ export async function excluirAgente(
   }
   revalidatePath('/agentes')
   redirect('/agentes')
+}
+
+/** Os campos do formulário do chat, como o serviço os valida; campo ausente vira texto vazio. */
+function camposDoChat(form: FormData) {
+  const texto = (nome: string) => String(form.get(nome) ?? '')
+  return {
+    // Caixa desmarcada não vai no envio: ausente é desligado.
+    ativo: form.get('ativo') === 'on',
+    titulo: texto('titulo'),
+    cor: texto('cor'),
+    posicao: texto('posicao'),
+    avatar: texto('avatar'),
+    avisoDePrivacidade: texto('avisoDePrivacidade'),
+    avisoDePrivacidadeUrl: texto('avisoDePrivacidadeUrl'),
+    dominiosPermitidos: texto('dominiosPermitidos'),
+    limiteDiario: texto('limiteDiario'),
+    sugestoes: texto('sugestoes'),
+  }
+}
+
+export async function salvarChat(
+  _estado: EstadoDoFormulario,
+  form: FormData,
+): Promise<EstadoDoFormulario> {
+  const id = String(form.get('id') ?? '')
+  try {
+    const autor = await exigirUsuario()
+    await salvarConfiguracaoDoChat(autor, id, camposDoChat(form))
+  } catch (erro) {
+    return { erro: mensagemDe(erro) }
+  }
+  revalidatePath(`/agentes/${id}/publicar`)
+  return { sucesso: 'Configuração do chat salva.' }
 }

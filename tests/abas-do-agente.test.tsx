@@ -5,8 +5,9 @@ import { Icone } from '@/componentes/Icones'
 import { ABAS_DO_AGENTE, hrefDaAba } from '@/componentes/abas-do-agente'
 
 describe('lista de abas do agente', () => {
-  it('tem Configurações, na raiz do agente, Conhecimento (FT-04) e Testar (FT-03)', () => {
-    expect(ABAS_DO_AGENTE.map((a) => a.rotulo)).toEqual(['Configurações', 'Conhecimento', 'Testar'])
+  it('tem Configurações, na raiz do agente, Conhecimento (FT-04), Testar (FT-03) e Publicar (FT-06)', () => {
+    expect(ABAS_DO_AGENTE.map((a) => a.rotulo)).toEqual(['Configurações', 'Conhecimento', 'Testar', 'Publicar'])
+    expect(hrefDaAba('abc', ABAS_DO_AGENTE[3]!)).toBe('/agentes/abc/publicar')
     expect(hrefDaAba('abc', ABAS_DO_AGENTE[0]!)).toBe('/agentes/abc')
     expect(hrefDaAba('abc', ABAS_DO_AGENTE[1]!)).toBe('/agentes/abc/conhecimento')
     expect(hrefDaAba('abc', ABAS_DO_AGENTE[2]!)).toBe('/agentes/abc/testar')
@@ -20,11 +21,11 @@ describe('lista de abas do agente', () => {
 })
 
 describe('AbasDoAgente', () => {
-  it('lista as três abas e marca Conhecimento na página de uma fonte', () => {
+  it('lista as quatro abas e marca Conhecimento na página de uma fonte', () => {
     const html = renderToStaticMarkup(
       <AbasDoAgente agenteId="x" caminhoAtual="/agentes/x/conhecimento/fonte9" />,
     )
-    for (const rotulo of ['Configurações', 'Conhecimento', 'Testar']) expect(html).toContain(rotulo)
+    for (const rotulo of ['Configurações', 'Conhecimento', 'Testar', 'Publicar']) expect(html).toContain(rotulo)
     const marcadas = html.match(/<a [^>]*aria-current="page"[^>]*>/g) ?? []
     expect(marcadas).toHaveLength(1)
     expect(marcadas[0]).toContain('href="/agentes/x/conhecimento"')
@@ -81,4 +82,13 @@ describe('ícones da base de conhecimento', () => {
       expect(html.length).toBeGreaterThan(200)
     },
   )
+})
+
+describe('aba Publicar (FT-06)', () => {
+  it('fica marcada na página de publicar e só nela', () => {
+    const html = renderToStaticMarkup(<AbasDoAgente agenteId="x" caminhoAtual="/agentes/x/publicar" />)
+    const marcadas = html.match(/<a [^>]*aria-current="page"[^>]*>/g) ?? []
+    expect(marcadas).toHaveLength(1)
+    expect(marcadas[0]).toContain('href="/agentes/x/publicar"')
+  })
 })
