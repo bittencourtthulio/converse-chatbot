@@ -48,3 +48,4 @@ Branch aberta a partir de `feat/conversa-de-teste` (PRs empilhados; base indicad
 - T-05.01: `src/lib/ambiente.ts` ganhou o comentário `turbopackIgnore` no `path.resolve` de `storageDir`; sem ele o Turbopack avisava que o acesso dinâmico ao sistema de arquivos faria o rastreamento incluir o projeto inteiro no pacote do servidor.
 - T-01.03 e T-01.04: foram concluídas no mesmo commit (`9df888d`), porque o gerador de fixtures é um arquivo só.
 - T-05.04: `next.config.ts` não precisou mudar: `unpdf` e `mammoth` rodam no servidor de produção sem `serverExternalPackages` (provado por `tests/fontes-rota-formatos.test.ts`), resolvendo a lacuna 3 da base sem alteração.
+- T-06.03: `conhecimento/page.tsx` nasce só com os cartões de resumo, porque o painel cliente ainda não existe; a T-06.04 o altera para ligar a lista de fontes (o arquivo já consta em `cria` da T-06.03).

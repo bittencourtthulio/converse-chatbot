@@ -41,7 +41,7 @@ tasks:
   - id: T-06.03
     titulo: "Paginas do servidor e leitura de trechos"
     fase: F-06.3
-    status: pendente
+    status: concluida
     objetivo: "Pagina de conhecimento, loading e a pagina Ver conteudo com trechos paginados."
     arquivos:
       cria: ["src/app/(sistema)/agentes/[id]/conhecimento/page.tsx", "src/app/(sistema)/agentes/[id]/conhecimento/loading.tsx", "src/app/(sistema)/agentes/[id]/conhecimento/[fonteId]/page.tsx", "src/app/(sistema)/agentes/[id]/conhecimento/[fonteId]/loading.tsx", "src/componentes/CartoesDeResumo.tsx", "src/componentes/ListaDeTrechos.tsx", "tests/conhecimento-paginas.test.tsx"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/conhecimento-paginas.test.tsx passa e nenhum dangerouslySetInnerHTML novo aparece em src/."
     depende_de: ["T-06.01", "T-06.02", "T-04.05"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-06.04
     titulo: "Painel: lista de fontes, status e acoes"
     fase: F-06.3
@@ -156,7 +156,9 @@ teste_funcional: Um trecho contendo <script> aparece escapado como texto, a pagi
 criterio_aceite: tests/conhecimento-paginas.test.tsx passa e nenhum dangerouslySetInnerHTML novo aparece em src/.
 depende_de: ["T-06.01", "T-06.02", "T-04.05"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 861 passed 861, 0 failed
 ```
 
 ---
