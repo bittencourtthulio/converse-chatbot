@@ -26,18 +26,18 @@ tasks:
   - id: T-03.02
     titulo: "Rota POST conversar"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Criar o handler fino do turno publico em SSE com limites e checagem de Origin."
     arquivos:
       cria: ["src/app/api/publico/agentes/[id]/conversar/route.ts", "tests/publico-conversar-rota.test.ts"]
-      altera: []
+      altera: ["src/servicos/chat-publico.ts"]
     teste_integracao: "Contra next start e o OpenRouter falso, o POST sem cookie devolve text/event-stream com trecho, fontes e fim, X-Conversa-Id e Cache-Control no-store."
     teste_funcional: "Erro do provedor vira evento erro com a frase do visitante, a 11a mensagem do minuto devolve 429 com Retry-After, teto diario 1 devolve 429 na 2a, Origin de outro site devolve 403 e visitanteId invalido devolve 422."
     criterio_aceite: "tests/publico-conversar-rota.test.ts passa e nenhuma resposta contem codigo do provedor, pilha nem correlacao."
     depende_de: ["T-03.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-03.03
     titulo: "Rota GET conversa"
     fase: F-03.1
@@ -99,13 +99,13 @@ titulo: "Rota POST conversar"
 objetivo: "Criar o handler fino do turno publico em SSE com limites e checagem de Origin."
 arquivos:
   cria: ["src/app/api/publico/agentes/[id]/conversar/route.ts", "tests/publico-conversar-rota.test.ts"]
-  altera: []
+  altera: ["src/servicos/chat-publico.ts"]
 teste_integracao: "Contra next start e o OpenRouter falso, o POST sem cookie devolve text/event-stream com trecho, fontes e fim, X-Conversa-Id e Cache-Control no-store."
 teste_funcional: "Erro do provedor vira evento erro com a frase do visitante, a 11a mensagem do minuto devolve 429 com Retry-After, teto diario 1 devolve 429 na 2a, Origin de outro site devolve 403 e visitanteId invalido devolve 422."
 criterio_aceite: "tests/publico-conversar-rota.test.ts passa e nenhuma resposta contem codigo do provedor, pilha nem correlacao."
 depende_de: ["T-03.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: verde — 1254 passed
 ```
 
 ---

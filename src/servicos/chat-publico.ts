@@ -78,13 +78,19 @@ export function reduzirFontes(fontes: FonteDaResposta[]): FonteDaResposta[] {
 /**
  * O que o visitante pode saber de um erro: limite e entrada inválida levam a
  * própria mensagem (já amigável); conversa ou agente inexistente, a de 404;
- * todo o resto vira a frase única de `mensagemParaVisitante`, sem código do
+ * corpo grande demais (413) também; todo o resto vira a frase única de `mensagemParaVisitante`, sem código do
  * provedor, correlação nem pilha.
  */
 export function erroParaVisitante(erro: unknown): ErroDeAplicacao {
   if (erro instanceof ErroDeLimite) return erro
-  if (erro instanceof ErroDeAplicacao && (erro.status === 404 || erro.status === 422)) return erro
+  if (erro instanceof ErroDeAplicacao && (erro.status === 404 || erro.status === 413 || erro.status === 422)) return erro
   return new ErroDeAplicacao(mensagemParaVisitante(erro), 503, CODIGO_INDISPONIVEL)
+}
+
+/** O quadro do evento `erro` do stream público: a frase única, sem código do provedor nem correlação. */
+export function quadroDeErroParaVisitante(erro: unknown): { codigo: string; mensagem: string } {
+  const e = erroParaVisitante(erro)
+  return { codigo: e.codigo, mensagem: e.message }
 }
 
 export interface EntradaDoTurnoPublico {
