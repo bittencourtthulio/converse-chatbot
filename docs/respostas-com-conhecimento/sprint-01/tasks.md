@@ -22,7 +22,7 @@ tasks:
     depende_de: []
     paralelizavel: false
     concluida_em: 2026-09-30
-    suite: parcial
+    suite: verde
   - id: T-01.02
     titulo: "Cascata e reprocessamento mantem o indice"
     fase: F-01.2
@@ -37,7 +37,7 @@ tasks:
     depende_de: ["T-01.01"]
     paralelizavel: false
     concluida_em: 2026-09-30
-    suite: parcial
+    suite: verde
   - id: T-01.03
     titulo: "Apoio de teste: agente com base pronta"
     fase: F-01.2
@@ -75,7 +75,7 @@ depende_de: []
 paralelizavel: false
 status: concluida
 concluida_em: 2026-09-30
-suite: parcial: tests/indice-fts5 e migracoes 17 passed
+suite: verde: tests/indice-fts5 e migracoes 17 passed
 ```
 
 ---
@@ -94,7 +94,7 @@ depende_de: ["T-01.01"]
 paralelizavel: false
 status: concluida
 concluida_em: 2026-09-30
-suite: parcial: indice-fts5-cascata 4 passed (gatilhos disparam na cascata; sem desvio)
+suite: verde: indice-fts5-cascata 4 passed (gatilhos disparam na cascata; sem desvio)
 ```
 
 ---

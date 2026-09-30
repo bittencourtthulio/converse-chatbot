@@ -22,7 +22,7 @@ tasks:
     depende_de: ["T-01.03"]
     paralelizavel: false
     concluida_em: 2026-09-30
-    suite: parcial
+    suite: verde
   - id: T-02.02
     titulo: "buscarTrechos com filtros e BM25"
     fase: F-02.2
@@ -37,7 +37,7 @@ tasks:
     depende_de: ["T-02.01"]
     paralelizavel: false
     concluida_em: 2026-09-30
-    suite: parcial
+    suite: verde
   - id: T-02.03
     titulo: "Desempenho e reconstrucao do indice"
     fase: F-02.2
@@ -52,7 +52,7 @@ tasks:
     depende_de: ["T-02.02"]
     paralelizavel: false
     concluida_em: 2026-09-30
-    suite: parcial
+    suite: verde
   - id: T-02.04
     titulo: "Seed coberta pelo indice"
     fase: F-02.2
@@ -90,7 +90,7 @@ depende_de: ["T-01.03"]
 paralelizavel: false
 status: concluida
 concluida_em: 2026-09-30
-suite: parcial: recuperacao-termos 22 passed
+suite: verde: recuperacao-termos 22 passed
 ```
 
 ---
@@ -109,7 +109,7 @@ depende_de: ["T-02.01"]
 paralelizavel: false
 status: concluida
 concluida_em: 2026-09-30
-suite: parcial: recuperacao + recuperacao-termos 46 passed
+suite: verde: recuperacao + recuperacao-termos 46 passed
 ```
 
 ---
@@ -128,7 +128,7 @@ depende_de: ["T-02.02"]
 paralelizavel: false
 status: concluida
 concluida_em: 2026-09-30
-suite: parcial: recuperacao-desempenho 2 passed
+suite: verde: recuperacao-desempenho 2 passed
 ```
 
 ---

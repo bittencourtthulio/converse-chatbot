@@ -22,7 +22,7 @@ atencao:
   olho_obrigatorio: 0
   leitura_rapida: 0
   dispensavel: 0
-portao: null
+portao: pronto
 desvios: []
 push_feito: false
 pr_url: null

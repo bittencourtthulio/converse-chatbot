@@ -22,7 +22,7 @@ tasks:
     depende_de: ["T-03.04"]
     paralelizavel: false
     concluida_em: 2026-09-30
-    suite: parcial
+    suite: verde
   - id: T-04.02
     titulo: "Rota de conversa emite fontes de ponta a ponta"
     fase: F-04.1
@@ -37,7 +37,7 @@ tasks:
     depende_de: ["T-04.01"]
     paralelizavel: false
     concluida_em: 2026-09-30
-    suite: parcial
+    suite: verde
   - id: T-04.03
     titulo: "POST /api/agentes/[id]/buscar"
     fase: F-04.2
@@ -75,7 +75,7 @@ depende_de: ["T-03.04"]
 paralelizavel: false
 status: concluida
 concluida_em: 2026-09-30
-suite: parcial: eventos-sse + leitor-de-sse + chat-de-teste 41 passed; ChatDeTeste.tsx ajustado (else if erro)
+suite: verde: eventos-sse + leitor-de-sse + chat-de-teste 41 passed; ChatDeTeste.tsx ajustado (else if erro)
 ```
 
 ---
@@ -94,7 +94,7 @@ depende_de: ["T-04.01"]
 paralelizavel: false
 status: concluida
 concluida_em: 2026-09-30
-suite: parcial: conversar-rota 18 passed (apos npm run build)
+suite: verde: conversar-rota 18 passed (apos npm run build)
 ```
 
 ---

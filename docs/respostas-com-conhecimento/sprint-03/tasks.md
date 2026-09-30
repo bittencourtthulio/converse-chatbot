@@ -22,7 +22,7 @@ tasks:
     depende_de: ["T-02.02"]
     paralelizavel: false
     concluida_em: 2026-09-30
-    suite: parcial
+    suite: verde
   - id: T-03.02
     titulo: "Fontes da resposta como funcoes puras"
     fase: F-03.1
@@ -37,7 +37,7 @@ tasks:
     depende_de: ["T-02.02"]
     paralelizavel: false
     concluida_em: 2026-09-30
-    suite: parcial
+    suite: verde
   - id: T-03.03
     titulo: "Modo fundamentado em responderMensagem"
     fase: F-03.2
@@ -52,7 +52,7 @@ tasks:
     depende_de: ["T-03.01", "T-03.02"]
     paralelizavel: false
     concluida_em: 2026-09-30
-    suite: parcial
+    suite: verde
   - id: T-03.04
     titulo: "Evento fontes e gravacao em Mensagem.fontes"
     fase: F-03.2
@@ -67,7 +67,7 @@ tasks:
     depende_de: ["T-03.03"]
     paralelizavel: false
     concluida_em: 2026-09-30
-    suite: parcial
+    suite: verde
   - id: T-03.05
     titulo: "Retomada da conversa com fontes"
     fase: F-03.2
@@ -105,7 +105,7 @@ depende_de: ["T-02.02"]
 paralelizavel: false
 status: concluida
 concluida_em: 2026-09-30
-suite: parcial: chat-prompt-fundamentado + chat-prompt 20 passed
+suite: verde: chat-prompt-fundamentado + chat-prompt 20 passed
 ```
 
 ---
@@ -124,7 +124,7 @@ depende_de: ["T-02.02"]
 paralelizavel: false
 status: concluida
 concluida_em: 2026-09-30
-suite: parcial: fontes-da-resposta 16 passed
+suite: verde: fontes-da-resposta 16 passed
 ```
 
 ---
@@ -143,7 +143,7 @@ depende_de: ["T-03.01", "T-03.02"]
 paralelizavel: false
 status: concluida
 concluida_em: 2026-09-30
-suite: parcial: chat* 79 passed (7 arquivos)
+suite: verde: chat* 79 passed (7 arquivos)
 ```
 
 ---
@@ -162,7 +162,7 @@ depende_de: ["T-03.03"]
 paralelizavel: false
 status: concluida
 concluida_em: 2026-09-30
-suite: parcial: chat-fontes + chat-fundamentado 13 passed
+suite: verde: chat-fontes + chat-fundamentado 13 passed
 ```
 
 ---

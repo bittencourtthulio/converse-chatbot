@@ -22,7 +22,7 @@ tasks:
     depende_de: ["T-04.01"]
     paralelizavel: false
     concluida_em: 2026-09-30
-    suite: parcial
+    suite: verde
   - id: T-05.02
     titulo: "Estado da conversa com fontes"
     fase: F-05.1
@@ -37,7 +37,7 @@ tasks:
     depende_de: ["T-05.01"]
     paralelizavel: false
     concluida_em: 2026-09-30
-    suite: parcial
+    suite: verde
   - id: T-05.03
     titulo: "Fontes da resposta na aba Testar"
     fase: F-05.2
@@ -52,7 +52,7 @@ tasks:
     depende_de: ["T-05.02"]
     paralelizavel: false
     concluida_em: 2026-09-30
-    suite: parcial
+    suite: verde
   - id: T-05.04
     titulo: "Cartao Testar busca na aba Conhecimento"
     fase: F-05.2
@@ -90,7 +90,7 @@ depende_de: ["T-04.01"]
 paralelizavel: false
 status: concluida
 concluida_em: 2026-09-30
-suite: parcial: texto-seguro 26 passed
+suite: verde: texto-seguro 26 passed
 ```
 
 ---
@@ -109,7 +109,7 @@ depende_de: ["T-05.01"]
 paralelizavel: false
 status: concluida
 concluida_em: 2026-09-30
-suite: parcial: estado-da-conversa + chat-de-teste 37 passed
+suite: verde: estado-da-conversa + chat-de-teste 37 passed
 ```
 
 ---
@@ -128,7 +128,7 @@ depende_de: ["T-05.02"]
 paralelizavel: false
 status: concluida
 concluida_em: 2026-09-30
-suite: parcial: fontes-da-resposta-ui + tokens + chat-de-teste 79 passed; testar/page.tsx nao precisou mudar
+suite: verde: fontes-da-resposta-ui + tokens + chat-de-teste 79 passed; testar/page.tsx nao precisou mudar
 ```
 
 ---
