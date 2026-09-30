@@ -41,7 +41,7 @@ tasks:
   - id: T-02.03
     titulo: "Excluir agente apaga o diretorio"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Fazer agentes.excluir apagar o diretorio do agente em disco depois da linha."
     arquivos:
       cria: []
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/agentes.test.ts passa com os dois casos novos."
     depende_de: ["T-02.01", "T-02.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-02.04
     titulo: "Divisao em trechos"
     fase: F-02.2
@@ -126,7 +126,9 @@ teste_funcional: Se apagar o diretorio falhar, a exclusao no banco continua vale
 criterio_aceite: tests/agentes.test.ts passa com os dois casos novos.
 depende_de: ["T-02.01", "T-02.02"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 604 passed, 0 failed
 ```
 
 ---

@@ -1,4 +1,7 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
+import { chmodSync, existsSync, mkdirSync, writeFileSync } from 'node:fs'
+import path from 'node:path'
+import { ambiente } from '@/lib/ambiente'
 import { prisma } from '@/lib/prisma'
 import { listar, obter, criar, editar, excluir } from '@/servicos/agentes'
 import { criarUsuario, limparBanco } from './ajuda'
@@ -177,5 +180,50 @@ describe('excluir', () => {
     const agente = await criar(dono, valido)
     await excluir(outro, agente.id)
     expect(await listar(dono)).toHaveLength(0)
+  })
+})
+
+describe('excluir e os arquivos da base (PR-47)', () => {
+  const diretorioDoAgente = (id: string) => path.join(ambiente.storageDir, 'fontes', id)
+  afterEach(() => {
+    vi.restoreAllMocks()
+    const fontes = path.join(ambiente.storageDir, 'fontes')
+    if (existsSync(fontes)) chmodSync(fontes, 0o700)
+  })
+
+  it('apaga o diretório do agente no STORAGE_DIR e as fontes em cascata', async () => {
+    const autor = await criarUsuario()
+    const agente = await criar(autor, valido)
+    const outro = await criar(autor, { ...valido, nome: 'Outro' })
+    for (const id of [agente.id, outro.id]) {
+      mkdirSync(path.join(diretorioDoAgente(id), 'f1'), { recursive: true })
+      writeFileSync(path.join(diretorioDoAgente(id), 'f1', 'original'), 'x')
+    }
+    await prisma.fonte.create({
+      data: { agenteId: agente.id, tipo: 'texto', titulo: 'T', tamanhoBytes: 1 },
+    })
+
+    await excluir(autor, agente.id)
+
+    expect(existsSync(diretorioDoAgente(agente.id))).toBe(false)
+    expect(existsSync(diretorioDoAgente(outro.id))).toBe(true)
+    expect(await prisma.fonte.count()).toBe(0)
+  })
+
+  it('se apagar o diretório falhar, a exclusão no banco vale e o erro vai para o log', async () => {
+    const autor = await criarUsuario()
+    const agente = await criar(autor, valido)
+    mkdirSync(path.join(diretorioDoAgente(agente.id), 'f1'), { recursive: true })
+    chmodSync(path.join(ambiente.storageDir, 'fontes'), 0o500)
+    const log = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+
+    await expect(excluir(autor, agente.id)).resolves.toBeUndefined()
+
+    expect(await prisma.agente.count()).toBe(0)
+    expect(log).toHaveBeenCalledTimes(1)
+    const linha = JSON.parse(String(log.mock.calls[0]![0])) as Record<string, string>
+    expect(linha.evento).toBe('armazenamento_falhou')
+    expect(linha.agenteId).toBe(agente.id)
+    expect(JSON.stringify(linha)).not.toContain(ambiente.storageDir)
   })
 })

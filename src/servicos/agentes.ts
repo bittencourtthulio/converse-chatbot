@@ -4,6 +4,8 @@
 // (`exigirUsuario`), e o serviço exige um autor para registrar o dono.
 import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
+import { ambiente } from '@/lib/ambiente'
+import { criarArmazenamento } from '@/lib/armazenamento'
 import { entradaInvalida, naoAutenticado, naoEncontrado } from '@/lib/erros'
 import { listarModelos } from '@/lib/openrouter'
 import { obterChaveDoOpenrouter } from '@/servicos/integracoes'
@@ -148,6 +150,13 @@ export async function excluir(autor: UsuarioAutenticado, id: string): Promise<vo
   exigirAutor(autor)
   const { count } = await prisma.agente.deleteMany({ where: { id } })
   if (count === 0) throw naoEncontrado('Agente não encontrado.')
+  // As fontes saem em cascata; os arquivos delas, daqui (PR-47). Falha ao
+  // apagar o diretório vai para o log e não desfaz a exclusão no banco.
+  try {
+    await criarArmazenamento(ambiente.storageDir).apagarAgente(id)
+  } catch {
+    console.error(JSON.stringify({ evento: 'armazenamento_falhou', agenteId: id }))
+  }
 }
 
 export interface ModelosParaOSeletor {
