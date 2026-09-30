@@ -86,7 +86,7 @@ tasks:
   - id: T-04.06
     titulo: "Subida do servidor: instrumentation"
     fase: F-04.3
-    status: pendente
+    status: concluida
     objetivo: "Retomar e iniciar a fila na subida, so no runtime Node e sem bloquear."
     arquivos:
       cria: ["src/instrumentation.ts", "tests/instrumentacao.test.ts"]
@@ -96,8 +96,8 @@ tasks:
     criterio_aceite: "tests/instrumentacao.test.ts passa e src/instrumentation.ts importa a fila por import dinamico."
     depende_de: ["T-04.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
 ---
 
 # Tasks — Sprint 04
@@ -213,5 +213,7 @@ teste_funcional: register() devolve sem esperar o fim do processamento de uma fo
 criterio_aceite: tests/instrumentacao.test.ts passa e src/instrumentation.ts importa a fila por import dinamico.
 depende_de: ["T-04.02"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 802 passed 802, 0 failed
 ```
