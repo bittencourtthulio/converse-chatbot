@@ -25,7 +25,7 @@ tasks:
   - id: T-07.01
     titulo: "Verificacao visual da aba Testar"
     fase: F-07.1
-    status: pendente
+    status: concluida
     objetivo: "Abrir a aba Testar com o OpenRouter falso local nos dois temas e a 375px, ou registrar que nao foi possivel."
     arquivos:
       cria: ["docs/conversa-de-teste/VERIFICACAO-VISUAL.md"]
@@ -35,8 +35,8 @@ tasks:
     criterio_aceite: "O arquivo existe e cita os temas claro e escuro, a largura de 375px e o resultado do envio de uma mensagem."
     depende_de: [T-06.02]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-07.02
     titulo: "Convencoes e lacunas com a evidencia nova"
     fase: F-07.1
@@ -108,7 +108,7 @@ flowchart LR
   classDef concluida fill:#DFF0D8,stroke:#4A6B3A,color:#1A1815
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
-  class T_07_01 pendente
+  class T_07_01 concluida
   class T_07_02 pendente
   class T_07_03 pendente
 ```
@@ -129,7 +129,10 @@ teste_funcional: O registro traz, por tema e por largura, o que foi visto ou a r
 criterio_aceite: O arquivo existe e cita os temas claro e escuro, a largura de 375px e o resultado do envio de uma mensagem.
 depende_de: [T-06.02]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: verde
+resultado: verificacao visual registrada (claro e escuro vistos; 375px nao verificado e declarado); suite 572 verdes
 ```
 
 ---

@@ -707,8 +707,7 @@ textarea { min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: verti
   display: flex;
   flex-direction: column;
   gap: 12px;
-  height: min(60vh, 560px);
-  min-height: 280px;
+  height: clamp(280px, 50vh, 520px);
   padding: 16px;
   overflow-y: auto;
   background: var(--bg-subtle);
