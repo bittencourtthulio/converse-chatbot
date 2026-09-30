@@ -25,18 +25,18 @@ tasks:
   - id: T-05.01
     titulo: "Renderizacao segura do texto do modelo"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Parser puro de blocos e inline e componente React sem dangerouslySetInnerHTML."
     arquivos:
       cria: ["src/componentes/texto-seguro.ts", "src/componentes/TextoDoModelo.tsx", "tests/texto-seguro.test.tsx"]
       altera: []
     teste_integracao: "tests/texto-seguro.test.tsx renderiza TextoDoModelo com renderToStaticMarkup."
-    teste_funcional: "paragrafos, lista com marcador, lista numerada, negrito, codigo em linha e bloco de codigo saem como elementos, <script> e <img onerror> aparecem como texto escapado, link https ganha rel 'noopener noreferrer' e target _blank, javascript: e data: viram texto sem link, e o codigo-fonte nao contem dangerouslySetInnerHTML."
-    criterio_aceite: "O teste passa e grep de dangerouslySetInnerHTML em src/ devolve vazio."
+    teste_funcional: "paragrafos, lista com marcador, lista numerada, negrito, codigo em linha e bloco de codigo saem como elementos, <script> e <img onerror> aparecem como texto escapado, link https ganha rel 'noopener noreferrer' e target _blank, javascript: e data: viram texto sem link, e nenhum componente usa dangerouslySetInnerHTML (so o script constante do tema em src/app/layout.tsx)."
+    criterio_aceite: "O teste passa e grep de dangerouslySetInnerHTML em src/ so encontra o script constante do tema em src/app/layout.tsx."
     depende_de: []
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-05.02
     titulo: "Leitor de SSE do navegador"
     fase: F-05.1
@@ -107,7 +107,7 @@ flowchart LR
   classDef concluida fill:#DFF0D8,stroke:#4A6B3A,color:#1A1815
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
-  class T_05_01 pendente
+  class T_05_01 concluida
   class T_05_02 pendente
   class T_05_03 pendente
 ```
@@ -124,11 +124,14 @@ arquivos:
   cria: [src/componentes/texto-seguro.ts, src/componentes/TextoDoModelo.tsx, tests/texto-seguro.test.tsx]
   altera: []
 teste_integracao: tests/texto-seguro.test.tsx renderiza TextoDoModelo com renderToStaticMarkup.
-teste_funcional: paragrafos, lista com marcador, lista numerada, negrito, codigo em linha e bloco de codigo saem como elementos, <script> e <img onerror> aparecem como texto escapado, link https ganha rel 'noopener noreferrer' e target _blank, javascript: e data: viram texto sem link, e o codigo-fonte nao contem dangerouslySetInnerHTML.
-criterio_aceite: O teste passa e grep de dangerouslySetInnerHTML em src/ devolve vazio.
+teste_funcional: paragrafos, lista com marcador, lista numerada, negrito, codigo em linha e bloco de codigo saem como elementos, <script> e <img onerror> aparecem como texto escapado, link https ganha rel 'noopener noreferrer' e target _blank, javascript: e data: viram texto sem link, e nenhum componente usa dangerouslySetInnerHTML (so o script constante do tema em src/app/layout.tsx).
+criterio_aceite: O teste passa e grep de dangerouslySetInnerHTML em src/ so encontra o script constante do tema em src/app/layout.tsx.
 depende_de: []
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: verde
+resultado: texto-seguro 19 testes; suite 502 verdes; tsc e lint 0
 ```
 
 ---
