@@ -68,7 +68,9 @@ export const ambiente = {
    */
   get storageDir(): string {
     const dir = process.env.STORAGE_DIR?.trim()
-    return path.resolve(process.cwd(), dir ? dir : 'storage')
+    // O caminho é de tempo de execução, não de build: sem o aviso, o Turbopack
+    // incluiria o projeto inteiro no pacote do servidor.
+    return path.resolve(/*turbopackIgnore: true*/ process.cwd(), dir ? dir : 'storage')
   },
   /** Tamanho máximo de um arquivo enviado, em bytes (PR-10, PR-45). Padrão 25 MB. */
   get maxUploadBytes(): number {

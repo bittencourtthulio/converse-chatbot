@@ -11,7 +11,7 @@ tasks:
   - id: T-05.01
     titulo: "Handlers: lista e texto colado"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "GET da lista e POST do texto, com a resposta de erro comum e o servidor de producao de teste."
     arquivos:
       cria: ["src/app/api/agentes/[id]/fontes/route.ts", "src/app/api/agentes/[id]/fontes/texto/route.ts", "src/app/api/agentes/[id]/fontes/resposta.ts", "tests/apoio/servidor.ts", "tests/fontes-rota.test.ts"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/fontes-rota.test.ts passa."
     depende_de: ["T-04.06"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-05.02
     titulo: "Handler: upload multipart"
     fase: F-05.1
@@ -88,7 +88,9 @@ teste_funcional: Sem cookie a resposta e 401, agente inexistente 404, corpo que 
 criterio_aceite: tests/fontes-rota.test.ts passa.
 depende_de: ["T-04.06"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 806 passed 806, 0 failed
 ```
 
 ---
