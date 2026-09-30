@@ -63,6 +63,7 @@ model Agente {
   conversas Conversa[]
   fontes    Fonte[]
   trechos   Trecho[]
+  chat      ConfiguracaoDoChat?
 
   @@map("agentes")
 }
@@ -156,4 +157,28 @@ model Trecho {
   @@index([fonteId, indice])
   @@index([agenteId])
   @@map("trechos")
+}
+
+// Configuração do chat embutido (FT-06, PR-55): 1:1 com o agente. A linha
+// ausente vale os padrões; `ativo` só liga com o usuário publicando. Listas
+// (domínios e sugestões) guardam JSON em texto. `cor` é `#rrggbb` (dado do
+// usuário, validado no serviço).
+model ConfiguracaoDoChat {
+  agenteId              String   @id
+  agente                Agente   @relation(fields: [agenteId], references: [id], onDelete: Cascade)
+  ativo                 Boolean  @default(false)
+  titulo                String   @default("")
+  cor                   String   @default("#4f46e5")
+  // "direita" | "esquerda"
+  posicao               String   @default("direita")
+  // "iniciais" | "chat" | "robo" | "estrela" | "fone"
+  avatar                String   @default("iniciais")
+  avisoDePrivacidade    String   @default("")
+  avisoDePrivacidadeUrl String   @default("")
+  dominiosPermitidos    String   @default("[]")
+  limiteDiario          Int      @default(500)
+  sugestoes             String   @default("[]")
+  atualizadoEm          DateTime @updatedAt
+
+  @@map("configuracao_do_chat")
 }

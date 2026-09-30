@@ -11,7 +11,7 @@ tasks:
   - id: T-01.01
     titulo: "Migration e modelo da configuracao do chat"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Criar a tabela configuracao_do_chat 1:1 com agente por migration aditiva e o modelo Prisma."
     arquivos:
       cria: ["prisma/migrations/20260930210000_configuracao_do_chat/migration.sql", "tests/configuracao-do-chat-modelo.test.ts", "docs/chat-embutido/sprint-01/sprint.md", "docs/chat-embutido/sprint-01/fases.md", "docs/chat-embutido/sprint-01/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/configuracao-do-chat-modelo.test.ts e tests/migracoes.test.ts passam e a migration nao contem DROP."
     depende_de: []
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-01.02
     titulo: "Modulo de dominios permitidos"
     fase: F-01.1
@@ -103,7 +103,7 @@ teste_funcional: "Criar a configuracao so com agenteId devolve ativo false, posi
 criterio_aceite: "tests/configuracao-do-chat-modelo.test.ts e tests/migracoes.test.ts passam e a migration nao contem DROP."
 depende_de: []
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: verde — 1071 passed
 ```
 
 ---
