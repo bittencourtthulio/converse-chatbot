@@ -56,7 +56,7 @@ tasks:
   - id: T-03.04
     titulo: "Evento fontes e gravacao em Mensagem.fontes"
     fase: F-03.2
-    status: pendente
+    status: concluida
     objetivo: "Emitir fontes antes do fim e gravar o JSON com a resposta, sem derrubar o turno se a gravacao das fontes falhar."
     arquivos:
       cria: ["tests/chat-fontes.test.ts"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "tests/chat-fontes.test.ts passa e o log da falha tem uma linha JSON sem conteudo da conversa."
     depende_de: ["T-03.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-03.05
     titulo: "Retomada da conversa com fontes"
     fase: F-03.2
@@ -160,7 +160,9 @@ teste_funcional: Sem trechos nao ha evento fontes e a coluna fica nula; se a mon
 criterio_aceite: tests/chat-fontes.test.ts passa e o log da falha tem uma linha JSON sem conteudo da conversa.
 depende_de: ["T-03.03"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial: chat-fontes + chat-fundamentado 13 passed
 ```
 
 ---

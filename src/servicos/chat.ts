@@ -22,11 +22,13 @@ import {
 import {
   LIMITE_DE_MENSAGENS_DO_HISTORICO,
   montarMaterialDeConsulta,
+  type TrechoIncluido,
   montarMaterialSemResultado,
   montarPrompt,
   novoMarcador,
 } from '@/servicos/chat-prompt'
 import { buscarTrechos } from '@/servicos/recuperacao'
+import { montarFontes, serializarFontes, type FonteDaResposta } from '@/servicos/fontes-da-resposta'
 import {
   CODIGO_INESPERADO,
   erroSemChave,
@@ -42,6 +44,8 @@ export type EventoDoChat =
   /** A mensagem foi gravada e a conversa existe: o consumidor já pode guardar o id. */
   | { tipo: 'inicio'; conversaId: string }
   | { tipo: 'trecho'; texto: string }
+  /** As fontes da resposta (PR-53): só quando houve trechos; sai antes do `fim`. */
+  | { tipo: 'fontes'; fontes: FonteDaResposta[] }
   | { tipo: 'fim'; conversaId: string; mensagemId: string; tamanho: number }
 
 export interface EntradaDoTurno {
@@ -85,8 +89,15 @@ function registrarRecuperacao(agenteId: string, conversaId: string, trechos: num
   console.info(JSON.stringify({ evento: 'recuperacao', agenteId, conversaId, trechos }))
 }
 
+interface MaterialDoTurno {
+  /** `undefined` sem fonte pronta: o turno é o da FT-03. */
+  texto?: string
+  /** Os trechos que entraram no prompt, numerados. */
+  incluidos: TrechoIncluido[]
+}
+
 /**
- * O material de consulta do turno: `undefined` sem fonte pronta (modo da FT-03);
+ * O material de consulta do turno: sem texto se não há fonte pronta (modo da FT-03);
  * com fonte pronta, os trechos relevantes delimitados ou a instrução de dizer
  * que a base não cobre a pergunta. A pergunta anterior do usuário ajuda as
  * perguntas de continuação (PR-51). Erro da busca é erro do turno: responder
@@ -96,15 +107,21 @@ async function materialDaBase(
   agenteId: string,
   conversaId: string,
   historico: Array<{ role: 'user' | 'assistant'; content: string }>,
-): Promise<string | undefined> {
+): Promise<MaterialDoTurno> {
   const comBase = (await prisma.fonte.count({ where: { agenteId, status: 'pronto' } })) > 0
-  if (!comBase) return undefined
+  if (!comBase) return { incluidos: [] }
   const perguntas = historico.filter((m) => m.role === 'user')
   const pergunta = perguntas.at(-1)?.content ?? ''
   const trechos = await buscarTrechos(agenteId, pergunta, { perguntaAnterior: perguntas.at(-2)?.content })
   registrarRecuperacao(agenteId, conversaId, trechos.length)
-  if (trechos.length === 0) return montarMaterialSemResultado()
-  return montarMaterialDeConsulta({ trechos, marcador: novoMarcador() }).texto
+  if (trechos.length === 0) return { texto: montarMaterialSemResultado(), incluidos: [] }
+  const { texto, incluidos } = montarMaterialDeConsulta({ trechos, marcador: novoMarcador() })
+  return { texto, incluidos }
+}
+
+/** Falha nas fontes não derruba a resposta: vai ao log, sem conteúdo (PR-42, PR-53). */
+function registrarFalhaDeFontes(agenteId: string, conversaId: string): void {
+  console.error(JSON.stringify({ evento: 'fontes_nao_gravadas', agenteId, conversaId }))
 }
 
 /**
@@ -145,13 +162,13 @@ export async function* responderMensagem(entrada: EntradaDoTurno): AsyncGenerato
 
     // Modo fundamentado (PR-52): o agente com ao menos uma fonte pronta responde a
     // partir da base; sem nenhuma, o turno é o da FT-03.
-    const materialDeConsulta = await materialDaBase(agente.id, conversa.id, historico)
+    const material = await materialDaBase(agente.id, conversa.id, historico)
 
     let resposta = ''
     for await (const trecho of conversar({
       chave,
       modelo: agente.modelo,
-      mensagens: montarPrompt({ instrucoes: agente.instrucoes, materialDeConsulta, historico }),
+      mensagens: montarPrompt({ instrucoes: agente.instrucoes, materialDeConsulta: material.texto, historico }),
       temperatura: agente.temperatura,
       maxTokens: ambiente.maxTokensDaResposta,
       sinal: entrada.sinal,
@@ -169,11 +186,27 @@ export async function* responderMensagem(entrada: EntradaDoTurno): AsyncGenerato
       )
     }
 
-    const mensagem = await anexarMensagem(conversa.id, {
-      papel: 'assistant',
-      conteudo: resposta,
-      modelo: agente.modelo,
-    })
+    let fontes: FonteDaResposta[] = []
+    try {
+      fontes = montarFontes(material.incluidos, resposta)
+    } catch {
+      registrarFalhaDeFontes(agente.id, conversa.id)
+    }
+    if (fontes.length > 0) yield { tipo: 'fontes', fontes }
+
+    const dadosDaResposta = { papel: 'assistant' as const, conteudo: resposta, modelo: agente.modelo }
+    let mensagem
+    try {
+      mensagem = await anexarMensagem(conversa.id, {
+        ...dadosDaResposta,
+        ...(fontes.length > 0 && { fontes: serializarFontes(fontes) }),
+      })
+    } catch (erroDeGravacao) {
+      // Sem fontes não há o que perder: tenta de novo só com a resposta (PR-53).
+      if (fontes.length === 0) throw erroDeGravacao
+      registrarFalhaDeFontes(agente.id, conversa.id)
+      mensagem = await anexarMensagem(conversa.id, dadosDaResposta)
+    }
     yield { tipo: 'fim', conversaId: conversa.id, mensagemId: mensagem.id, tamanho: resposta.length }
   } catch (erro) {
     if (entrada.sinal?.aborted) return
