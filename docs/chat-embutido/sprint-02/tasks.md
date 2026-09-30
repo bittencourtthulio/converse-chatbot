@@ -41,7 +41,7 @@ tasks:
   - id: T-02.03
     titulo: "Limites e teto diario"
     fase: F-02.2
-    status: pendente
+    status: concluida
     objetivo: "Implementar os limites por IP, por IP e agente, por conversa e o teto diario contado no banco, com limitador e relogio injetaveis."
     arquivos:
       cria: ["src/servicos/chat-publico-limites.ts", "tests/chat-publico-limites.test.ts"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/chat-publico-limites.test.ts passa com ao menos 12 casos, incluindo o relogio injetado."
     depende_de: ["T-02.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-02.04
     titulo: "Servico do turno publico"
     fase: F-02.2
@@ -137,7 +137,7 @@ teste_funcional: "A 11a chamada no minuto do mesmo IP e agente recusa com limite
 criterio_aceite: "tests/chat-publico-limites.test.ts passa com ao menos 12 casos, incluindo o relogio injetado."
 depende_de: ["T-02.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: verde — 1196 passed
 ```
 
 ---
