@@ -2,8 +2,18 @@
 // corpo: quem faz o `fetch` é o componente de chat. Aceita pacotes de rede
 // partidos em qualquer ponto (inclusive no meio de uma letra UTF-8).
 
+/** Espelha `FonteDaResposta` de `src/servicos/fontes-da-resposta.ts`, que o cliente não importa. */
+export interface FonteDaResposta {
+  fonteId: string
+  titulo: string
+  trechos: Array<{ n: number; posicao: number; trechoTexto: string }>
+  citada: boolean
+}
+
 export type EventoDoServidor =
   | { tipo: 'trecho'; texto: string }
+  /** As fontes da resposta (FT-05): vêm depois dos trechos e antes do `fim`. */
+  | { tipo: 'fontes'; fontes: FonteDaResposta[] }
   | { tipo: 'fim'; conversaId: string; mensagemId: string; tamanho: number }
   | { tipo: 'erro'; codigo: string; mensagem: string; correlacao?: string }
 
@@ -19,6 +29,27 @@ const ERRO_DE_RESPOSTA: EventoDoServidor = {
   mensagem: 'A resposta do servidor veio incompleta ou ilegível. Tente de novo.',
 }
 
+function fonteValida(f: unknown): f is FonteDaResposta {
+  if (typeof f !== 'object' || f === null) return false
+  const o = f as Record<string, unknown>
+  return (
+    typeof o.fonteId === 'string' &&
+    typeof o.titulo === 'string' &&
+    typeof o.citada === 'boolean' &&
+    Array.isArray(o.trechos) &&
+    o.trechos.every((t) => {
+      const x = t as Record<string, unknown> | null
+      return (
+        typeof x === 'object' &&
+        x !== null &&
+        typeof x.n === 'number' &&
+        typeof x.posicao === 'number' &&
+        typeof x.trechoTexto === 'string'
+      )
+    })
+  )
+}
+
 function interpretar(quadro: string): EventoDoServidor | 'ignorar' | 'invalido' {
   let nome = ''
   const dados: string[] = []
@@ -26,7 +57,7 @@ function interpretar(quadro: string): EventoDoServidor | 'ignorar' | 'invalido' 
     if (linha.startsWith('event:')) nome = linha.slice(6).trim()
     else if (linha.startsWith('data:')) dados.push(linha.slice(5).replace(/^ /, ''))
   }
-  if (nome !== 'trecho' && nome !== 'fim' && nome !== 'erro') return 'ignorar'
+  if (nome !== 'trecho' && nome !== 'fontes' && nome !== 'fim' && nome !== 'erro') return 'ignorar'
   let carga: Record<string, unknown>
   try {
     carga = JSON.parse(dados.join('\n')) as Record<string, unknown>
@@ -36,6 +67,11 @@ function interpretar(quadro: string): EventoDoServidor | 'ignorar' | 'invalido' 
   if (typeof carga !== 'object' || carga === null) return 'invalido'
   if (nome === 'trecho') {
     return typeof carga.texto === 'string' ? { tipo: 'trecho', texto: carga.texto } : 'invalido'
+  }
+  if (nome === 'fontes') {
+    return Array.isArray(carga.fontes) && carga.fontes.every(fonteValida)
+      ? { tipo: 'fontes', fontes: carga.fontes }
+      : 'invalido'
   }
   if (nome === 'fim') {
     return typeof carga.conversaId === 'string' &&
@@ -92,7 +128,7 @@ export async function* lerEventos(
           return
         }
         yield evento
-        if (evento.tipo !== 'trecho') return
+        if (evento.tipo === 'fim' || evento.tipo === 'erro') return
       }
     }
     if (!sinal?.aborted) yield ERRO_DE_CONEXAO

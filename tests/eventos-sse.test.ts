@@ -45,6 +45,42 @@ describe('formatarEvento', () => {
   })
 })
 
+describe('fluxoDeEventos com fontes (FT-05)', () => {
+  const fontes = [
+    { fonteId: 'f1', titulo: 'Política', citada: true, trechos: [{ n: 1, posicao: 1, trechoTexto: 'Troca em sete dias.' }] },
+  ]
+
+  it('trecho, fontes e fim saem nessa ordem e só o fim encerra o fluxo', async () => {
+    const texto = await ler(
+      fluxoDeEventos(
+        gerar([
+          { tipo: 'inicio', conversaId: 'c1' },
+          { tipo: 'trecho', texto: 'Sete dias [1].' },
+          { tipo: 'fontes', fontes },
+          { tipo: 'fim', conversaId: 'c1', mensagemId: 'm1', tamanho: 14 },
+        ]),
+      ),
+    )
+    expect(eventosDe(texto)).toEqual([
+      ['trecho', { texto: 'Sete dias [1].' }],
+      ['fontes', { fontes }],
+      ['fim', { conversaId: 'c1', mensagemId: 'm1', tamanho: 14 }],
+    ])
+  })
+
+  it('o evento fontes não é tratado como fim: o que vem depois ainda é lido', async () => {
+    const texto = await ler(
+      fluxoDeEventos(gerar([{ tipo: 'fontes', fontes }, { tipo: 'fim', conversaId: 'c1', mensagemId: 'm1', tamanho: 0 }])),
+    )
+    expect(eventosDe(texto).map(([nome]) => nome)).toEqual(['fontes', 'fim'])
+  })
+
+  it('erro depois das fontes ainda vira evento erro', async () => {
+    const texto = await ler(fluxoDeEventos(gerar([{ tipo: 'fontes', fontes }], new ErroDeAplicacao('falhou', 500, 'x'))))
+    expect(eventosDe(texto).map(([nome]) => nome)).toEqual(['fontes', 'erro'])
+  })
+})
+
 describe('fluxoDeEventos', () => {
   it('trecho e fim viram eventos e o fim encerra o fluxo', async () => {
     const texto = await ler(

@@ -11,7 +11,7 @@ tasks:
   - id: T-04.01
     titulo: "Tradutor e leitor do evento fontes"
     fase: F-04.1
-    status: pendente
+    status: concluida
     objetivo: "Estender fluxoDeEventos e lerEventos para o evento fontes, sem encerrar o stream."
     arquivos:
       cria: []
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/eventos-sse.test.ts e tests/leitor-de-sse.test.ts passam com os casos novos e os antigos."
     depende_de: ["T-03.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-04.02
     titulo: "Rota de conversa emite fontes de ponta a ponta"
     fase: F-04.1
@@ -73,7 +73,9 @@ teste_funcional: lerEventos devolve o evento fontes com a lista, ignora nome des
 criterio_aceite: tests/eventos-sse.test.ts e tests/leitor-de-sse.test.ts passam com os casos novos e os antigos.
 depende_de: ["T-03.04"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial: eventos-sse + leitor-de-sse + chat-de-teste 41 passed; ChatDeTeste.tsx ajustado (else if erro)
 ```
 
 ---

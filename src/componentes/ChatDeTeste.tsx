@@ -137,7 +137,7 @@ export function ChatDeTeste({ agente, retomada, temChave, ehAdmin }: ChatDeTeste
         if (evento.tipo === 'trecho') despachar({ tipo: 'trecho', texto: evento.texto })
         else if (evento.tipo === 'fim') {
           despachar({ tipo: 'fim', conversaId: evento.conversaId, mensagemId: evento.mensagemId })
-        } else {
+        } else if (evento.tipo === 'erro') {
           despachar({
             tipo: 'erro',
             erro: { codigo: evento.codigo, mensagem: evento.mensagem, correlacao: evento.correlacao },

@@ -39,6 +39,29 @@ describe('lerEventos', () => {
     ])
   })
 
+  it('lê o evento fontes entre o trecho e o fim, sem encerrar a leitura (FT-05)', async () => {
+    const fontes = [{ fonteId: 'f1', titulo: 'Política', citada: false, trechos: [{ n: 1, posicao: 2, trechoTexto: 'Troca.' }] }]
+    const eventos = await coletar(fluxoDe([trecho('a'), formatarEvento('fontes', { fontes }), fim]))
+    expect(eventos).toEqual([
+      { tipo: 'trecho', texto: 'a' },
+      { tipo: 'fontes', fontes },
+      { tipo: 'fim', conversaId: 'c1', mensagemId: 'm1', tamanho: 3 },
+    ])
+  })
+
+  it('fontes ilegível (não é lista, ou item de formato errado) vira resposta inválida', async () => {
+    for (const carga of [{ fontes: 'x' }, { fontes: [{ fonteId: 1 }] }, { outra: [] }]) {
+      const eventos = await coletar(fluxoDe([formatarEvento('fontes', carga), fim]))
+      expect(eventos[0]).toMatchObject({ tipo: 'erro', codigo: 'resposta_invalida' })
+    }
+  })
+
+  it('o evento fontes partido em pacotes é remontado', async () => {
+    const quadro = formatarEvento('fontes', { fontes: [] })
+    const eventos = await coletar(fluxoDe([trecho('a'), quadro.slice(0, 15), quadro.slice(15), fim]))
+    expect(eventos.map((e) => e.tipo)).toEqual(['trecho', 'fontes', 'fim'])
+  })
+
   it('lê o evento erro, com correlação quando vem', async () => {
     const erro = formatarEvento('erro', { codigo: 'provedor_sem_saldo', mensagem: 'Sem saldo.', correlacao: 'ab12cd34' })
     expect(await coletar(fluxoDe([erro]))).toEqual([
@@ -107,6 +130,16 @@ describe('lerEventos', () => {
       { tipo: 'trecho', texto: 'linha 1\nlinha "2"' },
       { tipo: 'fim', conversaId: 'c9', mensagemId: 'm9', tamanho: 16 },
     ])
+  })
+
+  it('lê o evento fontes que o próprio servidor gera', async () => {
+    const fontes = [{ fonteId: 'f', titulo: 'T', citada: true, trechos: [{ n: 1, posicao: 1, trechoTexto: 'x' }] }]
+    async function* servico() {
+      yield { tipo: 'inicio' as const, conversaId: 'c' }
+      yield { tipo: 'fontes' as const, fontes }
+      yield { tipo: 'fim' as const, conversaId: 'c', mensagemId: 'm', tamanho: 1 }
+    }
+    expect((await coletar(fluxoDeEventos(servico()))).map((e) => e.tipo)).toEqual(['fontes', 'fim'])
   })
 
   it('o módulo não usa fetch', async () => {

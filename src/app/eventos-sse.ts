@@ -21,8 +21,8 @@ function quadroDoErro(erro: unknown): string {
 }
 
 /**
- * Converte o gerador de eventos do serviço num fluxo SSE. `trecho` e `fim` são
- * repassados (o `fim` encerra); `inicio` fica de fora, porque o id da conversa
+ * Converte o gerador de eventos do serviço num fluxo SSE. `trecho`, `fontes` e
+ * `fim` são repassados (só o `fim` encerra); `inicio` fica de fora, porque o id da conversa
  * segue no cabeçalho; erro do gerador vira o evento `erro`, com a mensagem do
  * operador, e encerra. Cancelar a leitura aborta o gerador.
  */
@@ -40,6 +40,11 @@ export function fluxoDeEventos(gerador: AsyncGenerator<EventoDoChat>): ReadableS
           if (evento.tipo === 'inicio') continue
           if (evento.tipo === 'trecho') {
             controle.enqueue(codificador.encode(formatarEvento('trecho', { texto: evento.texto })))
+            return
+          }
+          if (evento.tipo === 'fontes') {
+            // As fontes vêm antes do `fim` e não encerram o fluxo (PR-53).
+            controle.enqueue(codificador.encode(formatarEvento('fontes', { fontes: evento.fontes })))
             return
           }
           const { tipo: _tipo, ...dados } = evento
