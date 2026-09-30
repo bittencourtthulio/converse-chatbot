@@ -26,7 +26,7 @@ tasks:
   - id: T-06.02
     titulo: "Logica pura da tela de conhecimento"
     fase: F-06.2
-    status: pendente
+    status: concluida
     objetivo: "Validar arquivo no navegador, reducer de envios, decisao do polling, formatadores e lista de opcoes."
     arquivos:
       cria: ["src/componentes/conhecimento-logica.ts", "src/componentes/estado-dos-envios.ts", "src/componentes/opcoes-de-fonte.ts", "tests/conhecimento-logica.test.ts", "tests/estado-dos-envios.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/conhecimento-logica.test.ts e tests/estado-dos-envios.test.ts passam."
     depende_de: ["T-03.01"]
     paralelizavel: true
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-06.03
     titulo: "Paginas do servidor e leitura de trechos"
     fase: F-06.3
@@ -137,7 +137,9 @@ teste_funcional: O reducer leva um envio de aguardando a enviando com percentual
 criterio_aceite: tests/conhecimento-logica.test.ts e tests/estado-dos-envios.test.ts passam.
 depende_de: ["T-03.01"]
 paralelizavel: true
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 854 passed 854, 0 failed
 ```
 
 ---
