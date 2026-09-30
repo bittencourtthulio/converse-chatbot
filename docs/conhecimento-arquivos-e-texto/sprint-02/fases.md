@@ -10,14 +10,14 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-02.1
     titulo: "Modelo e disco"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Excluir agente ou fonte apaga linha e arquivo."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-02.01", "T-02.02", "T-02.03"]
   - id: F-02.2
     titulo: "Divisao em trechos"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Testes de propriedade passam."
     paralelizavel: true
     paralela_com: ["F-02.1"]

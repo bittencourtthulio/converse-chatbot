@@ -10,14 +10,14 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-07.1
     titulo: "Seed e verificacao"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Seed provada, visual registrado e convencoes atualizadas."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-07.01", "T-07.02", "T-07.03"]
   - id: F-07.2
     titulo: "Fechamento"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Feature registrada como entregue."
     paralelizavel: false
     paralela_com: []

@@ -8,11 +8,11 @@ feature_id: FT-04
 titulo: Base de conhecimento, arquivos e textos
 tipo_trabalho: feature
 tipo_ocorrencia: null
-estagio: f4
-status: em_andamento
+estagio: f6
+status: concluido
 criado_em: 2026-09-30
 atualizado_em: 2026-09-30
-concluido_em: null
+concluido_em: 2026-09-30
 sprints: [sprint-01, sprint-02, sprint-03, sprint-04, sprint-05, sprint-06, sprint-07]
 caminho_critico: [T-01.01, T-01.03, T-01.04, T-03.07, T-03.09, T-04.01, T-04.02, T-04.03, T-04.04, T-04.05, T-04.06, T-05.01, T-05.02, T-05.03, T-05.04, T-06.01, T-06.03, T-06.04, T-06.05, T-06.06, T-07.01, T-07.02, T-07.03, T-07.04]
 ---

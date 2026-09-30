@@ -10,28 +10,28 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-06.1
     titulo: "Aba"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Aba navegavel."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-06.01"]
   - id: F-06.2
     titulo: "Logica pura"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Logica coberta."
     paralelizavel: true
     paralela_com: ["F-06.1"]
     tasks: ["T-06.02"]
   - id: F-06.3
     titulo: "Telas"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Telas renderizam os estados."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-06.03", "T-06.04"]
   - id: F-06.4
     titulo: "Adicionar e estilo"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Fluxo de adicionar completo e tokens verdes."
     paralelizavel: false
     paralela_com: []

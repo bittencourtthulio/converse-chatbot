@@ -10,21 +10,21 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-03.1
     titulo: "Regras de arquivo"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Arquivo mentiroso ou perigoso e recusado."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-03.01", "T-03.02", "T-03.03"]
   - id: F-03.2
     titulo: "Adaptadores"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Cada adaptador extrai a fixture do seu formato."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-03.04", "T-03.05", "T-03.06", "T-03.07", "T-03.08"]
   - id: F-03.3
     titulo: "Fachada"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "As nove fixtures passam pela fachada."
     paralelizavel: false
     paralela_com: []

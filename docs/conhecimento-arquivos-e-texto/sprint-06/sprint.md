@@ -7,7 +7,7 @@ origem_buildx: plataforma-chatbot-ia
 feature_id: FT-04
 sprint_id: sprint-06
 titulo: "Interface da aba Conhecimento"
-status: nao_iniciado
+status: concluido
 criterio_saida: "tests/abas-do-agente.test.tsx, tests/conhecimento*.test.ts(x), tests/painel-de-conhecimento.test.tsx, tests/adicionar-fontes.test.tsx e tests/tokens.test.ts passam e a suite esta verde."
 fases: ["F-06.1", "F-06.2", "F-06.3", "F-06.4"]
 riscos: ["sem jsdom o comportamento interativo so e provado nos modulos puros e na verificacao visual (docs/stack/LACUNAS.md)", "polling empilhado se nao parar (PR-49)"]

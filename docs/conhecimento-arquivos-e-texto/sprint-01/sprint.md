@@ -7,7 +7,7 @@ origem_buildx: plataforma-chatbot-ia
 feature_id: FT-04
 sprint_id: sprint-01
 titulo: "Capacidade de testar"
-status: nao_iniciado
+status: concluido
 criterio_saida: "tests/fixtures-fontes.test.ts, tests/ambiente.test.ts e tests/dependencias-extracao.test.ts passam, a suite inteira esta verde e npm audit --audit-level=high devolve 0."
 fases: ["F-01.1", "F-01.2"]
 riscos: ["unpdf pode nao passar no vitest sem ajuste de ambiente (base/extracao-bibliotecas.md, lacuna 3)", "um PDF ou DOCX escrito a mao pode nao ser aceito pelas bibliotecas: a task T-01.04 prova com elas"]

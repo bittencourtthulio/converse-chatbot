@@ -7,7 +7,7 @@ origem_buildx: plataforma-chatbot-ia
 feature_id: FT-04
 sprint_id: sprint-05
 titulo: "Handlers HTTP e ponta a ponta"
-status: nao_iniciado
+status: concluido
 criterio_saida: "tests/fontes-rota*.test.ts passam com next start, npm run build termina com 0 e a suite esta verde."
 fases: ["F-05.1", "F-05.2"]
 riscos: ["unpdf ou mammoth quebrarem no bundler do Next 16 (base/00-LACUNAS.md, lacuna 3): serverExternalPackages", "corpo grande carregado em memoria por formData() (lacuna 4)"]

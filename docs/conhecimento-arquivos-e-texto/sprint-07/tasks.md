@@ -56,18 +56,18 @@ tasks:
   - id: T-07.04
     titulo: "Fechamento no laco do buildx"
     fase: F-07.2
-    status: pendente
+    status: concluida
     objetivo: "Registrar a feature no mapa, premissas e recursao e conferir arquivos de ambiente e dependencias."
     arquivos:
       cria: ["docs/conhecimento-arquivos-e-texto/ORQUESTRADOR.md", "docs/conhecimento-arquivos-e-texto/00-AUDITORIA.md", "docs/conhecimento-arquivos-e-texto/FECHAMENTO.md", "docs/conhecimento-arquivos-e-texto/RELATORIO-FEATURE.md", "docs/conhecimento-arquivos-e-texto/BRIEFING-BUILDX.md", "docs/conhecimento-arquivos-e-texto/00-DECISOES.md", "docs/conhecimento-arquivos-e-texto/00-BLOQUEIOS.md", "docs/conhecimento-arquivos-e-texto/base/00-INDICE.md", "docs/conhecimento-arquivos-e-texto/base/00-LACUNAS.md", "docs/conhecimento-arquivos-e-texto/base/extracao-bibliotecas.md", "docs/conhecimento-arquivos-e-texto/base/banco-armazenamento-e-ambiente.md", "docs/conhecimento-arquivos-e-texto/base/servicos-handlers-e-fila.md", "docs/conhecimento-arquivos-e-texto/base/interface-do-agente-e-conhecimento.md", "docs/entregas/conhecimento-arquivos-e-texto/ENTREGA.md", "docs/entregas/conhecimento-arquivos-e-texto/PR.md", "docs/entregas/conhecimento-arquivos-e-texto/QA-PACOTE.md", "docs/entregas/conhecimento-arquivos-e-texto/ATENCAO.md"]
-      altera: ["docs/projeto/MAPA.md", "docs/projeto/PREMISSAS.md", "docs/projeto/RECURSAO.md", ".gitignore", ".env.example", "package.json", "package-lock.json", "README.md", "tests/projeto.test.ts", "docs/conhecimento-arquivos-e-texto/sprint-01/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-02/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-03/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-04/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-05/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-06/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-07/tasks.md"]
+      altera: ["docs/projeto/MAPA.md", "docs/projeto/PREMISSAS.md", "docs/projeto/RECURSAO.md", ".gitignore", ".env.example", "package.json", "package-lock.json", "README.md", "tests/projeto.test.ts", "docs/conhecimento-arquivos-e-texto/sprint-01/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-02/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-03/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-04/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-05/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-06/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-07/tasks.md", "docs/projeto/PROJETO.md"]
     teste_integracao: "Os arquivos de estado do projeto abrem com frontmatter valido e os contadores do MAPA.md batem com a tabela do painel."
     teste_funcional: "O MAPA.md mostra FT-04 entregue com sprints, testes e PR local, PREMISSAS.md traz PR-45 a PR-49 com total 49, e o README documenta STORAGE_DIR, MAX_UPLOAD_MB e a aba Conhecimento."
     criterio_aceite: "grep de FT-04 no painel do MAPA.md devolve entregue e o total de premissas do frontmatter e 49."
     depende_de: ["T-07.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
 ---
 
 # Tasks — Sprint 07
@@ -139,11 +139,13 @@ titulo: Fechamento no laco do buildx
 objetivo: Registrar a feature no mapa, premissas e recursao e conferir arquivos de ambiente e dependencias.
 arquivos:
   cria: ["docs/conhecimento-arquivos-e-texto/ORQUESTRADOR.md", "docs/conhecimento-arquivos-e-texto/00-AUDITORIA.md", "docs/conhecimento-arquivos-e-texto/FECHAMENTO.md", "docs/conhecimento-arquivos-e-texto/RELATORIO-FEATURE.md", "docs/conhecimento-arquivos-e-texto/BRIEFING-BUILDX.md", "docs/conhecimento-arquivos-e-texto/00-DECISOES.md", "docs/conhecimento-arquivos-e-texto/00-BLOQUEIOS.md", "docs/conhecimento-arquivos-e-texto/base/00-INDICE.md", "docs/conhecimento-arquivos-e-texto/base/00-LACUNAS.md", "docs/conhecimento-arquivos-e-texto/base/extracao-bibliotecas.md", "docs/conhecimento-arquivos-e-texto/base/banco-armazenamento-e-ambiente.md", "docs/conhecimento-arquivos-e-texto/base/servicos-handlers-e-fila.md", "docs/conhecimento-arquivos-e-texto/base/interface-do-agente-e-conhecimento.md", "docs/entregas/conhecimento-arquivos-e-texto/ENTREGA.md", "docs/entregas/conhecimento-arquivos-e-texto/PR.md", "docs/entregas/conhecimento-arquivos-e-texto/QA-PACOTE.md", "docs/entregas/conhecimento-arquivos-e-texto/ATENCAO.md"]
-  altera: ["docs/projeto/MAPA.md", "docs/projeto/PREMISSAS.md", "docs/projeto/RECURSAO.md", ".gitignore", ".env.example", "package.json", "package-lock.json", "README.md", "tests/projeto.test.ts", "docs/conhecimento-arquivos-e-texto/sprint-01/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-02/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-03/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-04/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-05/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-06/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-07/tasks.md"]
+  altera: ["docs/projeto/MAPA.md", "docs/projeto/PREMISSAS.md", "docs/projeto/RECURSAO.md", ".gitignore", ".env.example", "package.json", "package-lock.json", "README.md", "tests/projeto.test.ts", "docs/conhecimento-arquivos-e-texto/sprint-01/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-02/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-03/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-04/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-05/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-06/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-07/tasks.md", "docs/projeto/PROJETO.md"]
 teste_integracao: Os arquivos de estado do projeto abrem com frontmatter valido e os contadores do MAPA.md batem com a tabela do painel.
 teste_funcional: O MAPA.md mostra FT-04 entregue com sprints, testes e PR local, PREMISSAS.md traz PR-45 a PR-49 com total 49, e o README documenta STORAGE_DIR, MAX_UPLOAD_MB e a aba Conhecimento.
 criterio_aceite: grep de FT-04 no painel do MAPA.md devolve entregue e o total de premissas do frontmatter e 49.
 depende_de: ["T-07.03"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 891 passed, 0 failed
 ```

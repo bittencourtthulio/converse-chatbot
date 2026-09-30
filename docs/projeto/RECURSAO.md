@@ -83,8 +83,8 @@ houver pendência resolvível, até o teto.
 ### PEND-07 — Verificação visual em celular real e dos fluxos interativos
 
 **Classe:** `recurso_externo`
-**Origem:** B4, FT-01 (`docs/fundacao-e-esqueleto/VERIFICACAO-VISUAL.md`), FT-02 (`docs/agentes-e-openrouter/VERIFICACAO-VISUAL.md`) e FT-03 (`docs/conversa-de-teste/VERIFICACAO-VISUAL.md`)
-**O que falta:** abrir o sistema (e, desde a FT-02, os formulários de agente e da chave do OpenRouter; desde a FT-03, a aba Testar, com o botão Parar por clique, a rolagem automática e o contador de caracteres) num celular ou com a janela do navegador realmente a 375px e acionar o menu do usuário, a gaveta, o alternador de tema e a mensagem de excesso de tentativas de login. A janela do navegador da sessão não reduziu a largura, e os quadros de 375px foram feitos sem JavaScript.
+**Origem:** B4, FT-01 (`docs/fundacao-e-esqueleto/VERIFICACAO-VISUAL.md`), FT-02 (`docs/agentes-e-openrouter/VERIFICACAO-VISUAL.md`), FT-03 (`docs/conversa-de-teste/VERIFICACAO-VISUAL.md`) e FT-04 (`docs/conhecimento-arquivos-e-texto/VERIFICACAO-VISUAL.md`)
+**O que falta:** abrir o sistema (e, desde a FT-02, os formulários de agente e da chave do OpenRouter; desde a FT-03, a aba Testar, com o botão Parar por clique, a rolagem automática e o contador de caracteres; desde a FT-04, a aba Conhecimento, com o arrastar-e-soltar, o spinner de "Processando", o foco por teclado na zona de soltar e as regras de 375 px) num celular ou com a janela do navegador realmente a 375px e acionar o menu do usuário, a gaveta, o alternador de tema e a mensagem de excesso de tentativas de login. A janela do navegador da sessão não reduziu a largura, e os quadros de 375px foram feitos sem JavaScript.
 **O que destrava:** confirmação visual completa; o comportamento tem teste automatizado, o que falta é o olho.
 **Estado atual:** contraste 4,5:1 e ausência de cor literal provados por `tests/tokens.test.ts`; rotas e cabeçalhos por `tests/rotas.test.ts`.
 

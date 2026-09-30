@@ -10,21 +10,21 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-04.1
     titulo: "Fila"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Fila aguardavel e resiliente."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-04.01", "T-04.02"]
   - id: F-04.2
     titulo: "Servico fontes"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Todas as funcoes do servico cobertas."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-04.03", "T-04.04", "T-04.05"]
   - id: F-04.3
     titulo: "Subida do servidor"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Retomada na subida provada."
     paralelizavel: false
     paralela_com: []

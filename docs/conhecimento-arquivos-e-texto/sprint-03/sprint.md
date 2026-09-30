@@ -7,7 +7,7 @@ origem_buildx: plataforma-chatbot-ia
 feature_id: FT-04
 sprint_id: sprint-03
 titulo: "Validacao e extracao"
-status: nao_iniciado
+status: concluido
 criterio_saida: "tests/extracao*.test.ts passam, a suite esta verde e src/lib/extracao/ nao importa next/* nem src/servicos."
 fases: ["F-03.1", "F-03.2", "F-03.3"]
 riscos: ["excecoes das bibliotecas nao documentadas (base/00-LACUNAS.md, lacunas 1 e 2)", "zip bomb com cabecalho mentiroso (base/extracao-bibliotecas.md)"]

@@ -191,7 +191,7 @@ entram no relatório final como o que o usuário precisa confirmar.
 **Origem:** catalogo_lacunas
 **Etapa:** b1
 **Provisória:** false
-**Realizada em:** FT-01
+**Realizada em:** FT-01, FT-04
 
 ---
 

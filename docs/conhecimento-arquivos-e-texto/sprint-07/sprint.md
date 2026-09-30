@@ -7,7 +7,7 @@ origem_buildx: plataforma-chatbot-ia
 feature_id: FT-04
 sprint_id: sprint-07
 titulo: "Seed, verificacao e fechamento"
-status: nao_iniciado
+status: concluido
 criterio_saida: "suite, tsc, lint, build e audit verdes; VERIFICACAO-VISUAL.md registra o que foi visto; convencoes com evidencia; MAPA.md com FT-04 entregue."
 fases: ["F-07.1", "F-07.2"]
 riscos: ["a verificacao visual depende de ferramenta de navegador (disponibilidade NAO DOCUMENTADO na base, lacuna 8): se ausente, registrar a limitacao sem declarar verificado"]

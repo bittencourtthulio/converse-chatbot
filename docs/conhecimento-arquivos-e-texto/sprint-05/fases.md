@@ -10,14 +10,14 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-05.1
     titulo: "Rotas"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Cada rota testada contra o servidor de producao."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-05.01", "T-05.02", "T-05.03"]
   - id: F-05.2
     titulo: "Ponta a ponta"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Nove formatos chegam a pronto."
     paralelizavel: false
     paralela_com: []

@@ -130,6 +130,8 @@ describe('README do projeto', () => {
       'OPENROUTER_BASE_URL',
       'APP_URL',
       'MAX_TOKENS_RESPOSTA',
+      'STORAGE_DIR',
+      'MAX_UPLOAD_MB',
     ]) {
       expect(readme, variavel).toContain(variavel)
     }
@@ -139,6 +141,17 @@ describe('README do projeto', () => {
     expect(readme).toContain('Testar')
     expect(readme).toContain('/api/agentes/[id]/conversar')
     expect(readme).toContain('Nova conversa')
+  })
+
+  it('explica a aba Conhecimento: formatos, limites, status, armazenamento e a fila', () => {
+    expect(readme).toContain('Conhecimento')
+    for (const ext of ['.pdf', '.docx', '.csv', '.html', '.json', '.srt', '.vtt']) expect(readme, ext).toContain(ext)
+    expect(readme).toContain('/api/agentes/[id]/fontes')
+    expect(readme).toContain('storage/')
+    expect(readme).toContain('src/instrumentation.ts')
+    expect(readme).toContain('processando')
+    expect(readme).toMatch(/Content-Length/)
+    expect(readme).toMatch(/OCR/)
   })
 
   it('explica como cadastrar a chave do OpenRouter e criar agentes', () => {
