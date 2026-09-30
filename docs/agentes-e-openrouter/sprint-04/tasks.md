@@ -9,14 +9,14 @@ sprint_id: sprint-04
 atualizado_em: 2026-09-30
 sprint:
   titulo: "Agentes: modelo, servico e seed"
-  status: pendente
+  status: concluido
   criterio_saida: "tests/agentes.test.ts e tests/seed.test.ts passam; suite, lint e tsc verdes."
   riscos: ["tests/ajuda.ts precisa apagar agentes antes de usuarios (chave estrangeira)", "exclusao definitiva de usuario e da FT-10; agente de usuario desativado permanece"]
   fora_de_escopo: ["telas de agentes - sprint 05", "base de conhecimento e canais por agente - FT-04 a FT-08"]
 fases:
   - id: F-04.1
     titulo: "Agentes"
-    status: pendente
+    status: concluido
     criterio_saida: "CRUD de agente no servico com validacao e seed do exemplo"
     paralelizavel: false
     paralela_com: []

@@ -2,7 +2,7 @@
 
 Plataforma de agentes de IA com base de conhecimento própria. Você cria agentes, escolhe o modelo de linguagem (via OpenRouter), alimenta a base com arquivos, textos e vídeos e publica o agente no Telegram e num chat embutido em qualquer site com um script.
 
-O projeto é construído por features, na ordem de `docs/projeto/MAPA.md`. Hoje existe a fundação: login, papéis, painel, cadastro de usuários, perfil e troca de senha, num layout de SaaS com tema claro e escuro. Agentes, base de conhecimento e canais chegam nas próximas features. O nome "Converse" é provisório e se troca por `APP_NAME`.
+O projeto é construído por features, na ordem de `docs/projeto/MAPA.md`. Hoje existem a fundação (login, papéis, painel, cadastro de usuários, perfil e troca de senha, num layout de SaaS com tema claro e escuro) e os agentes com a chave do OpenRouter. Conversa de teste, base de conhecimento e canais chegam nas próximas features. O nome "Converse" é provisório e se troca por `APP_NAME`.
 
 ## Pré-requisitos
 
@@ -10,7 +10,7 @@ O projeto é construído por features, na ordem de `docs/projeto/MAPA.md`. Hoje 
 
 ## Como rodar
 
-1. Copie o exemplo de configuração: `cp .env.example .env`, e preencha `JWT_SECRET` no `.env` com um segredo seu (o comando para gerar está no próprio arquivo de exemplo).
+1. Copie o exemplo de configuração: `cp .env.example .env`, e preencha `JWT_SECRET` e `ENCRYPTION_KEY` no `.env` com segredos seus (o comando para gerar cada um está no próprio arquivo de exemplo).
 2. Instale as dependências: `npm install`.
 3. Prepare o banco: `npm run setup` (gera o client do Prisma, aplica as migrations e cria as contas de demonstração).
 4. Suba o servidor: `npm run dev` e abra `http://localhost:3000`.
@@ -24,7 +24,13 @@ Fictícias, criadas pela seed, que se recusa a rodar em produção.
 | Administrador | `admin@exemplo.local` | `demo1234` |
 | Usuário | `usuario@exemplo.local` | `demo1234` |
 
-Só o administrador cadastra outros usuários (Configurações, Usuários).
+Só o administrador cadastra outros usuários (Configurações, Usuários) e a chave do OpenRouter (Configurações, Integrações).
+
+## Agentes e chave do OpenRouter
+
+1. Como administrador, abra Configurações, Integrações, cole a chave da API do OpenRouter e salve. A chave é gravada criptografada (AES-256-GCM, com `ENCRYPTION_KEY`), a tela mostra só a máscara (`sk-or-…a1b2`) e ela nunca volta ao navegador. "Testar conexão" confere a chave no OpenRouter.
+2. Qualquer usuário abre Agentes, cria um agente e escolhe as instruções, o modelo, a temperatura e a mensagem inicial. Sem a chave cadastrada o campo de modelo aceita texto livre (o modelo padrão é `openai/gpt-4o-mini`).
+3. Os testes nunca chamam o OpenRouter de verdade: `tests/apoio/openrouter-falso.ts` sobe um servidor local que imita a API, e `OPENROUTER_BASE_URL` aponta para ele.
 
 ## Configuração
 
@@ -37,6 +43,9 @@ Toda variável é lida em um ponto só, `src/lib/ambiente.ts`. O que cada uma fa
 | `JWT_TTL_SEGUNDOS` | vida da sessão (padrão 900) | não |
 | `APP_NAME` | nome do produto na interface (padrão Converse) | não |
 | `TRUST_PROXY` | `1` atrás de proxy, para o limite de login usar `X-Forwarded-For` | não |
+| `ENCRYPTION_KEY` | 32 bytes em hexadecimal ou base64; criptografa a chave do OpenRouter. Só é exigida ao gravar ou ler um segredo | para usar a chave do OpenRouter |
+| `OPENROUTER_BASE_URL` | endereço da API do OpenRouter (padrão `https://openrouter.ai/api/v1`) | não |
+| `APP_URL` | URL pública do sistema, enviada ao OpenRouter em `HTTP-Referer` (padrão `http://localhost:3000`) | não |
 
 ## Comandos
 
@@ -64,6 +73,6 @@ A dependência segue uma direção só, e o `npm run lint` a impõe.
 |---|---|---|
 | Apresentação | `src/app`, `src/componentes`, `src/estilos` | chama `src/servicos`; não importa `src/lib/prisma` |
 | Aplicação | `src/servicos` | casos de uso e validação com zod; não importa `next/*` nem a apresentação |
-| Dados e infraestrutura | `src/lib` | Prisma, sessão, ambiente, limite de uso; não importa serviços nem a apresentação |
+| Dados e infraestrutura | `src/lib` | Prisma, sessão, ambiente, limite de uso, criptografia de segredo e o adaptador do OpenRouter (`src/lib/openrouter.ts`); não importa serviços nem a apresentação |
 
 Para acrescentar uma tela ao menu, edite só `src/componentes/itens-de-menu.ts`. As cores vivem em `src/estilos/tokens.css`; nenhum componente usa cor literal.

@@ -9,14 +9,14 @@ sprint_id: sprint-05
 atualizado_em: 2026-09-30
 sprint:
   titulo: "Telas de agentes"
-  status: pendente
+  status: concluido
   criterio_saida: "tests/menu.test.ts, tests/abas-do-agente.test.tsx, tests/seletor-de-modelo.test.tsx, tests/formulario-de-agente.test.tsx e tests/rotas.test.ts passam; nenhuma cor literal fora de tokens.css; suite verde."
   riscos: ["redirect apos criar precisa ficar fora do try/catch (base/interface-e-menu.md)", "Campo do template so tem input: textarea, contador e seletor sao componentes novos sobre classes existentes"]
   fora_de_escopo: ["abas Conhecimento, Canais e Conversas - features seguintes", "conversa de teste - FT-03"]
 fases:
   - id: F-05.1
     titulo: "Telas"
-    status: pendente
+    status: concluido
     criterio_saida: "usuario cria, edita e exclui agente pela interface e o admin ve o aviso de chave"
     paralelizavel: false
     paralela_com: []

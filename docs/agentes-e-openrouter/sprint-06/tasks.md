@@ -9,14 +9,14 @@ sprint_id: sprint-06
 atualizado_em: 2026-09-30
 sprint:
   titulo: "Verificacao e fechamento"
-  status: pendente
+  status: concluido
   criterio_saida: "A verificacao visual esta registrada, CONVENCOES.md e LACUNAS.md citam a evidencia nova e o MAPA.md mostra FT-02 com os contadores corretos."
   riscos: ["a ferramenta de navegador pode nao estar disponivel: registrar como nao feito, sem declarar verificado"]
   fora_de_escopo: ["Dockerfile e backup - FT-11"]
 fases:
   - id: F-06.1
     titulo: "Fechamento"
-    status: pendente
+    status: concluido
     criterio_saida: "verificacao registrada, convencoes atualizadas, feature registrada no laco do buildx"
     paralelizavel: false
     paralela_com: []
@@ -55,18 +55,18 @@ tasks:
   - id: T-06.03
     titulo: "Fechamento no laco do buildx"
     fase: F-06.1
-    status: pendente
+    status: concluida
     objetivo: "Registrar a feature no mapa, premissas e recursao e conferir arquivos de ambiente e dependencias."
     arquivos:
-      cria: []
+      cria: ["docs/agentes-e-openrouter/FECHAMENTO.md", "docs/agentes-e-openrouter/RELATORIO-FEATURE.md"]
       altera: ["docs/projeto/MAPA.md", "docs/projeto/PREMISSAS.md", "docs/projeto/RECURSAO.md", "docs/projeto/PROJETO.md", ".gitignore", ".env.example", "package.json", "package-lock.json", "README.md", "tests/projeto.test.ts"]
     teste_integracao: "Os arquivos de estado do projeto abrem com frontmatter valido e os contadores do MAPA.md batem com a tabela do painel."
     teste_funcional: "O MAPA.md mostra FT-02 entregue com sprints, testes e PR local, PREMISSAS.md traz PR-38 a PR-40 com total 40, e o README documenta ENCRYPTION_KEY, OPENROUTER_BASE_URL e APP_URL."
     criterio_aceite: "grep de FT-02 no painel do MAPA.md devolve entregue e o total de premissas do frontmatter e 40."
     depende_de: [T-06.02]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
 ---
 
 # Plano — Sprint 06 — Verificacao e fechamento
@@ -110,7 +110,7 @@ flowchart LR
   classDef critico stroke-width:3px
   class T_06_01 concluida
   class T_06_02 concluida
-  class T_06_03 pendente
+  class T_06_03 concluida
 ```
 
 ## Tasks
@@ -162,13 +162,16 @@ id: T-06.03
 titulo: Fechamento no laco do buildx
 objetivo: Registrar a feature no mapa, premissas e recursao e conferir arquivos de ambiente e dependencias.
 arquivos:
-  cria: []
+  cria: [docs/agentes-e-openrouter/FECHAMENTO.md, docs/agentes-e-openrouter/RELATORIO-FEATURE.md]
   altera: [docs/projeto/MAPA.md, docs/projeto/PREMISSAS.md, docs/projeto/RECURSAO.md, docs/projeto/PROJETO.md, .gitignore, .env.example, package.json, package-lock.json, README.md, tests/projeto.test.ts]
 teste_integracao: Os arquivos de estado do projeto abrem com frontmatter valido e os contadores do MAPA.md batem com a tabela do painel.
 teste_funcional: O MAPA.md mostra FT-02 entregue com sprints, testes e PR local, PREMISSAS.md traz PR-38 a PR-40 com total 40, e o README documenta ENCRYPTION_KEY, OPENROUTER_BASE_URL e APP_URL.
 criterio_aceite: grep de FT-02 no painel do MAPA.md devolve entregue e o total de premissas do frontmatter e 40.
 depende_de: [T-06.02]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: conferido por leitura dos arquivos; suite 398 passed
 ```
 

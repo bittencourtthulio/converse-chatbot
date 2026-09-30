@@ -9,14 +9,14 @@ sprint_id: sprint-01
 atualizado_em: 2026-09-30
 sprint:
   titulo: "Capacidade de testar: cripto, servidor simulado e regra de migracao"
-  status: pendente
+  status: concluido
   criterio_saida: "npm test termina com 0 failed; tests/cripto.test.ts, tests/migracoes.test.ts e tests/openrouter-falso.test.ts passam; lint e tsc com codigo 0."
   riscos: ["ENCRYPTION_KEY lida por getter preguicoso: ler no import derrubaria login e painel (base/ambiente-e-segredos.md)", "o servidor simulado e reutilizado por FT-03 e FT-05: a API precisa ficar limpa e documentada"]
   fora_de_escopo: ["uso do adaptador em tela ou servico - sprints 02 e 03", "chamada a rede real - proibida em qualquer teste"]
 fases:
   - id: F-01.1
     titulo: "Fundacoes de teste"
-    status: pendente
+    status: concluido
     criterio_saida: "cripto, regra de migracao e servidor simulado verdes na suite"
     paralelizavel: false
     paralela_com: []

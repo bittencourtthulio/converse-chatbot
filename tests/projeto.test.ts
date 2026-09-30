@@ -112,9 +112,22 @@ describe('README do projeto', () => {
     for (const pasta of ['src/app', 'src/servicos', 'src/lib']) {
       expect(readme, pasta).toContain(pasta)
     }
-    for (const variavel of ['APP_NAME', 'TRUST_PROXY', 'DATABASE_URL']) {
+    for (const variavel of [
+      'APP_NAME',
+      'TRUST_PROXY',
+      'DATABASE_URL',
+      'ENCRYPTION_KEY',
+      'OPENROUTER_BASE_URL',
+      'APP_URL',
+    ]) {
       expect(readme, variavel).toContain(variavel)
     }
+  })
+
+  it('explica como cadastrar a chave do OpenRouter e criar agentes', () => {
+    expect(readme).toContain('Configurações, Integrações')
+    expect(readme).toContain('Agentes')
+    expect(readme).toContain('tests/apoio/openrouter-falso.ts')
   })
 
   it('é o README do Converse, não o do template', () => {

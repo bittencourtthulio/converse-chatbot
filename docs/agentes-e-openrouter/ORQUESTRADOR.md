@@ -8,15 +8,15 @@ feature_id: FT-02
 titulo: Agentes e chave do OpenRouter
 tipo_trabalho: feature
 tipo_ocorrencia: null
-estagio: f4
-status: em_andamento
+estagio: f6
+status: concluido
 criado_em: 2026-09-30
 atualizado_em: 2026-09-30
-concluido_em: null
+concluido_em: 2026-09-30
 sprints: [sprint-01, sprint-02, sprint-03, sprint-04, sprint-05, sprint-06]
 caminho_critico: [T-01.01, T-03.03, T-05.01, T-05.02, T-05.03, T-05.04, T-05.05, T-05.06, T-05.07, T-06.01, T-06.02, T-06.03]
 modulo_afetado: [apresentacao, aplicacao, infraestrutura, banco, testes, documentacao]
-arquivos_alterados: []
+arquivos_alterados: [.env.example, .gitignore, README.md, docs/agentes-e-openrouter/00-AUDITORIA.md, docs/agentes-e-openrouter/00-BLOQUEIOS.md, docs/agentes-e-openrouter/00-DECISOES.md, docs/agentes-e-openrouter/BRIEFING-BUILDX.md, docs/agentes-e-openrouter/FECHAMENTO.md, docs/agentes-e-openrouter/ORQUESTRADOR.md, docs/agentes-e-openrouter/RELATORIO-FEATURE.md, docs/agentes-e-openrouter/VERIFICACAO-VISUAL.md, docs/agentes-e-openrouter/base/00-INDICE.md, docs/agentes-e-openrouter/base/00-LACUNAS.md, docs/agentes-e-openrouter/base/ambiente-e-segredos.md, docs/agentes-e-openrouter/base/banco-e-migrations.md, docs/agentes-e-openrouter/base/interface-e-menu.md, docs/agentes-e-openrouter/base/openrouter-api.md, docs/agentes-e-openrouter/sprint-01/tasks.md, docs/agentes-e-openrouter/sprint-02/tasks.md, docs/agentes-e-openrouter/sprint-03/tasks.md, docs/agentes-e-openrouter/sprint-04/tasks.md, docs/agentes-e-openrouter/sprint-05/tasks.md, docs/agentes-e-openrouter/sprint-06/tasks.md, docs/entregas/agentes-e-openrouter/ENTREGA.md, docs/projeto/MAPA.md, docs/projeto/PREMISSAS.md, docs/projeto/PROJETO.md, docs/projeto/RECURSAO.md, docs/stack/CONVENCOES.md, docs/stack/LACUNAS.md, package-lock.json, package.json, prisma/migrations/20260930145651_configuracao_do_workspace/migration.sql, prisma/migrations/20260930150122_agentes/migration.sql, prisma/schema.prisma, prisma/seed.ts, src/app/(sistema)/agentes/(lista)/loading.tsx, src/app/(sistema)/agentes/(lista)/page.tsx, src/app/(sistema)/agentes/[id, , src/app/(sistema)/agentes/novo/loading.tsx, src/app/(sistema)/agentes/novo/page.tsx, src/app/(sistema)/configuracoes/integracoes/layout.tsx, src/app/(sistema)/configuracoes/integracoes/loading.tsx, src/app/(sistema)/configuracoes/integracoes/page.tsx, src/app/acoes.ts, src/componentes/AbasDoAgente.tsx, src/componentes/BotaoExcluirAgente.tsx, src/componentes/FormularioDeAgente.tsx, src/componentes/Icones.tsx, src/componentes/PainelDaChaveOpenrouter.tsx, src/componentes/SeletorDeModelo.tsx, src/componentes/abas-do-agente.ts, src/componentes/itens-de-menu.ts, src/estilos/global.css, src/lib/ambiente.ts, src/lib/cripto.ts, src/lib/erros.ts, src/lib/openrouter.ts, src/lib/sse.ts, src/servicos/agentes.ts, src/servicos/integracoes.ts, tests/abas-do-agente.test.tsx, tests/acoes-de-agente.test.ts, tests/agentes-modelos.test.ts, tests/agentes.test.ts, tests/ajuda.ts, tests/ambiente.test.ts, tests/apoio/openrouter-falso.ts, tests/componentes.test.tsx, tests/cripto.test.ts, tests/erros.test.ts, tests/formulario-de-agente.test.tsx, tests/integracoes-conexao.test.ts, tests/integracoes.test.ts, tests/menu.test.ts, tests/migracoes.test.ts, tests/openrouter-conversar.test.ts, tests/openrouter-falso.test.ts, tests/openrouter.test.ts, tests/projeto.test.ts, tests/rotas.test.ts, tests/seed.test.ts, tests/seletor-de-modelo.test.tsx, tests/setup.ts, tests/sse.test.ts]
 palavras_chave: [openrouter, agentes, cripto, segredo, sse, integracoes, modelo, temperatura]
 worktree: null
 ---

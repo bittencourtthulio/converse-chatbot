@@ -17,6 +17,8 @@ commits: []
 modulo_afetado: []
 arquivos_alterados: []
 desvios:
+  - "T-06.03: docs/agentes-e-openrouter/RELATORIO-FEATURE.md (relatorio da feature)"
+  - "T-06.03: docs/agentes-e-openrouter/FECHAMENTO.md (fechamento do sprintx)"
   - "T-06.01: src/estilos/global.css (correcao do borda dos botoes secundarios achada na verificacao visual)"
   - "T-05.07: src/app/(sistema)/agentes/[id]/carregar-agente.ts (arquivo novo: helper que converte id inexistente em 404, nao previsto)"
   - "T-05.06: src/app/(sistema)/agentes/novo/loading.tsx (arquivo novo: carregando de /agentes/novo (a pagina consulta o OpenRouter), nao previsto)"

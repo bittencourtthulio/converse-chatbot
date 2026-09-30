@@ -9,14 +9,14 @@ sprint_id: sprint-03
 atualizado_em: 2026-09-30
 sprint:
   titulo: "Chave do workspace e tela Configuracoes > Integracoes"
-  status: pendente
+  status: concluido
   criterio_saida: "tests/integracoes.test.ts, tests/integracoes-conexao.test.ts, tests/menu.test.ts, tests/componentes.test.tsx e tests/rotas.test.ts passam; a chave em claro e o texto cifrado nunca aparecem na pagina."
   riscos: ["console.error da acao imprime o erro inteiro: o erro nao pode carregar a chave (base/ambiente-e-segredos.md)", "o teste de rotas exige build previo"]
   fora_de_escopo: ["auditoria da troca de chave - FT-10", "token do Telegram - FT-07"]
 fases:
   - id: F-03.1
     titulo: "Chave e tela"
-    status: pendente
+    status: concluido
     criterio_saida: "admin grava, testa e remove a chave por tela, vendo so a mascara"
     paralelizavel: false
     paralela_com: []

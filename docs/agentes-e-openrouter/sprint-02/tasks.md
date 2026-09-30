@@ -9,14 +9,14 @@ sprint_id: sprint-02
 atualizado_em: 2026-09-30
 sprint:
   titulo: "Adaptador OpenRouter em src/lib"
-  status: pendente
+  status: concluido
   criterio_saida: "tests/sse.test.ts, tests/openrouter.test.ts e tests/openrouter-conversar.test.ts passam contra o servidor simulado; suite, lint e tsc verdes."
   riscos: ["JSON partido entre chunks e comentarios SSE quebram JSON.parse (base/openrouter-api.md)", "erro do provedor nao pode vazar corpo bruto nem a chave"]
   fora_de_escopo: ["persistencia da chave - sprint 03", "tela de conversa - FT-03"]
 fases:
   - id: F-02.1
     titulo: "Adaptador"
-    status: pendente
+    status: concluido
     criterio_saida: "listarModelos, verificarChave e conversar verdes contra o servidor simulado"
     paralelizavel: false
     paralela_com: []
