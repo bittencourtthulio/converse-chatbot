@@ -26,18 +26,18 @@ tasks:
   - id: T-07.02
     titulo: "Verificacao ponta a ponta no navegador"
     fase: F-07.1
-    status: pendente
+    status: concluida
     objetivo: "Subir app de producao, OpenRouter falso e um site estatico em outra porta e verificar botao, stream, limite e bloqueio por dominio."
     arquivos:
       cria: ["tests/apoio/servir-site-de-teste.ts", "docs/chat-embutido/VERIFICACAO-VISUAL.md"]
-      altera: []
+      altera: ["src/estilos/global.css"]
     teste_integracao: "O site estatico numa porta diferente carrega o widget.js do app e o botao abre o painel com o iframe do app, ou o registro diz que a ferramenta de navegador nao estava disponivel."
     teste_funcional: "A resposta chega em stream, o excesso de mensagens mostra a mensagem amigavel, o site fora da lista de dominios tem o iframe bloqueado pelo navegador, e o que nao foi visto (375px, por exemplo) esta listado."
     criterio_aceite: "docs/chat-embutido/VERIFICACAO-VISUAL.md existe com o que foi verificado e o que ficou sem verificar."
     depende_de: ["T-07.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-07.03
     titulo: "Fechamento no laco do buildx"
     fase: F-07.2
@@ -84,13 +84,13 @@ titulo: "Verificacao ponta a ponta no navegador"
 objetivo: "Subir app de producao, OpenRouter falso e um site estatico em outra porta e verificar botao, stream, limite e bloqueio por dominio."
 arquivos:
   cria: ["tests/apoio/servir-site-de-teste.ts", "docs/chat-embutido/VERIFICACAO-VISUAL.md"]
-  altera: []
+  altera: ["src/estilos/global.css"]
 teste_integracao: "O site estatico numa porta diferente carrega o widget.js do app e o botao abre o painel com o iframe do app, ou o registro diz que a ferramenta de navegador nao estava disponivel."
 teste_funcional: "A resposta chega em stream, o excesso de mensagens mostra a mensagem amigavel, o site fora da lista de dominios tem o iframe bloqueado pelo navegador, e o que nao foi visto (375px, por exemplo) esta listado."
 criterio_aceite: "docs/chat-embutido/VERIFICACAO-VISUAL.md existe com o que foi verificado e o que ficou sem verificar."
 depende_de: ["T-07.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: verde — 1458 passed
 ```
 
 ---

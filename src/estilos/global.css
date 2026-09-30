@@ -369,6 +369,7 @@ input[type='text'],
 input[type='email'],
 input[type='password'],
 input[type='number'],
+input[type='url'],
 textarea,
 select {
   width: 100%;
@@ -561,14 +562,14 @@ tbody tr:hover { background: var(--bg-hover); }
   button.primario, button.secundario, button.perigo,
   .botao-icone,
   .menu-do-usuario-gatilho,
-  input[type='text'], input[type='email'], input[type='password'], input[type='number'], textarea, select {
+  input[type='text'], input[type='email'], input[type='password'], input[type='number'], input[type='url'], textarea, select {
     min-height: var(--alvo-toque);
   }
   .botao-icone { width: var(--alvo-toque); height: var(--alvo-toque); }
   .botao-pequeno { min-height: var(--alvo-toque); }
 
   /* 16px evita o zoom automático de campo no iOS */
-  input[type='text'], input[type='email'], input[type='password'], input[type='number'], textarea, select { font-size: 1rem; }
+  input[type='text'], input[type='email'], input[type='password'], input[type='number'], input[type='url'], textarea, select { font-size: 1rem; }
 
   .login-cartao { padding: 24px; }
 }
