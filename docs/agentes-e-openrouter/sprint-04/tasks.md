@@ -55,7 +55,7 @@ tasks:
   - id: T-04.03
     titulo: "Seed do agente de exemplo"
     fase: F-04.1
-    status: pendente
+    status: concluida
     objetivo: "Semear o Assistente de exemplo, sem chave, mantendo a recusa em producao."
     arquivos:
       cria: []
@@ -65,8 +65,8 @@ tasks:
     criterio_aceite: "O teste passa e a seed continua saindo com codigo diferente de 0 em producao."
     depende_de: [T-04.01]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
 ---
 
 # Plano — Sprint 04 — Agentes: modelo, servico e seed
@@ -112,7 +112,7 @@ flowchart LR
   classDef critico stroke-width:3px
   class T_04_01 concluida
   class T_04_02 concluida
-  class T_04_03 pendente
+  class T_04_03 concluida
 ```
 
 ## Tasks
@@ -171,6 +171,9 @@ teste_funcional: duas execucoes deixam exatamente um agente chamado Assistente d
 criterio_aceite: O teste passa e a seed continua saindo com codigo diferente de 0 em producao.
 depende_de: [T-04.01]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: seed 4 passed; tsc e lint 0
 ```
 

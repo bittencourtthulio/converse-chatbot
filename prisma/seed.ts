@@ -24,6 +24,20 @@ const DEMONSTRACAO = [
   },
 ]
 
+// Agente de exemplo (PR-25): sem chave do OpenRouter, ele só mostra o aviso de
+// configuração. Id fixo para a seed ser idempotente.
+const AGENTE_DE_EXEMPLO = {
+  id: 'agente-de-exemplo',
+  nome: 'Assistente de exemplo',
+  modelo: 'openai/gpt-4o-mini',
+  temperatura: 0.7,
+  instrucoes:
+    'Você é o assistente de atendimento da Loja Exemplo, uma loja fictícia de material de escritório. ' +
+    'Responda sempre em português do Brasil, de forma cordial e objetiva. ' +
+    'Quando não souber uma informação, diga que vai encaminhar o pedido à equipe em vez de inventar.',
+  mensagemInicial: 'Olá! Sou o assistente da Loja Exemplo. Como posso ajudar?',
+}
+
 async function semear() {
   if (process.env.NODE_ENV === 'production') {
     throw new Error(
@@ -45,10 +59,20 @@ async function semear() {
     })
   }
 
+  const admin = await prisma.usuario.findUniqueOrThrow({
+    where: { email: DEMONSTRACAO[0]!.email },
+  })
+  await prisma.agente.upsert({
+    where: { id: AGENTE_DE_EXEMPLO.id },
+    update: {},
+    create: { ...AGENTE_DE_EXEMPLO, criadoPorId: admin.id },
+  })
+
   console.log('Seed de demonstração aplicada:')
   for (const conta of DEMONSTRACAO) {
     console.log(`  ${conta.papel.padEnd(8)} ${conta.email}  senha: ${conta.senha}`)
   }
+  console.log(`  agente   ${AGENTE_DE_EXEMPLO.nome} (sem chave do OpenRouter)`)
 }
 
 semear()

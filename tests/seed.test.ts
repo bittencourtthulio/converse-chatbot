@@ -38,5 +38,31 @@ describe('seed de demonstração', () => {
     expect(r.status).not.toBe(0)
     expect(r.stderr).toContain('não roda em produção')
     expect(await prisma.usuario.count()).toBe(0)
+    expect(await prisma.agente.count()).toBe(0)
+  })
+
+  it('cria o agente de exemplo uma vez só, do admin, sem chave do OpenRouter', async () => {
+    expect(semear().status).toBe(0)
+    expect(semear().status).toBe(0)
+
+    const agentes = await prisma.agente.findMany({ include: { criadoPor: true } })
+    expect(agentes).toHaveLength(1)
+    const [agente] = agentes
+    expect(agente?.nome).toBe('Assistente de exemplo')
+    expect(agente?.modelo).toBe('openai/gpt-4o-mini')
+    expect(agente?.criadoPor.email).toBe('admin@exemplo.local')
+    expect(agente?.instrucoes).toMatch(/português/i)
+    expect(agente?.mensagemInicial.length).toBeGreaterThan(0)
+
+    const configuracao = await prisma.configuracaoDoWorkspace.findUnique({ where: { id: 'unica' } })
+    expect(configuracao?.openrouterChaveCifrada ?? null).toBeNull()
+  })
+
+  it('não desfaz a edição que alguém fez no agente de exemplo', async () => {
+    expect(semear().status).toBe(0)
+    const antes = await prisma.agente.findFirstOrThrow()
+    await prisma.agente.update({ where: { id: antes.id }, data: { nome: 'Renomeado' } })
+    expect(semear().status).toBe(0)
+    expect((await prisma.agente.findUniqueOrThrow({ where: { id: antes.id } })).nome).toBe('Renomeado')
   })
 })
