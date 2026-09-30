@@ -73,6 +73,13 @@ const FORMAS: Record<NomeDeIcone, React.ReactNode> = {
       <path d="m10.7 12.3 9.8-9.8M17 6l3 3M14 9l2 2" />
     </>
   ),
+  agentes: (
+    <>
+      <rect x="4" y="8" width="16" height="12" rx="3" />
+      <path d="M12 8V4M9 13v1M15 13v1M9 17h6" />
+      <circle cx="12" cy="3.5" r="1" />
+    </>
+  ),
   conversa: <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z" />,
 }
 

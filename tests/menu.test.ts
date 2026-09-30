@@ -28,6 +28,16 @@ describe('itens de menu', () => {
     expect(item?.somenteAdmin).toBe(true)
   })
 
+  it('Painel vem primeiro e Agentes logo abaixo, para todos os papéis', () => {
+    for (const admin of [true, false]) {
+      const semTitulo = gruposVisiveis(admin).find((g) => g.titulo === null)!
+      expect(semTitulo.itens.map((i) => [i.rotulo, i.href])).toEqual([
+        ['Painel', '/'],
+        ['Agentes', '/agentes'],
+      ])
+    }
+  })
+
   it('as rotas são únicas e começam com barra', () => {
     const rotas = GRUPOS_DE_MENU.flatMap((g) => g.itens.map((i) => i.href))
     expect(new Set(rotas).size).toBe(rotas.length)
@@ -68,6 +78,13 @@ describe('título por rota (migalhas)', () => {
     ])
   })
 
+  it('as rotas de agente herdam o título Agentes', () => {
+    expect(migalhasDaRota('/agentes')).toEqual(['Agentes'])
+    expect(migalhasDaRota('/agentes/novo')).toEqual(['Agentes', 'Novo agente'])
+    expect(migalhasDaRota('/agentes/ckabc123')).toEqual(['Agentes'])
+    expect(migalhasDaRota('/agentes/ckabc123/conhecimento')).toEqual(['Agentes'])
+  })
+
   it('rota desconhecida não tem migalhas', () => {
     expect(migalhasDaRota('/nao-existe')).toEqual([])
   })
@@ -77,6 +94,12 @@ describe('item ativo', () => {
   it('a raiz só é ativa na raiz', () => {
     expect(rotaEstaAtiva('/', '/')).toBe(true)
     expect(rotaEstaAtiva('/perfil', '/')).toBe(false)
+  })
+
+  it('/agentes fica ativo nas rotas do agente', () => {
+    expect(rotaEstaAtiva('/agentes/novo', '/agentes')).toBe(true)
+    expect(rotaEstaAtiva('/agentes/abc', '/agentes')).toBe(true)
+    expect(rotaEstaAtiva('/agentesx', '/agentes')).toBe(false)
   })
 
   it('as demais casam por prefixo de segmento', () => {

@@ -18,6 +18,7 @@ export type NomeDeIcone =
   | 'informacao'
   | 'conversa'
   | 'integracoes'
+  | 'agentes'
 
 export interface ItemDeMenu {
   rotulo: string
@@ -36,7 +37,10 @@ export interface GrupoDeMenu {
 export const GRUPOS_DE_MENU: GrupoDeMenu[] = [
   {
     titulo: null,
-    itens: [{ rotulo: 'Painel', href: '/', icone: 'painel' }],
+    itens: [
+      { rotulo: 'Painel', href: '/', icone: 'painel' },
+      { rotulo: 'Agentes', href: '/agentes', icone: 'agentes' },
+    ],
   },
   {
     titulo: 'Configurações',
@@ -61,6 +65,7 @@ export const GRUPOS_DE_MENU: GrupoDeMenu[] = [
 /** Rotas que existem mas não têm item de menu: herdam o título do pai. */
 const ROTAS_FORA_DO_MENU: Array<{ href: string; titulo: string; pai: string }> = [
   { href: '/perfil/senha', titulo: 'Trocar senha', pai: '/perfil' },
+  { href: '/agentes/novo', titulo: 'Novo agente', pai: '/agentes' },
 ]
 
 export function gruposVisiveis(ehAdmin: boolean): GrupoDeMenu[] {
@@ -82,6 +87,11 @@ export function migalhasDaRota(caminho: string): string[] {
   }
   const extra = ROTAS_FORA_DO_MENU.find((r) => r.href === caminho)
   if (extra) return [...migalhasDaRota(extra.pai), extra.titulo]
+  // Página de detalhe (`/agentes/<id>` e as abas dele): herda o título do item.
+  for (const grupo of GRUPOS_DE_MENU) {
+    const item = grupo.itens.find((i) => i.href !== '/' && caminho.startsWith(`${i.href}/`))
+    if (item) return grupo.titulo ? [grupo.titulo, item.rotulo] : [item.rotulo]
+  }
   return []
 }
 

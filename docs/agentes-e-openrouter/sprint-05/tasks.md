@@ -25,7 +25,7 @@ tasks:
   - id: T-05.01
     titulo: "Item Agentes no menu"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Colocar Agentes abaixo de Painel e herdar o titulo nas rotas de detalhe."
     arquivos:
       cria: []
@@ -35,8 +35,8 @@ tasks:
     criterio_aceite: "O teste de menu passa e o icone agentes existe em Icones.tsx."
     depende_de: [T-03.03]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-05.02
     titulo: "AbasDoAgente e lista extensivel de abas"
     fase: F-05.1
@@ -178,7 +178,7 @@ flowchart LR
   classDef concluida fill:#DFF0D8,stroke:#4A6B3A,color:#1A1815
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
-  class T_05_01 pendente
+  class T_05_01 concluida
   class T_05_02 pendente
   class T_05_03 pendente
   class T_05_04 pendente
@@ -203,7 +203,10 @@ teste_funcional: o grupo sem titulo tem Painel e depois Agentes para todos os pa
 criterio_aceite: O teste de menu passa e o icone agentes existe em Icones.tsx.
 depende_de: [T-03.03]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: menu 13 passed; tsc e lint 0
 ```
 
 ---
