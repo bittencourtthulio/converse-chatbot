@@ -26,7 +26,7 @@ tasks:
   - id: T-01.02
     titulo: "Modulo de dominios permitidos"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Escrever as funcoes puras de normalizacao, casamento de origem e cabecalho frame-ancestors."
     arquivos:
       cria: ["src/lib/dominios-permitidos.ts", "tests/dominios-permitidos.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/dominios-permitidos.test.ts passa com ao menos 15 casos, incluindo porta, curinga, esquema removido, entrada invalida e limite de 20."
     depende_de: ["T-01.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-01.03
     titulo: "Modulo de cor e tokens sobre cor do agente"
     fase: F-01.1
@@ -120,7 +120,7 @@ teste_funcional: "normalizarDominio('https://Exemplo.com/x') devolve 'exemplo.co
 criterio_aceite: "tests/dominios-permitidos.test.ts passa com ao menos 15 casos, incluindo porta, curinga, esquema removido, entrada invalida e limite de 20."
 depende_de: ["T-01.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: verde — 1116 passed
 ```
 
 ---
