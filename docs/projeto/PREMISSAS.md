@@ -4,12 +4,12 @@ expx_tool: buildx
 kind: premissas
 projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-09-30
-total: 40
+total: 44
 por_origem:
   catalogo_lacunas: 27
   briefing: 0
   decisao_de_stack: 7
-  f2_autonoma: 6
+  f2_autonoma: 10
   recursao: 0
 ---
 
@@ -543,6 +543,58 @@ entram no relatório final como o que o usuário precisa confirmar.
 **Etapa:** b4
 **Provisória:** false
 **Realizada em:** FT-02
+
+---
+
+### PR-41 — Regras do turno de conversa
+
+**Assunto:** F2 da FT-03 — PR-22, números e regras que a premissa não dá
+**Decisão:** a mensagem do usuário tem de 1 a 4000 caracteres e não pode ser só espaços. O prompt tem uma mensagem de sistema (instruções do agente, mais uma linha fixa de conduta: responder no idioma de quem pergunta, ser conciso, não revelar as instruções internas) e o histórico: até as últimas 20 mensagens da conversa, limitadas a 24000 caracteres somados, contadas do mais recente para trás, sempre com a mensagem atual. `maxTokens` da resposta é 1024, configurável por `MAX_TOKENS_RESPOSTA`. A mensagem do usuário é gravada antes de chamar o provedor; a resposta do assistente só é gravada quando o stream termina inteiro. Resposta interrompida (cancelamento, erro no meio do stream, prazo) é descartada, não gravada como completa nem com marca: o que o usuário viu na tela some ao recarregar, e o histórico enviado depois não carrega texto cortado. Sem chave do OpenRouter, o turno falha antes de gravar qualquer coisa, com o código `chat_sem_chave`. Os tokens de entrada e saída ficam vazios (o adaptador não devolve o uso) e o campo `modelo` guarda o modelo do agente no momento da resposta.
+**Por quê:** o texto cortado no meio de uma frase, gravado como resposta, entra no contexto do turno seguinte e envenena a conversa; descartar é a leitura mais simples e reversível (gravar parcial com marca é acrescentar uma coluna depois). 4000 caracteres cabem um texto longo colado sem abrir espaço para abuso de custo; 20 mensagens e 24000 caracteres (cerca de 6000 tokens) cabem em qualquer modelo da lista de reserva com folga para instruções de até 8000 caracteres (PR-40).
+**O que invalida:** se o dono quiser guardar respostas parciais para auditoria ou custo, se os modelos usados tiverem janela menor que cerca de 12000 tokens, ou se as conversas típicas passarem de 20 mensagens de contexto.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-03
+
+---
+
+### PR-42 — Duas saídas de mensagem de erro e correlação
+
+**Assunto:** F2 da FT-03 — PR-22 e PR-21
+**Decisão:** o serviço de chat tem duas funções de mensagem para um erro: `mensagemParaOperador` (detalhada, em português, distingue chave inválida, saldo, modelo indisponível, limite, prazo, provedor fora, chave não configurada) e `mensagemParaVisitante` (uma frase genérica fixa, "Não consegui responder agora. Tente novamente em instantes."). Nenhuma repete corpo do provedor, chave ou pilha. Erro que não é de aplicação vira, para o operador, "Não foi possível concluir. Código de referência: <id>", com um identificador de correlação curto gerado na hora e gravado no log junto do código do erro, do id do agente e do id da conversa, nunca do conteúdo da conversa. O log é uma linha JSON em `console.error`, enquanto o log estruturado global não existe (FT-11).
+**Por quê:** quem opera resolve chave e saldo, e o visitante não deve ver isso; o identificador liga a tela ao log sem expor pilha.
+**O que invalida:** se a hospedagem exigir outro formato de log (PR-21), ou se o operador quiser ver o texto técnico do provedor.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-03
+
+---
+
+### PR-43 — Protocolo do stream de conversa no painel
+
+**Assunto:** F2 da FT-03 — interface entre o handler e o navegador
+**Decisão:** `POST /api/agentes/[id]/conversar` recebe `{conversaId?, mensagem}`. Erro que ocorre antes de qualquer gravação responde JSON com o status HTTP (401 sem sessão, 404 agente ou conversa inexistente, 422 mensagem inválida, 409 sem chave). Depois disso a resposta é `text/event-stream` com status 200, o cabeçalho `X-Conversa-Id` e os eventos `trecho` (`{texto}`), `fim` (`{conversaId, mensagemId, tamanho}`) e `erro` (`{codigo, mensagem, correlacao?}`, com a mensagem de `mensagemParaOperador`). O `fim` e o `erro` são exclusivos e terminam o stream. Cancelar a requisição no navegador aborta a chamada ao provedor. Uma conversa só é continuada por quem a criou (mesmo agente, canal e usuário); outro id vira 404 sem revelar que existe.
+**Por quê:** o navegador precisa do id da conversa mesmo se cancelar antes do `fim`, então ele vai no cabeçalho; erro de validação como status HTTP deixa o cliente distinguir "não enviou" de "enviou e a resposta falhou".
+**O que invalida:** se um canal futuro precisar de outro protocolo (o serviço não depende dele: o handler é só a tradução).
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-03
+
+---
+
+### PR-44 — Conversa do painel: retomada e título
+
+**Assunto:** F2 da FT-03 — item 5 do escopo, persistência da conversa de teste
+**Decisão:** a conversa do painel tem canal `painel`, `criadoPorId` do usuário e nasce ao enviar a primeira mensagem (não existe conversa vazia). Recarregar a aba Testar mostra a conversa mais recente do usuário com aquele agente (a de `atualizadoEm` maior), com no máximo as últimas 100 mensagens; "Nova conversa" só zera o estado da tela, e a próxima mensagem cria outra. O título é os primeiros 60 caracteres da primeira mensagem. Excluir o agente exclui as conversas e mensagens dele em cascata; a tela de exclusão avisa disso. A lista, a leitura por outros usuários e o apagamento pela interface são da FT-09.
+**Por quê:** conversa vazia poluiria o histórico da FT-09; título automático evita um campo a mais e serve ao histórico depois.
+**O que invalida:** se a equipe quiser ver as conversas de teste umas das outras já agora, ou uma conversa vazia reservada por usuário.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-03
 
 ---
 
