@@ -56,6 +56,10 @@ export const ambiente = {
     const url = process.env.APP_URL?.trim()
     return (url ? url : 'http://localhost:3000').replace(/\/+$/, '')
   },
+  /** Teto de tokens da resposta do modelo em cada turno de conversa (PR-41). */
+  get maxTokensDaResposta(): number {
+    return inteiroComPadrao('MAX_TOKENS_RESPOSTA', 1024)
+  },
   get ehProducao(): boolean {
     return process.env.NODE_ENV === 'production'
   },

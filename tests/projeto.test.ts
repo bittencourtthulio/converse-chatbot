@@ -49,6 +49,11 @@ describe('exemplo de ambiente', () => {
     expect(exemplo).not.toMatch(/sk-or-/)
   })
 
+  it('documenta o limite de tokens da resposta, sem valor secreto', () => {
+    expect(exemplo).toContain('MAX_TOKENS_RESPOSTA')
+    expect(valorDe('MAX_TOKENS_RESPOSTA')).toBe('1024')
+  })
+
   it('documenta a chave de criptografia e como gerá-la', () => {
     expect(exemplo).toContain('ENCRYPTION_KEY')
     expect(exemplo).toMatch(/randomBytes\(32\)/)

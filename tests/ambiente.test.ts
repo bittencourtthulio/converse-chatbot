@@ -3,7 +3,7 @@ import { ambiente } from '@/lib/ambiente'
 
 const original = { ...process.env }
 afterEach(() => {
-  for (const chave of ['APP_NAME', 'TRUST_PROXY']) {
+  for (const chave of ['APP_NAME', 'TRUST_PROXY', 'MAX_TOKENS_RESPOSTA']) {
     if (original[chave] === undefined) delete process.env[chave]
     else process.env[chave] = original[chave]
   }
@@ -91,5 +91,27 @@ describe('OpenRouter', () => {
     expect(ambiente.appUrl).toBe('http://localhost:3000')
     process.env.APP_URL = 'https://converse.exemplo.com.br/'
     expect(ambiente.appUrl).toBe('https://converse.exemplo.com.br')
+  })
+})
+
+describe('limite de tokens da resposta', () => {
+  it('sem MAX_TOKENS_RESPOSTA, o padrão é 1024', () => {
+    delete process.env.MAX_TOKENS_RESPOSTA
+    expect(ambiente.maxTokensDaResposta).toBe(1024)
+  })
+
+  it('usa o valor definido', () => {
+    process.env.MAX_TOKENS_RESPOSTA = '512'
+    expect(ambiente.maxTokensDaResposta).toBe(512)
+  })
+
+  it.each(['abc', '0', '-5'])('valor inválido (%s) lança o erro de inteiro positivo', (valor) => {
+    process.env.MAX_TOKENS_RESPOSTA = valor
+    expect(() => ambiente.maxTokensDaResposta).toThrow(/inteiro positivo/)
+  })
+
+  it('ler o ambiente sem a variável não lança', () => {
+    delete process.env.MAX_TOKENS_RESPOSTA
+    expect(() => ambiente.nomeDoProduto).not.toThrow()
   })
 })

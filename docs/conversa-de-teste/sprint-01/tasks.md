@@ -40,7 +40,7 @@ tasks:
   - id: T-01.02
     titulo: "MAX_TOKENS_RESPOSTA na configuracao"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Ler MAX_TOKENS_RESPOSTA (padrao 1024) so em ambiente.ts e documentar no .env.example."
     arquivos:
       cria: []
@@ -50,8 +50,8 @@ tasks:
     criterio_aceite: "O teste de ambiente e o de projeto passam e o .env.example traz MAX_TOKENS_RESPOSTA com comentario e sem valor secreto."
     depende_de: []
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
 ---
 
 # Plano — Sprint 01 — Capacidade de testar: dados de conversa e configuracao
@@ -93,7 +93,7 @@ flowchart LR
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
   class T_01_01 concluida
-  class T_01_02 pendente
+  class T_01_02 concluida
 ```
 
 ## Tasks
@@ -132,6 +132,9 @@ teste_funcional: sem a variavel devolve 1024, com 512 devolve 512, com texto ou 
 criterio_aceite: O teste de ambiente e o de projeto passam e o .env.example traz MAX_TOKENS_RESPOSTA com comentario e sem valor secreto.
 depende_de: []
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: verde
+resultado: suite 412 testes verdes; tsc e lint 0
 ```
 
