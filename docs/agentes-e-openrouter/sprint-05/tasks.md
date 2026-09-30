@@ -118,7 +118,7 @@ tasks:
     status: concluida
     objetivo: "Layout compartilhado com nome e abas e a aba Configuracoes com excluir."
     arquivos:
-      cria: ["src/app/(sistema)/agentes/[id, "src/app/(sistema)/agentes/[id]/carregar-agente.ts"]/layout.tsx", "src/app/(sistema)/agentes/[id]/page.tsx", "src/app/(sistema)/agentes/[id]/loading.tsx"]
+      cria: ["src/app/(sistema)/agentes/[id]/layout.tsx", "src/app/(sistema)/agentes/[id]/page.tsx", "src/app/(sistema)/agentes/[id]/loading.tsx", "src/app/(sistema)/agentes/[id]/carregar-agente.ts"]
       altera: ["tests/rotas.test.ts"]
     teste_integracao: "tests/rotas.test.ts sobe o servidor de producao ja usado e cria um agente pelo servico."
     teste_funcional: "/agentes/<id> responde 200 com o nome do agente, a aba Configuracoes com aria-current, o formulario com os valores salvos e o botao Excluir agente, e id inexistente responde 404."
@@ -316,7 +316,7 @@ id: T-05.07
 titulo: Pagina /agentes/[id] com layout de abas
 objetivo: Layout compartilhado com nome e abas e a aba Configuracoes com excluir.
 arquivos:
-  cria: [src/app/(sistema)/agentes/[id, src/app/(sistema)/agentes/[id]/carregar-agente.ts]/layout.tsx, src/app/(sistema)/agentes/[id]/page.tsx, src/app/(sistema)/agentes/[id]/loading.tsx]
+  cria: [src/app/(sistema)/agentes/[id]/layout.tsx, src/app/(sistema)/agentes/[id]/page.tsx, src/app/(sistema)/agentes/[id]/loading.tsx, src/app/(sistema)/agentes/[id]/carregar-agente.ts]
   altera: [tests/rotas.test.ts]
 teste_integracao: tests/rotas.test.ts sobe o servidor de producao ja usado e cria um agente pelo servico.
 teste_funcional: /agentes/<id> responde 200 com o nome do agente, a aba Configuracoes com aria-current, o formulario com os valores salvos e o botao Excluir agente, e id inexistente responde 404.
