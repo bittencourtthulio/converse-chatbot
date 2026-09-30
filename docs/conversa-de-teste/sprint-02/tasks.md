@@ -55,7 +55,7 @@ tasks:
   - id: T-02.03
     titulo: "Mensagens de erro para operador e visitante"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Duas funcoes de mensagem sem vazar detalhe e a geracao do identificador de correlacao."
     arquivos:
       cria: ["src/servicos/chat-erros.ts", "tests/chat-erros.test.ts"]
@@ -65,8 +65,8 @@ tasks:
     criterio_aceite: "O teste passa, incluindo a verificacao de que a mensagem do visitante nao contem Integracoes, Configuracoes nem sk-or."
     depende_de: []
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
 ---
 
 # Plano — Sprint 02 — Servicos de conversa, prompt e mensagens de erro
@@ -110,7 +110,7 @@ flowchart LR
   classDef critico stroke-width:3px
   class T_02_01 concluida
   class T_02_02 concluida
-  class T_02_03 pendente
+  class T_02_03 concluida
 ```
 
 ## Tasks
@@ -169,6 +169,9 @@ teste_funcional: para cada codigo provedor_* e chat_sem_chave a mensagem do oper
 criterio_aceite: O teste passa, incluindo a verificacao de que a mensagem do visitante nao contem Integracoes, Configuracoes nem sk-or.
 depende_de: []
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: verde
+resultado: chat-erros 10 testes; suite 449 verdes; tsc e lint 0
 ```
 
