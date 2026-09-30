@@ -9,7 +9,7 @@ entregue_por: mergex
 titulo: Agentes e chave do OpenRouter
 tipo_trabalho: feature
 tipo_ocorrencia: null
-estado: aberto
+estado: entregue
 versionado: true
 branch: feat/agentes-e-openrouter
 branch_base: feat/fundacao-e-esqueleto
@@ -265,7 +265,7 @@ pr_url: null
 pr_estado: null
 criado_em: 2026-09-30
 atualizado_em: 2026-09-30
-entregue_em: null
+entregue_em: 2026-09-30
 ---
 
 # Entrega — agentes-e-openrouter
@@ -280,8 +280,9 @@ Trabalho na branch `feat/agentes-e-openrouter`, a partir de `feat/fundacao-e-esq
 
 - Atenção humana: 11 olho obrigatório, 22 leitura rápida, 52 dispensável (`ATENCAO.md`)
 - Portão de prontidão: PRONTO (V1 a V3, V6, V7, V9 e V10 OK; V4, V5 e V8 n/a)
-- Push: não feito — não há remoto configurado; descrição em `PR.md`
-- Pull request: não aberto (sem remoto)
+- Push: não feito — não há remoto configurado (`git remote -v` vazio); descrição em `PR.md`, pacote de QA em `QA-PACOTE.md`
+- Pull request: não aberto (sem remoto e sem credencial; a mergex não configura nenhum)
+- Falta para o merge: abrir o PR quando houver remoto, revisão humana (11 arquivos de olho obrigatório) e o roteiro do QA
 
 ## Avisos
 
