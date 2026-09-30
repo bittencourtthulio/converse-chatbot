@@ -24,8 +24,8 @@ Conferir o conteudo real dos arquivos e extrair texto dos nove formatos por adap
 
 | Fase | Título | Roda em paralelo com |
 |---|---|---|
-| F-03.1 | Regras de arquivo | F-03.2 |
-| F-03.2 | Adaptadores | F-03.1 |
+| F-03.1 | Regras de arquivo | nenhuma |
+| F-03.2 | Adaptadores | nenhuma |
 | F-03.3 | Fachada | nenhuma |
 
 Detalhe de cada fase em `fases.md`; tasks em `tasks.md`.

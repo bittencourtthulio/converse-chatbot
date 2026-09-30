@@ -15,4 +15,7 @@ Auditoria feita pelo próprio executor (não há agente auditor neste harness), 
 | BAIXA | sprint-03/tasks.md | O teste de zip bomb precisa gerar dados muito compressíveis sem estourar a memória do teste | Gerar com `deflateRawSync` de buffer de zeros em pedaços e um teto baixo injetado para o teste |
 | BAIXA | sprint-06/tasks.md | Sem jsdom, arrastar-e-soltar, foco e polling só são exercitados por módulos puros e pela verificação visual (base/interface-do-agente-e-conhecimento.md) | Cobrir a lógica em T-06.02 e o resto em T-07.02, declarando o que não for visto |
 
-VEREDITO: NÃO — o plano não está pronto para execução autônoma.
+
+**Rodada 2 (depois da volta à F3, sem edição à mão do plano):** o plano foi regerado pelo mesmo gerador com o achado ALTA endereçado (F-03.1 e F-03.2 sequenciais em `sprint-03/fases.md` e no ORQUESTRADOR) e a MÉDIA de subida da fila endereçada em T-05.04 (critério de aceite). Reconferido: 37 tasks, sem ciclo, nenhum paralelismo falso (só F-02.2 e F-06.2 permanecem paralelas às fases anteriores e não dependem delas), cada teste em uma frase. A MÉDIA do corpo sem `Content-Length` fica como limite conhecido, a documentar no README na T-07.04. As três BAIXA permanecem válidas.
+
+VEREDITO: SIM — o plano está pronto para execução autônoma.

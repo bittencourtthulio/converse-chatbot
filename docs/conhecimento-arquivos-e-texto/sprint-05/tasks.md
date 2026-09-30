@@ -63,7 +63,7 @@ tasks:
       altera: ["next.config.ts"]
     teste_integracao: "Os nove formatos enviados por multipart real chegam a pronto pelo servidor de producao e os trechos de cada um contem o texto ficticio esperado."
     teste_funcional: "O PDF escaneado chega a erro com a mensagem de OCR e um DOCX com cabecalho de tamanho mentiroso e recusado no envio, tudo pelo servidor de producao."
-    criterio_aceite: "npm run build termina com 0 e tests/fontes-rota-formatos.test.ts passa."
+    criterio_aceite: "npm run build termina com 0, tests/fontes-rota-formatos.test.ts passa e o servidor de producao, ao subir com uma fonte pendente no banco de teste, a leva a pronto sem nenhuma requisicao."
     depende_de: ["T-05.03"]
     paralelizavel: false
     concluida_em: null
@@ -136,7 +136,7 @@ arquivos:
   altera: ["next.config.ts"]
 teste_integracao: Os nove formatos enviados por multipart real chegam a pronto pelo servidor de producao e os trechos de cada um contem o texto ficticio esperado.
 teste_funcional: O PDF escaneado chega a erro com a mensagem de OCR e um DOCX com cabecalho de tamanho mentiroso e recusado no envio, tudo pelo servidor de producao.
-criterio_aceite: npm run build termina com 0 e tests/fontes-rota-formatos.test.ts passa.
+criterio_aceite: npm run build termina com 0, tests/fontes-rota-formatos.test.ts passa e o servidor de producao, ao subir com uma fonte pendente no banco de teste, a leva a pronto sem nenhuma requisicao.
 depende_de: ["T-05.03"]
 paralelizavel: false
 status: pendente
