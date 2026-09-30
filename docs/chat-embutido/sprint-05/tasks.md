@@ -41,7 +41,7 @@ tasks:
   - id: T-05.03
     titulo: "Rota /widget.js"
     fase: F-05.2
-    status: pendente
+    status: concluida
     objetivo: "Servir src/widget/widget.js por rota estatica com os cabecalhos do PR-60."
     arquivos:
       cria: ["src/app/widget.js/route.ts", "tests/widget-rota.test.ts"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/widget-rota.test.ts passa."
     depende_de: ["T-05.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
 ---
 
 # Tasks — Sprint 05
@@ -107,5 +107,5 @@ teste_funcional: "Os cabecalhos sao Content-Type application/javascript, Cache-C
 criterio_aceite: "tests/widget-rota.test.ts passa."
 depende_de: ["T-05.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: verde — 1390 passed
 ```

@@ -7,7 +7,7 @@ origem_buildx: plataforma-chatbot-ia
 feature_id: FT-06
 sprint_id: sprint-05
 titulo: "Script widget.js"
-status: nao_iniciado
+status: concluido
 criterio_saida: "Os testes do script com happy-dom e o teste de producao da rota passam e a suite inteira esta verde."
 fases: ["F-05.1", "F-05.2"]
 riscos: ["happy-dom pode divergir de navegador real: a verificacao ponta a ponta da sprint 07 cobre", "script e servido com cache de 300 s"]

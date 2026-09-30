@@ -10,14 +10,14 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-05.1
     titulo: "Script"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Montagem e interacao do widget."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-05.01", "T-05.02"]
   - id: F-05.2
     titulo: "Rota do script"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "/widget.js em producao."
     paralelizavel: false
     paralela_com: []
@@ -49,7 +49,7 @@ flowchart LR
 
   class T_05_01 concluida
   class T_05_02 concluida
-  class T_05_03 pendente
+  class T_05_03 concluida
   class T_05_01,T_05_02,T_05_03 critico
 ```
 
