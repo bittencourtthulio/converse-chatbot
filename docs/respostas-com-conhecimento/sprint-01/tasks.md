@@ -11,7 +11,7 @@ tasks:
   - id: T-01.01
     titulo: "Migration do indice FTS5 e gatilhos"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Criar a tabela virtual trechos_fts de conteudo externo com tres gatilhos e rebuild inicial, por SQL cru numa migration nova."
     arquivos:
       cria: ["prisma/migrations/20260930190000_busca_fts5/migration.sql", "tests/indice-fts5.test.ts"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/indice-fts5.test.ts passa, tests/migracoes.test.ts passa com a migration nova e migrate status nao acusa pendencia."
     depende_de: []
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-01.02
     titulo: "Cascata e reprocessamento mantem o indice"
     fase: F-01.2
@@ -73,7 +73,9 @@ teste_funcional: Insert, update do texto e delete de trecho refletem no MATCH (t
 criterio_aceite: tests/indice-fts5.test.ts passa, tests/migracoes.test.ts passa com a migration nova e migrate status nao acusa pendencia.
 depende_de: []
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial: tests/indice-fts5 e migracoes 17 passed
 ```
 
 ---
