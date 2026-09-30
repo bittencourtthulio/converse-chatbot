@@ -4,12 +4,12 @@ expx_tool: buildx
 kind: premissas
 projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-09-30
-total: 54
+total: 62
 por_origem:
   catalogo_lacunas: 27
   briefing: 0
   decisao_de_stack: 7
-  f2_autonoma: 20
+  f2_autonoma: 28
   recursao: 0
 ---
 
@@ -725,6 +725,110 @@ entram no relatório final como o que o usuário precisa confirmar.
 **Etapa:** b4
 **Provisória:** false
 **Realizada em:** FT-05
+
+---
+
+### PR-55 — Configuração do chat por agente
+
+**Assunto:** F2 da FT-06 — PR-08 e PR-18 (aviso de privacidade), contrato de dados
+**Decisão:** uma tabela 1:1 `configuracao_do_chat` (chave `agenteId`, exclusão em cascata com o agente), criada por migration que só acrescenta; a linha ausente vale os padrões e é criada no primeiro salvamento. Campos e validação no serviço (zod): `ativo` (padrão `false`), `titulo` (até 60; vazio = nome do agente), `cor` (`#rrggbb` em minúsculas; `#rgb` é expandida; padrão o índigo do sistema), `posicao` (`direita` ou `esquerda`, padrão `direita`), `avatar` (`iniciais`, `chat`, `robo`, `estrela` ou `fone`; sem upload), `avisoDePrivacidade` (texto até 300) e `avisoDePrivacidadeUrl` (vazio ou URL `http`/`https` de até 500), `dominiosPermitidos` (lista JSON de hosts normalizados, até 20), `limiteDiario` (inteiro de 1 a 100000, padrão 500), `sugestoes` (lista JSON de até 3 perguntas de 1 a 80 caracteres, sem repetição). Qualquer usuário autenticado edita (PR-12). A mensagem inicial continua sendo a do agente.
+**Por quê:** uma tabela própria mantém `Agente` enxuto, deixa a consulta pública ler uma linha só e a migration é só `CREATE TABLE`; o padrão `ativo=false` garante que nada vai ao público sem o usuário publicar.
+**O que invalida:** se o modelo de dados passar a ter um chat por canal e por agente (várias configurações por agente), ou se o usuário quiser avatar por upload.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-06
+
+---
+
+### PR-56 — API pública do chat: contrato
+
+**Assunto:** F2 da FT-06 — PR-08, PR-16, PR-22, PR-43 e PR-53 no canal público
+**Decisão:** `GET /api/publico/agentes/[id]/config` devolve só `{ativo, titulo, cor, posicao, avatar, mensagemInicial, avisoDePrivacidade: {texto, url}|null, sugestoes}`, nunca instruções, modelo, chave, limite nem domínios; agente inexistente e inativo dão o mesmo 404. `POST .../conversar` recebe `{visitanteId, conversaId?, mensagem}` sem sessão, valida `visitanteId` (16 a 64 caracteres `[A-Za-z0-9_-]`) e mensagem (1 a 1000 caracteres, sem ser só espaços), chama `responderMensagem` com canal `widget` e `identificadorExterno` igual ao `visitanteId`, e responde como o painel (PR-43): JSON com status antes da primeira gravação (404 agente ou conversa inexistente, inativo ou de outro visitante; 422 entrada inválida; 429 limite) e depois `text/event-stream` com `X-Conversa-Id`, `Cache-Control: no-store` e os eventos `trecho`, `fontes`, `fim` e `erro`. O `erro` do stream e todo erro 5xx levam sempre a frase de `mensagemParaVisitante`, com código genérico `indisponivel`; nada de pilha, código do provedor ou correlação. O evento `fontes` público leva só o título de cada fonte, se foi citada e os números `[n]`, no mesmo formato do painel (`fonteId` é um ordinal `f1`, `f2`, e `trechoTexto` vai vazio): o texto interno da base e os ids reais não saem. `GET .../conversa` (cabeçalho `X-Visitante-Id`) devolve a conversa mais recente do visitante com as últimas 50 mensagens e o indicador `truncada`, ou `{conversa: null}`; sem paginação além disso. O POST recusa (403) requisição de navegador cuja `Origin` não seja a da própria plataforma (`Host` da requisição ou `APP_URL`), porque a chamada legítima parte do iframe, da plataforma.
+**Por quê:** a FT-05 já entrega o turno fundamentado por `agenteId`, então o canal público é tradução HTTP; título da fonte ajuda o visitante e o trecho interno é conteúdo da empresa que não precisa sair; ler só as últimas 50 mensagens limita custo e exposição; a retomada por cabeçalho evita o id do visitante em URL e log de acesso.
+**O que invalida:** se a empresa quiser expor o trecho da fonte ao visitante, se um canal precisar de protocolo diferente, ou se a retomada precisar de paginação.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-06
+
+---
+
+### PR-57 — Limites de uso do chat público e teto diário
+
+**Assunto:** F2 da FT-06 — PR-16, números que a premissa não dá
+**Decisão:** por IP e agente 10 mensagens por minuto, por IP 30 por minuto (janela deslizante de `criarLimitador`, chaves `chat:ip-agente:<ip>:<agente>` e `chat:ip:<ip>`), por conversa 60 mensagens do visitante, e teto diário por agente contado no banco: mensagens `user` de conversas do canal `widget` do agente criadas desde as 00:00 do fuso do servidor, comparadas com `limiteDiario` (padrão 500). A conferência roda antes de chamar o provedor e depois de validar a entrada e a posse da conversa. Excedeu: 429 com `{codigo, mensagem}` amigável (`limite_excedido`, `limite_diario`, `conversa_cheia`) e `Retry-After` em segundos (segundos até a janela liberar, ou até a próxima meia-noite local no teto diário; a conversa cheia não tem `Retry-After`, pois esperar não resolve: o visitante abre outra conversa). O IP vem de `ipDoCliente` (PR-36): sem `TRUST_PROXY=1` todos os visitantes dividem o IP `desconhecido` e o limite vale para o site inteiro, o que a tela Publicar avisa. O teto conta tentativas, inclusive as que falharam no provedor, porque a pergunta é gravada antes (PR-41); duas requisições simultâneas podem ultrapassar o teto por uma mensagem.
+**Por quê:** a mensagem do visitante custa IA paga pela empresa (PR-16); contar no banco sobrevive a reinício e vale em vários processos, e o limite por IP em memória segura rajada; o erro de gravação antes do provedor é o comportamento já provado da FT-03.
+**O que invalida:** se a instalação rodar em mais de um processo (o limite por minuto deixa de ser global, PR-05), se uma mesma rede legítima passar de 10 mensagens por minuto atrás de um IP só, ou se o teto precisar contar só respostas bem-sucedidas.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-06
+
+---
+
+### PR-58 — Domínios permitidos: sintaxe, CORS e frame-ancestors
+
+**Assunto:** F2 da FT-06 — PR-17, o que a origem de fato garante
+**Decisão:** cada entrada de `dominiosPermitidos` é um host em minúsculas, sem esquema nem caminho: `exemplo.com`, `*.exemplo.com` (qualquer subdomínio, não o domínio puro) ou `localhost:3000`; o esquema e as barras digitados são removidos, o curinga só vale no início, e a entrada sem porta vale só para a porta padrão do esquema. Lista vazia libera qualquer domínio. A mesma lista vira o `frame-ancestors` da página do iframe (PR-59) e decide o CORS do `GET config`: com lista vazia `Access-Control-Allow-Origin: *`; com lista, o `Origin` da requisição é ecoado só se casa com a lista, e senão o cabeçalho não sai; em todos os casos `Vary: Origin`. O `OPTIONS` responde 204 com os métodos e cabeçalhos permitidos pelas mesmas regras. Como a chamada de chat parte do iframe, cuja origem é a própria plataforma, a restrição de domínio é garantida por `frame-ancestors` (que o navegador aplica ao emoldurar) e pelo CORS do `config`, e não por conferir o `Origin` do POST, que serve só para barrar chamada de navegador vinda de outro site (PR-56). Um cliente que não é navegador pode forjar qualquer cabeçalho: a lista de domínios não é controle contra ele, e o limite de uso (PR-57) é.
+**Por quê:** o PR-17 pedia que a API pública conferisse `Origin`, mas a origem real da chamada é sempre a plataforma; dizer isso e testar o que dá evita falsa sensação de segurança.
+**O que invalida:** se o widget passar a falar com a API direto do site do cliente (sem iframe), o que exigiria CORS e conferência de `Origin` no POST, ou se a empresa precisar de barrar também clientes que não são navegador.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-06
+
+---
+
+### PR-59 — Cabeçalhos da rota do iframe: proxy.ts
+
+**Assunto:** F2 da FT-06 — PR-17 e PR-37, primeiro CSP dinâmico
+**Decisão:** `src/proxy.ts` (Next 16, runtime Node) roda só em `/embed/:path*`, lê do serviço a lista do agente e define `Content-Security-Policy: frame-ancestors 'self' <domínios>` (lista vazia: `frame-ancestors *`; agente inexistente ou inativo: `frame-ancestors 'self'`, igual nos dois casos). O `X-Frame-Options: DENY` global sai de `/embed` (regra do `next.config.ts` com exclusão por expressão regular) e continua em todo o resto. A página do iframe também leva `X-Content-Type-Options: nosniff` e o `Referrer-Policy` globais. O `frame-ancestors 'self'` mantém a pré-visualização da aba Publicar (mesma origem). Só `frame-ancestors` é definido: a política de conteúdo completa segue fora do escopo (PR-37).
+**Por quê:** a `Content-Security-Policy` precisa ser dinâmica por agente e a página do App Router não define cabeçalho de resposta; o `proxy.ts` é o ponto previsto pelo Next 16 para isso, e um route handler que devolvesse HTML tiraria a hidratação do chat.
+**O que invalida:** se o Prisma deixar de funcionar dentro do `proxy.ts` (então o cabeçalho passa a vir de outro ponto), se a hospedagem for edge puro, ou se a empresa exigir uma CSP completa.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-06
+
+---
+
+### PR-60 — Script widget.js e seu protocolo
+
+**Assunto:** F2 da FT-06 — PR-08, forma do script
+**Decisão:** `/widget.js` é uma rota estática que serve o arquivo legível e versionado `src/widget/widget.js` (JavaScript puro, ES2017, IIFE, sem dependência) com `Content-Type: application/javascript; charset=utf-8`, `Cache-Control: public, max-age=300`, `Access-Control-Allow-Origin: *` e `Cross-Origin-Resource-Policy: cross-origin`. O script acha o próprio `<script data-agent>`, toma a origem da plataforma de `new URL(script.src).origin`, busca o `config` (404, falha de rede ou CORS: não mostra nada e não escreve no console do site), monta botão e painel em Shadow DOM, carrega o iframe só ao abrir, fecha por clique e `Esc`, ocupa a tela toda abaixo de 480px, devolve o foco ao botão ao fechar, respeita `prefers-reduced-motion`, não deixa global além de `window.Converse` (`abrir`, `fechar`) e é idempotente. `data-position` e `data-color` (`#rrggbb`) sobrescrevem a configuração. O iframe fala com o pai por `postMessage` no formato `{origem: 'converse', tipo: 'fechar' | 'redimensionar', ...}`; o script aceita a mensagem só se `event.origin` é a origem da plataforma e `event.source` é o iframe dele. O script roda em site de terceiro e não lê os tokens do sistema: as poucas cores neutras dele (fundo do painel, texto do botão por luminância) são literais dentro do próprio arquivo, exceção declarada em `CONVENCOES.md` e fora da varredura de `tests/tokens.test.ts`, que cobre `.ts`, `.tsx` e `.css`.
+**Por quê:** o iframe isola o estilo e o código do site (PR-08); origem vinda do próprio `src` dispensa configuração; `postMessage` sem conferir a origem deixaria qualquer janela fechar o painel.
+**O que invalida:** se o site hospedeiro tiver CSP que bloqueie o iframe ou o script, se o script precisar de dependência, ou se a empresa quiser o painel sem iframe.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-06
+
+---
+
+### PR-61 — Página do iframe: visitante, retomada, prévia e cor
+
+**Assunto:** F2 da FT-06 — PR-08 e PR-18 (aviso), comportamento da tela do visitante
+**Decisão:** `/embed/[id]` mora fora do grupo `(sistema)`: sem barra lateral, sem login. O `visitanteId` é gerado com `crypto.getRandomValues` (32 caracteres hexadecimais) e guardado em `localStorage` sob a chave `converse:visitante`, com try/catch em toda leitura e escrita; sem armazenamento usa um id efêmero em memória. A conversa é retomada pelo servidor (`GET conversa`, PR-56), com o `conversaId` também guardado em `localStorage`; sem armazenamento, a conversa não é retomada. O aviso de privacidade aparece como linha no rodapé do campo e a mensagem inicial é a do agente. A cor do agente é o destaque (bolha do visitante, botão enviar, anel do avatar) por variável de CSS, e o texto sobre ela é o de maior contraste entre o claro e o escuro dos tokens, por luminância relativa (WCAG), o que dá pelo menos 4,5:1. A pré-visualização da aba Publicar usa `/embed/[id]?previa=1`: só vale com sessão válida, funciona mesmo com o chat inativo e fala com o endpoint do painel (`/api/agentes/[id]/conversar`, canal `painel`), para não gastar o limite público nem poluir as conversas do canal `widget`; as mudanças ainda não salvas chegam ao iframe por `postMessage` da mesma origem. Agente inexistente ou inativo (fora da prévia): mensagem neutra, sem dados. O tema vem da preferência do sistema do visitante.
+**Por quê:** guardar o id no navegador do visitante é o que permite retomar sem login; a prévia pelo painel mostra o que o visitante veria sem consumir o teto do agente; a cor é dado do usuário e o texto por luminância garante leitura em qualquer escolha.
+**O que invalida:** se a empresa exigir retomada entre dispositivos (exige identidade), se um navegador do visitante bloquear `localStorage` de terceiro em todos os casos (a conversa deixa de ser retomada, sem quebrar), ou se a prévia precisar refletir exatamente o canal público.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-06
+
+---
+
+### PR-62 — Código para incorporar e URL pública
+
+**Assunto:** F2 da FT-06 — PR-08 e PR-24, origem do snippet
+**Decisão:** a aba Publicar mostra `<script src="<origem>/widget.js" data-agent="<id>" async></script>`, onde `<origem>` é `APP_URL` quando definida e senão a origem da requisição (`Host` e protocolo). `APP_URL` passa a ter uma leitura que distingue ausente de padrão (`ambiente.appUrlPublica`), sem mudar o uso atual no `HTTP-Referer` do OpenRouter (PR-38). A tela avisa: colar antes de `</body>`, usar HTTPS em produção, que o IP dos visitantes só é distinguido com `TRUST_PROXY=1` atrás de um proxy (PR-36, PR-57), que agente sem fonte pronta responde só com as instruções (PR-52) e que sem a chave do OpenRouter o visitante vê a mensagem genérica (PR-22).
+**Por quê:** sem URL pública o usuário copiaria um endereço que só funciona no computador dele; o aviso do IP evita o tropeço de todos os visitantes dividirem 10 mensagens por minuto.
+**O que invalida:** se a instalação ficar atrás de um domínio que a requisição não enxerga (proxy que troca o `Host`), caso em que `APP_URL` é obrigatória na prática.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-06
 
 ---
 
