@@ -26,7 +26,7 @@ tasks:
   - id: T-05.02
     titulo: "Handler: upload multipart"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "POST multipart com varios arquivos, resposta por arquivo e recusa cedo de corpo grande."
     arquivos:
       cria: ["tests/fontes-rota-upload.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/fontes-rota-upload.test.ts passa."
     depende_de: ["T-05.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-05.03
     titulo: "Handlers: excluir e reprocessar"
     fase: F-05.1
@@ -107,7 +107,9 @@ teste_funcional: Content-Length acima do teto responde 413 sem ler o corpo, Cont
 criterio_aceite: tests/fontes-rota-upload.test.ts passa.
 depende_de: ["T-05.01"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 817 passed 817, 0 failed
 ```
 
 ---
