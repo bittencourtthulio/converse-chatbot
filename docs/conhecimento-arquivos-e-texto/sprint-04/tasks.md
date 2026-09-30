@@ -41,7 +41,7 @@ tasks:
   - id: T-04.03
     titulo: "Servico: texto, listar, obter, resumo e trechos"
     fase: F-04.2
-    status: pendente
+    status: concluida
     objetivo: "Criar o servico fontes com texto colado, consulta e resumo."
     arquivos:
       cria: ["src/servicos/fontes.ts", "tests/fontes.test.ts"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/fontes.test.ts passa e a visao devolvida nao tem o campo caminhoArquivo."
     depende_de: ["T-04.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-04.04
     titulo: "Servico: adicionarArquivos"
     fase: F-04.2
@@ -156,7 +156,9 @@ teste_funcional: adicionarTexto recusa titulo vazio, titulo com 121 caracteres, 
 criterio_aceite: tests/fontes.test.ts passa e a visao devolvida nao tem o campo caminhoArquivo.
 depende_de: ["T-04.02"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 783 passed 783, 0 failed
 ```
 
 ---
