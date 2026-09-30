@@ -56,18 +56,18 @@ tasks:
   - id: T-01.04
     titulo: "Leitura de APP_URL publica"
     fase: F-01.2
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar ambiente.appUrlPublica (opcional, sem padrao) e documentar no .env.example."
     arquivos:
       cria: []
-      altera: ["src/lib/ambiente.ts", ".env.example", "tests/ambiente.test.ts"]
+      altera: ["src/lib/ambiente.ts", ".env.example", "tests/ambiente.test.ts", "tests/projeto.test.ts"]
     teste_integracao: "tests/projeto.test.ts confere que o .env.example documenta APP_URL e o teste de ambiente le a variavel do processo."
     teste_funcional: "Com APP_URL='https://x.com/' appUrlPublica devolve 'https://x.com' e sem a variavel devolve undefined, enquanto appUrl segue com o padrao localhost."
     criterio_aceite: "tests/ambiente.test.ts e tests/projeto.test.ts passam."
     depende_de: ["T-01.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-01.05
     titulo: "happy-dom e apoio de teste de DOM"
     fase: F-01.2
@@ -148,13 +148,13 @@ titulo: "Leitura de APP_URL publica"
 objetivo: "Acrescentar ambiente.appUrlPublica (opcional, sem padrao) e documentar no .env.example."
 arquivos:
   cria: []
-  altera: ["src/lib/ambiente.ts", ".env.example", "tests/ambiente.test.ts"]
+  altera: ["src/lib/ambiente.ts", ".env.example", "tests/ambiente.test.ts", "tests/projeto.test.ts"]
 teste_integracao: "tests/projeto.test.ts confere que o .env.example documenta APP_URL e o teste de ambiente le a variavel do processo."
 teste_funcional: "Com APP_URL='https://x.com/' appUrlPublica devolve 'https://x.com' e sem a variavel devolve undefined, enquanto appUrl segue com o padrao localhost."
 criterio_aceite: "tests/ambiente.test.ts e tests/projeto.test.ts passam."
 depende_de: ["T-01.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: verde — 1145 passed
 ```
 
 ---

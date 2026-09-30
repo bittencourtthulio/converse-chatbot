@@ -46,6 +46,8 @@ describe('exemplo de ambiente', () => {
   it('documenta o endereço do OpenRouter e a URL pública, sem valor secreto', () => {
     expect(exemplo).toContain('OPENROUTER_BASE_URL')
     expect(exemplo).toContain('APP_URL')
+    // Copiar o exemplo sem editar não pode fixar a URL pública em localhost (FT-06, PR-62).
+    expect(exemplo).toMatch(/^APP_URL=""/m)
     expect(exemplo).not.toMatch(/sk-or-/)
   })
 

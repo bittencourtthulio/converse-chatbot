@@ -94,6 +94,24 @@ describe('OpenRouter', () => {
     process.env.APP_URL = 'https://converse.exemplo.com.br/'
     expect(ambiente.appUrl).toBe('https://converse.exemplo.com.br')
   })
+
+  it('appUrlPublica distingue ausente de padrão (FT-06, PR-62)', () => {
+    delete process.env.APP_URL
+    expect(ambiente.appUrlPublica).toBeUndefined()
+    expect(ambiente.appUrl).toBe('http://localhost:3000')
+    process.env.APP_URL = '  '
+    expect(ambiente.appUrlPublica).toBeUndefined()
+    process.env.APP_URL = 'https://x.com/'
+    expect(ambiente.appUrlPublica).toBe('https://x.com')
+    expect(ambiente.appUrl).toBe('https://x.com')
+  })
+
+  it('appUrlPublica recusa valor que não é URL http(s), com erro claro', () => {
+    process.env.APP_URL = 'converse.exemplo.com'
+    expect(() => ambiente.appUrlPublica).toThrow(/APP_URL/)
+    process.env.APP_URL = 'ftp://x.com'
+    expect(() => ambiente.appUrlPublica).toThrow(/APP_URL/)
+  })
 })
 
 describe('limite de tokens da resposta', () => {

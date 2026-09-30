@@ -58,6 +58,25 @@ export const ambiente = {
     const url = process.env.APP_URL?.trim()
     return (url ? url : 'http://localhost:3000').replace(/\/+$/, '')
   },
+  /**
+   * URL pública configurada, sem padrão (FT-06, PR-62): é a origem do snippet da
+   * aba Publicar. Ausente, a tela usa a origem da requisição. Valor que não é
+   * URL http(s) é erro de configuração, dito com clareza.
+   */
+  get appUrlPublica(): string | undefined {
+    const bruto = process.env.APP_URL?.trim()
+    if (!bruto) return undefined
+    let url: URL
+    try {
+      url = new URL(bruto)
+    } catch {
+      throw new Error('Variável APP_URL precisa ser uma URL http ou https, como https://converse.exemplo.com.br.')
+    }
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+      throw new Error('Variável APP_URL precisa ser uma URL http ou https, como https://converse.exemplo.com.br.')
+    }
+    return bruto.replace(/\/+$/, '')
+  },
   /** Teto de tokens da resposta do modelo em cada turno de conversa (PR-41). */
   get maxTokensDaResposta(): number {
     return inteiroComPadrao('MAX_TOKENS_RESPOSTA', 1024)
