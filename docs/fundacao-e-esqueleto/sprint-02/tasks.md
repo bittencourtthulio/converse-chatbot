@@ -85,7 +85,7 @@ tasks:
   - id: T-02.05
     titulo: "Cabecalhos de seguranca"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Enviar nosniff, Referrer-Policy, X-Frame-Options DENY e Permissions-Policy em toda resposta."
     arquivos:
       cria: []
@@ -95,8 +95,8 @@ tasks:
     criterio_aceite: "O teste de cabecalhos passa apos npm run build."
     depende_de: [T-02.02]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
 ---
 
 # Plano — Sprint 02 — Servicos e seguranca: nome do produto, limite de uso, login limitado e cabecalhos
@@ -153,7 +153,7 @@ flowchart LR
   class T_02_02 concluida
   class T_02_03 concluida
   class T_02_04 concluida
-  class T_02_05 pendente
+  class T_02_05 concluida
 ```
 
 ## Tasks
@@ -252,6 +252,9 @@ teste_funcional: A resposta de /entrar e a de uma rota autenticada trazem X-Cont
 criterio_aceite: O teste de cabecalhos passa apos npm run build.
 depende_de: [T-02.02]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: rotas 16 passed
 ```
 

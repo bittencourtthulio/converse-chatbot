@@ -144,6 +144,36 @@ describe('com sessão de admin', () => {
   })
 })
 
+describe('cabeçalhos de segurança', () => {
+  const esperados = {
+    'x-content-type-options': 'nosniff',
+    'referrer-policy': 'strict-origin-when-cross-origin',
+    'x-frame-options': 'DENY',
+  }
+
+  function conferir(r: Response) {
+    for (const [nome, valor] of Object.entries(esperados)) {
+      expect(r.headers.get(nome), nome).toBe(valor)
+    }
+    const permissoes = r.headers.get('permissions-policy') ?? ''
+    for (const recurso of ['camera', 'microphone', 'geolocation']) {
+      expect(permissoes).toContain(`${recurso}=()`)
+    }
+  }
+
+  it('a tela de login envia os cabeçalhos', async () => {
+    conferir(await pedir('/entrar'))
+  })
+
+  it('uma tela autenticada envia os cabeçalhos', async () => {
+    conferir(await pedir('/', await cookieDe('comum.rota@teste.local')))
+  })
+
+  it('o redirecionamento para o login também envia os cabeçalhos', async () => {
+    conferir(await pedir('/perfil'))
+  })
+})
+
 describe('cookie de sessão', () => {
   it('token adulterado não abre o painel', async () => {
     const bom = await cookieDe('admin.rota@teste.local')
