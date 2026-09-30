@@ -74,7 +74,7 @@ tasks:
     objetivo: "Registrar a feature no mapa, nas premissas e na recursao do projeto e manter o gitignore do rastro."
     arquivos:
       cria: []
-      altera: [".gitignore", "docs/projeto/MAPA.md", "docs/projeto/PREMISSAS.md", "docs/projeto/RECURSAO.md"]
+      altera: [".gitignore", "docs/projeto/MAPA.md", "docs/projeto/PREMISSAS.md", "docs/projeto/RECURSAO.md", "docs/projeto/PROJETO.md"]
     teste_integracao: "Os arquivos de estado do projeto abrem com frontmatter valido e os contadores do MAPA.md batem com a tabela do painel."
     teste_funcional: "O MAPA.md mostra FT-01 entregue com sprints, testes e PR local; PREMISSAS.md traz PR-35 a PR-37 com total 37."
     criterio_aceite: "grep de FT-01 no painel do MAPA.md devolve entregue e o total de premissas do frontmatter e 37."
@@ -207,7 +207,7 @@ titulo: Fechamento no laço do buildx
 objetivo: Registrar a feature no mapa, nas premissas e na recursão do projeto e manter o gitignore do rastro.
 arquivos:
   cria: []
-  altera: [.gitignore, docs/projeto/MAPA.md, docs/projeto/PREMISSAS.md, docs/projeto/RECURSAO.md]
+  altera: [.gitignore, docs/projeto/MAPA.md, docs/projeto/PREMISSAS.md, docs/projeto/RECURSAO.md, docs/projeto/PROJETO.md]
 teste_integracao: Os arquivos de estado do projeto abrem com frontmatter válido e os contadores do MAPA.md batem com a tabela do painel.
 teste_funcional: O MAPA.md mostra FT-01 entregue com sprints, testes e PR local; PREMISSAS.md traz PR-35 a PR-37 com total 37.
 criterio_aceite: grep de FT-01 no painel do MAPA.md devolve entregue e o total de premissas do frontmatter é 37.
