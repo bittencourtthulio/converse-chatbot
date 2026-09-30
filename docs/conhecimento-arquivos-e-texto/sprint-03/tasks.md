@@ -86,7 +86,7 @@ tasks:
   - id: T-03.06
     titulo: "Adaptador de HTML"
     fase: F-03.2
-    status: pendente
+    status: concluida
     objetivo: "Extrair texto de HTML com parse5 sem executar nada, descartando script, style, nav e noscript."
     arquivos:
       cria: ["src/lib/extracao/html.ts", "tests/extracao-html.test.ts"]
@@ -96,8 +96,8 @@ tasks:
     criterio_aceite: "tests/extracao-html.test.ts passa."
     depende_de: ["T-01.02", "T-03.02"]
     paralelizavel: true
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-03.07
     titulo: "Adaptador de PDF"
     fase: F-03.2
@@ -258,7 +258,9 @@ teste_funcional: Um HTML com script, style, nav, noscript e comentario devolve s
 criterio_aceite: tests/extracao-html.test.ts passa.
 depende_de: ["T-01.02", "T-03.02"]
 paralelizavel: true
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 729 passed, 0 failed
 ```
 
 ---
