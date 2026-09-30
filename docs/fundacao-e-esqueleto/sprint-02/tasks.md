@@ -70,7 +70,7 @@ tasks:
   - id: T-02.04
     titulo: "Login com limite de tentativas"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Bloquear tentativas em excesso por IP mais e-mail e por IP, com erro 429 e mensagem amigavel."
     arquivos:
       cria: ["tests/limite-de-login.test.ts"]
@@ -80,8 +80,8 @@ tasks:
     criterio_aceite: "O teste passa e os 13 testes de autenticacao continuam verdes."
     depende_de: [T-02.01, T-02.03]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-02.05
     titulo: "Cabecalhos de seguranca"
     fase: F-02.1
@@ -152,7 +152,7 @@ flowchart LR
   class T_02_01 concluida
   class T_02_02 concluida
   class T_02_03 concluida
-  class T_02_04 pendente
+  class T_02_04 concluida
   class T_02_05 pendente
 ```
 
@@ -232,7 +232,10 @@ teste_funcional: A sexta chamada em um minuto com o mesmo IP e e-mail lanca Erro
 criterio_aceite: O teste passa e os 13 testes de autenticacao continuam verdes.
 depende_de: [T-02.01, T-02.03]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: limite-de-login 7 + autenticacao 13 passed
 ```
 
 ---

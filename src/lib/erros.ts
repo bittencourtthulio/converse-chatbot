@@ -26,3 +26,13 @@ export const entradaInvalida = (msg: string) =>
 
 export const conflito = (msg: string) =>
   new ErroDeAplicacao(msg, 409, 'conflito')
+
+/** Limite de uso excedido (429). `reiniciaEmMs` vem de `verificarLimite`. */
+export const limiteExcedido = (acao: string, reiniciaEmMs: number) => {
+  const segundos = Math.max(1, Math.ceil(reiniciaEmMs / 1000))
+  return new ErroDeAplicacao(
+    `Muitas tentativas de ${acao}. Tente de novo em ${segundos} segundos.`,
+    429,
+    'limite_excedido',
+  )
+}

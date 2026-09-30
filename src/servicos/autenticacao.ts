@@ -2,7 +2,13 @@ import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
 import { senhaConfere } from '@/lib/senha'
 import { assinarSessao, lerSessao, type Sessao } from '@/lib/sessao'
-import { entradaInvalida, naoAutenticado, naoAutorizado } from '@/lib/erros'
+import {
+  entradaInvalida,
+  limiteExcedido,
+  naoAutenticado,
+  naoAutorizado,
+} from '@/lib/erros'
+import { limitadorPadrao, type Limitador } from '@/lib/limite-de-uso'
 
 // O trim e o lowercase acontecem ANTES da validação: um e-mail digitado
 // com espaço à frente ou em caixa alta é o mesmo e-mail, e recusá-lo seria
@@ -17,6 +23,29 @@ export const entradaDeLogin = z.object({
   email: emailNormalizado,
   senha: z.string().min(1, 'Informe a senha.'),
 })
+
+/** PR-36: toda tentativa conta, certa ou errada. */
+export const LIMITE_DE_LOGIN_POR_IP_E_EMAIL = { max: 5, janelaMs: 60_000 }
+export const LIMITE_DE_LOGIN_POR_IP = { max: 20, janelaMs: 60_000 }
+
+/**
+ * Barra o excesso de tentativas de login: 5 por minuto por IP e e-mail, e 20
+ * por minuto por IP (PR-16, PR-36). Lança 429 com mensagem para a tela. É
+ * chamada antes de `entrar` pela ação de login; `entrar` em si não conhece IP.
+ */
+export function exigirLimiteDeLogin(
+  quem: { ip: string; email: unknown },
+  limitador: Pick<Limitador, 'verificarLimite'> = limitadorPadrao,
+): void {
+  const email = typeof quem.email === 'string' ? quem.email.trim().toLowerCase() : ''
+  const porIp = limitador.verificarLimite(`login:ip:${quem.ip}`, LIMITE_DE_LOGIN_POR_IP)
+  if (!porIp.permitido) throw limiteExcedido('entrada', porIp.reiniciaEmMs)
+  const porIpEEmail = limitador.verificarLimite(
+    `login:ip-email:${quem.ip}:${email}`,
+    LIMITE_DE_LOGIN_POR_IP_E_EMAIL,
+  )
+  if (!porIpEEmail.permitido) throw limiteExcedido('entrada', porIpEEmail.reiniciaEmMs)
+}
 
 export interface UsuarioAutenticado {
   id: string

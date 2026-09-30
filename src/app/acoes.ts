@@ -2,7 +2,8 @@
 
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
-import { entrar } from '@/servicos/autenticacao'
+import { entrar, exigirLimiteDeLogin } from '@/servicos/autenticacao'
+import { ipDoCliente } from '@/lib/requisicao'
 import { criar, editar, desativar } from '@/servicos/usuarios'
 import { atualizarPerfil, trocarSenha } from '@/servicos/perfil'
 import { ErroDeAplicacao } from '@/lib/erros'
@@ -34,6 +35,7 @@ export async function autenticar(
   form: FormData,
 ): Promise<EstadoDoFormulario> {
   try {
+    exigirLimiteDeLogin({ ip: await ipDoCliente(), email: form.get('email') })
     const { token } = await entrar({
       email: form.get('email'),
       senha: form.get('senha'),
