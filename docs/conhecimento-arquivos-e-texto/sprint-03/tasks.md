@@ -116,7 +116,7 @@ tasks:
   - id: T-03.08
     titulo: "Adaptador de DOCX"
     fase: F-03.2
-    status: pendente
+    status: concluida
     objetivo: "Extrair texto bruto de DOCX com mammoth depois da conferencia do ZIP."
     arquivos:
       cria: ["src/lib/extracao/docx.ts", "tests/extracao-docx.test.ts"]
@@ -126,8 +126,8 @@ tasks:
     criterio_aceite: "tests/extracao-docx.test.ts passa."
     depende_de: ["T-03.03"]
     paralelizavel: true
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-03.09
     titulo: "Fachada extrairTexto"
     fase: F-03.3
@@ -296,7 +296,9 @@ teste_funcional: Um DOCX sem texto e um arquivo que nao e ZIP lancam ErroDeAplic
 criterio_aceite: tests/extracao-docx.test.ts passa.
 depende_de: ["T-03.03"]
 paralelizavel: true
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 740 passed, 0 failed
 ```
 
 ---
