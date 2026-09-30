@@ -55,7 +55,7 @@ tasks:
   - id: T-02.03
     titulo: "IP do cliente a partir dos cabecalhos"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Extrair o IP do cliente respeitando TRUST_PROXY."
     arquivos:
       cria: ["src/lib/requisicao.ts", "tests/requisicao.test.ts"]
@@ -65,8 +65,8 @@ tasks:
     criterio_aceite: "O teste passa e ipDoCliente le headers() de next/headers apenas no invólucro."
     depende_de: [T-02.02]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-02.04
     titulo: "Login com limite de tentativas"
     fase: F-02.1
@@ -151,7 +151,7 @@ flowchart LR
   classDef critico stroke-width:3px
   class T_02_01 concluida
   class T_02_02 concluida
-  class T_02_03 pendente
+  class T_02_03 concluida
   class T_02_04 pendente
   class T_02_05 pendente
 ```
@@ -212,7 +212,10 @@ teste_funcional: Com confiarNoProxy verdadeiro e X-Forwarded-For 203.0.113.9, 10
 criterio_aceite: O teste passa e ipDoCliente le headers() de next/headers apenas no invólucro.
 depende_de: [T-02.02]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: requisicao.test 5 passed
 ```
 
 ---
