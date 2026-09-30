@@ -56,7 +56,7 @@ tasks:
   - id: T-02.04
     titulo: "Seed coberta pelo indice"
     fase: F-02.2
-    status: pendente
+    status: concluida
     objetivo: "Provar que a fonte de exemplo semeada e recuperavel por pergunta real."
     arquivos:
       cria: ["docs/respostas-com-conhecimento/sprint-02/sprint.md", "docs/respostas-com-conhecimento/sprint-02/fases.md", "docs/respostas-com-conhecimento/sprint-02/tasks.md"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "tests/seed.test.ts passa com os dois casos novos."
     depende_de: ["T-02.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
 ---
 
 # Tasks — Sprint 02
@@ -145,6 +145,8 @@ teste_funcional: Rodar a seed duas vezes nao duplica o indice nem a fonte, e 'ho
 criterio_aceite: tests/seed.test.ts passa com os dois casos novos.
 depende_de: ["T-02.02"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: verde: 955 passed, 0 failed (fecha a sprint 02; seed sem mudança de código)
 ```
 

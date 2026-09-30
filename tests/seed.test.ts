@@ -145,3 +145,26 @@ describe('fonte de exemplo da base (PR-25, FT-04)', () => {
     expect(await prisma.fonte.count()).toBe(0)
   })
 })
+
+describe('fonte de exemplo coberta pelo índice de busca (FT-05, PR-50)', () => {
+  beforeEach(limparBanco)
+
+  it('uma pergunta sobre a política de troca recupera o trecho da fonte de exemplo', async () => {
+    expect(semear().status).toBe(0)
+    const { buscarTrechos } = await import('@/servicos/recuperacao')
+    const achados = await buscarTrechos('agente-de-exemplo', 'qual a política de troca?')
+    expect(achados.length).toBeGreaterThan(0)
+    expect(achados[0]).toMatchObject({ fonteId: 'fonte-de-exemplo', titulo: 'Política de troca e horário da Loja Exemplo' })
+    expect(achados[0]!.texto).toContain('Política de troca')
+  })
+
+  it('rodar a seed duas vezes não duplica o índice, e o horário também é recuperável', async () => {
+    expect(semear().status).toBe(0)
+    expect(semear().status).toBe(0)
+    const { buscarTrechos } = await import('@/servicos/recuperacao')
+    const achados = await buscarTrechos('agente-de-exemplo', 'horário de atendimento')
+    expect(achados.map((a) => a.trechoId)).toEqual([...new Set(achados.map((a) => a.trechoId))])
+    expect(achados[0]!.texto).toContain('segunda a sexta')
+    await prisma.$executeRawUnsafe(`INSERT INTO trechos_fts(trechos_fts, rank) VALUES('integrity-check', 1)`)
+  })
+})
