@@ -263,3 +263,60 @@ export async function salvarConfiguracao(
   })
   return configuracaoDeLinha(linha)
 }
+
+// --- visão pública -----------------------------------------------------------
+
+export interface ConfiguracaoPublica {
+  ativo: true
+  titulo: string
+  cor: string
+  posicao: PosicaoDoChat
+  avatar: AvatarDoChat
+  mensagemInicial: string
+  avisoDePrivacidade: { texto: string; url: string | null } | null
+  sugestoes: string[]
+}
+
+/**
+ * O que o visitante pode ver (PR-56): só campos visuais. Agente inexistente e
+ * agente com o chat inativo dão o mesmo resultado, `null`: quem chama responde
+ * o mesmo 404 nos dois casos. Nunca sai instrução, modelo, domínio, limite, id
+ * de usuário nem data.
+ */
+export async function configuracaoPublica(agenteId: string): Promise<ConfiguracaoPublica | null> {
+  const linha = await prisma.configuracaoDoChat.findUnique({
+    where: { agenteId },
+    include: { agente: { select: { nome: true, mensagemInicial: true } } },
+  })
+  if (!linha || !linha.ativo) return null
+  const c = configuracaoDeLinha(linha)
+  return {
+    ativo: true,
+    titulo: c.titulo !== '' ? c.titulo : linha.agente.nome,
+    cor: c.cor,
+    posicao: c.posicao,
+    avatar: c.avatar,
+    mensagemInicial: linha.agente.mensagemInicial,
+    avisoDePrivacidade:
+      c.avisoDePrivacidade === ''
+        ? null
+        : { texto: c.avisoDePrivacidade, url: c.avisoDePrivacidadeUrl === '' ? null : c.avisoDePrivacidadeUrl },
+    sugestoes: c.sugestoes,
+  }
+}
+
+export interface DominiosDoEmbed {
+  ativo: boolean
+  dominios: string[]
+}
+
+/**
+ * Os domínios que podem emoldurar o chat (PR-58), para o `proxy.ts` e para o
+ * CORS. Agente inexistente e inativo dão o mesmo resultado: ativo falso, sem
+ * domínios.
+ */
+export async function dominiosDoEmbed(agenteId: string): Promise<DominiosDoEmbed> {
+  const linha = await prisma.configuracaoDoChat.findUnique({ where: { agenteId } })
+  if (!linha || !linha.ativo) return { ativo: false, dominios: [] }
+  return { ativo: true, dominios: configuracaoDeLinha(linha).dominiosPermitidos }
+}

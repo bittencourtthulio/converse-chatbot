@@ -26,7 +26,7 @@ tasks:
   - id: T-02.02
     titulo: "Leitura publica e dominios do embed"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Implementar configuracaoPublica(agenteId) e dominiosDoEmbed(agenteId)."
     arquivos:
       cria: ["tests/chat-publico-config-publica.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/chat-publico-config-publica.test.ts passa e o JSON da configuracao publica nao contem as chaves instrucoes, modelo, dominiosPermitidos e limiteDiario."
     depende_de: ["T-02.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-02.03
     titulo: "Limites e teto diario"
     fase: F-02.2
@@ -120,7 +120,7 @@ teste_funcional: "configuracaoPublica devolve titulo igual ao nome do agente qua
 criterio_aceite: "tests/chat-publico-config-publica.test.ts passa e o JSON da configuracao publica nao contem as chaves instrucoes, modelo, dominiosPermitidos e limiteDiario."
 depende_de: ["T-02.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: verde — 1183 passed
 ```
 
 ---
