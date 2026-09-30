@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { prisma } from '@/lib/prisma'
-import { listar, obter, criar } from '@/servicos/agentes'
+import { listar, obter, criar, editar, excluir } from '@/servicos/agentes'
 import { criarUsuario, limparBanco } from './ajuda'
 
 beforeEach(limparBanco)
@@ -101,5 +101,81 @@ describe('listar e obter', () => {
   it('obter de id inexistente lança 404', async () => {
     const autor = await criarUsuario()
     await expect(obter(autor, 'nao-existe')).rejects.toMatchObject({ status: 404 })
+  })
+})
+
+describe('editar', () => {
+  it('altera só os campos enviados e atualiza atualizadoEm', async () => {
+    const autor = await criarUsuario()
+    const agente = await criar(autor, valido)
+    await new Promise((r) => setTimeout(r, 5))
+    const editado = await editar(autor, agente.id, { nome: 'Novo nome', temperatura: '1,2' })
+    expect(editado.nome).toBe('Novo nome')
+    expect(editado.temperatura).toBeCloseTo(1.2)
+    expect(editado.instrucoes).toBe(valido.instrucoes)
+    expect(editado.modelo).toBe(valido.modelo)
+    expect(editado.criadoPorId).toBe(autor.id)
+    expect(editado.atualizadoEm.getTime()).toBeGreaterThan(agente.atualizadoEm.getTime())
+  })
+
+  it('aceita esvaziar instruções e mensagem inicial', async () => {
+    const autor = await criarUsuario()
+    const agente = await criar(autor, valido)
+    const editado = await editar(autor, agente.id, { instrucoes: '', mensagemInicial: '' })
+    expect(editado.instrucoes).toBe('')
+    expect(editado.mensagemInicial).toBe('')
+  })
+
+  it.each([
+    ['nome vazio', { nome: '' }],
+    ['temperatura fora da faixa', { temperatura: 3 }],
+    ['modelo vazio', { modelo: ' ' }],
+    ['instruções longas demais', { instrucoes: 'x'.repeat(8001) }],
+    ['mensagem inicial longa demais', { mensagemInicial: 'x'.repeat(501) }],
+  ])('%s recebe 422 e não grava nada', async (_nome, troca) => {
+    const autor = await criarUsuario()
+    const agente = await criar(autor, valido)
+    await expect(editar(autor, agente.id, { nome: 'Outro', ...troca })).rejects.toMatchObject({
+      status: 422,
+    })
+    expect((await obter(autor, agente.id)).nome).toBe('Atendimento')
+  })
+
+  it('id inexistente lança 404', async () => {
+    const autor = await criarUsuario()
+    await expect(editar(autor, 'nao-existe', { nome: 'x' })).rejects.toMatchObject({ status: 404 })
+  })
+
+  it('outro usuário também edita (qualquer usuário gerencia agentes)', async () => {
+    const dono = await criarUsuario()
+    const outro = await criarUsuario()
+    const agente = await criar(dono, valido)
+    const editado = await editar(outro, agente.id, { nome: 'Do outro' })
+    expect(editado.nome).toBe('Do outro')
+    expect(editado.criadoPorId).toBe(dono.id)
+  })
+})
+
+describe('excluir', () => {
+  it('remove o agente da lista, e só ele', async () => {
+    const autor = await criarUsuario()
+    const a = await criar(autor, { ...valido, nome: 'A' })
+    const b = await criar(autor, { ...valido, nome: 'B' })
+    await excluir(autor, a.id)
+    expect((await listar(autor)).map((x) => x.id)).toEqual([b.id])
+    await expect(obter(autor, a.id)).rejects.toMatchObject({ status: 404 })
+  })
+
+  it('id inexistente lança 404', async () => {
+    const autor = await criarUsuario()
+    await expect(excluir(autor, 'nao-existe')).rejects.toMatchObject({ status: 404 })
+  })
+
+  it('outro usuário também exclui', async () => {
+    const dono = await criarUsuario()
+    const outro = await criarUsuario()
+    const agente = await criar(dono, valido)
+    await excluir(outro, agente.id)
+    expect(await listar(dono)).toHaveLength(0)
   })
 })

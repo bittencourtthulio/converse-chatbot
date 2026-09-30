@@ -40,7 +40,7 @@ tasks:
   - id: T-04.02
     titulo: "Servico de agentes: editar e excluir"
     fase: F-04.1
-    status: pendente
+    status: concluida
     objetivo: "Editar e excluir agente com a mesma validacao."
     arquivos:
       cria: []
@@ -50,8 +50,8 @@ tasks:
     criterio_aceite: "O teste passa e um segundo usuario consegue editar e excluir agente criado pelo primeiro."
     depende_de: [T-04.01]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-04.03
     titulo: "Seed do agente de exemplo"
     fase: F-04.1
@@ -111,7 +111,7 @@ flowchart LR
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
   class T_04_01 concluida
-  class T_04_02 pendente
+  class T_04_02 concluida
   class T_04_03 pendente
 ```
 
@@ -151,7 +151,10 @@ teste_funcional: editar altera so os campos validos e atualiza atualizadoEm, edi
 criterio_aceite: O teste passa e um segundo usuario consegue editar e excluir agente criado pelo primeiro.
 depende_de: [T-04.01]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: agentes 30 passed; tsc e lint 0
 ```
 
 ---

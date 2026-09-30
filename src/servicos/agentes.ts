@@ -118,3 +118,32 @@ export async function criar(
     },
   })
 }
+
+export async function editar(
+  autor: UsuarioAutenticado,
+  id: string,
+  entrada: unknown,
+): Promise<AgenteVisivel> {
+  exigirAutor(autor)
+  const dados = validar(entradaDeEdicao, entrada)
+  if (!(await prisma.agente.findUnique({ where: { id }, select: { id: true } }))) {
+    throw naoEncontrado('Agente não encontrado.')
+  }
+  return prisma.agente.update({
+    where: { id },
+    data: {
+      ...(dados.nome !== undefined && { nome: dados.nome }),
+      ...(dados.modelo !== undefined && { modelo: dados.modelo }),
+      ...(dados.instrucoes !== undefined && { instrucoes: dados.instrucoes }),
+      ...(dados.temperatura !== undefined && { temperatura: dados.temperatura }),
+      ...(dados.mensagemInicial !== undefined && { mensagemInicial: dados.mensagemInicial }),
+    },
+  })
+}
+
+/** Exclusão definitiva (PR-40). A confirmação é da tela. */
+export async function excluir(autor: UsuarioAutenticado, id: string): Promise<void> {
+  exigirAutor(autor)
+  const { count } = await prisma.agente.deleteMany({ where: { id } })
+  if (count === 0) throw naoEncontrado('Agente não encontrado.')
+}
