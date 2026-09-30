@@ -17,6 +17,7 @@ commits: []
 modulo_afetado: []
 arquivos_alterados: []
 desvios:
+  - "T-06.01: src/estilos/global.css (correcao do borda dos botoes secundarios achada na verificacao visual)"
   - "T-05.07: src/app/(sistema)/agentes/[id]/carregar-agente.ts (arquivo novo: helper que converte id inexistente em 404, nao previsto)"
   - "T-05.06: src/app/(sistema)/agentes/novo/loading.tsx (arquivo novo: carregando de /agentes/novo (a pagina consulta o OpenRouter), nao previsto)"
   - "T-05.06: page.tsx e loading.tsx da lista ficaram em src/app/(sistema)/agentes/(lista)/ e nao em agentes/ (um loading acima de [id] fazia o 404 de id inexistente sair como 200)"

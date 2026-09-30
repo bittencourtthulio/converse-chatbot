@@ -25,18 +25,18 @@ tasks:
   - id: T-06.01
     titulo: "Verificacao visual"
     fase: F-06.1
-    status: pendente
+    status: concluida
     objetivo: "Abrir /agentes e /configuracoes/integracoes nos dois temas e a 375px, ou registrar que nao foi possivel."
     arquivos:
       cria: ["docs/agentes-e-openrouter/VERIFICACAO-VISUAL.md"]
-      altera: []
+      altera: ["src/estilos/global.css"]
     teste_integracao: "O app roda com segredos inline e a ferramenta de navegador da sessao abre as duas paginas."
     teste_funcional: "O registro traz, por pagina e tema, o que foi visto ou a razao de nao ter sido possivel, sem declarar verificado o que nao se viu."
     criterio_aceite: "O arquivo existe, cita as duas rotas e os dois temas e a largura de 375px."
     depende_de: [T-05.07, T-03.05]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-06.02
     titulo: "Convencoes e lacunas com a evidencia nova"
     fase: F-06.1
@@ -108,7 +108,7 @@ flowchart LR
   classDef concluida fill:#DFF0D8,stroke:#4A6B3A,color:#1A1815
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
-  class T_06_01 pendente
+  class T_06_01 concluida
   class T_06_02 pendente
   class T_06_03 pendente
 ```
@@ -123,13 +123,16 @@ titulo: Verificacao visual
 objetivo: Abrir /agentes e /configuracoes/integracoes nos dois temas e a 375px, ou registrar que nao foi possivel.
 arquivos:
   cria: [docs/agentes-e-openrouter/VERIFICACAO-VISUAL.md]
-  altera: []
+  altera: [src/estilos/global.css]
 teste_integracao: O app roda com segredos inline e a ferramenta de navegador da sessao abre as duas paginas.
 teste_funcional: O registro traz, por pagina e tema, o que foi visto ou a razao de nao ter sido possivel, sem declarar verificado o que nao se viu.
 criterio_aceite: O arquivo existe, cita as duas rotas e os dois temas e a largura de 375px.
 depende_de: [T-05.07, T-03.05]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: verificacao registrada; achado do botao corrigido; tokens ok
 ```
 
 ---

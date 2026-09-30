@@ -342,14 +342,16 @@ button.perigo {
 .primario { background: var(--accent); color: var(--accent-fg); }
 .primario:hover { background: var(--accent-hover); }
 
-.secundario {
+.secundario,
+button.secundario {
   background: var(--bg-surface);
   color: var(--fg-default);
   border-color: var(--border-strong);
 }
 .secundario:hover { background: var(--bg-hover); }
 
-.perigo { background: var(--danger); color: var(--fg-on-danger); }
+.perigo,
+button.perigo { background: var(--danger); color: var(--fg-on-danger); }
 .perigo:hover { background: var(--danger-hover); }
 
 .botao:disabled, button:disabled { opacity: 0.55; cursor: not-allowed; }
