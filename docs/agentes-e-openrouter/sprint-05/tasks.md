@@ -103,7 +103,7 @@ tasks:
     status: concluida
     objetivo: "Grade de cartoes com estados vazio e carregando, e pagina de novo agente."
     arquivos:
-      cria: ["src/app/(sistema)/agentes/page.tsx", "src/app/(sistema)/agentes/loading.tsx", "src/app/(sistema)/agentes/novo/page.tsx", "tests/agentes-modelos.test.ts"]
+      cria: ["src/app/(sistema)/agentes/(lista)/page.tsx", "src/app/(sistema)/agentes/(lista)/loading.tsx", "src/app/(sistema)/agentes/novo/page.tsx", "tests/agentes-modelos.test.ts", "src/app/(sistema)/agentes/novo/loading.tsx"]
       altera: ["src/estilos/global.css", "tests/rotas.test.ts", "src/servicos/agentes.ts"]
     teste_integracao: "tests/rotas.test.ts sobe o servidor de producao ja usado e cria agentes pelo servico."
     teste_funcional: "sem sessao /agentes redireciona para /entrar, usuario comum ve 200 em /agentes com nome, modelo e data do agente criado, sem agentes a pagina traz o estado vazio com o link para /agentes/novo, e /agentes/novo traz o campo modelo com openai/gpt-4o-mini."
@@ -115,18 +115,18 @@ tasks:
   - id: T-05.07
     titulo: "Pagina /agentes/[id] com layout de abas"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Layout compartilhado com nome e abas e a aba Configuracoes com excluir."
     arquivos:
-      cria: ["src/app/(sistema)/agentes/[id]/layout.tsx", "src/app/(sistema)/agentes/[id]/page.tsx", "src/app/(sistema)/agentes/[id]/loading.tsx"]
+      cria: ["src/app/(sistema)/agentes/[id, "src/app/(sistema)/agentes/[id]/carregar-agente.ts"]/layout.tsx", "src/app/(sistema)/agentes/[id]/page.tsx", "src/app/(sistema)/agentes/[id]/loading.tsx"]
       altera: ["tests/rotas.test.ts"]
     teste_integracao: "tests/rotas.test.ts sobe o servidor de producao ja usado e cria um agente pelo servico."
     teste_funcional: "/agentes/<id> responde 200 com o nome do agente, a aba Configuracoes com aria-current, o formulario com os valores salvos e o botao Excluir agente, e id inexistente responde 404."
     criterio_aceite: "O teste de rotas passa apos npm run build e a pagina nao contem window.confirm."
     depende_de: [T-05.06]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
 ---
 
 # Plano — Sprint 05 — Telas de agentes
@@ -184,7 +184,7 @@ flowchart LR
   class T_05_04 concluida
   class T_05_05 concluida
   class T_05_06 concluida
-  class T_05_07 pendente
+  class T_05_07 concluida
 ```
 
 ## Tasks
@@ -296,7 +296,7 @@ id: T-05.06
 titulo: Paginas /agentes e /agentes/novo
 objetivo: Grade de cartoes com estados vazio e carregando, e pagina de novo agente.
 arquivos:
-  cria: [src/app/(sistema)/agentes/page.tsx, src/app/(sistema)/agentes/loading.tsx, src/app/(sistema)/agentes/novo/page.tsx, tests/agentes-modelos.test.ts]
+  cria: [src/app/(sistema)/agentes/(lista)/page.tsx, src/app/(sistema)/agentes/(lista)/loading.tsx, src/app/(sistema)/agentes/novo/page.tsx, tests/agentes-modelos.test.ts, src/app/(sistema)/agentes/novo/loading.tsx]
   altera: [src/estilos/global.css, tests/rotas.test.ts, src/servicos/agentes.ts]
 teste_integracao: tests/rotas.test.ts sobe o servidor de producao ja usado e cria agentes pelo servico.
 teste_funcional: sem sessao /agentes redireciona para /entrar, usuario comum ve 200 em /agentes com nome, modelo e data do agente criado, sem agentes a pagina traz o estado vazio com o link para /agentes/novo, e /agentes/novo traz o campo modelo com openai/gpt-4o-mini.
@@ -316,13 +316,16 @@ id: T-05.07
 titulo: Pagina /agentes/[id] com layout de abas
 objetivo: Layout compartilhado com nome e abas e a aba Configuracoes com excluir.
 arquivos:
-  cria: [src/app/(sistema)/agentes/[id]/layout.tsx, src/app/(sistema)/agentes/[id]/page.tsx, src/app/(sistema)/agentes/[id]/loading.tsx]
+  cria: [src/app/(sistema)/agentes/[id, src/app/(sistema)/agentes/[id]/carregar-agente.ts]/layout.tsx, src/app/(sistema)/agentes/[id]/page.tsx, src/app/(sistema)/agentes/[id]/loading.tsx]
   altera: [tests/rotas.test.ts]
 teste_integracao: tests/rotas.test.ts sobe o servidor de producao ja usado e cria um agente pelo servico.
 teste_funcional: /agentes/<id> responde 200 com o nome do agente, a aba Configuracoes com aria-current, o formulario com os valores salvos e o botao Excluir agente, e id inexistente responde 404.
 criterio_aceite: O teste de rotas passa apos npm run build e a pagina nao contem window.confirm.
 depende_de: [T-05.06]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: rotas 39 passed apos build; tsc e lint 0
 ```
 

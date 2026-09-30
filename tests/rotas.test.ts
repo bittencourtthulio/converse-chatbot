@@ -300,6 +300,68 @@ describe('Agentes: lista e novo agente', () => {
   })
 })
 
+describe('Agentes: página do agente', () => {
+  async function criarAgenteDeTeste() {
+    const dono = await prisma.usuario.findUniqueOrThrow({ where: { email: 'comum.rota@teste.local' } })
+    return prisma.agente.create({
+      data: {
+        nome: 'Agente de Rota',
+        instrucoes: 'Responda sempre em português, com cordialidade.',
+        modelo: 'google/gemini-2.0-flash-001',
+        temperatura: 1.3,
+        mensagemInicial: 'Bem-vindo à loja!',
+        criadoPorId: dono.id,
+      },
+    })
+  }
+
+  it('sem sessão manda para o login', async () => {
+    const r = await pedir('/agentes/qualquer-id')
+    expect(r.status).toBe(307)
+    expect(r.headers.get('location')).toContain('/entrar')
+  })
+
+  it('mostra o nome, as abas e o formulário preenchido com os valores salvos', async () => {
+    const agente = await criarAgenteDeTeste()
+    const r = await pedir(`/agentes/${agente.id}`, await cookieDe('admin.rota@teste.local'))
+    const html = await r.text()
+    expect(r.status).toBe(200)
+    expect(html).toContain('Agente de Rota')
+    expect(html).toContain('aria-label="Seções do agente"')
+    const tags = html.match(/<a [^>]*>/g) ?? []
+    const aba = tags.find((t) => t.includes('class="aba"'))
+    expect(aba).toContain(`href="/agentes/${agente.id}"`)
+    expect(aba).toContain('aria-current="page"')
+    expect(html).toContain('value="Agente de Rota"')
+    expect(html).toContain('Responda sempre em português, com cordialidade.')
+    expect(html).toContain('value="google/gemini-2.0-flash-001"')
+    expect(html).toContain('value="1.3"')
+    expect(html).toContain('Bem-vindo à loja!')
+    expect(html).toContain('Salvar alterações')
+    expect(html).toContain('Excluir agente')
+    expect(html).not.toContain('Confirmar exclusão')
+    expect(html).not.toContain('window.confirm')
+    expect(html).not.toContain('style="')
+  })
+
+  it('o menu marca Agentes como a seção atual', async () => {
+    const agente = await criarAgenteDeTeste()
+    const html = await (
+      await pedir(`/agentes/${agente.id}`, await cookieDe('comum.rota@teste.local'))
+    ).text()
+    const marcadas = (html.match(/<a [^>]*>/g) ?? []).filter(
+      (t) => t.includes('aria-current="page"') && t.includes('navegacao-item'),
+    )
+    expect(marcadas).toHaveLength(1)
+    expect(marcadas[0]).toContain('href="/agentes"')
+  })
+
+  it('id inexistente responde 404', async () => {
+    const r = await pedir('/agentes/id-que-nao-existe', await cookieDe('comum.rota@teste.local'))
+    expect(r.status).toBe(404)
+  })
+})
+
 describe('layout raiz', () => {
   it('o título usa o nome do produto e a página é em português do Brasil', async () => {
     const html = await (await pedir('/entrar')).text()
