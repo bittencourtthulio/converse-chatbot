@@ -3,11 +3,17 @@
 import { useActionState } from 'react'
 import { useFormStatus } from 'react-dom'
 import type { EstadoDoFormulario } from '@/app/acoes'
+import { Alerta } from '@/componentes/Alerta'
 
-function BotaoDeEnvio({ rotulo }: { rotulo: string }) {
+export type AcaoDeFormulario = (
+  estado: EstadoDoFormulario,
+  form: FormData,
+) => Promise<EstadoDoFormulario>
+
+export function BotaoDeEnvio({ rotulo }: { rotulo: string }) {
   const { pending } = useFormStatus()
   return (
-    <button type="submit" className="primario" disabled={pending}>
+    <button type="submit" className="botao primario" disabled={pending}>
       {pending ? 'Salvando…' : rotulo}
     </button>
   )
@@ -22,29 +28,20 @@ export function Formulario({
   rotulo,
   children,
 }: {
-  acao: (
-    estado: EstadoDoFormulario,
-    form: FormData,
-  ) => Promise<EstadoDoFormulario>
+  acao: AcaoDeFormulario
   rotulo: string
   children: React.ReactNode
 }) {
   const [estado, executar] = useActionState(acao, {})
 
   return (
-    <form action={executar}>
-      {estado.erro && (
-        <p className="aviso erro" role="alert">
-          {estado.erro}
-        </p>
-      )}
-      {estado.sucesso && (
-        <p className="aviso sucesso" role="status">
-          {estado.sucesso}
-        </p>
-      )}
+    <form action={executar} className="formulario">
+      {estado.erro && <Alerta variante="erro">{estado.erro}</Alerta>}
+      {estado.sucesso && <Alerta variante="sucesso">{estado.sucesso}</Alerta>}
       {children}
-      <BotaoDeEnvio rotulo={rotulo} />
+      <div>
+        <BotaoDeEnvio rotulo={rotulo} />
+      </div>
     </form>
   )
 }
@@ -55,12 +52,14 @@ export function Campo({
   tipo = 'text',
   padrao,
   obrigatorio = true,
+  autoComplete,
 }: {
   nome: string
   rotulo: string
   tipo?: string
   padrao?: string
   obrigatorio?: boolean
+  autoComplete?: string
 }) {
   return (
     <label className="campo">
@@ -70,7 +69,7 @@ export function Campo({
         name={nome}
         defaultValue={padrao}
         required={obrigatorio}
-        autoComplete={tipo === 'password' ? 'new-password' : 'on'}
+        autoComplete={autoComplete ?? (tipo === 'password' ? 'new-password' : 'on')}
       />
     </label>
   )

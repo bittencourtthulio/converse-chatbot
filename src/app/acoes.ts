@@ -17,6 +17,8 @@ import {
 export interface EstadoDoFormulario {
   erro?: string
   sucesso?: string
+  /** Só o login: o e-mail digitado, devolvido para não ser apagado no erro. */
+  email?: string
 }
 
 /**
@@ -42,7 +44,7 @@ export async function autenticar(
     })
     await gravarCookieDeSessao(token)
   } catch (erro) {
-    return { erro: mensagemDe(erro) }
+    return { erro: mensagemDe(erro), email: String(form.get('email') ?? '') }
   }
   redirect('/')
 }

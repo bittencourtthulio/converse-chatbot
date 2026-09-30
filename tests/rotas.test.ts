@@ -87,6 +87,18 @@ describe('sem sessão', () => {
     expect(r.status).toBe(200)
     expect(await r.text()).toContain('Entrar')
   })
+
+  it('a tela de login é um cartão com o nome do produto, campos rotulados e sem estilo inline', async () => {
+    const html = await (await pedir('/entrar')).text()
+    expect(html).toContain('login-cartao')
+    expect(html).toContain('Converse')
+    expect(html).toContain('E-mail')
+    expect(html).toContain('Senha')
+    expect(html).toMatch(/autocomplete="username"/i)
+    expect(html).toMatch(/autocomplete="current-password"/i)
+    expect(html).toContain('>Entrar<')
+    expect(html).not.toContain('style="')
+  })
 })
 
 describe('com sessão de usuário comum', () => {

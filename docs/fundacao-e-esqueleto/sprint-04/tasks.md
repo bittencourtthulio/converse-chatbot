@@ -40,7 +40,7 @@ tasks:
   - id: T-04.02
     titulo: "Tela de login em cartao"
     fase: F-04.1
-    status: pendente
+    status: concluida
     objetivo: "Refazer o login como cartao centralizado com o nome do produto e erro claro."
     arquivos:
       cria: []
@@ -50,8 +50,8 @@ tasks:
     criterio_aceite: "O teste de rotas passa e a acao de login mostra a mensagem de excesso de tentativas quando o servico lanca 429."
     depende_de: [T-04.01, T-02.04]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-04.03
     titulo: "Painel, usuarios, perfil e troca de senha"
     fase: F-04.1
@@ -134,7 +134,7 @@ flowchart LR
   classDef bloqueada fill:#F8D7DA,stroke:#8C2F24,color:#1A1815
   classDef critico stroke-width:3px
   class T_04_01 concluida
-  class T_04_02 pendente
+  class T_04_02 concluida
   class T_04_03 pendente
   class T_04_04 pendente
 ```
@@ -175,7 +175,10 @@ teste_funcional: O HTML traz o nome Converse, os campos e-mail e senha com rotul
 criterio_aceite: O teste de rotas passa e a acao de login mostra a mensagem de excesso de tentativas quando o servico lanca 429.
 depende_de: [T-04.01, T-02.04]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: rotas 22 + componentes 8 passed
 ```
 
 ---
