@@ -9,14 +9,14 @@ sprint_id: sprint-02
 atualizado_em: 2026-09-30
 sprint:
   titulo: "Servicos e seguranca: nome do produto, limite de uso, login limitado e cabecalhos"
-  status: nao_iniciado
+  status: concluido
   criterio_saida: "npm test, npm run lint, npx tsc --noEmit e npm run build terminam com 0 falhas e o login recusa a sexta tentativa por minuto com mensagem em portugues."
   riscos: ["confiar em X-Forwarded-For sem proxy permite forjar o IP (PR-36, base/autenticacao-e-sessao.md)", "o limite em memoria vale por processo (PR-36)"]
   fora_de_escopo: ["limite de uso do chat publico e do Telegram - FT-06 e FT-07 apenas reutilizam o modulo"]
 fases:
   - id: F-02.1
     titulo: "Servicos e seguranca"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "todos os testes novos passam e o build de producao gera as rotas"
     paralelizavel: false
     paralela_com: []

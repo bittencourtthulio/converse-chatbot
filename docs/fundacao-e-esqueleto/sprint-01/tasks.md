@@ -9,14 +9,14 @@ sprint_id: sprint-01
 atualizado_em: 2026-09-30
 sprint:
   titulo: "Rede de protecao: camadas, scripts, pipeline e seed verificados"
-  status: nao_iniciado
+  status: concluido
   criterio_saida: "npm test termina com 0 failed, npm run lint e npx tsc --noEmit terminam com codigo 0 e o teste de camadas prova as quatro direcoes proibidas."
   riscos: ["src/lib/sessao-servidor.ts viola a direcao das camadas e precisa mudar de pasta (base/camadas-e-lint.md, D-12)", "o teste de rotas sobe o servidor de producao e exige build previo (base/testes-e-banco.md)"]
   fora_de_escopo: ["regras de lint de estilo alem da direcao das camadas - fora do briefing"]
 fases:
   - id: F-01.1
     titulo: "Rede de protecao"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "lint, tsc e a suite inteira verdes com os quatro arquivos de teste novos"
     paralelizavel: false
     paralela_com: []

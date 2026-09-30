@@ -9,14 +9,14 @@ sprint_id: sprint-05
 atualizado_em: 2026-09-30
 sprint:
   titulo: "Documentacao e verificacao final: README, copia limpa e convencoes"
-  status: nao_iniciado
+  status: concluido
   criterio_saida: "A copia limpa passa npm ci, prisma generate, migrate deploy, lint, tsc, build, test e audit, e CONVENCOES.md tem commit-referencia preenchido."
   riscos: ["a copia limpa so vale sobre o estado commitado: tudo precisa estar commitado antes (base/testes-e-banco.md)"]
   fora_de_escopo: ["Dockerfile e docker-compose - FT-11"]
 fases:
   - id: F-05.1
     titulo: "Documentacao e verificacao"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "os tres artefatos existem e a copia limpa esta verde"
     paralelizavel: false
     paralela_com: []

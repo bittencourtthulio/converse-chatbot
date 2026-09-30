@@ -9,14 +9,14 @@ sprint_id: sprint-03
 atualizado_em: 2026-09-30
 sprint:
   titulo: "Base visual: tokens, componentes de estilo, menu e casca do sistema"
-  status: nao_iniciado
+  status: concluido
   criterio_saida: "npm test, npm run lint, npx tsc --noEmit e npm run build terminam com 0 falhas, e o teste de tokens prova contraste 4,5:1 nos dois temas e nenhuma cor literal fora de tokens.css."
   riscos: ["o teste de rotas afirma texto da interface; a nova casca precisa preservar Painel, Meu perfil e o link de Usuarios (base/interface-atual.md)", "script de tema antes da pintura precisa cobrir escolha salva e preferencia do sistema (D-03)"]
   fora_de_escopo: ["redesenho das telas de conteudo - sprint 04"]
 fases:
   - id: F-03.1
     titulo: "Base visual"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "o teste de tokens, o de menu e o de rotas passam e o build gera as rotas"
     paralelizavel: false
     paralela_com: []

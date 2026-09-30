@@ -9,14 +9,14 @@ sprint_id: sprint-04
 atualizado_em: 2026-09-30
 sprint:
   titulo: "Telas: componentes de pagina, login, painel e configuracoes"
-  status: nao_iniciado
+  status: concluido
   criterio_saida: "npm test, npm run lint, npx tsc --noEmit e npm run build terminam com 0 falhas e a verificacao visual esta registrada ou declarada nao realizada."
   riscos: ["a tabela de usuarios tem acoes por linha que precisam continuar acessiveis a 375px (base/interface-atual.md)", "ferramenta de navegador pode estar indisponivel: registrar limitacao (D-18)"]
   fora_de_escopo: ["conteudo real do painel - FT-02 a FT-09"]
 fases:
   - id: F-04.1
     titulo: "Telas"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "teste de componentes e de rotas passam e o build gera as rotas"
     paralelizavel: false
     paralela_com: []
