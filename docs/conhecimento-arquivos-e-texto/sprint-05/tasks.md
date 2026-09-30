@@ -41,7 +41,7 @@ tasks:
   - id: T-05.03
     titulo: "Handlers: excluir e reprocessar"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "DELETE 204 e POST de reprocessar 202 com verificacao de que a fonte e do agente da URL."
     arquivos:
       cria: ["src/app/api/agentes/[id]/fontes/[fonteId]/route.ts", "src/app/api/agentes/[id]/fontes/[fonteId]/reprocessar/route.ts", "tests/fontes-rota-ciclo.test.ts"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/fontes-rota-ciclo.test.ts passa."
     depende_de: ["T-05.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-05.04
     titulo: "Ponta a ponta de todos os formatos e build"
     fase: F-05.2
@@ -126,7 +126,9 @@ teste_funcional: Reprocessar uma fonte em erro responde 202 e leva a pronto, rep
 criterio_aceite: tests/fontes-rota-ciclo.test.ts passa.
 depende_de: ["T-05.02"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 822 passed 822, 0 failed
 ```
 
 ---
