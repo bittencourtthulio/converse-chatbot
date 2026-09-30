@@ -12,6 +12,8 @@ import { entrar } from '@/servicos/autenticacao'
 import { COOKIE_SESSAO } from '@/lib/sessao'
 import { hashDeSenha } from '@/lib/senha'
 import { prisma } from '@/lib/prisma'
+import { salvarChaveDoOpenrouter } from '@/servicos/integracoes'
+import { limparBanco } from './ajuda'
 
 const PORTA = 3178
 const BASE = `http://localhost:${PORTA}`
@@ -38,7 +40,7 @@ const pedir = (caminho: string, cookie?: string) =>
   })
 
 beforeAll(async () => {
-  await prisma.usuario.deleteMany()
+  await limparBanco()
   await prisma.usuario.createMany({
     data: [
       {
@@ -73,7 +75,7 @@ async function cookieDe(email: string): Promise<string> {
 }
 
 describe('sem sessão', () => {
-  it.each(['/', '/perfil', '/perfil/senha', '/configuracoes/usuarios'])(
+  it.each(['/', '/perfil', '/perfil/senha', '/configuracoes/usuarios', '/configuracoes/integracoes'])(
     'manda %s para o login',
     async (rota) => {
       const r = await pedir(rota)
@@ -167,6 +169,57 @@ describe('com sessão de admin', () => {
   it('o item Usuários aparece na navegação', async () => {
     const r = await pedir('/', await cookieDe('admin.rota@teste.local'))
     expect(await r.text()).toContain('/configuracoes/usuarios')
+  })
+})
+
+describe('Configurações > Integrações', () => {
+  const CHAVE = 'sk-or-v1-CHAVE-EM-TESTE-9f8e7d6c-a1b2'
+
+  it('usuário comum é barrado no servidor, e o item não aparece no menu', async () => {
+    const cookie = await cookieDe('comum.rota@teste.local')
+    const r = await pedir('/configuracoes/integracoes', cookie)
+    expect(r.status).toBe(307)
+    expect(r.headers.get('location')).not.toContain('/configuracoes')
+    expect(await (await pedir('/', cookie)).text()).not.toContain('/configuracoes/integracoes')
+  })
+
+  it('admin vê o item no menu e a tela sem chave, com campo de senha vazio', async () => {
+    const cookie = await cookieDe('admin.rota@teste.local')
+    expect(await (await pedir('/', cookie)).text()).toContain('href="/configuracoes/integracoes"')
+    const r = await pedir('/configuracoes/integracoes', cookie)
+    const html = await r.text()
+    expect(r.status).toBe(200)
+    expect(html).toContain('OpenRouter')
+    expect(html).toContain('Não configurada')
+    expect(html).toContain('Salvar chave')
+    expect(html).toMatch(/<input[^>]*type="password"[^>]*name="chave"/)
+    expect(html).not.toContain('Testar conexão')
+  })
+
+  it('com a chave gravada a resposta traz só a máscara: nem a chave nem o texto cifrado', async () => {
+    const admin = await prisma.usuario.findUniqueOrThrow({
+      where: { email: 'admin.rota@teste.local' },
+    })
+    await salvarChaveDoOpenrouter(
+      { id: admin.id, nome: admin.nome, email: admin.email, papel: 'admin' },
+      { chave: CHAVE },
+    )
+    const cifrada = (
+      await prisma.configuracaoDoWorkspace.findUniqueOrThrow({ where: { id: 'unica' } })
+    ).openrouterChaveCifrada!
+
+    const r = await pedir('/configuracoes/integracoes', await cookieDe('admin.rota@teste.local'))
+    const html = await r.text()
+    expect(r.status).toBe(200)
+    expect(html).toContain('Configurada')
+    expect(html).toContain('sk-or-…a1b2')
+    expect(html).toContain('Testar conexão')
+    expect(html).toContain('Remover chave')
+    expect(html).not.toContain(CHAVE)
+    expect(html).not.toContain('CHAVE-EM-TESTE')
+    expect(html).not.toContain(cifrada)
+    expect(html).not.toContain(cifrada.split(':')[3]!)
+    expect(html).not.toMatch(/<input[^>]*type="password"[^>]*value=/)
   })
 })
 

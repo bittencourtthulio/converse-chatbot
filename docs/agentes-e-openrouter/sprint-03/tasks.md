@@ -85,7 +85,7 @@ tasks:
   - id: T-03.05
     titulo: "Rotas de Integracoes no servidor de producao"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Provar guarda de admin e ausencia da chave na resposta."
     arquivos:
       cria: []
@@ -95,8 +95,8 @@ tasks:
     criterio_aceite: "O teste de rotas passa apos npm run build."
     depende_de: [T-03.04]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
 ---
 
 # Plano — Sprint 03 — Chave do workspace e tela Configuracoes > Integracoes
@@ -148,7 +148,7 @@ flowchart LR
   class T_03_02 concluida
   class T_03_03 concluida
   class T_03_04 concluida
-  class T_03_05 pendente
+  class T_03_05 concluida
 ```
 
 ## Tasks
@@ -247,6 +247,9 @@ teste_funcional: usuario comum recebe 307 para / em /configuracoes/integracoes, 
 criterio_aceite: O teste de rotas passa apos npm run build.
 depende_de: [T-03.04]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: rotas 27 passed após build
 ```
 
