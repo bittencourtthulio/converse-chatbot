@@ -11,7 +11,7 @@ tasks:
   - id: T-03.01
     titulo: "Formatos, limites e nome sanitizado"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Centralizar extensoes aceitas, MIME por extensao, constantes de limite e a sanitizacao do nome de exibicao."
     arquivos:
       cria: ["src/lib/extracao/formatos.ts", "src/lib/extracao/limites.ts", "tests/extracao-formatos.test.ts"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/extracao-formatos.test.ts passa."
     depende_de: ["T-01.01"]
     paralelizavel: true
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-03.02
     titulo: "Conferencia do conteudo real"
     fase: F-03.1
@@ -163,7 +163,9 @@ teste_funcional: sanitizarNome('..\\..\\etc/passwd.txt') devolve 'passwd.txt', t
 criterio_aceite: tests/extracao-formatos.test.ts passa.
 depende_de: ["T-01.01"]
 paralelizavel: true
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 683 passed, 0 failed
 ```
 
 ---
