@@ -41,7 +41,7 @@ tasks:
   - id: T-01.03
     titulo: "Apoio de teste: agente com base pronta"
     fase: F-01.2
-    status: pendente
+    status: concluida
     objetivo: "Criar helper que monta agente, fonte pronto e trechos para os testes de recuperacao e de chat."
     arquivos:
       cria: ["tests/apoio/conhecimento.ts", "tests/apoio-conhecimento.test.ts", "docs/respostas-com-conhecimento/sprint-01/sprint.md", "docs/respostas-com-conhecimento/sprint-01/fases.md", "docs/respostas-com-conhecimento/sprint-01/tasks.md"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/apoio-conhecimento.test.ts passa e nenhum texto de teste contem dado real."
     depende_de: ["T-01.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
 ---
 
 # Tasks — Sprint 01
@@ -111,6 +111,8 @@ teste_funcional: criarBase({textos}) devolve ids do agente, da fonte e dos trech
 criterio_aceite: tests/apoio-conhecimento.test.ts passa e nenhum texto de teste contem dado real.
 depende_de: ["T-01.01"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: verde: 905 passed, 0 failed (fecha a sprint 01)
 ```
 
