@@ -2,6 +2,7 @@
 
 import { useActionState } from 'react'
 import { desativarUsuario } from '@/app/acoes'
+import { Badge } from '@/componentes/Badge'
 
 interface Props {
   usuario: {
@@ -20,25 +21,35 @@ export function LinhaDeUsuario({ usuario }: Props) {
   return (
     <tr>
       <td>
-        {usuario.nome}
-        {usuario.ehVoce && <span style={{ opacity: 0.6 }}> (você)</span>}
+        <span className="linha">
+          {usuario.nome}
+          {usuario.ehVoce && <Badge>Você</Badge>}
+        </span>
       </td>
-      <td>{usuario.email}</td>
-      <td>{usuario.papel === 'admin' ? 'Administrador' : 'Usuário'}</td>
-      <td>{usuario.ativo ? 'Ativo' : 'Desativado'}</td>
-      <td style={{ textAlign: 'right' }}>
+      <td className="celula-secundaria">{usuario.email}</td>
+      <td>
+        <Badge variante={usuario.papel === 'admin' ? 'acento' : 'neutro'}>
+          {usuario.papel === 'admin' ? 'Administrador' : 'Usuário'}
+        </Badge>
+      </td>
+      <td>
+        <Badge variante={usuario.ativo ? 'sucesso' : 'neutro'}>
+          {usuario.ativo ? 'Ativo' : 'Desativado'}
+        </Badge>
+      </td>
+      <td className="coluna-acoes">
+        {estado.erro && (
+          <span role="alert">
+            <Badge variante="perigo">{estado.erro}</Badge>{' '}
+          </span>
+        )}
         {usuario.ativo && (
-          <form action={executar} style={{ display: 'inline' }}>
+          <form action={executar} className="linha">
             <input type="hidden" name="id" value={usuario.id} />
-            <button type="submit" className="secundario">
+            <button type="submit" className="botao secundario botao-pequeno">
               Desativar
             </button>
           </form>
-        )}
-        {estado.erro && (
-          <span className="aviso erro" role="alert" style={{ marginLeft: 8 }}>
-            {estado.erro}
-          </span>
         )}
       </td>
     </tr>

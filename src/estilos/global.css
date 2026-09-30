@@ -481,6 +481,7 @@ tbody tr:hover { background: var(--bg-hover); }
   animation: esqueleto-brilho 1.4s ease-in-out infinite;
 }
 .esqueleto-titulo { height: 28px; width: 220px; max-width: 60%; }
+.esqueleto-subtitulo { width: 340px; max-width: 80%; margin-top: 10px; }
 .esqueleto-bloco { height: 120px; border-radius: var(--raio-cartao); }
 @keyframes esqueleto-brilho {
   from { background-position: 200% 0; }

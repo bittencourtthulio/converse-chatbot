@@ -55,7 +55,7 @@ tasks:
   - id: T-04.03
     titulo: "Painel, usuarios, perfil e troca de senha"
     fase: F-04.1
-    status: pendente
+    status: concluida
     objetivo: "Aplicar cabecalho de pagina, cartoes, tabela com badges e estado vazio as telas do P-9."
     arquivos:
       cria: []
@@ -65,8 +65,8 @@ tasks:
     criterio_aceite: "O teste de rotas atualizado passa e nenhuma tela de src/app tem cor literal."
     depende_de: [T-04.01]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-04.04
     titulo: "Verificacao visual nos dois temas e em 375px"
     fase: F-04.1
@@ -135,7 +135,7 @@ flowchart LR
   classDef critico stroke-width:3px
   class T_04_01 concluida
   class T_04_02 concluida
-  class T_04_03 pendente
+  class T_04_03 concluida
   class T_04_04 pendente
 ```
 
@@ -195,7 +195,10 @@ teste_funcional: O painel traz Painel, um subtitulo proprio e Ainda nao ha o que
 criterio_aceite: O teste de rotas atualizado passa e nenhuma tela de src/app tem cor literal.
 depende_de: [T-04.01]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: rotas 23 passed; suite 180 passed
 ```
 
 ---

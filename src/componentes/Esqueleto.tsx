@@ -11,8 +11,7 @@ export function EsqueletoDePagina() {
       <div className="pilha" aria-hidden="true">
         <div>
           <Esqueleto className="esqueleto-titulo" />
-          <div style={{ height: 8 }} />
-          <Esqueleto className="" />
+          <Esqueleto className="esqueleto-subtitulo" />
         </div>
         <Esqueleto className="esqueleto-bloco" />
       </div>

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { exigirUsuario } from '@/app/sessao-servidor'
 import { salvarSenha } from '@/app/acoes'
+import { CabecalhoDaPagina } from '@/componentes/CabecalhoDaPagina'
 import { Formulario, Campo } from '@/componentes/Formulario'
 
 /**
@@ -11,21 +12,26 @@ export default async function TrocarSenha() {
   await exigirUsuario()
 
   return (
-    <>
-      <h1 className="titulo-da-tela">Trocar senha</h1>
-      <p className="subtitulo-da-tela">
-        Informe a senha atual para confirmar. As outras sessões serão encerradas.
-      </p>
+    <div className="pilha">
+      <CabecalhoDaPagina
+        titulo="Trocar senha"
+        subtitulo="Informe a senha atual para confirmar. As outras sessões serão encerradas."
+        acoes={
+          <Link href="/perfil" className="botao secundario">
+            Voltar ao perfil
+          </Link>
+        }
+      />
 
-      <Formulario acao={salvarSenha} rotulo="Trocar senha">
-        <Campo nome="senhaAtual" rotulo="Senha atual" tipo="password" />
-        <Campo nome="senhaNova" rotulo="Nova senha" tipo="password" />
-        <Campo nome="confirmacao" rotulo="Confirme a nova senha" tipo="password" />
-      </Formulario>
-
-      <p style={{ marginTop: 24 }}>
-        <Link href="/perfil">Voltar ao perfil</Link>
-      </p>
-    </>
+      <section className="cartao cartao-estreito" aria-label="Troca de senha">
+        <div className="cartao-corpo">
+          <Formulario acao={salvarSenha} rotulo="Trocar senha">
+            <Campo nome="senhaAtual" rotulo="Senha atual" tipo="password" autoComplete="current-password" />
+            <Campo nome="senhaNova" rotulo="Nova senha" tipo="password" />
+            <Campo nome="confirmacao" rotulo="Confirme a nova senha" tipo="password" />
+          </Formulario>
+        </div>
+      </section>
+    </div>
   )
 }

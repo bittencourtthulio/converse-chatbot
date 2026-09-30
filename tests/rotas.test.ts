@@ -107,7 +107,11 @@ describe('com sessão de usuário comum', () => {
     const html = await r.text()
     expect(r.status).toBe(200)
     expect(html).toContain('Painel')
-    expect(html).toContain('Esta é a tela inicial do sistema')
+    expect(html).toContain('titulo-da-pagina')
+    expect(html).toContain('Visão geral da sua conta')
+    expect(html).toContain('Ainda não há o que mostrar')
+    expect(html).toContain('estado-vazio')
+    expect(html).not.toContain('Cadastrar usuário')
   })
 
   it('o perfil abre', async () => {
@@ -148,6 +152,16 @@ describe('com sessão de admin', () => {
     expect(html).toContain('Usuários')
     expect(html).toContain('admin.rota@teste.local')
     expect(html).toContain('comum.rota@teste.local')
+    expect(html).toContain('badge-acento')
+    expect(html).toContain('Administrador')
+    expect(html).toContain('badge-sucesso')
+    expect(html).toContain('Novo usuário')
+    expect(html).not.toContain('style="')
+  })
+
+  it('o painel oferece o atalho para cadastrar usuário', async () => {
+    const r = await pedir('/', await cookieDe('admin.rota@teste.local'))
+    expect(await r.text()).toContain('Cadastrar usuário')
   })
 
   it('o item Usuários aparece na navegação', async () => {

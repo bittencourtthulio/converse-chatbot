@@ -1,23 +1,33 @@
+import Link from 'next/link'
 import { exigirUsuario } from '@/app/sessao-servidor'
+import { CabecalhoDaPagina } from '@/componentes/CabecalhoDaPagina'
+import { EstadoVazio } from '@/componentes/EstadoVazio'
 
 /**
- * O painel — a tela inicial (P-9, E-1). Vem com título e subtítulo, e o
- * corpo vazio de propósito: são as features do projeto que o preenchem.
+ * O painel — a tela inicial (P-9, E-1). Título e subtítulo próprios, corpo em
+ * estado vazio de propósito: são as features do projeto que o preenchem.
  */
 export default async function Painel() {
   const usuario = await exigirUsuario()
 
   return (
     <>
-      <h1 className="titulo-da-tela">Painel</h1>
-      <p className="subtitulo-da-tela">
-        Bem-vindo, {usuario.nome}. Esta é a tela inicial do sistema.
-      </p>
+      <CabecalhoDaPagina titulo="Painel" subtitulo="Visão geral da sua conta." />
 
-      <p className="vazio">
-        Ainda não há nada para mostrar aqui. As telas do projeto aparecem
-        nesta área conforme forem entregues.
-      </p>
+      <section className="cartao" aria-label="Resumo da conta">
+        <EstadoVazio
+          icone="painel"
+          titulo="Ainda não há o que mostrar"
+          descricao="Quando houver atividade na sua conta, o resumo aparece nesta tela."
+          acao={
+            usuario.papel === 'admin' ? (
+              <Link href="/configuracoes/usuarios" className="botao secundario">
+                Cadastrar usuário
+              </Link>
+            ) : undefined
+          }
+        />
+      </section>
     </>
   )
 }
