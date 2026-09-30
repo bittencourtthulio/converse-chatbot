@@ -11,7 +11,7 @@ tasks:
   - id: T-02.01
     titulo: "Modelo Fonte e Trecho"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar as tabelas fontes e trechos por migration aditiva e atualizar limparBanco."
     arquivos:
       cria: ["prisma/migrations/20260930180000_fontes/migration.sql", "tests/fontes-modelo.test.ts"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/fontes-modelo.test.ts passa e tests/migracoes.test.ts continua verde com a migration nova."
     depende_de: ["T-01.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-02.02
     titulo: "Armazenamento em disco"
     fase: F-02.1
@@ -88,7 +88,9 @@ teste_funcional: Uma Fonte criada so com agenteId, tipo, titulo e tamanhoBytes n
 criterio_aceite: tests/fontes-modelo.test.ts passa e tests/migracoes.test.ts continua verde com a migration nova.
 depende_de: ["T-01.01"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 594 passed, 0 failed
 ```
 
 ---

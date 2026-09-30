@@ -27,6 +27,7 @@ model Usuario {
 
   agentes   Agente[]
   conversas Conversa[]
+  fontes    Fonte[]
 
   @@map("usuarios")
 }
@@ -60,6 +61,8 @@ model Agente {
   atualizadoEm    DateTime @updatedAt
 
   conversas Conversa[]
+  fontes    Fonte[]
+  trechos   Trecho[]
 
   @@map("agentes")
 }
@@ -105,4 +108,52 @@ model Mensagem {
 
   @@index([conversaId, criadoEm])
   @@map("mensagens")
+}
+
+// Fonte da base de conhecimento (FT-04): um arquivo ou texto colado que o
+// agente usa para responder. `tipo` guarda `arquivo`, `texto`, `video` ou
+// `youtube` (os dois últimos são da FT-08). O original fica em disco, em
+// `caminhoArquivo` relativo a STORAGE_DIR (PR-11, PR-47); a interface nunca vê
+// esse caminho. `status`: pendente, processando, pronto ou erro (PR-05).
+model Fonte {
+  id             String    @id @default(cuid())
+  agenteId       String
+  agente         Agente    @relation(fields: [agenteId], references: [id], onDelete: Cascade)
+  tipo           String
+  titulo         String
+  nomeOriginal   String?
+  tipoMime       String?
+  tamanhoBytes   Int
+  caminhoArquivo String?
+  status         String    @default("pendente")
+  mensagemErro   String?
+  totalTrechos   Int       @default(0)
+  caracteres     Int       @default(0)
+  criadoPorId    String?
+  criadoPor      Usuario?  @relation(fields: [criadoPorId], references: [id], onDelete: SetNull)
+  criadoEm       DateTime  @default(now())
+  atualizadoEm   DateTime  @updatedAt
+  processadoEm   DateTime?
+
+  trechos Trecho[]
+
+  @@index([agenteId])
+  @@map("fontes")
+}
+
+// Trecho de uma fonte (PR-46). `agenteId` é desnormalizado para a recuperação
+// por agente da FT-05 não precisar de junção.
+model Trecho {
+  id         String @id @default(cuid())
+  fonteId    String
+  fonte      Fonte  @relation(fields: [fonteId], references: [id], onDelete: Cascade)
+  agenteId   String
+  agente     Agente @relation(fields: [agenteId], references: [id], onDelete: Cascade)
+  indice     Int
+  texto      String
+  caracteres Int
+
+  @@index([fonteId, indice])
+  @@index([agenteId])
+  @@map("trechos")
 }
