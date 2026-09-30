@@ -41,7 +41,7 @@ tasks:
   - id: T-03.03
     titulo: "Rota GET conversa"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Criar o handler da retomada das ultimas 50 mensagens do visitante."
     arquivos:
       cria: ["src/app/api/publico/agentes/[id]/conversa/route.ts", "tests/publico-conversa-rota.test.ts"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/publico-conversa-rota.test.ts passa."
     depende_de: ["T-03.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-03.04
     titulo: "proxy.ts e X-Frame-Options fora de /embed"
     fase: F-03.2
@@ -122,7 +122,7 @@ teste_funcional: "Sem conversa devolve conversa null, com 60 mensagens devolve a
 criterio_aceite: "tests/publico-conversa-rota.test.ts passa."
 depende_de: ["T-03.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: verde — 1260 passed
 ```
 
 ---
