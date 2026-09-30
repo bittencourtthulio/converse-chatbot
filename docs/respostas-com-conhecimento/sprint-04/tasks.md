@@ -26,7 +26,7 @@ tasks:
   - id: T-04.02
     titulo: "Rota de conversa emite fontes de ponta a ponta"
     fase: F-04.1
-    status: pendente
+    status: concluida
     objetivo: "Provar pelo servidor de producao que a rota conversar entrega o evento fontes e as fontes aparecem na conversa retomada."
     arquivos:
       cria: []
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/conversar-rota.test.ts passa apos npm run build."
     depende_de: ["T-04.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-04.03
     titulo: "POST /api/agentes/[id]/buscar"
     fase: F-04.2
@@ -92,7 +92,9 @@ teste_funcional: Sem fonte pronta a mesma rota devolve so trecho e fim, como na 
 criterio_aceite: tests/conversar-rota.test.ts passa apos npm run build.
 depende_de: ["T-04.01"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial: conversar-rota 18 passed (apos npm run build)
 ```
 
 ---

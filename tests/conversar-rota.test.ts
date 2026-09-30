@@ -269,3 +269,35 @@ describe('cancelamento', () => {
     expect((await prisma.mensagem.findMany()).map((m) => m.papel)).toEqual(['user'])
   })
 })
+
+describe('fontes da resposta pelo servidor de produção (FT-05)', () => {
+  it('com base pronta, o SSE traz trecho, fontes e fim; a conversa retomada guarda as fontes', async () => {
+    const { criarBase } = await import('./apoio/conhecimento')
+    falso.configurar({ trechos: ['Troca em sete dias ', '[1]', '.'] })
+    const base = await criarBase({ agenteId, titulo: 'Política de troca', textos: ['Aceitamos a troca em até sete dias corridos.'] })
+    try {
+      const eventos = await eventosDe(await conversar({ mensagem: 'Qual o prazo de troca?' }, { cookie }))
+
+      expect(eventos.map(([nome]) => nome)).toEqual(['trecho', 'trecho', 'trecho', 'fontes', 'fim'])
+      const [, dados] = eventos.find(([nome]) => nome === 'fontes')!
+      expect(dados.fontes).toEqual([
+        {
+          fonteId: base.fonteId,
+          titulo: 'Política de troca',
+          citada: true,
+          trechos: [{ n: 1, posicao: 1, trechoTexto: 'Aceitamos a troca em até sete dias corridos.' }],
+        },
+      ])
+      const gravada = await prisma.mensagem.findFirstOrThrow({ where: { papel: 'assistant' } })
+      expect(JSON.parse(gravada.fontes!)).toEqual(dados.fontes)
+    } finally {
+      await prisma.fonte.deleteMany({ where: { agenteId } })
+    }
+  })
+
+  it('sem fonte pronta a mesma rota devolve só trecho e fim, como na FT-03', async () => {
+    falso.configurar({ trechos: ['Olá', ', ', 'tudo ', 'bem?'] })
+    const eventos = await eventosDe(await conversar({ mensagem: 'Qual o prazo de troca?' }, { cookie }))
+    expect(eventos.map(([nome]) => nome)).toEqual(['trecho', 'trecho', 'trecho', 'trecho', 'fim'])
+  })
+})
