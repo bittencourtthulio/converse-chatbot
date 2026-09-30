@@ -4,7 +4,6 @@ import { useId, useReducer, useRef, useState, type DragEvent } from 'react'
 import { Icone } from '@/componentes/Icones'
 import {
   estadoInicialDosEnvios,
-  pendentesDeEnvio,
   reducerDosEnvios,
   resumoDosEnvios,
 } from '@/componentes/estado-dos-envios'
@@ -169,7 +168,6 @@ export function ZonaDeArquivos({
           </ul>
         </div>
       )}
-      <span hidden>{pendentesDeEnvio(estado).length}</span>
     </div>
   )
 }

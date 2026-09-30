@@ -86,7 +86,7 @@ tasks:
   - id: T-06.06
     titulo: "Estilos da aba Conhecimento"
     fase: F-06.4
-    status: pendente
+    status: concluida
     objetivo: "Estilos sobre tokens para cartoes, zona de soltar, tabela, badges e spinner nos dois temas."
     arquivos:
       cria: ["tests/conhecimento-estilos.test.ts"]
@@ -96,8 +96,8 @@ tasks:
     criterio_aceite: "tests/tokens.test.ts passa e o teste novo de classes em tests/conhecimento-estilos.test.ts passa."
     depende_de: ["T-06.05"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
 ---
 
 # Tasks — Sprint 06
@@ -213,5 +213,7 @@ teste_funcional: As classes usadas pelos componentes novos existem em global.css
 criterio_aceite: tests/tokens.test.ts passa e o teste novo de classes em tests/conhecimento-estilos.test.ts passa.
 depende_de: ["T-06.05"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 885 passed 885, 0 failed
 ```
