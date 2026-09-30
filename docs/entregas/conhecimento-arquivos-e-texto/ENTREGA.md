@@ -9,11 +9,87 @@ entregue_por: mergex
 titulo: Base de conhecimento, arquivos e textos
 tipo_trabalho: feature
 tipo_ocorrencia: null
-estado: aberto
+estado: entregue
 versionado: true
 branch: feat/conhecimento-arquivos-e-texto
 branch_base: feat/conversa-de-teste
-commits: []
+commits:
+  - task: T-01.01
+    commit: e963a85
+  - task: T-01.02
+    commit: 59b45f9
+  - task: T-01.03
+    commit: 9df888d
+  - task: T-01.04
+    commit: 9df888d
+  - task: T-02.01
+    commit: 7a315d4
+  - task: T-02.02
+    commit: 54d6bac
+  - task: T-02.03
+    commit: 05188a2
+  - task: T-02.04
+    commit: 1c17314
+  - task: T-03.01
+    commit: b11a3c2
+  - task: T-03.02
+    commit: f359976
+  - task: T-03.03
+    commit: fdd518d
+  - task: T-03.04
+    commit: 582b863
+  - task: T-03.05
+    commit: f0f7d7f
+  - task: T-03.06
+    commit: d040dd0
+  - task: T-03.07
+    commit: d6b3a91
+  - task: T-03.08
+    commit: f66e8e1
+  - task: T-03.09
+    commit: be9f55d
+  - task: T-04.01
+    commit: a35f3d7
+  - task: T-04.02
+    commit: 7e17a01
+  - task: T-04.03
+    commit: 8d2d36d
+  - task: T-04.04
+    commit: c78d0ed
+  - task: T-04.05
+    commit: 0a8c563
+  - task: T-04.06
+    commit: ec72391
+  - task: T-05.01
+    commit: b2d93f1
+  - task: T-05.02
+    commit: 5569a44
+  - task: T-05.03
+    commit: ee3ba9f
+  - task: T-05.04
+    commit: f0278cf
+  - task: T-06.01
+    commit: 4b1ade3
+  - task: T-06.02
+    commit: 2e33309
+  - task: T-06.03
+    commit: 9066e83
+  - task: T-06.04
+    commit: 6c63976
+  - task: T-06.05
+    commit: 470474d
+  - task: T-06.06
+    commit: e1247b6
+  - task: T-07.01
+    commit: e754e2a
+  - task: T-07.02
+    commit: 6a6892a
+  - task: T-07.03
+    commit: 16dad5e
+  - task: T-07.04
+    commit: 2eab7e7
+  - task: T-07.04
+    commit: c5909ae
 modulo_afetado: [apresentacao, aplicacao, infraestrutura, banco, testes, documentacao]
 arquivos_alterados: [".env.example", "README.md", "docs/conhecimento-arquivos-e-texto/00-AUDITORIA.md", "docs/conhecimento-arquivos-e-texto/00-BLOQUEIOS.md", "docs/conhecimento-arquivos-e-texto/00-DECISOES.md", "docs/conhecimento-arquivos-e-texto/BRIEFING-BUILDX.md", "docs/conhecimento-arquivos-e-texto/FECHAMENTO.md", "docs/conhecimento-arquivos-e-texto/ORQUESTRADOR.md", "docs/conhecimento-arquivos-e-texto/RELATORIO-FEATURE.md", "docs/conhecimento-arquivos-e-texto/VERIFICACAO-VISUAL.md", "docs/conhecimento-arquivos-e-texto/base/00-INDICE.md", "docs/conhecimento-arquivos-e-texto/base/00-LACUNAS.md", "docs/conhecimento-arquivos-e-texto/base/banco-armazenamento-e-ambiente.md", "docs/conhecimento-arquivos-e-texto/base/extracao-bibliotecas.md", "docs/conhecimento-arquivos-e-texto/base/interface-do-agente-e-conhecimento.md", "docs/conhecimento-arquivos-e-texto/base/servicos-handlers-e-fila.md", "docs/conhecimento-arquivos-e-texto/sprint-01/fases.md", "docs/conhecimento-arquivos-e-texto/sprint-01/sprint.md", "docs/conhecimento-arquivos-e-texto/sprint-01/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-02/fases.md", "docs/conhecimento-arquivos-e-texto/sprint-02/sprint.md", "docs/conhecimento-arquivos-e-texto/sprint-02/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-03/fases.md", "docs/conhecimento-arquivos-e-texto/sprint-03/sprint.md", "docs/conhecimento-arquivos-e-texto/sprint-03/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-04/fases.md", "docs/conhecimento-arquivos-e-texto/sprint-04/sprint.md", "docs/conhecimento-arquivos-e-texto/sprint-04/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-05/fases.md", "docs/conhecimento-arquivos-e-texto/sprint-05/sprint.md", "docs/conhecimento-arquivos-e-texto/sprint-05/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-06/fases.md", "docs/conhecimento-arquivos-e-texto/sprint-06/sprint.md", "docs/conhecimento-arquivos-e-texto/sprint-06/tasks.md", "docs/conhecimento-arquivos-e-texto/sprint-07/fases.md", "docs/conhecimento-arquivos-e-texto/sprint-07/sprint.md", "docs/conhecimento-arquivos-e-texto/sprint-07/tasks.md", "docs/entregas/conhecimento-arquivos-e-texto/ATENCAO.md", "docs/entregas/conhecimento-arquivos-e-texto/ENTREGA.md", "docs/entregas/conhecimento-arquivos-e-texto/PR.md", "docs/entregas/conhecimento-arquivos-e-texto/QA-PACOTE.md", "docs/projeto/MAPA.md", "docs/projeto/PREMISSAS.md", "docs/projeto/PROJETO.md", "docs/projeto/RECURSAO.md", "docs/stack/CONVENCOES.md", "docs/stack/LACUNAS.md", "package-lock.json", "package.json", "prisma/migrations/20260930180000_fontes/migration.sql", "prisma/schema.prisma", "prisma/seed.ts", "src/app/(sistema)/agentes/[id]/conhecimento/[fonteId]/loading.tsx", "src/app/(sistema)/agentes/[id]/conhecimento/[fonteId]/page.tsx", "src/app/(sistema)/agentes/[id]/conhecimento/loading.tsx", "src/app/(sistema)/agentes/[id]/conhecimento/page.tsx", "src/app/api/agentes/[id]/fontes/[fonteId]/reprocessar/route.ts", "src/app/api/agentes/[id]/fontes/[fonteId]/route.ts", "src/app/api/agentes/[id]/fontes/resposta.ts", "src/app/api/agentes/[id]/fontes/route.ts", "src/app/api/agentes/[id]/fontes/texto/route.ts", "src/componentes/AdicionarFontes.tsx", "src/componentes/BotaoExcluirFonte.tsx", "src/componentes/CartoesDeResumo.tsx", "src/componentes/FormularioDeTexto.tsx", "src/componentes/Icones.tsx", "src/componentes/LinhaDeFonte.tsx", "src/componentes/ListaDeTrechos.tsx", "src/componentes/PainelDeConhecimento.tsx", "src/componentes/ZonaDeArquivos.tsx", "src/componentes/abas-do-agente.ts", "src/componentes/conhecimento-logica.ts", "src/componentes/enviar-arquivo.ts", "src/componentes/estado-dos-envios.ts", "src/componentes/fonte-da-tela.ts", "src/componentes/itens-de-menu.ts", "src/componentes/opcoes-de-fonte.ts", "src/estilos/global.css", "src/instrumentation.ts", "src/lib/ambiente.ts", "src/lib/armazenamento.ts", "src/lib/extracao/conteudo.ts", "src/lib/extracao/csv.ts", "src/lib/extracao/docx.ts", "src/lib/extracao/formatos.ts", "src/lib/extracao/html.ts", "src/lib/extracao/index.ts", "src/lib/extracao/json.ts", "src/lib/extracao/legenda.ts", "src/lib/extracao/limites.ts", "src/lib/extracao/pdf.ts", "src/lib/extracao/texto.ts", "src/lib/extracao/zip.ts", "src/servicos/agentes.ts", "src/servicos/fontes-fila.ts", "src/servicos/fontes.ts", "src/servicos/trechos.ts", "tests/abas-do-agente.test.tsx", "tests/adicionar-fontes.test.tsx", "tests/agentes.test.ts", "tests/ajuda.ts", "tests/ambiente.test.ts", "tests/apoio/fixtures-fontes.ts", "tests/apoio/fontes.ts", "tests/apoio/gerar-fixtures.ts", "tests/apoio/servidor.ts", "tests/armazenamento.test.ts", "tests/chat-de-teste.test.tsx", "tests/conhecimento-estilos.test.ts", "tests/conhecimento-logica.test.ts", "tests/conhecimento-paginas.test.tsx", "tests/dependencias-extracao.test.ts", "tests/estado-dos-envios.test.ts", "tests/extracao-conteudo.test.ts", "tests/extracao-docx.test.ts", "tests/extracao-formatos.test.ts", "tests/extracao-html.test.ts", "tests/extracao-pdf.test.ts", "tests/extracao-planilha-json.test.ts", "tests/extracao-texto.test.ts", "tests/extracao-zip.test.ts", "tests/extracao.test.ts", "tests/fixtures-fontes.test.ts", "tests/fixtures/escaneado.pdf", "tests/fixtures/exemplo.csv", "tests/fixtures/exemplo.docx", "tests/fixtures/exemplo.html", "tests/fixtures/exemplo.json", "tests/fixtures/exemplo.md", "tests/fixtures/exemplo.pdf", "tests/fixtures/exemplo.srt", "tests/fixtures/exemplo.txt", "tests/fixtures/exemplo.vtt", "tests/fontes-arquivos.test.ts", "tests/fontes-ciclo.test.ts", "tests/fontes-fila-execucao.test.ts", "tests/fontes-fila.test.ts", "tests/fontes-modelo.test.ts", "tests/fontes-rota-ciclo.test.ts", "tests/fontes-rota-formatos.test.ts", "tests/fontes-rota-upload.test.ts", "tests/fontes-rota.test.ts", "tests/fontes.test.ts", "tests/instrumentacao.test.ts", "tests/painel-de-conhecimento.test.tsx", "tests/projeto.test.ts", "tests/rotas.test.ts", "tests/seed.test.ts", "tests/setup.ts", "tests/trechos.test.ts"]
 faixa_atencao:
@@ -329,7 +405,7 @@ pr_url: null
 pr_estado: null
 criado_em: 2026-09-30
 atualizado_em: 2026-09-30
-entregue_em: null
+entregue_em: 2026-09-30
 ---
 
 # Entrega — Base de conhecimento, arquivos e textos
@@ -354,3 +430,10 @@ Branch aberta a partir de `feat/conversa-de-teste` (PRs empilhados; base indicad
 - T-06.05: entrou um módulo não previsto, `src/componentes/enviar-arquivo.ts` (envio por XMLHttpRequest, para ter progresso por arquivo, e `interpretarRespostaDoEnvio`, pura e testada).
 - T-07.03: `tests/rotas.test.ts` (FT-03) contava duas abas na página do agente; com a aba Conhecimento são três. A falha só apareceu depois do `npm run build` da verificação visual, porque o teste de rotas roda contra o build. Ajustado o número.
 - Portão E2 (primeira rodada): V9 acusou os 14 arquivos `sprint.md` e `fases.md` das sprints 01 a 07, criados na F3 e não declarados em nenhuma task. Declarados em `arquivos.cria` da T-07.04 (fechamento no laço do buildx).
+
+## Registro da entrega (E8)
+
+- Portão de prontidão: PRONTO (segunda rodada; a primeira acusou V9, corrigido em `docs/entregas/conhecimento-arquivos-e-texto/ENTREGA.md`, seção Desvios).
+- Atenção humana: 20 olho obrigatório, 35 leitura rápida, 95 dispensável, em [ATENCAO.md](ATENCAO.md).
+- Pacote de QA: [QA-PACOTE.md](QA-PACOTE.md), 10 casos. Descrição do PR: [PR.md](PR.md).
+- Push: não feito. O repositório não tem remoto configurado (`git remote -v` vazio); a mergex não cria repositório nem pede credencial. PR: não aberto; para abrir, basta criar o remoto, subir a branch `feat/conhecimento-arquivos-e-texto` e usar `PR.md` como descrição (a base é `feat/conversa-de-teste`).
