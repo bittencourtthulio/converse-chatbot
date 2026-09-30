@@ -11,7 +11,7 @@ tasks:
   - id: T-02.01
     titulo: "Termos, stopwords e expressao MATCH"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Escrever as funcoes puras extrairTermos e montarExpressaoMatch."
     arquivos:
       cria: ["src/servicos/recuperacao-termos.ts", "tests/recuperacao-termos.test.ts"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/recuperacao-termos.test.ts passa com ao menos 12 casos, incluindo termos de 4+ caracteres com prefixo e os de 2 e 3 sem prefixo."
     depende_de: ["T-01.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-02.02
     titulo: "buscarTrechos com filtros e BM25"
     fase: F-02.2
@@ -88,7 +88,9 @@ teste_funcional: extrairTermos('Qual o HORÁRIO de atendimento?') devolve ['hora
 criterio_aceite: tests/recuperacao-termos.test.ts passa com ao menos 12 casos, incluindo termos de 4+ caracteres com prefixo e os de 2 e 3 sem prefixo.
 depende_de: ["T-01.03"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial: recuperacao-termos 22 passed
 ```
 
 ---
