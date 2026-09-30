@@ -23,7 +23,8 @@ atencao:
   leitura_rapida: 0
   dispensavel: 0
 portao: null
-desvios: []
+desvios:
+  - "T-03.01: tests/apoio/chat.ts (arquivo novo: cenario e coletor de eventos reutilizaveis pelos testes do chat, FT-06 e FT-07, nao previsto)"
 push_feito: false
 pr_url: null
 pr_estado: null
