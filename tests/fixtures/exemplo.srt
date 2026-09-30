@@ -1,0 +1,11 @@
+1
+00:00:01,000 --> 00:00:04,000
+Bem-vindo à Loja Exemplo.
+
+2
+00:00:04,500 --> 00:00:08,000
+Hoje vamos falar da <i>política de troca</i>.
+
+3
+00:00:08,500 --> 00:00:12,000
+A troca vale por sete dias.

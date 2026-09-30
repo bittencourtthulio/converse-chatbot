@@ -1,0 +1,7 @@
+Loja Exemplo
+
+A Loja Exemplo vende material de escritório.
+
+O horário de atendimento é de segunda a sexta, das 9h às 18h.
+
+A política de troca permite devolver produtos em até 7 dias.

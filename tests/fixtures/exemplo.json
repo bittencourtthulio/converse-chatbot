@@ -1,0 +1,17 @@
+{
+  "loja": "Loja Exemplo",
+  "horario": {
+    "abre": "09:00",
+    "fecha": "18:00"
+  },
+  "produtos": [
+    {
+      "nome": "Caderno",
+      "preco": 12.9
+    },
+    {
+      "nome": "Caneta azul",
+      "preco": 2.5
+    }
+  ]
+}

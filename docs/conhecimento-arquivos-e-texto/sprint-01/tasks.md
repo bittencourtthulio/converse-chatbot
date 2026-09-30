@@ -41,7 +41,7 @@ tasks:
   - id: T-01.03
     titulo: "Fixtures de texto e gerador"
     fase: F-01.2
-    status: pendente
+    status: concluida
     objetivo: "Gerar por codigo as fixtures textuais dos formatos e conferir que as commitadas em tests/fixtures/ sao iguais."
     arquivos:
       cria: ["tests/apoio/fixtures-fontes.ts", "tests/apoio/gerar-fixtures.ts", "tests/fixtures-fontes.test.ts", "tests/fixtures/exemplo.txt", "tests/fixtures/exemplo.md", "tests/fixtures/exemplo.csv", "tests/fixtures/exemplo.html", "tests/fixtures/exemplo.json", "tests/fixtures/exemplo.srt", "tests/fixtures/exemplo.vtt"]
@@ -51,12 +51,12 @@ tasks:
     criterio_aceite: "tests/fixtures-fontes.test.ts passa e os sete arquivos existem em tests/fixtures/."
     depende_de: ["T-01.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-01.04
     titulo: "Fixtures de PDF e DOCX validos"
     fase: F-01.2
-    status: pendente
+    status: concluida
     objetivo: "Gerar um PDF com texto, um PDF sem texto e um DOCX minimo validos por codigo."
     arquivos:
       cria: ["tests/fixtures/exemplo.pdf", "tests/fixtures/escaneado.pdf", "tests/fixtures/exemplo.docx"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "tests/fixtures-fontes.test.ts passa com os tres casos novos e os tres arquivos existem em tests/fixtures/."
     depende_de: ["T-01.02", "T-01.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
 ---
 
 # Tasks — Sprint 01
@@ -126,7 +126,9 @@ teste_funcional: gerarFixtures() devolve os sete formatos textuais com texto fic
 criterio_aceite: tests/fixtures-fontes.test.ts passa e os sete arquivos existem em tests/fixtures/.
 depende_de: ["T-01.01"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 588 passed, 0 failed
 ```
 
 ---
@@ -143,5 +145,7 @@ teste_funcional: escaneado.pdf abre no unpdf e devolve texto vazio, e exemplo.do
 criterio_aceite: tests/fixtures-fontes.test.ts passa com os tres casos novos e os tres arquivos existem em tests/fixtures/.
 depende_de: ["T-01.02", "T-01.03"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 588 passed, 0 failed
 ```
