@@ -17,6 +17,7 @@ export type NomeDeIcone =
   | 'sucesso'
   | 'informacao'
   | 'conversa'
+  | 'integracoes'
 
 export interface ItemDeMenu {
   rotulo: string
@@ -44,6 +45,12 @@ export const GRUPOS_DE_MENU: GrupoDeMenu[] = [
         rotulo: 'Usuários',
         href: '/configuracoes/usuarios',
         icone: 'usuarios',
+        somenteAdmin: true,
+      },
+      {
+        rotulo: 'Integrações',
+        href: '/configuracoes/integracoes',
+        icone: 'integracoes',
         somenteAdmin: true,
       },
       { rotulo: 'Meu perfil', href: '/perfil', icone: 'perfil' },

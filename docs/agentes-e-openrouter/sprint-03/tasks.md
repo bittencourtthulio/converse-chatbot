@@ -55,7 +55,7 @@ tasks:
   - id: T-03.03
     titulo: "Item Integracoes no menu"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar o item Integracoes (somente admin) ao grupo Configuracoes."
     arquivos:
       cria: []
@@ -65,8 +65,8 @@ tasks:
     criterio_aceite: "O teste de menu passa e o icone novo existe em Icones.tsx."
     depende_de: [T-01.01]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-03.04
     titulo: "Tela Integracoes"
     fase: F-03.1
@@ -146,7 +146,7 @@ flowchart LR
   classDef critico stroke-width:3px
   class T_03_01 concluida
   class T_03_02 concluida
-  class T_03_03 pendente
+  class T_03_03 concluida
   class T_03_04 pendente
   class T_03_05 pendente
 ```
@@ -207,7 +207,10 @@ teste_funcional: admin ve Integracoes em /configuracoes/integracoes, usuario com
 criterio_aceite: O teste de menu passa e o icone novo existe em Icones.tsx.
 depende_de: [T-01.01]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: menu 10 passed; tsc e lint 0
 ```
 
 ---

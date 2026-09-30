@@ -19,6 +19,15 @@ describe('itens de menu', () => {
     expect(comum).toEqual(expect.arrayContaining(['Painel', 'Meu perfil']))
   })
 
+  it('só admin vê Integrações, em /configuracoes/integracoes, no grupo Configurações', () => {
+    const doGrupo = (admin: boolean) =>
+      gruposVisiveis(admin).find((g) => g.titulo === 'Configurações')?.itens ?? []
+    expect(doGrupo(false).map((i) => i.rotulo)).not.toContain('Integrações')
+    const item = doGrupo(true).find((i) => i.rotulo === 'Integrações')
+    expect(item?.href).toBe('/configuracoes/integracoes')
+    expect(item?.somenteAdmin).toBe(true)
+  })
+
   it('as rotas são únicas e começam com barra', () => {
     const rotas = GRUPOS_DE_MENU.flatMap((g) => g.itens.map((i) => i.href))
     expect(new Set(rotas).size).toBe(rotas.length)
@@ -45,6 +54,10 @@ describe('título por rota (migalhas)', () => {
     expect(migalhasDaRota('/')).toEqual(['Painel'])
     expect(migalhasDaRota('/configuracoes/usuarios')).toEqual(['Configurações', 'Usuários'])
     expect(migalhasDaRota('/perfil')).toEqual(['Configurações', 'Meu perfil'])
+    expect(migalhasDaRota('/configuracoes/integracoes')).toEqual([
+      'Configurações',
+      'Integrações',
+    ])
   })
 
   it('rota fora do menu herda a do pai', () => {

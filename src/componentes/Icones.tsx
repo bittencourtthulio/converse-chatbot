@@ -67,6 +67,12 @@ const FORMAS: Record<NomeDeIcone, React.ReactNode> = {
       <path d="M12 16v-4M12 8h.01" />
     </>
   ),
+  integracoes: (
+    <>
+      <circle cx="7.5" cy="15.5" r="4.5" />
+      <path d="m10.7 12.3 9.8-9.8M17 6l3 3M14 9l2 2" />
+    </>
+  ),
   conversa: <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z" />,
 }
 
