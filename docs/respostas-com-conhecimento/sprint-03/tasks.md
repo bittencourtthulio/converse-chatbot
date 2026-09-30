@@ -11,7 +11,7 @@ tasks:
   - id: T-03.01
     titulo: "Prompt fundamentado"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Escrever montarMaterialDeConsulta, montarMaterialSemResultado e o gerador de marcador aleatorio em chat-prompt.ts."
     arquivos:
       cria: ["tests/chat-prompt-fundamentado.test.ts"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/chat-prompt-fundamentado.test.ts e tests/chat-prompt.test.ts passam, o orcamento de 6000 caracteres corta do menos relevante e o trecho unico maior que o orcamento e truncado."
     depende_de: ["T-02.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-03.02
     titulo: "Fontes da resposta como funcoes puras"
     fase: F-03.1
@@ -103,7 +103,9 @@ teste_funcional: Com trechos numerados, o bloco tem marcador de abertura e de fe
 criterio_aceite: tests/chat-prompt-fundamentado.test.ts e tests/chat-prompt.test.ts passam, o orcamento de 6000 caracteres corta do menos relevante e o trecho unico maior que o orcamento e truncado.
 depende_de: ["T-02.02"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial: chat-prompt-fundamentado + chat-prompt 20 passed
 ```
 
 ---
