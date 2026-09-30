@@ -11,7 +11,7 @@ tasks:
   - id: T-02.01
     titulo: "Servico de configuracao: salvar e obter"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Implementar obterConfiguracao e salvarConfiguracao com zod e autor obrigatorio."
     arquivos:
       cria: ["src/servicos/chat-publico-config.ts", "tests/chat-publico-config.test.ts", "docs/chat-embutido/sprint-02/sprint.md", "docs/chat-embutido/sprint-02/fases.md", "docs/chat-embutido/sprint-02/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/chat-publico-config.test.ts passa com ao menos 14 casos e recusa autor nulo com nao autenticado."
     depende_de: ["T-01.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-02.02
     titulo: "Leitura publica e dominios do embed"
     fase: F-02.1
@@ -103,7 +103,7 @@ teste_funcional: "salvarConfiguracao recusa cor 'azul', aviso de 301 caracteres,
 criterio_aceite: "tests/chat-publico-config.test.ts passa com ao menos 14 casos e recusa autor nulo com nao autenticado."
 depende_de: ["T-01.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: verde — 1175 passed
 ```
 
 ---
