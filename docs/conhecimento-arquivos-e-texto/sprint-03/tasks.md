@@ -131,7 +131,7 @@ tasks:
   - id: T-03.09
     titulo: "Fachada extrairTexto"
     fase: F-03.3
-    status: pendente
+    status: concluida
     objetivo: "Despachar por formato, limitar o texto e o tempo e normalizar qualquer excecao."
     arquivos:
       cria: ["src/lib/extracao/index.ts", "tests/extracao.test.ts"]
@@ -141,8 +141,8 @@ tasks:
     criterio_aceite: "tests/extracao.test.ts passa e src/lib/extracao/ nao importa next/* nem src/servicos."
     depende_de: ["T-03.04", "T-03.05", "T-03.06", "T-03.07", "T-03.08"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
 ---
 
 # Tasks — Sprint 03
@@ -315,5 +315,7 @@ teste_funcional: Texto acima de 5000000 caracteres, extracao que passa do prazo 
 criterio_aceite: tests/extracao.test.ts passa e src/lib/extracao/ nao importa next/* nem src/servicos.
 depende_de: ["T-03.04", "T-03.05", "T-03.06", "T-03.07", "T-03.08"]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 757 passed, 0 failed
 ```
