@@ -1,0 +1,190 @@
+@import './tokens.css';
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  background: var(--bg-app);
+  color: var(--fg-default);
+  font-family: var(--font-ui);
+  font-size: var(--texto-base);
+  line-height: 1.4;
+}
+
+a { color: var(--fg-link); }
+
+/* Foco: borda, nunca sombra — a sombra é de outra linguagem visual. */
+:focus-visible {
+  outline: 1px solid var(--border-focus);
+  outline-offset: 1px;
+}
+
+/* ---------- estrutura ---------- */
+
+.aplicacao {
+  display: grid;
+  grid-template-columns: var(--largura-activitybar) var(--largura-sidebar) 1fr;
+  grid-template-rows: 1fr var(--altura-statusbar);
+  grid-template-areas:
+    'atividade lateral conteudo'
+    'status    status  status';
+  height: 100vh;
+}
+
+.barra-de-atividade {
+  grid-area: atividade;
+  background: var(--bg-activitybar);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 4px;
+}
+
+.barra-lateral {
+  grid-area: lateral;
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.barra-lateral h2 {
+  font-size: var(--texto-pequeno);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--fg-muted);
+  font-weight: 400;
+  margin: 12px 0 4px;
+  padding: 0 16px;
+}
+
+.conteudo {
+  grid-area: conteudo;
+  overflow-y: auto;
+  padding: 24px 32px;
+}
+
+.barra-de-status {
+  grid-area: status;
+  background: var(--statusbar-bg);
+  color: var(--statusbar-fg);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 12px;
+  font-size: var(--texto-pequeno);
+}
+
+.barra-de-status button {
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 0 4px;
+  height: var(--altura-statusbar);
+}
+.barra-de-status button:hover { background: rgb(255 255 255 / 0.12); }
+.barra-de-status .espaco { margin-left: auto; }
+
+/* ---------- navegação ---------- */
+
+.navegacao a {
+  display: block;
+  padding: 0 16px;
+  height: var(--altura-linha);
+  line-height: var(--altura-linha);
+  color: var(--fg-default);
+  text-decoration: none;
+}
+.navegacao a:hover { background: var(--bg-hover); }
+.navegacao a[aria-current='page'] { background: var(--bg-active); }
+.navegacao .aninhado { padding-left: 32px; }
+
+/* ---------- tipografia de tela ---------- */
+
+.titulo-da-tela { margin: 0 0 4px; font-size: 20px; font-weight: 600; }
+.subtitulo-da-tela { margin: 0 0 24px; color: var(--fg-muted); }
+
+/* ---------- controles ---------- */
+
+.campo { display: block; margin-bottom: 12px; max-width: 380px; }
+.campo span { display: block; margin-bottom: 4px; color: var(--fg-muted); }
+
+input[type='text'], input[type='email'], input[type='password'], select {
+  width: 100%;
+  height: var(--altura-controle);
+  padding: 0 6px;
+  background: var(--bg-input);
+  color: var(--fg-default);
+  border: 1px solid var(--border-input);
+  border-radius: var(--raio);
+  font: inherit;
+}
+input:focus, select:focus { border-color: var(--border-focus); outline: none; }
+
+button.primario, button.secundario {
+  height: var(--altura-controle);
+  padding: 0 14px;
+  border: none;
+  border-radius: var(--raio);
+  font: inherit;
+  cursor: pointer;
+}
+button.primario { background: var(--accent); color: var(--accent-fg); }
+button.primario:hover { background: var(--accent-hover); }
+button.secundario { background: var(--secondary); color: var(--secondary-fg); }
+button.secundario:hover { background: var(--secondary-hover); }
+button:disabled { opacity: 0.5; cursor: default; }
+
+/* ---------- tabela ---------- */
+
+table { width: 100%; border-collapse: collapse; }
+th {
+  text-align: left;
+  font-size: var(--texto-pequeno);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  font-weight: 400;
+  border-bottom: 1px solid var(--border);
+  padding: 4px 8px;
+}
+td { padding: 0 8px; height: var(--altura-linha); border-bottom: 1px solid var(--border); }
+tbody tr:hover { background: var(--bg-hover); }
+
+/* ---------- mensagens ---------- */
+
+.aviso {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--raio);
+  margin-bottom: 16px;
+  max-width: 380px;
+}
+.aviso.erro { background: var(--danger-bg); border-color: var(--danger); }
+.aviso.sucesso { background: var(--success-bg); border-color: var(--success); }
+
+.vazio { color: var(--fg-muted); padding: 24px 0; }
+
+/* ---------- celular ---------- */
+
+@media (max-width: 768px) {
+  .aplicacao {
+    grid-template-columns: 1fr;
+    grid-template-areas: 'conteudo' 'status';
+  }
+  .barra-de-atividade, .barra-lateral { display: none; }
+  .aplicacao.gaveta-aberta {
+    grid-template-columns: var(--largura-activitybar) 1fr;
+    grid-template-areas: 'atividade lateral' 'status status';
+  }
+  .aplicacao.gaveta-aberta .barra-de-atividade,
+  .aplicacao.gaveta-aberta .barra-lateral { display: block; }
+  .aplicacao.gaveta-aberta .conteudo { display: none; }
+  .navegacao a, input, button.primario, button.secundario { min-height: 44px; }
+}

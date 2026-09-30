@@ -1,0 +1,120 @@
+/*
+ * tokens.css — Exemplo de tokens para cartografia visual
+ *
+ * Este arquivo e um EXEMPLO. O cartografo-visual analisa os tokens
+ * que JA EXISTEM no projeto e os documenta. Este arquivo serve como
+ * referencia do formato esperado.
+ *
+ * Formato: HSL triplet sem hsl(), sem virgulas — necessario para
+ * variantes de opacidade do Tailwind (bg-primary/10, text-primary/60).
+ *
+ * Tiers (ver references/02-cartografia.md):
+ *   Tier 1 — Global (raw): valor bruto, sem semantica
+ *   Tier 2 — Alias (semantico): intencao, referencia um global
+ *   Tier 3 — Componente: escopo de uso especifico
+ * Componente nunca referencia raw direto — sempre via alias.
+ */
+
+@layer base {
+  :root {
+    /* === TIER 1: GLOBAL (raw) === */
+    --gray-50: 210 40% 98%;
+    --gray-900: 222.2 84% 4.9%;
+    --gray-950: 222.2 47.4% 11.2%;
+
+    /* === TIER 2: ALIAS (semantico) === */
+
+    /* Superficies */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;        /* var(--gray-900) */
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    /* Marca */
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --primary-glow: 222.2 47.4% 21.2%;  /* variante dark */
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    /* Estado */
+    --success: 142 72% 39%;
+    --success-foreground: 0 0% 98%;
+    --warning: 43 96% 56%;
+    --warning-foreground: 0 0% 9%;
+    --destructive: 4 90% 58%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Borda e foco */
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    /* Raio */
+    --radius: 0.5rem;
+
+    /* Cores de destaque (vocabulario fechado) */
+    --emerald: 160 84% 39%;
+    --sky: 199 89% 48%;
+    --violet: 263 70% 50%;
+    --amber: 38 92% 50%;
+    --rose: 347 77% 50%;
+  }
+
+  /* === TIER 2: ALIAS — tema dark (sobrescreve o mesmo vocabulario) === */
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary-glow: 217.2 91.2% 59.8%;  /* variante mais clara para dark */
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --success: 142 72% 45%;
+    --success-foreground: 0 0% 98%;
+    --warning: 38 92% 60%;
+    --warning-foreground: 0 0% 9%;
+    --destructive: 0 62.8% 50.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+
+    --emerald: 160 84% 50%;
+    --sky: 199 89% 60%;
+    --violet: 263 70% 60%;
+    --amber: 38 92% 60%;
+    --rose: 347 77% 60%;
+  }
+
+  /* === TIER 3: COMPONENTE (escopo especifico) === */
+  /* Componente referencia alias, nunca raw:
+   *   certo:   --button-bg-primary: var(--primary)
+   *   errado:  --button-bg-primary: 222.2 47.4% 11.2%   (drift de tier)
+   */
+}
+
+/* === DENSIDADE (painel SaaS) === */
+html:has(.app-shell) {
+  font-size: 90%;
+}
+
+/* === NUMEROS COMPARAVEIS === */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}

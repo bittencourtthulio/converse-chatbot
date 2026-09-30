@@ -1,0 +1,22 @@
+node_modules/
+.next/
+out/
+build/
+
+# banco local e o arquivo de teste
+*.db
+*.db-journal
+prisma/dev.db*
+prisma/test.db*
+
+# segredo
+.env
+.env.local
+
+.DS_Store
+*.tsbuildinfo
+next-env.d.ts
+
+# client do Prisma: gerado por `prisma generate`, reconstruível
+src/gerado/
+tsconfig.tsbuildinfo
