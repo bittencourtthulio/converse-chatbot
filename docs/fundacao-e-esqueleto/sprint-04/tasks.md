@@ -70,7 +70,7 @@ tasks:
   - id: T-04.04
     titulo: "Verificacao visual nos dois temas e em 375px"
     fase: F-04.1
-    status: pendente
+    status: concluida
     objetivo: "Abrir o app e conferir login e painel claro, escuro e a 375px."
     arquivos:
       cria: ["docs/fundacao-e-esqueleto/VERIFICACAO-VISUAL.md"]
@@ -80,8 +80,8 @@ tasks:
     criterio_aceite: "O arquivo de verificacao existe com o resultado de cada captura ou com a limitacao declarada."
     depende_de: [T-04.02, T-04.03]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
 ---
 
 # Plano — Sprint 04 — Telas: componentes de pagina, login, painel e configuracoes
@@ -136,7 +136,7 @@ flowchart LR
   class T_04_01 concluida
   class T_04_02 concluida
   class T_04_03 concluida
-  class T_04_04 pendente
+  class T_04_04 concluida
 ```
 
 ## Tasks
@@ -215,6 +215,9 @@ teste_funcional: Capturas de login e painel nos temas claro e escuro e a 375px, 
 criterio_aceite: O arquivo de verificacao existe com o resultado de cada captura ou com a limitacao declarada.
 depende_de: [T-04.02, T-04.03]
 paralelizavel: false
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: parcial
+resultado: servidor de pe, /entrar e / 200; capturas em VERIFICACAO-VISUAL.md; suite 180 passed
 ```
 

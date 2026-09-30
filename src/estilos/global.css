@@ -316,6 +316,7 @@ a { color: var(--accent-text); }
 }
 .cartao-corpo { padding: 24px; }
 .cartao-estreito { max-width: 520px; }
+.cartao-corpo > .linha:first-child { margin-bottom: 16px; }
 
 /* ---------- botões ---------- */
 
@@ -545,6 +546,8 @@ tbody tr:hover { background: var(--bg-hover); }
 
   .cabecalho { padding: 0 12px; }
   .menu-do-usuario-nome { display: none; }
+  /* no celular só o título da página, sem o grupo antes dele */
+  .migalhas > :not([aria-current='page']) { display: none; }
   .conteudo { padding: 24px 16px 48px; }
   .cartao-corpo { padding: 20px; }
 
