@@ -71,7 +71,7 @@ tasks:
   - id: T-03.05
     titulo: "Adaptadores de CSV e JSON"
     fase: F-03.2
-    status: pendente
+    status: concluida
     objetivo: "Extrair CSV como registros coluna: valor e JSON achatado em caminho: valor."
     arquivos:
       cria: ["src/lib/extracao/csv.ts", "src/lib/extracao/json.ts", "tests/extracao-planilha-json.test.ts"]
@@ -81,8 +81,8 @@ tasks:
     criterio_aceite: "tests/extracao-planilha-json.test.ts passa."
     depende_de: ["T-03.02"]
     paralelizavel: true
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-03.06
     titulo: "Adaptador de HTML"
     fase: F-03.2
@@ -239,7 +239,9 @@ teste_funcional: O CSV 'nome;idade' com linha 'Ana;30' vira 'Colunas: nome, idad
 criterio_aceite: tests/extracao-planilha-json.test.ts passa.
 depende_de: ["T-03.02"]
 paralelizavel: true
-status: pendente
+status: concluida
+concluida_em: 2026-09-30
+suite: 720 passed, 0 failed
 ```
 
 ---
