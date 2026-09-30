@@ -4,12 +4,12 @@ expx_tool: buildx
 kind: premissas
 projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-09-30
-total: 37
+total: 40
 por_origem:
   catalogo_lacunas: 27
   briefing: 0
   decisao_de_stack: 7
-  f2_autonoma: 3
+  f2_autonoma: 6
   recursao: 0
 ---
 
@@ -504,6 +504,45 @@ entram no relatório final como o que o usuário precisa confirmar.
 **Etapa:** b4
 **Provisória:** false
 **Realizada em:** FT-01
+
+---
+
+### PR-38 — Parâmetros do adaptador do OpenRouter
+
+**Assunto:** F2 da FT-02 — PR-06 e PR-22, números que a premissa não dá
+**Decisão:** o adaptador (`src/lib/openrouter.ts`) lê `OPENROUTER_BASE_URL` (padrão `https://openrouter.ai/api/v1`) e `APP_URL` (padrão `http://localhost:3000`, enviada em `HTTP-Referer`); `X-Title` leva o nome do produto (`APP_NAME`). Chamadas curtas (lista de modelos, verificação de chave) têm timeout de 15 s; a conversa em stream tem 30 s até o primeiro byte e 120 s no total, e o chamador pode cancelar por `AbortSignal`. A lista de modelos fica em cache em memória por 5 minutos; se a chamada falha, devolve uma lista de reserva embutida (poucos modelos comuns) com a marca `reserva: true`, para o seletor não quebrar. O modelo padrão de um agente novo é `openai/gpt-4o-mini`. Erro do provedor vira `ErroDeAplicacao` em português (401 chave inválida, 402 saldo, 400/404 modelo, 429 limite, 5xx indisponível, tempo esgotado) sem repassar o corpo do provedor.
+**Por quê:** o PR-22 manda timeout e mensagem clara sem dar números; a lista de modelos é grande e pública, então cache curto evita chamada a cada abertura de tela, e a reserva mantém o cadastro de agente possível com o provedor fora do ar.
+**O que invalida:** se o provedor exigir prazos maiores para modelos de raciocínio lento (primeiro byte acima de 30 s), ou se a empresa quiser fixar o modelo padrão em outro.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-02
+
+---
+
+### PR-39 — Formato do segredo cifrado e da máscara
+
+**Assunto:** F2 da FT-02 — PR-14
+**Decisão:** o segredo é gravado como texto `v1:<iv>:<etiqueta>:<cifrado>` (base64url), AES-256-GCM, IV aleatório de 12 bytes por gravação; `ENCRYPTION_KEY` são 32 bytes em hexadecimal (64 caracteres) ou base64, validada só quando um segredo é gravado ou lido (ausente ou inválida lança erro claro; o resto do sistema segue de pé). A tela mostra só a máscara: os 6 primeiros caracteres, reticências e os 4 últimos (`sk-or-…a1b2`), calculada na gravação a partir da chave em claro e nunca da chave cifrada devolvida ao navegador; a máscara não fica no banco (é recalculada ao decifrar no servidor). Trocar `ENCRYPTION_KEY` invalida os segredos já gravados: a tela mostra "não foi possível ler a chave gravada, cadastre de novo".
+**Por quê:** versão no prefixo permite trocar de algoritmo depois sem quebrar os dados; máscara com prefixo e final ajuda o admin a reconhecer qual chave está cadastrada sem revelá-la.
+**O que invalida:** se a instalação usar cofre de segredos gerenciado (PR-14) ou precisar rotacionar `ENCRYPTION_KEY` sem recadastrar segredos (aí entra reencriptação em lote e chave versionada).
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-02
+
+---
+
+### PR-40 — Limites do cadastro de agente
+
+**Assunto:** F2 da FT-02 — PR-01 e PR-12, campos do agente
+**Decisão:** nome de 1 a 80 caracteres, instruções até 8000, mensagem inicial até 500 (vazia permitida), temperatura de 0 a 2 com padrão 0,7, modelo obrigatório (texto, até 200 caracteres). Qualquer usuário autenticado e ativo lista, cria, edita e exclui qualquer agente da instalação; a exclusão é definitiva, com confirmação na tela. Não há versionamento de instruções nem cota de agentes.
+**Por quê:** os números vêm do briefing da feature; a exclusão definitiva é a leitura mais simples de "exclui agentes" enquanto não há dado dependente (a base e as conversas só nascem nas features seguintes, que decidem o destino ao criar as suas tabelas).
+**O que invalida:** se as equipes precisarem de agentes isolados entre si (PR-12), ou se a empresa quiser lixeira e histórico de instruções.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-02
 
 ---
 
