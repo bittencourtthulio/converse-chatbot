@@ -56,7 +56,7 @@ tasks:
   - id: T-02.04
     titulo: "Servico do turno publico"
     fase: F-02.2
-    status: pendente
+    status: concluida
     objetivo: "Implementar validarVisitanteId, exigirAgenteAtivo, o turno do canal widget, a retomada das ultimas 50 mensagens e a reducao do evento fontes."
     arquivos:
       cria: ["src/servicos/chat-publico.ts", "tests/chat-publico.test.ts", "tests/apoio/publico.ts"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "tests/chat-publico.test.ts passa com ao menos 16 casos e nenhum evento publico contem trecho interno da base."
     depende_de: ["T-02.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-02.05
     titulo: "Tradutor SSE com mapeador de erro"
     fase: F-02.2
@@ -154,7 +154,7 @@ teste_funcional: "Visitante B nao continua a conversa do visitante A (404), agen
 criterio_aceite: "tests/chat-publico.test.ts passa com ao menos 16 casos e nenhum evento publico contem trecho interno da base."
 depende_de: ["T-02.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: verde — 1223 passed
 ```
 
 ---
