@@ -11,6 +11,12 @@ import { listar, resumo, trechosDaFonte } from '@/servicos/fontes'
 import { dividirEmTrechos } from '@/servicos/trechos'
 import { prisma } from '@/lib/prisma'
 import { senhaConfere } from '@/lib/senha'
+import {
+  configuracaoPublica,
+  dominiosDoEmbed,
+  obterConfiguracao,
+  salvarConfiguracao,
+} from '@/servicos/chat-publico-config'
 import { limparBanco } from './ajuda'
 
 function semear(ambienteExtra: Record<string, string> = {}) {
@@ -166,5 +172,41 @@ describe('fonte de exemplo coberta pelo índice de busca (FT-05, PR-50)', () => 
     expect(achados.map((a) => a.trechoId)).toEqual([...new Set(achados.map((a) => a.trechoId))])
     expect(achados[0]!.texto).toContain('segunda a sexta')
     await prisma.$executeRawUnsafe(`INSERT INTO trechos_fts(trechos_fts, rank) VALUES('integrity-check', 1)`)
+  })
+})
+
+describe('chat publicado do agente de exemplo (FT-06, PR-25)', () => {
+  beforeEach(limparBanco)
+
+  it('o agente de exemplo vem com o chat publicado, uma configuração só, mesmo semeando duas vezes', async () => {
+    expect(semear().status).toBe(0)
+    expect(semear().status).toBe(0)
+    expect(await prisma.configuracaoDoChat.count()).toBe(1)
+    const agente = await prisma.agente.findFirstOrThrow()
+    const c = await configuracaoPublica(agente.id)
+    expect(c).not.toBeNull()
+    expect(c).toMatchObject({ ativo: true, titulo: 'Assistente da Loja Exemplo', avatar: 'chat' })
+    expect(c?.sugestoes).toHaveLength(3)
+    expect(c?.avisoDePrivacidade?.texto).toMatch(/conversas/i)
+    expect(await dominiosDoEmbed(agente.id)).toEqual({ ativo: true, dominios: [] })
+  })
+
+  it('não desfaz o que alguém mudou na configuração do chat', async () => {
+    expect(semear().status).toBe(0)
+    const agente = await prisma.agente.findFirstOrThrow()
+    await prisma.configuracaoDoChat.update({ where: { agenteId: agente.id }, data: { ativo: false, titulo: 'Meu título' } })
+    expect(semear().status).toBe(0)
+    const c = await prisma.configuracaoDoChat.findUniqueOrThrow({ where: { agenteId: agente.id } })
+    expect(c).toMatchObject({ ativo: false, titulo: 'Meu título' })
+  })
+
+  it('a configuração semeada passa pela mesma validação do serviço (cor, limite, listas)', async () => {
+    expect(semear().status).toBe(0)
+    const agente = await prisma.agente.findFirstOrThrow()
+    const dono = await prisma.usuario.findFirstOrThrow()
+    const c = await obterConfiguracao({ id: dono.id, nome: dono.nome, email: dono.email, papel: dono.papel }, agente.id)
+    await expect(
+      salvarConfiguracao({ id: dono.id, nome: dono.nome, email: dono.email, papel: dono.papel }, agente.id, c),
+    ).resolves.toMatchObject({ cor: c.cor, limiteDiario: c.limiteDiario })
   })
 })

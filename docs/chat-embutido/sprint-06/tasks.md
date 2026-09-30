@@ -41,7 +41,7 @@ tasks:
   - id: T-06.03
     titulo: "Seed com o chat publicado"
     fase: F-06.2
-    status: pendente
+    status: concluida
     objetivo: "Fazer a seed criar a configuracao do chat do agente de exemplo, ativa e idempotente."
     arquivos:
       cria: []
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/seed.test.ts passa."
     depende_de: ["T-06.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
   - id: T-06.04
     titulo: "Rota da aba Publicar em producao"
     fase: F-06.2
@@ -122,7 +122,7 @@ teste_funcional: "configuracaoPublica do agente de exemplo devolve ativo true, t
 criterio_aceite: "tests/seed.test.ts passa."
 depende_de: ["T-06.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: verde — 1448 passed
 ```
 
 ---

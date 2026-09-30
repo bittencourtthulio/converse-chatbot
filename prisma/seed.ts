@@ -40,6 +40,22 @@ const AGENTE_DE_EXEMPLO = {
   mensagemInicial: 'Olá! Sou o assistente da Loja Exemplo. Como posso ajudar?',
 }
 
+// Chat embutido do agente de exemplo (FT-06, PR-25): já publicado, sem restrição de
+// domínio, para o roteiro de QA abrir a aba Publicar e a página do chat sem
+// configurar nada. Id do agente fixo, então `upsert` com `update` vazio é idempotente
+// e não desfaz edição de ninguém.
+const CHAT_DE_EXEMPLO = {
+  ativo: true,
+  titulo: 'Assistente da Loja Exemplo',
+  avatar: 'chat',
+  avisoDePrivacidade: 'As conversas podem ser guardadas para melhorar o atendimento. Não envie dados pessoais.',
+  sugestoes: JSON.stringify([
+    'Qual o horário de atendimento?',
+    'Como faço uma troca?',
+    'Quais formas de pagamento vocês aceitam?',
+  ]),
+}
+
 // Fonte de exemplo da base (FT-04, PR-25): texto fictício curto, já processado
 // pelo mesmo divisor do serviço, sem rodar a fila. Id fixo para a seed ser
 // idempotente; não é recriada se já existe (edição de alguém vale).
@@ -87,6 +103,12 @@ async function semear() {
     create: { ...AGENTE_DE_EXEMPLO, criadoPorId: admin.id },
   })
 
+  await prisma.configuracaoDoChat.upsert({
+    where: { agenteId: AGENTE_DE_EXEMPLO.id },
+    update: {},
+    create: { agenteId: AGENTE_DE_EXEMPLO.id, ...CHAT_DE_EXEMPLO },
+  })
+
   if (!(await prisma.fonte.findUnique({ where: { id: FONTE_DE_EXEMPLO.id } }))) {
     const bytes = Buffer.from(FONTE_DE_EXEMPLO.texto, 'utf8')
     const caminho = await criarArmazenamento(process.env.STORAGE_DIR ?? './storage').gravar(
@@ -130,6 +152,7 @@ async function semear() {
   }
   console.log(`  agente   ${AGENTE_DE_EXEMPLO.nome} (sem chave do OpenRouter)`)
   console.log(`  fonte    ${FONTE_DE_EXEMPLO.titulo} (já processada)`)
+  console.log('  chat     publicado no agente de exemplo (aba Publicar)')
 }
 
 semear()
