@@ -11,7 +11,7 @@ tasks:
   - id: T-04.01
     titulo: "executarExpurgo com fronteiras e lotes"
     fase: F-04.1
-    status: pendente
+    status: concluida
     objetivo: "Apagar conversas vencidas em lotes, atualizacoes antigas do Telegram e auditoria antiga, registrando so contagens."
     arquivos:
       cria: ["src/servicos/expurgo.ts", "tests/expurgo.test.ts", "docs/privacidade-e-auditoria/sprint-04/sprint.md", "docs/privacidade-e-auditoria/sprint-04/fases.md", "docs/privacidade-e-auditoria/sprint-04/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/expurgo.test.ts passa e o registro de expurgo nunca contem texto de conversa nem identificador."
     depende_de: ["T-03.03", "T-02.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-04.02
     titulo: "Agendador do expurgo e subida do servidor"
     fase: F-04.2
@@ -56,7 +56,7 @@ teste_funcional: "Com retencao 90 e relogio fixo a conversa exatamente no corte 
 criterio_aceite: "tests/expurgo.test.ts passa e o registro de expurgo nunca contem texto de conversa nem identificador."
 depende_de: ["T-03.03", "T-02.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/expurgo.test.ts 11 passed; so arquivos novos; suite inteira no fim da sprint
 ```
 
 ---
