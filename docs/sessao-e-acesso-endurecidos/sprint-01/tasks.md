@@ -41,7 +41,7 @@ tasks:
   - id: T-01.03
     titulo: "Login por formulario contra o servidor de producao"
     fase: F-01.2
-    status: pendente
+    status: concluida
     objetivo: "Criar o apoio que envia formularios de Server Action sem JavaScript a um next start e provar o login real com ele."
     arquivos:
       cria: ["tests/apoio/login-http.ts", "tests/apoio-login-http.test.ts"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/apoio-login-http.test.ts passa depois de npm run build."
     depende_de: ["T-01.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
 ---
 
 # Tasks — Sprint 01
@@ -107,5 +107,5 @@ teste_funcional: "Com a senha certa a resposta e 303 para / com Set-Cookie de ex
 criterio_aceite: "tests/apoio-login-http.test.ts passa depois de npm run build."
 depende_de: ["T-01.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/apoio-login-http.test.ts 3 passed contra next start na porta 3250
 ```
