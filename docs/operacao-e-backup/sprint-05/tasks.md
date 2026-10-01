@@ -26,7 +26,7 @@ tasks:
   - id: T-05.02
     titulo: "Backup sem temporarios, com permissao 0600 e retencao"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Excluir audio, segmentos e arquivos parcial do backup, gravar o arquivo com modo 0600 por arquivo parcial e renomeacao e aplicar BACKUP_MANTER so aos nomes do padrao."
     arquivos:
       cria: ["tests/backup-retencao.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/backup-lib.test.ts e tests/backup-retencao.test.ts passam e uma falha no meio da geracao nao deixa arquivo parcial."
     depende_de: ["T-05.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-05.03
     titulo: "Acao de auditoria backup_gerado"
     fase: F-05.2
@@ -148,7 +148,7 @@ teste_funcional: "Com BACKUP_MANTER 2 e cinco backups do padrao mais um arquivo 
 criterio_aceite: "tests/backup-lib.test.ts e tests/backup-retencao.test.ts passam e uma falha no meio da geracao nao deixa arquivo parcial."
 depende_de: ["T-05.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/backup-lib.test.ts e tests/backup-retencao.test.ts passam (18); achado: link simbólico pendente no storage quebrava o follow do tar, corrigido com espelho de links por arquivo listado
 ```
 
 ---

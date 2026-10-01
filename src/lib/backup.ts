@@ -195,29 +195,27 @@ export async function gerarBackup(opcoes: OpcoesDoBackup): Promise<ResultadoDoBa
     }
     await writeFile(path.join(trabalho, 'manifest.json'), `${JSON.stringify(manifesto, null, 2)}\n`)
 
-    // 3. O arquivo único. O storage entra por um link no diretório de trabalho (o tar tem uma raiz só)
-    //    e o filtro deixa passar apenas o que o manifesto lista: um arquivo que apareceu depois, um
-    //    temporário ou um link plantado no storage não entra.
-    if (temStorage) await symlink(storageDir, path.join(trabalho, 'storage'), 'dir')
-    const permitidos = new Set(['manifest.json', ...partes.map((p) => p.caminho)])
+    // 3. O arquivo único. O tar tem uma raiz só, então o diretório de trabalho espelha o storage com um link
+    //    simbólico por arquivo LISTADO (o `follow` do tar só segue esses). Um arquivo que apareceu depois,
+    //    um temporário ou um link plantado no storage não está no espelho, logo não entra.
+    const criadas = new Set<string>()
+    for (const parte of partes.slice(1)) {
+      const noEspelho = path.join(trabalho, ...parte.caminho.split('/'))
+      const pasta = path.dirname(noEspelho)
+      if (!criadas.has(pasta)) {
+        await mkdir(pasta, { recursive: true })
+        criadas.add(pasta)
+      }
+      await symlink(path.join(storageDir, ...parte.caminho.slice('storage/'.length).split('/')), noEspelho)
+    }
     const nome = await nomeLivre(backupDir, agora)
     const destino = path.join(backupDir, nome)
     parcial = `${destino}.parcial`
-    const empacotar = create(
-      {
-        gzip: true,
-        cwd: trabalho,
-        follow: true,
-        portable: true,
-        filter: (caminho: string, entrada: { isDirectory?: () => boolean; type?: string }) => {
-          const rel = caminho.replace(/^\.\//, '').replace(/\/$/, '')
-          const ehDiretorio = typeof entrada.isDirectory === 'function' ? entrada.isDirectory() : entrada.type === 'Directory'
-          if (ehDiretorio) return !rel.split('/').some((p) => TEMPORARIOS.has(p))
-          return permitidos.has(rel)
-        },
-      },
-      ['manifest.json', 'banco', ...(temStorage ? ['storage'] : [])],
-    )
+    const empacotar = create({ gzip: true, cwd: trabalho, follow: true, portable: true }, [
+      'manifest.json',
+      'banco',
+      ...(partes.length > 1 ? ['storage'] : []),
+    ])
     await pipeline(empacotar, createWriteStream(parcial, { mode: 0o600 }))
     await chmod(parcial, 0o600)
     await rename(parcial, destino)

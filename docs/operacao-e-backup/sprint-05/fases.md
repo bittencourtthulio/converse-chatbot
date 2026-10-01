@@ -10,7 +10,7 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-05.1
     titulo: "Biblioteca de backup"
-    status: em_andamento
+    status: concluido
     criterio_saida: "gerarBackup produz o arquivo com manifest, exclui temporarios, grava 0600 e aplica a retencao"
     paralelizavel: false
     paralela_com: []
@@ -65,7 +65,7 @@ flowchart LR
   classDef critico   stroke-width:3px
 
   class T_05_01 concluida
-  class T_05_02 pendente
+  class T_05_02 concluida
   class T_05_03 pendente
   class T_05_04 pendente
   class T_05_05 pendente
