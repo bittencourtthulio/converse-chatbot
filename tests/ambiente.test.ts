@@ -5,7 +5,7 @@ import { ambiente, MODELO_DE_TRANSCRICAO_PADRAO } from '@/lib/ambiente'
 
 const original = { ...process.env }
 afterEach(() => {
-  for (const chave of ['APP_NAME', 'TRUST_PROXY', 'MAX_TOKENS_RESPOSTA', 'MAX_UPLOAD_MB', 'TELEGRAM_API_BASE', 'TELEGRAM_PERMITIR_URL_NAO_HTTPS', 'MAX_VIDEO_MB', 'MAX_VIDEO_MINUTOS', 'FFMPEG_PATH', 'FFPROBE_PATH', 'OPENROUTER_MODELO_TRANSCRICAO', 'YOUTUBE_BASE', 'NODE_ENV']) {
+  for (const chave of ['APP_NAME', 'TRUST_PROXY', 'MAX_TOKENS_RESPOSTA', 'MAX_UPLOAD_MB', 'TELEGRAM_API_BASE', 'TELEGRAM_PERMITIR_URL_NAO_HTTPS', 'MAX_VIDEO_MB', 'MAX_VIDEO_MINUTOS', 'FFMPEG_PATH', 'FFPROBE_PATH', 'OPENROUTER_MODELO_TRANSCRICAO', 'YOUTUBE_BASE', 'AUDITORIA_RETENCAO_DIAS', 'NODE_ENV']) {
     if (original[chave] === undefined) delete process.env[chave]
     else process.env[chave] = original[chave]
   }
@@ -235,5 +235,24 @@ describe('vídeo, ffmpeg e YouTube (FT-08, PR-77)', () => {
   it('MAX_VIDEO_MINUTOS inválido lança erro claro', () => {
     process.env.MAX_VIDEO_MINUTOS = '0'
     expect(() => ambiente.maxVideoMinutos).toThrow(/MAX_VIDEO_MINUTOS/)
+  })
+})
+
+describe('retenção dos registros de auditoria (FT-10, PR-86)', () => {
+  it('sem AUDITORIA_RETENCAO_DIAS, são 365 dias', () => {
+    delete process.env.AUDITORIA_RETENCAO_DIAS
+    expect(ambiente.auditoriaRetencaoDias).toBe(365)
+  })
+
+  it('usa o valor informado', () => {
+    process.env.AUDITORIA_RETENCAO_DIAS = '30'
+    expect(ambiente.auditoriaRetencaoDias).toBe(30)
+  })
+
+  it('recusa zero, negativo e texto com erro claro', () => {
+    for (const ruim of ['0', '-5', 'abc']) {
+      process.env.AUDITORIA_RETENCAO_DIAS = ruim
+      expect(() => ambiente.auditoriaRetencaoDias).toThrow(/AUDITORIA_RETENCAO_DIAS/)
+    }
   })
 })

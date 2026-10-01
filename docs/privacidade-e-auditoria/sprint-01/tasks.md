@@ -41,18 +41,18 @@ tasks:
   - id: T-01.03
     titulo: "Variavel AUDITORIA_RETENCAO_DIAS"
     fase: F-01.2
-    status: pendente
+    status: concluida
     objetivo: "Ler a retencao dos registros de auditoria so em src/lib/ambiente.ts e documentar no exemplo de ambiente."
     arquivos:
       cria: []
-      altera: ["src/lib/ambiente.ts", ".env.example", "tests/ambiente.test.ts", "tests/projeto.test.ts"]
+      altera: ["src/lib/ambiente.ts", ".env.example", "tests/ambiente.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md"]
     teste_integracao: "tests/projeto.test.ts confere que .env.example documenta AUDITORIA_RETENCAO_DIAS sem valor secreto."
     teste_funcional: "ambiente.auditoriaRetencaoDias devolve 365 sem a variavel, 30 com 30 e lanca erro claro com 0, negativo ou texto."
     criterio_aceite: "tests/ambiente.test.ts e tests/projeto.test.ts passam e o valor padrao e 365."
     depende_de: ["T-01.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
 ---
 
 # Tasks — Sprint 01
@@ -99,12 +99,12 @@ titulo: "Variavel AUDITORIA_RETENCAO_DIAS"
 objetivo: "Ler a retencao dos registros de auditoria so em src/lib/ambiente.ts e documentar no exemplo de ambiente."
 arquivos:
   cria: []
-  altera: ["src/lib/ambiente.ts", ".env.example", "tests/ambiente.test.ts", "tests/projeto.test.ts"]
+  altera: ["src/lib/ambiente.ts", ".env.example", "tests/ambiente.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md"]
 teste_integracao: "tests/projeto.test.ts confere que .env.example documenta AUDITORIA_RETENCAO_DIAS sem valor secreto."
 teste_funcional: "ambiente.auditoriaRetencaoDias devolve 365 sem a variavel, 30 com 30 e lanca erro claro com 0, negativo ou texto."
 criterio_aceite: "tests/ambiente.test.ts e tests/projeto.test.ts passam e o valor padrao e 365."
 depende_de: ["T-01.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2267 passed, 0 failed (178 arquivos)
 ```
 

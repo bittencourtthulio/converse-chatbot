@@ -135,6 +135,13 @@ export const ambiente = {
   get openrouterModeloTranscricao(): string {
     return textoComPadrao('OPENROUTER_MODELO_TRANSCRICAO', MODELO_DE_TRANSCRICAO_PADRAO)
   },
+  /**
+   * Por quantos dias os registros de auditoria ficam guardados (FT-10, PR-86). Padrão 365;
+   * o expurgo automático apaga os mais antigos.
+   */
+  get auditoriaRetencaoDias(): number {
+    return inteiroComPadrao('AUDITORIA_RETENCAO_DIAS', 365)
+  },
   /** Endereço do YouTube; só o simulado de teste muda o padrão (PR-75, PR-77). */
   get youtubeBase(): string {
     return textoComPadrao('YOUTUBE_BASE', 'https://www.youtube.com').replace(/\/+$/, '')

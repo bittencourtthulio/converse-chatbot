@@ -78,6 +78,11 @@ describe('exemplo de ambiente', () => {
     expect(exemplo).toMatch(/ffmpeg/i)
   })
 
+  it('documenta a retenção dos registros de auditoria (FT-10), sem valor secreto', () => {
+    expect(exemplo).toContain('AUDITORIA_RETENCAO_DIAS')
+    expect(valorDe('AUDITORIA_RETENCAO_DIAS')).toBe('365')
+  })
+
   it('documenta a chave de criptografia e como gerá-la', () => {
     expect(exemplo).toContain('ENCRYPTION_KEY')
     expect(exemplo).toMatch(/randomBytes\(32\)/)
@@ -403,8 +408,8 @@ describe('convenções do vídeo (FT-08)', () => {
     ['src/servicos/integracoes.ts:184', /export async function modeloDeTranscricaoEfetivo/],
     ['src/servicos/integracoes.ts:197', /export async function salvarModeloDeTranscricao/],
     ['src/lib/ambiente.ts:115', /get maxVideoBytes/],
-    ['src/lib/ambiente.ts:139', /get youtubeBase/],
-    ['src/lib/ambiente.ts:149', /export const MODELO_DE_TRANSCRICAO_PADRAO/],
+    ['src/lib/ambiente.ts:146', /get youtubeBase/],
+    ['src/lib/ambiente.ts:156', /export const MODELO_DE_TRANSCRICAO_PADRAO/],
     ['src/lib/youtube.ts:54', /export function destinoPermitido/],
     ['src/lib/youtube.ts:75', /async function lerComLimite/],
     ['src/lib/youtube.ts:224', /export function escolherFaixa/],
