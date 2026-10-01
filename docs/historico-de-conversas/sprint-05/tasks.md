@@ -11,7 +11,7 @@ tasks:
   - id: T-05.01
     titulo: "Numeros e serie de 14 dias"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Implementar a agregacao SQL dos numeros e da serie diaria com dias vazios em zero e instante injetavel."
     arquivos:
       cria: ["src/servicos/painel.ts", "tests/painel-numeros.test.ts", "tests/painel-serie.test.ts", "docs/historico-de-conversas/sprint-05/sprint.md", "docs/historico-de-conversas/sprint-05/fases.md", "docs/historico-de-conversas/sprint-05/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/painel-numeros.test.ts e tests/painel-serie.test.ts passam."
     depende_de: ["T-04.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-05.02
     titulo: "Recentes, alerta e primeiros passos"
     fase: F-05.1
@@ -88,7 +88,7 @@ teste_funcional: "Sem dados tudo e zero e a serie tem 14 dias em zero, uma mensa
 criterio_aceite: "tests/painel-numeros.test.ts e tests/painel-serie.test.ts passam."
 depende_de: ["T-04.04"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/painel-numeros e painel-serie 12 passed; DateTime e texto ISO
 ```
 
 ---

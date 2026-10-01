@@ -49,7 +49,7 @@ flowchart LR
   classDef pendente  fill:#eceff1,stroke:#78909c,color:#263238
   classDef critico   stroke-width:3px
 
-  class T_05_01 pendente
+  class T_05_01 concluida
   class T_05_02 pendente
   class T_05_03 pendente
   class T_05_04 pendente
