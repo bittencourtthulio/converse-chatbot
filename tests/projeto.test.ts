@@ -538,3 +538,79 @@ describe('convenções do histórico de conversas e do painel (FT-09)', () => {
     expect(readme).toMatch(/fuso do servidor/)
   })
 })
+
+describe('convenções da privacidade e da auditoria (FT-10)', () => {
+  const convencoes = ler('docs/stack/CONVENCOES.md')
+  const lacunas = ler('docs/stack/LACUNAS.md')
+  const readme = ler('README.md')
+
+  const CITACOES: Array<[string, RegExp]> = [
+    ['src/servicos/auditoria.ts:101', /export async function registrar\(/],
+    ['src/servicos/auditoria.ts:127', /export function registrarMelhorEsforco/],
+    ['src/servicos/auditoria.ts:250', /export async function purgarAnterioresA/],
+    ['src/servicos/auditoria-acoes.ts:10', /export const ACOES/],
+    ['src/servicos/auditoria-acoes.ts:94', /export function validarDetalhes/],
+    ['src/servicos/auditoria-ouvintes.ts:71', /export function ligarAuditoria/],
+    ['src/servicos/auditoria-ouvintes.ts:42', /export function tratarConversaApagada/],
+    ['src/instrumentation.ts:11', /ligarAuditoria/],
+    ['src/instrumentation.ts:17', /obterAgendadorDoExpurgo/],
+    ['src/servicos/expurgo.ts:63', /export async function executarExpurgo/],
+    ['src/servicos/expurgo.ts:18', /export const TAMANHO_DO_LOTE/],
+    ['src/servicos/expurgo.ts:135', /export function criarAgendadorDoExpurgo/],
+    ['src/servicos/expurgo.ts:192', /export function obterAgendadorDoExpurgo/],
+    ['src/servicos/usuarios.ts:188', /export async function excluirDefinitivamente/],
+    ['src/servicos/privacidade.ts:111', /export async function retencaoEfetivaDias/],
+    ['src/servicos/privacidade.ts:116', /export async function avisoPadraoDoWorkspace/],
+    ['src/servicos/privacidade.ts:126', /export async function salvarRetencao/],
+    ['src/servicos/titular.ts:91', /export function tamanhoDoPrefixoQueDistingue/],
+    ['src/servicos/titular.ts:107', /export async function buscarTitular/],
+    ['src/servicos/titular.ts:165', /export async function exportarTitular/],
+    ['src/servicos/titular.ts:250', /export async function apagarDoTitular/],
+    ['src/servicos/historico.ts:334', /export async function apagarConversasDe/],
+    ['src/servicos/chat-publico.ts:207', /export async function apagarConversasDoVisitante/],
+    ['src/app/api/publico/agentes/[id]/conversa/route.ts:24', /export async function DELETE/],
+    ['src/app/api/titulares/exportar/route.ts:33', /export async function POST/],
+    ['src/componentes/embed-logica.ts:256', /export function reduzirApagar/],
+    ['src/componentes/embed-logica.ts:279', /export async function apagarMinhaConversaNoServidor/],
+    ['src/estilos/global.css:1525', /tabela-envoltorio:has/],
+  ]
+
+  it.each(CITACOES)('%s existe e contém o que o CONVENCOES.md diz', (citacao, esperado) => {
+    expect(convencoes.includes(citacao) || lacunas.includes(citacao), `${citacao} não citada`).toBe(true)
+    const [arquivo, linha] = citacao.split(':')
+    expect(ler(arquivo!).split('\n')[Number(linha) - 1]).toMatch(esperado)
+  })
+
+  it('registra as regras: auditoria somente-acréscimo, ouvintes, expurgo, exclusão de usuário, retenção, titular, visitante e telas', () => {
+    expect(convencoes).toMatch(/Trilha de auditoria somente-acréscimo \(FT-10/)
+    expect(convencoes).toMatch(/mesma transação da ação/)
+    expect(convencoes).toMatch(/Ouvintes da auditoria e instalação/)
+    expect(convencoes).toMatch(/`globalThis`/)
+    expect(convencoes).toMatch(/Expurgo automático \(FT-10/)
+    expect(convencoes).toMatch(/Exclusão definitiva de usuário \(FT-10/)
+    expect(convencoes).toMatch(/Retenção e aviso padrão do workspace/)
+    expect(convencoes).toMatch(/Direitos do titular \(FT-10/)
+    expect(convencoes).toMatch(/O visitante apaga a própria conversa/)
+    expect(convencoes).toMatch(/Telas de Privacidade e Auditoria/)
+    expect(convencoes).toMatch(/\| 2026-10-01 \| FT-10 \|/)
+  })
+
+  it('as lacunas registram a trilha sem proteção no banco, o expurgo por processo, a perda possível, a base legal provisória e o que não foi visto', () => {
+    expect(lacunas).toMatch(/FT-10, resolvida e novas/)
+    expect(lacunas).toMatch(/somente-acréscimo na aplicação, não no banco/)
+    expect(lacunas).toMatch(/obterAgendadorDoExpurgo\(\)\.parar\(\)/)
+    expect(lacunas).toMatch(/pode perder o registro/)
+    expect(lacunas).toMatch(/PEND-08/)
+    expect(lacunas).toMatch(/sem celular real nem leitor de tela/)
+  })
+
+  it('o README tem a seção Privacidade e auditoria e documenta AUDITORIA_RETENCAO_DIAS', () => {
+    expect(readme).toContain('## Privacidade e auditoria')
+    expect(readme).toContain('AUDITORIA_RETENCAO_DIAS')
+    expect(readme).toMatch(/90 dias/)
+    expect(readme).toMatch(/Excluir definitivamente/)
+    expect(readme).toMatch(/legítimo interesse, a confirmar pela empresa/)
+    expect(readme).toContain('DELETE /api/publico/agentes/[id]/conversa')
+    expect(readme).toContain('semear-privacidade.ts')
+  })
+})

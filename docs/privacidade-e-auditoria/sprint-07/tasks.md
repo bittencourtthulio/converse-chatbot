@@ -41,7 +41,7 @@ tasks:
   - id: T-07.03
     titulo: "Documentacao: README, convencoes e lacunas"
     fase: F-07.2
-    status: pendente
+    status: concluida
     objetivo: "Escrever a secao Privacidade e auditoria do README e converter convencoes e lacunas com arquivo e linha."
     arquivos:
       cria: []
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/projeto.test.ts passa e cada citacao de arquivo e linha aponta para uma linha existente."
     depende_de: ["T-07.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-07.04
     titulo: "Fechamento no laco do buildx"
     fase: F-07.2
@@ -120,7 +120,7 @@ teste_funcional: "CONVENCOES.md ganha as linhas de auditoria, expurgo, titular e
 criterio_aceite: "tests/projeto.test.ts passa e cada citacao de arquivo e linha aponta para uma linha existente."
 depende_de: ["T-07.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/projeto.test.ts 175 passed; suite inteira no fechamento
 ```
 
 ---
