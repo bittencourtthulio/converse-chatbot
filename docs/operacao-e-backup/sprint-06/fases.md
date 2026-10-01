@@ -17,7 +17,7 @@ fases:
     tasks: ["T-06.01", "T-06.02"]
   - id: F-06.2
     titulo: "Comando e prova"
-    status: nao_iniciado
+    status: em_andamento
     criterio_saida: "O comando restaura e os testes fim a fim e de recusas passam"
     paralelizavel: false
     paralela_com: []
@@ -53,7 +53,7 @@ flowchart LR
 
   class T_06_01 concluida
   class T_06_02 concluida
-  class T_06_03 pendente
+  class T_06_03 concluida
   class T_06_04 pendente
   class T_06_05 pendente
   class T_06_05,T_06_04,T_06_03,T_06_02,T_06_01 critico

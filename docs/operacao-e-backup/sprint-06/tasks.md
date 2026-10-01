@@ -41,18 +41,18 @@ tasks:
   - id: T-06.03
     titulo: "Comando npm run restore"
     fase: F-06.2
-    status: pendente
+    status: concluida
     objetivo: "Criar scripts/restore.ts que recusa rodar com o servidor de pe, valida, restaura, aplica migrations se o esquema for mais antigo, reconstroi o FTS5, grava a auditoria no banco restaurado e imprime o resumo."
     arquivos:
       cria: ["scripts/restore.ts", "tests/restauracao-comando.test.ts"]
-      altera: ["package.json"]
+      altera: ["package.json", "README.md", "src/lib/restauracao.ts", "tests/restauracao-validacao.test.ts"]
     teste_integracao: "O comando executado como processo filho com diretorios temporarios restaura um backup valido, aplica migrate deploy quando o backup e de esquema mais antigo, imprime o resumo com o aviso sobre a ENCRYPTION_KEY e termina com 0."
     teste_funcional: "Com um servidor respondendo em /api/saude na URL local o comando recusa sem tocar em nada e com --forcar prossegue, e sem argumento ou com arquivo inexistente sai com codigo diferente de zero e mensagem clara."
     criterio_aceite: "tests/restauracao-comando.test.ts passa e package.json tem o script restore."
     depende_de: ["T-06.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-06.04
     titulo: "Teste fim a fim da restauracao numa instalacao limpa (PR-20)"
     fase: F-06.2
@@ -129,13 +129,13 @@ titulo: "Comando npm run restore"
 objetivo: "Criar scripts/restore.ts que recusa rodar com o servidor de pe, valida, restaura, aplica migrations se o esquema for mais antigo, reconstroi o FTS5, grava a auditoria no banco restaurado e imprime o resumo."
 arquivos:
   cria: ["scripts/restore.ts", "tests/restauracao-comando.test.ts"]
-  altera: ["package.json"]
+  altera: ["package.json", "README.md", "src/lib/restauracao.ts", "tests/restauracao-validacao.test.ts"]
 teste_integracao: "O comando executado como processo filho com diretorios temporarios restaura um backup valido, aplica migrate deploy quando o backup e de esquema mais antigo, imprime o resumo com o aviso sobre a ENCRYPTION_KEY e termina com 0."
 teste_funcional: "Com um servidor respondendo em /api/saude na URL local o comando recusa sem tocar em nada e com --forcar prossegue, e sem argumento ou com arquivo inexistente sai com codigo diferente de zero e mensagem clara."
 criterio_aceite: "tests/restauracao-comando.test.ts passa e package.json tem o script restore."
 depende_de: ["T-06.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/restauracao-comando.test.ts 9 passed (inclui backup de esquema mais antigo com prisma migrate deploy real), tests/projeto.test.ts verde
 ```
 
 ---

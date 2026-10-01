@@ -45,6 +45,8 @@ export interface BackupValidado {
   diretorio: string
   /** As migrations do banco extraído (a verdade; o manifesto confere com elas). */
   migracoes: string[]
+  /** A pasta que a validação criou por não existir (a mais alta); numa recusa ela é removida junto. */
+  pastaCriada?: string
 }
 
 const TOPOS_PERMITIDOS = new Set(['manifest.json', 'banco', 'storage'])
@@ -77,10 +79,18 @@ async function listarArquivos(raiz: string): Promise<string[]> {
   return achados
 }
 
-/** Apaga o diretório temporário de um backup validado (ou de uma recusa). */
-export async function descartarBackupValidado(v: Pick<BackupValidado, 'diretorio'>): Promise<void> {
+/**
+ * Apaga o diretório temporário de um backup validado. Com `removerPastaCriada` (numa recusa) apaga também a
+ * pasta que a validação criou por não existir, para a recusa não deixar nenhum rastro; depois de uma
+ * restauração bem-sucedida essa pasta guarda o banco restaurado e NUNCA é removida.
+ */
+export async function descartarBackupValidado(
+  v: Pick<BackupValidado, 'diretorio' | 'pastaCriada'>,
+  opcoes: { removerPastaCriada?: boolean } = {},
+): Promise<void> {
   // Com tentativas: numa extração interrompida (arquivo truncado) uma escrita pendente ainda pode terminar.
   await rm(v.diretorio, { recursive: true, force: true, maxRetries: 10, retryDelay: 50 })
+  if (opcoes.removerPastaCriada && v.pastaCriada) await rm(v.pastaCriada, { recursive: true, force: true, maxRetries: 10, retryDelay: 50 })
 }
 
 /**
@@ -97,7 +107,7 @@ export async function lerEValidarBackup(arquivo: string, opcoes: { diretorioDeTr
   if (!info.isFile()) throw invalido('O caminho informado não é um arquivo de backup.')
   if (info.size === 0) throw invalido('O arquivo de backup está vazio.')
 
-  await mkdir(opcoes.diretorioDeTrabalho, { recursive: true })
+  const pastaCriada = await mkdir(opcoes.diretorioDeTrabalho, { recursive: true })
   const diretorio = await mkdtemp(path.join(opcoes.diretorioDeTrabalho, '.restauracao-'))
   try {
     let violacao: string | null = null
@@ -189,9 +199,9 @@ export async function lerEValidarBackup(arquivo: string, opcoes: { diretorioDeTr
     if (JSON.stringify(migracoes) !== JSON.stringify(manifesto.migracoes)) {
       throw invalido('As migrations do manifest não conferem com as do banco do backup (esquema inconsistente).')
     }
-    return { manifesto, diretorio, migracoes }
+    return { manifesto, diretorio, migracoes, ...(pastaCriada && { pastaCriada }) }
   } catch (erro) {
-    await descartarBackupValidado({ diretorio })
+    await descartarBackupValidado({ diretorio, pastaCriada }, { removerPastaCriada: true })
     if (erro instanceof ErroDeAplicacao) throw erro
     log.erro('backup_nao_validado', camposDoErro(erro))
     throw invalido('Não foi possível validar o arquivo de backup.')
