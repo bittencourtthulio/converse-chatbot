@@ -26,7 +26,7 @@ tasks:
   - id: T-05.02
     titulo: "YouTube: pagina e faixas"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar a youtube.ts a leitura da pagina do video na base configurada, a extracao do titulo e das faixas e a escolha da faixa por preferencia."
     arquivos:
       cria: ["tests/youtube-pagina.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/youtube-pagina.test.ts passa e a pagina e lida com teto de 3 MB e prazo de 15 s."
     depende_de: ["T-05.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-05.03
     titulo: "YouTube: baixar a legenda com SSRF"
     fase: F-05.1
@@ -135,7 +135,7 @@ teste_funcional: "Com faixas manual em ingles, manual em portugues e automatica 
 criterio_aceite: "tests/youtube-pagina.test.ts passa e a pagina e lida com teto de 3 MB e prazo de 15 s."
 depende_de: ["T-05.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/youtube-pagina.test.ts e tests/youtube-url.test.ts, 42 passed
 ```
 
 ---
