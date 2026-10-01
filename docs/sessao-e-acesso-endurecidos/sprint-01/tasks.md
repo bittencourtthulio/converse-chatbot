@@ -26,7 +26,7 @@ tasks:
   - id: T-01.02
     titulo: "Cookies e cabecalhos falsos do next/headers"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Criar o apoio de teste que simula cookies() e headers() do Next e provar, com ele, o comportamento atual de gravarCookieDeSessao, apagarCookieDeSessao e ipDoCliente."
     arquivos:
       cria: ["tests/apoio/next-falso.ts", "tests/apoio-next-falso.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/apoio-next-falso.test.ts passa."
     depende_de: ["T-01.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-01.03
     titulo: "Login por formulario contra o servidor de producao"
     fase: F-01.2
@@ -90,7 +90,7 @@ teste_funcional: "O jar devolve o valor gravado com get, devolve undefined depoi
 criterio_aceite: "tests/apoio-next-falso.test.ts passa."
 depende_de: ["T-01.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/apoio-next-falso.test.ts 4 passed; só apoio de teste
 ```
 
 ---
