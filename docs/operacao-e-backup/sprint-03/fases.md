@@ -17,7 +17,7 @@ fases:
     tasks: ["T-03.01", "T-03.02"]
   - id: F-03.2
     titulo: "Saude e dados do sistema"
-    status: em_andamento
+    status: concluido
     criterio_saida: "tests/saude.test.ts, tests/saude-rota.test.ts e tests/sistema.test.ts passam"
     paralelizavel: false
     paralela_com: []
@@ -52,7 +52,7 @@ flowchart LR
   class T_03_01 concluida
   class T_03_02 concluida
   class T_03_03 concluida
-  class T_03_04 pendente
+  class T_03_04 concluida
   class T_03_04,T_03_03,T_03_02,T_03_01 critico
 ```
 

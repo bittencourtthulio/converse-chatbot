@@ -99,7 +99,8 @@ async function conferirBusca(prazo: number): Promise<ItemDeSaude> {
   }
 }
 
-function sondarMidia(opcoes: OpcoesDaSaude): Promise<DisponibilidadeDaMidia> {
+/** A disponibilidade do ffmpeg e do ffprobe, com o cache de 60 segundos (a tela Sistema a reutiliza). */
+export function sondarMidia(opcoes: OpcoesDaSaude = {}): Promise<DisponibilidadeDaMidia> {
   const agora = (opcoes.agora ?? Date.now)()
   if (cacheDaMidia && agora - cacheDaMidia.em < VALIDADE_DA_SONDA_MS) return cacheDaMidia.resultado
   const resultado = (opcoes.midia ?? verificarMidia)().catch(() => ({ ffmpeg: false, ffprobe: false, versao: null }))

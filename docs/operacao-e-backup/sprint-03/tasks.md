@@ -56,18 +56,18 @@ tasks:
   - id: T-03.04
     titulo: "Dados do sistema para a tela e ultima rodada do expurgo"
     fase: F-03.2
-    status: pendente
+    status: concluida
     objetivo: "Criar src/lib/versao.ts e src/servicos/sistema.ts com obterSistema(admin) e acrescentar ultimaExecucaoEm ao agendador do expurgo."
     arquivos:
       cria: ["src/lib/versao.ts", "src/servicos/sistema.ts", "tests/versao.test.ts", "tests/sistema.test.ts"]
-      altera: ["src/servicos/expurgo.ts", "tests/expurgo-agendador.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md"]
+      altera: ["src/servicos/expurgo.ts", "tests/expurgo-agendador.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md", "tests/instrumentacao.test.ts", "src/servicos/saude.ts"]
     teste_integracao: "obterSistema para um admin devolve versao do package.json, migrations aplicadas e a ultima, uptime, Node, fuso, tamanho do banco e do storage, midia, contagem da fila por status, agendador, e o estado de ENCRYPTION_KEY, APP_URL e chave do OpenRouter como sim ou nao."
     teste_funcional: "obterSistema para um usuario comum lanca 403, o resultado serializado nao contem o valor de ENCRYPTION_KEY, JWT_SECRET nem da chave do OpenRouter, e ultimaExecucaoEm do agendador passa de nulo para a hora da rodada."
     criterio_aceite: "tests/versao.test.ts, tests/sistema.test.ts e tests/expurgo-agendador.test.ts passam."
     depende_de: ["T-03.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
 ---
 
 # Tasks — Sprint 03
@@ -131,12 +131,12 @@ titulo: "Dados do sistema para a tela e ultima rodada do expurgo"
 objetivo: "Criar src/lib/versao.ts e src/servicos/sistema.ts com obterSistema(admin) e acrescentar ultimaExecucaoEm ao agendador do expurgo."
 arquivos:
   cria: ["src/lib/versao.ts", "src/servicos/sistema.ts", "tests/versao.test.ts", "tests/sistema.test.ts"]
-  altera: ["src/servicos/expurgo.ts", "tests/expurgo-agendador.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md"]
+  altera: ["src/servicos/expurgo.ts", "tests/expurgo-agendador.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md", "tests/instrumentacao.test.ts", "src/servicos/saude.ts"]
 teste_integracao: "obterSistema para um admin devolve versao do package.json, migrations aplicadas e a ultima, uptime, Node, fuso, tamanho do banco e do storage, midia, contagem da fila por status, agendador, e o estado de ENCRYPTION_KEY, APP_URL e chave do OpenRouter como sim ou nao."
 teste_funcional: "obterSistema para um usuario comum lanca 403, o resultado serializado nao contem o valor de ENCRYPTION_KEY, JWT_SECRET nem da chave do OpenRouter, e ultimaExecucaoEm do agendador passa de nulo para a hora da rodada."
 criterio_aceite: "tests/versao.test.ts, tests/sistema.test.ts e tests/expurgo-agendador.test.ts passam."
 depende_de: ["T-03.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2669 passed, 0 failed (223 arquivos); build antes
 ```
 

@@ -115,6 +115,8 @@ export interface AgendadorDoExpurgo {
   parar(): void
   /** O agendador está ligado? */
   ativo(): boolean
+  /** Quando a última rodada terminou (com ou sem falha) neste processo, ou `null` se ainda não houve (tela Sistema). */
+  ultimaExecucaoEm(): Date | null
   /** Espera a rodada em andamento terminar (os testes). */
   ocioso(): Promise<void>
 }
@@ -125,6 +127,8 @@ export interface OpcoesDoAgendador {
   cancelar?: (handle: unknown) => void
   primeiraRodadaMs?: number
   intervaloMs?: number
+  /** O relógio de `ultimaExecucaoEm`; o teste o fixa. */
+  relogio?: () => Date
 }
 
 /**
@@ -146,7 +150,9 @@ export function criarAgendadorDoExpurgo(opcoes: OpcoesDoAgendador = {}): Agendad
   const primeira = opcoes.primeiraRodadaMs ?? PRIMEIRA_RODADA_DO_EXPURGO_MS
   const intervalo = opcoes.intervaloMs ?? INTERVALO_DO_EXPURGO_MS
 
+  const relogio = opcoes.relogio ?? (() => new Date())
   let ligado = false
+  let ultima: Date | null = null
   let handle: unknown = null
   let rodada: Promise<void> | null = null
 
@@ -163,6 +169,7 @@ export function criarAgendadorDoExpurgo(opcoes: OpcoesDoAgendador = {}): Agendad
       } catch (erro) {
         log.erro('expurgo_falhou', camposDoErro(erro))
       } finally {
+        ultima = relogio()
         rodada = null
         if (ligado) agendarProxima(intervalo)
       }
@@ -181,6 +188,7 @@ export function criarAgendadorDoExpurgo(opcoes: OpcoesDoAgendador = {}): Agendad
       handle = null
     },
     ativo: () => ligado,
+    ultimaExecucaoEm: () => ultima,
     async ocioso() {
       await rodada
     },

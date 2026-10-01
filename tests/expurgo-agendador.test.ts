@@ -124,3 +124,37 @@ describe('agendador do expurgo (funcional)', () => {
     expect(a.ativo()).toBe(false)
   })
 })
+
+describe('última execução do agendador (FT-11, PR-95)', () => {
+  it('começa nula e passa a ser o instante em que a rodada terminou, com o relógio injetado', async () => {
+    const t = temporizadorFalso()
+    const agora = new Date('2026-04-05T12:00:00.000Z')
+    const a = criarAgendadorDoExpurgo({ executar: async () => undefined, agendar: t.agendar, cancelar: t.cancelar, relogio: () => agora })
+    expect(a.ultimaExecucaoEm()).toBeNull()
+    a.iniciar()
+    expect(a.ultimaExecucaoEm()).toBeNull()
+    t.agendados[0]!.fn()
+    await a.ocioso()
+    expect(a.ultimaExecucaoEm()).toEqual(agora)
+  })
+
+  it('uma rodada que falhou também conta como execução, e parar não apaga a última', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined)
+    const t = temporizadorFalso()
+    const agora = new Date('2026-04-05T13:00:00.000Z')
+    const a = criarAgendadorDoExpurgo({
+      executar: async () => {
+        throw new Error('quebrou')
+      },
+      agendar: t.agendar,
+      cancelar: t.cancelar,
+      relogio: () => agora,
+    })
+    a.iniciar()
+    t.agendados[0]!.fn()
+    await a.ocioso()
+    expect(a.ultimaExecucaoEm()).toEqual(agora)
+    a.parar()
+    expect(a.ultimaExecucaoEm()).toEqual(agora)
+  })
+})

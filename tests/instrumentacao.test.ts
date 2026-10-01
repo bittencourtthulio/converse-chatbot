@@ -170,6 +170,7 @@ describe('register (src/instrumentation.ts)', () => {
       },
       parar: () => undefined,
       ativo: () => false,
+      ultimaExecucaoEm: () => null,
       ocioso: async () => undefined,
     }
     const log = vi.spyOn(console, 'error').mockImplementation(() => undefined)

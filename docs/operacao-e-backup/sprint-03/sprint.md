@@ -8,7 +8,7 @@ feature_id: FT-11
 sprint_id: sprint-03
 atualizado_em: 2026-10-01
 titulo: "Ambiente validado no start e saude"
-status: em_andamento
+status: concluido
 criterio_saida: "O start de producao sem as variaveis obrigatorias falha com os nomes, GET /api/saude responde 200 ou 503 sem detalhe e obterSistema devolve o detalhe so ao admin"
 fases: ["F-03.1", "F-03.2"]
 riscos: ["o Next pode engolir o erro de register() em next start (lacuna da base): provado por teste que sobe o servidor", "a sonda de ffmpeg dispara processos: o cache de 60 segundos e provado por teste"]
