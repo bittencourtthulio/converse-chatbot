@@ -26,7 +26,7 @@ tasks:
   - id: T-01.02
     titulo: "Instalacao de teste com dados de todas as camadas"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Criar o apoio que monta uma instalacao completa no banco e no storage do teste e tira um retrato comparavel linha a linha."
     arquivos:
       cria: ["tests/apoio/instalacao.ts", "tests/instalacao-apoio.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/instalacao-apoio.test.ts passa e a fixture devolve os caminhos do original e dos temporarios semeados."
     depende_de: ["T-01.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-01.03
     titulo: "Modulo de log com redacao, niveis e correlacao"
     fase: F-01.2
@@ -88,7 +88,7 @@ teste_funcional: "retratoDoBanco devolve as linhas de cada tabela em ordem estav
 criterio_aceite: "tests/instalacao-apoio.test.ts passa e a fixture devolve os caminhos do original e dos temporarios semeados."
 depende_de: ["T-01.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/instalacao-apoio.test.ts 3 passed; só arquivos novos de teste
 ```
 
 ---

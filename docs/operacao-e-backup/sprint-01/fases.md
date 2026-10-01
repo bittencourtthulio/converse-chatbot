@@ -10,7 +10,7 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-01.1
     titulo: "Dependencias e instalacao de teste"
-    status: em_andamento
+    status: concluido
     criterio_saida: "A prova das ferramentas e o apoio de instalacao passam em teste"
     paralelizavel: false
     paralela_com: []
@@ -48,7 +48,7 @@ flowchart LR
   classDef critico   stroke-width:3px
 
   class T_01_01 concluida
-  class T_01_02 pendente
+  class T_01_02 concluida
   class T_01_03 pendente
   class T_01_03,T_01_02,T_01_01 critico
 ```
