@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { hashDeSenha } from '@/lib/senha'
 import { conflito, entradaInvalida, naoAutorizado, naoEncontrado } from '@/lib/erros'
 import { exigirAdmin, type UsuarioAutenticado } from '@/servicos/autenticacao'
-import { registrar } from '@/servicos/auditoria'
+import { registrar, type AtorDaAuditoria } from '@/servicos/auditoria'
 
 // Sem regra de complexidade teatral (L3): tamanho mínimo e nada mais.
 const senhaValida = z.string().min(8, 'A senha precisa de ao menos 8 caracteres.')
@@ -58,12 +58,8 @@ export async function listar(autor: UsuarioAutenticado): Promise<UsuarioListado[
   })
 }
 
-export async function criar(
-  autor: UsuarioAutenticado,
-  entrada: unknown,
-): Promise<UsuarioListado> {
-  exigirAdmin(autor)
-
+/** Valida e grava o usuário. A auditoria entra na mesma transação (PR-87): sem registro, o usuário não é criado. */
+async function gravarUsuario(ator: AtorDaAuditoria, entrada: unknown): Promise<UsuarioListado> {
   const dados = entradaDeCriacao.safeParse(entrada)
   if (!dados.success) {
     throw entradaInvalida(dados.error.issues[0]?.message ?? 'Entrada inválida.')
@@ -75,18 +71,32 @@ export async function criar(
   }
 
   const senhaHash = await hashDeSenha(dados.data.senha)
-  // A auditoria entra na mesma transação (PR-87): sem registro, o usuário não é criado.
   return prisma.$transaction(async (tx) => {
     const criado = await tx.usuario.create({
       data: { nome: dados.data.nome, email, papel: dados.data.papel, senhaHash },
       select: camposListados,
     })
-    await registrar(
-      { ator: autor, acao: 'usuario_criado', alvoTipo: 'usuario', alvoId: criado.id, detalhes: { papel: criado.papel } },
-      tx,
-    )
+    await registrar({ ator, acao: 'usuario_criado', alvoTipo: 'usuario', alvoId: criado.id, detalhes: { papel: criado.papel } }, tx)
     return criado
   })
+}
+
+export async function criar(
+  autor: UsuarioAutenticado,
+  entrada: unknown,
+): Promise<UsuarioListado> {
+  exigirAdmin(autor)
+  return gravarUsuario(autor, entrada)
+}
+
+/**
+ * O primeiro administrador de uma instalação limpa (FT-11, PR-100): a seed de demonstração nunca roda em
+ * produção, então o comando `npm run admin:criar` o cria por aqui, sem sessão (quem roda o comando tem acesso
+ * ao servidor). As validações são as de `criar`; o papel é sempre `admin` e a auditoria é do ator Sistema.
+ */
+export async function criarAdministradorInicial(entrada: unknown): Promise<UsuarioListado> {
+  const base = typeof entrada === 'object' && entrada !== null ? entrada : {}
+  return gravarUsuario('sistema', { ...base, papel: 'admin' })
 }
 
 export async function editar(

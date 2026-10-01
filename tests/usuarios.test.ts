@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { listar, criar, editar, desativar } from '../src/servicos/usuarios.js'
+import { listar, criar, editar, desativar, criarAdministradorInicial } from '../src/servicos/usuarios.js'
 import { entrar } from '../src/servicos/autenticacao.js'
 import { prisma } from '../src/lib/prisma.js'
 import { criarUsuario, criarAdmin, limparBanco } from './ajuda.js'
@@ -214,5 +214,45 @@ describe('desativar', () => {
     await expect(
       entrar({ email: 'sai@teste.local', senha: alvo.senha }),
     ).rejects.toMatchObject({ status: 401 })
+  })
+})
+
+describe('criarAdministradorInicial (FT-11, PR-100)', () => {
+  it('cria um administrador ativo que entra com a senha, e audita usuario_criado com o ator Sistema', async () => {
+    const criado = await criarAdministradorInicial({ nome: '  Maria Souza ', email: 'Maria.Admin@Exemplo.Local', senha: 'senha-do-admin-1' })
+    expect(criado).toMatchObject({ nome: 'Maria Souza', email: 'maria.admin@exemplo.local', papel: 'admin', ativo: true })
+    const { token } = await entrar({ email: 'maria.admin@exemplo.local', senha: 'senha-do-admin-1' })
+    expect(token).toBeTruthy()
+    const registros = await prisma.registroDeAuditoria.findMany({ where: { acao: 'usuario_criado' } })
+    expect(registros).toHaveLength(1)
+    expect(registros[0]).toMatchObject({ usuarioId: null, usuarioRotulo: 'Sistema', alvoTipo: 'usuario', alvoId: criado.id })
+    expect(JSON.parse(registros[0]!.detalhes)).toEqual({ papel: 'admin' })
+    expect(registros[0]!.detalhes).not.toContain('senha-do-admin-1')
+  })
+
+  it('e-mail que já existe é 409 e não cria nem audita', async () => {
+    await criarUsuario({ email: 'ja@exemplo.local' })
+    await prisma.registroDeAuditoria.deleteMany()
+    await expect(criarAdministradorInicial({ nome: 'Outro', email: 'ja@exemplo.local', senha: 'senha-do-admin-1' })).rejects.toMatchObject({ status: 409 })
+    expect(await prisma.usuario.count()).toBe(1)
+    expect(await prisma.registroDeAuditoria.count()).toBe(0)
+  })
+
+  it('senha curta, nome vazio e e-mail inválido são 422, com as mesmas regras de criar', async () => {
+    for (const ruim of [
+      { nome: 'A', email: 'a@exemplo.local', senha: '1234567' },
+      { nome: '  ', email: 'a@exemplo.local', senha: 'senha-do-admin-1' },
+      { nome: 'A', email: 'isto-nao-e-email', senha: 'senha-do-admin-1' },
+      {},
+      null,
+    ]) {
+      await expect(criarAdministradorInicial(ruim)).rejects.toMatchObject({ status: 422 })
+    }
+    expect(await prisma.usuario.count()).toBe(0)
+  })
+
+  it('ignora um papel passado na entrada: o criado é sempre admin', async () => {
+    const criado = await criarAdministradorInicial({ nome: 'A', email: 'a@exemplo.local', senha: 'senha-do-admin-1', papel: 'usuario' })
+    expect(criado.papel).toBe('admin')
   })
 })

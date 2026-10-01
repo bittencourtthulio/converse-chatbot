@@ -14,7 +14,8 @@
     "db:seed": "tsx prisma/seed.ts",
     "setup": "prisma generate && prisma migrate deploy && npm run db:seed",
     "backup": "tsx scripts/backup.ts",
-    "restore": "tsx scripts/restore.ts"
+    "restore": "tsx scripts/restore.ts",
+    "admin:criar": "tsx scripts/criar-admin.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

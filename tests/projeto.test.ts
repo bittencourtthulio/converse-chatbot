@@ -558,7 +558,7 @@ describe('convenções da privacidade e da auditoria (FT-10)', () => {
     ['src/servicos/expurgo.ts:19', /export const TAMANHO_DO_LOTE/],
     ['src/servicos/expurgo.ts:140', /export function criarAgendadorDoExpurgo/],
     ['src/servicos/expurgo.ts:201', /export function obterAgendadorDoExpurgo/],
-    ['src/servicos/usuarios.ts:188', /export async function excluirDefinitivamente/],
+    ['src/servicos/usuarios.ts:198', /export async function excluirDefinitivamente/],
     ['src/servicos/privacidade.ts:111', /export async function retencaoEfetivaDias/],
     ['src/servicos/privacidade.ts:116', /export async function avisoPadraoDoWorkspace/],
     ['src/servicos/privacidade.ts:126', /export async function salvarRetencao/],

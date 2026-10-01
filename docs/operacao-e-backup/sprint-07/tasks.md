@@ -26,7 +26,7 @@ tasks:
   - id: T-07.02
     titulo: "Comando do primeiro administrador"
     fase: F-07.1
-    status: pendente
+    status: concluida
     objetivo: "Criar criarAdministradorInicial em usuarios.ts e scripts/criar-admin.ts que cria o primeiro administrador lendo a senha de ADMIN_SENHA ou da entrada padrao."
     arquivos:
       cria: ["scripts/criar-admin.ts", "tests/criar-admin.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/criar-admin.test.ts e tests/usuarios.test.ts passam e package.json tem o script admin:criar."
     depende_de: ["T-07.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
   - id: T-07.03
     titulo: "Dockerfile, entrypoint, compose e dockerignore"
     fase: F-07.2
@@ -118,7 +118,7 @@ teste_funcional: "E-mail ja existente, senha com menos de 8 caracteres e senha p
 criterio_aceite: "tests/criar-admin.test.ts e tests/usuarios.test.ts passam e package.json tem o script admin:criar."
 depende_de: ["T-07.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2802 passed, 0 failed (241 arquivos, inclui conteiner.test.ts que só leu os arquivos de contêiner ainda não commitados); build antes
 ```
 
 ---
