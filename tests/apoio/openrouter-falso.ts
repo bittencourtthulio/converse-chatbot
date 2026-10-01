@@ -24,6 +24,15 @@
  *   partirChunks         (stream) corta cada evento em dois pacotes de rede
  *   erroNoMeioApos       (stream) após N trechos emite evento de erro e encerra
  *
+ * Áudio (FT-08, PR-77): um pedido com parte `input_audio` é uma transcrição. A
+ * "parte" é o áudio distinto, numerada de 0 pela ordem da primeira aparição; o
+ * mesmo áudio de novo (nova tentativa) é a mesma parte. Use áudios diferentes
+ * (por exemplo ruído) para partes diferentes.
+ *   transcricoes         texto por parte (índice 0, 1, ...); faltando, "Transcrição simulada da parte N."
+ *   falhasPorParte       { parte: status } o pedido daquela parte responde esse erro, até configurar de novo
+ *   latenciaPorParteMs   { parte: ms } atraso só daquela parte
+ *   `audios` registra modelo, formato, tamanho do base64, parte e tentativa.
+ *
  * Estado observável: `requisicoes` (método, caminho, cabeçalhos em minúsculas,
  * corpo JSON) e `cancelamentos` (conexões de stream que o cliente abortou).
  */
@@ -50,6 +59,17 @@ export interface OpcoesDoFalso {
   comentarioDeProcessamento?: boolean
   partirChunks?: boolean
   erroNoMeioApos?: number | null
+  transcricoes?: string[]
+  falhasPorParte?: Record<number, number>
+  latenciaPorParteMs?: Record<number, number>
+}
+
+export interface AudioRegistrado {
+  modelo: string
+  formato: string
+  tamanhoBase64: number
+  parte: number
+  tentativa: number
 }
 
 export interface RequisicaoRegistrada {
@@ -63,6 +83,8 @@ export interface OpenRouterFalso {
   /** URL base para OPENROUTER_BASE_URL, com /api/v1. */
   url: string
   requisicoes: RequisicaoRegistrada[]
+  /** Os pedidos de transcrição de áudio, na ordem. */
+  audios: AudioRegistrado[]
   /** Quantas conexões de stream o cliente abortou antes do fim. */
   readonly cancelamentos: number
   configurar(parcial: OpcoesDoFalso): void
@@ -85,6 +107,19 @@ const MENSAGENS_DE_ERRO: Record<number, string> = {
   503: 'No available model provider',
 }
 
+/** A primeira parte `input_audio` das mensagens, ou `null`. */
+function extrairAudio(mensagens: Array<{ content?: unknown }> | undefined): { data: string; format: string } | null {
+  for (const m of mensagens ?? []) {
+    if (!Array.isArray(m.content)) continue
+    for (const parte of m.content as Array<{ type?: string; input_audio?: { data?: unknown; format?: unknown } }>) {
+      if (parte?.type === 'input_audio' && typeof parte.input_audio?.data === 'string') {
+        return { data: parte.input_audio.data, format: String(parte.input_audio.format ?? '') }
+      }
+    }
+  }
+  return null
+}
+
 const dormir = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export async function iniciarOpenRouterFalso(
@@ -104,6 +139,8 @@ export async function iniciarOpenRouterFalso(
     ...inicial,
   }
   const requisicoes: RequisicaoRegistrada[] = []
+  const audios: AudioRegistrado[] = []
+  const partesVistas = new Map<string, { parte: number; tentativas: number }>()
   let cancelamentos = 0
 
   const erro = (res: ServerResponse, status: number) => {
@@ -224,7 +261,35 @@ export async function iniciarOpenRouterFalso(
     if (req.method === 'POST' && caminho === '/api/v1/chat/completions') {
       if (!autorizada(req)) return erro(res, 401)
       if (opcoes.erroHttp) return erro(res, opcoes.erroHttp)
-      const pedido = (corpo ?? {}) as { model?: string; stream?: boolean }
+      const pedido = (corpo ?? {}) as { model?: string; stream?: boolean; messages?: Array<{ content?: unknown }> }
+      const audio = extrairAudio(pedido.messages)
+      if (audio) {
+        let vista = partesVistas.get(audio.data)
+        if (!vista) {
+          vista = { parte: partesVistas.size, tentativas: 0 }
+          partesVistas.set(audio.data, vista)
+        }
+        vista.tentativas += 1
+        audios.push({
+          modelo: String(pedido.model),
+          formato: audio.format,
+          tamanhoBase64: audio.data.length,
+          parte: vista.parte,
+          tentativa: vista.tentativas,
+        })
+        const espera = opcoes.latenciaPorParteMs?.[vista.parte]
+        if (espera) await dormir(espera)
+        const falha = opcoes.falhasPorParte?.[vista.parte]
+        if (falha) return erro(res, falha)
+        const conteudo = opcoes.transcricoes?.[vista.parte] ?? `Transcrição simulada da parte ${vista.parte + 1}.`
+        return json(res, {
+          id: 'gen-falso',
+          object: 'chat.completion',
+          model: pedido.model,
+          choices: [{ index: 0, message: { role: 'assistant', content: conteudo }, finish_reason: 'stop' }],
+          usage: { prompt_tokens: 1, completion_tokens: 1, total_tokens: 2 },
+        })
+      }
       if (!(opcoes.modelos ?? []).some((m) => m.id === pedido.model)) return erro(res, 400)
       if (pedido.stream) return transmitir(res, String(pedido.model))
       return json(res, {
@@ -252,6 +317,7 @@ export async function iniciarOpenRouterFalso(
   return {
     url: `http://127.0.0.1:${port}/api/v1`,
     requisicoes,
+    audios,
     get cancelamentos() {
       return cancelamentos
     },

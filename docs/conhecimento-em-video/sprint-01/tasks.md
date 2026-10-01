@@ -41,7 +41,7 @@ tasks:
   - id: T-01.03
     titulo: "Simulado do OpenRouter com audio"
     fase: F-01.2
-    status: pendente
+    status: concluida
     objetivo: "Estender tests/apoio/openrouter-falso.ts para reconhecer a parte input_audio e devolver transcricao configuravel por parte, com falha e latencia por parte."
     arquivos:
       cria: ["tests/openrouter-falso-audio.test.ts"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/openrouter-falso-audio.test.ts e tests/openrouter.test.ts passam."
     depende_de: ["T-01.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-01.04
     titulo: "Apoio de ffmpeg e CI"
     fase: F-01.2
@@ -137,7 +137,7 @@ teste_funcional: "O primeiro pedido com input_audio devolve a primeira transcric
 criterio_aceite: "tests/openrouter-falso-audio.test.ts e tests/openrouter.test.ts passam."
 depende_de: ["T-01.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/openrouter-falso-audio.test.ts, tests/openrouter-falso.test.ts e tests/openrouter.test.ts, 39 passed
 ```
 
 ---
