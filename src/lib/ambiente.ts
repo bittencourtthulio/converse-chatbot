@@ -69,6 +69,7 @@ type Env = Record<string, string | undefined>
 // Opcionais que, se informadas, precisam ser inteiros positivos (o teto de MAX_VIDEO_MB é conferido à parte).
 const INTEIROS_OPCIONAIS = [
   'JWT_TTL_SEGUNDOS',
+  'SESSAO_MAXIMA_HORAS',
   'MAX_TOKENS_RESPOSTA',
   'MAX_UPLOAD_MB',
   'MAX_VIDEO_MB',
@@ -140,6 +141,13 @@ export const ambiente = {
   },
   get jwtTtlSegundos(): number {
     return inteiroComPadrao('JWT_TTL_SEGUNDOS', 900)
+  },
+  /**
+   * Duração máxima absoluta de uma sessão, em horas, contada do login (FT-12, PR-102). A renovação por
+   * atividade nunca a ultrapassa. Padrão 12.
+   */
+  get sessaoMaximaHoras(): number {
+    return inteiroComPadrao('SESSAO_MAXIMA_HORAS', 12)
   },
   /** Nome do produto na interface (PR-03). Opcional: o padrão é "Converse". */
   get nomeDoProduto(): string {

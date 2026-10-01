@@ -77,6 +77,15 @@ describe('validarAmbiente em produção', () => {
     expect(e.message).not.toContain('5000')
   })
 
+  it('SESSAO_MAXIMA_HORAS inválida entra na lista pelo nome, sem repetir o valor, e válida passa (FT-12)', () => {
+    for (const ruim of ['0', 'abc', '-1', '1.5']) {
+      const e = falha({ ...completo, SESSAO_MAXIMA_HORAS: ruim })
+      expect(e.erros).toEqual([expect.stringContaining('SESSAO_MAXIMA_HORAS')])
+    }
+    expect(producao({ ...completo, SESSAO_MAXIMA_HORAS: '12' }).erros).toEqual([])
+    expect(producao(completo).erros).toEqual([])
+  })
+
   it('APP_URL ausente vira aviso, http vira aviso e https não gera aviso; nenhum derruba o start', () => {
     const { APP_URL: _ausente, ...semUrl } = completo
     const ausente = producao(semUrl)

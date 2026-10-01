@@ -5,7 +5,7 @@ import { ambiente, MODELO_DE_TRANSCRICAO_PADRAO } from '@/lib/ambiente'
 
 const original = { ...process.env }
 afterEach(() => {
-  for (const chave of ['APP_NAME', 'TRUST_PROXY', 'MAX_TOKENS_RESPOSTA', 'MAX_UPLOAD_MB', 'TELEGRAM_API_BASE', 'TELEGRAM_PERMITIR_URL_NAO_HTTPS', 'MAX_VIDEO_MB', 'MAX_VIDEO_MINUTOS', 'FFMPEG_PATH', 'FFPROBE_PATH', 'OPENROUTER_MODELO_TRANSCRICAO', 'YOUTUBE_BASE', 'AUDITORIA_RETENCAO_DIAS', 'LOG_LEVEL', 'NODE_ENV']) {
+  for (const chave of ['APP_NAME', 'TRUST_PROXY', 'MAX_TOKENS_RESPOSTA', 'MAX_UPLOAD_MB', 'TELEGRAM_API_BASE', 'TELEGRAM_PERMITIR_URL_NAO_HTTPS', 'MAX_VIDEO_MB', 'MAX_VIDEO_MINUTOS', 'FFMPEG_PATH', 'FFPROBE_PATH', 'OPENROUTER_MODELO_TRANSCRICAO', 'YOUTUBE_BASE', 'AUDITORIA_RETENCAO_DIAS', 'SESSAO_MAXIMA_HORAS', 'LOG_LEVEL', 'NODE_ENV']) {
     if (original[chave] === undefined) delete process.env[chave]
     else process.env[chave] = original[chave]
   }
@@ -273,5 +273,24 @@ describe('nível do log (FT-11, PR-92)', () => {
   it('recusa outro valor com erro claro que nomeia a variável', () => {
     process.env.LOG_LEVEL = 'barulhento'
     expect(() => ambiente.logLevel).toThrow(/LOG_LEVEL.*debug, info, aviso ou erro/)
+  })
+})
+
+describe('limite absoluto da sessão (FT-12, PR-102)', () => {
+  it('sem SESSAO_MAXIMA_HORAS, são 12 horas', () => {
+    delete process.env.SESSAO_MAXIMA_HORAS
+    expect(ambiente.sessaoMaximaHoras).toBe(12)
+  })
+
+  it('usa o valor informado', () => {
+    process.env.SESSAO_MAXIMA_HORAS = '3'
+    expect(ambiente.sessaoMaximaHoras).toBe(3)
+  })
+
+  it('recusa zero, negativo e texto, com erro que nomeia a variável', () => {
+    for (const ruim of ['0', '-2', 'abc']) {
+      process.env.SESSAO_MAXIMA_HORAS = ruim
+      expect(() => ambiente.sessaoMaximaHoras, ruim).toThrow(/SESSAO_MAXIMA_HORAS.*inteiro positivo/)
+    }
   })
 })

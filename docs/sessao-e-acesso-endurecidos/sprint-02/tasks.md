@@ -26,7 +26,7 @@ tasks:
   - id: T-02.02
     titulo: "SESSAO_MAXIMA_HORAS no ambiente"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Ler SESSAO_MAXIMA_HORAS so em src/lib/ambiente.ts (padrao 12), valida-la no start de producao e documenta-la."
     arquivos:
       cria: []
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "Os testes de ambiente passam, o exemplo de ambiente documenta a variavel sem valor secreto e a tabela do README tem a linha dela (tests/projeto.test.ts) e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
     depende_de: ["T-02.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
   - id: T-02.03
     titulo: "Token de sessao com jti, versao, inicio e relogio injetavel"
     fase: F-02.2
@@ -165,7 +165,7 @@ teste_funcional: "Sem a variavel o valor e 12, com 3 e 3, e com 0 ou abc o gette
 criterio_aceite: "Os testes de ambiente passam, o exemplo de ambiente documenta a variavel sem valor secreto e a tabela do README tem a linha dela (tests/projeto.test.ts) e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
 depende_de: ["T-02.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 246 arquivos, 2885 passed, 9 skipped, 0 failed; citações de ambiente.ts reajustadas
 ```
 
 ---

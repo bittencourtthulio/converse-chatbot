@@ -214,6 +214,7 @@ Toda variável é lida em um ponto só, `src/lib/ambiente.ts`. O que cada uma fa
 | `DATABASE_URL` | arquivo SQLite | sim |
 | `JWT_SECRET` | assinatura da sessão | sim |
 | `JWT_TTL_SEGUNDOS` | vida da sessão (padrão 900) | não |
+| `SESSAO_MAXIMA_HORAS` | duração máxima da sessão contada do login, em horas (padrão 12): a renovação por atividade nunca a ultrapassa | não |
 | `APP_NAME` | nome do produto na interface (padrão Converse) | não |
 | `TRUST_PROXY` | `1` atrás de proxy, para os limites de login e do chat público usarem `X-Forwarded-For` (sem isso todos os visitantes dividem um IP só) | não |
 | `ENCRYPTION_KEY` | 32 bytes em hexadecimal ou base64; criptografa a chave do OpenRouter. Só é exigida ao gravar ou ler um segredo | para usar a chave do OpenRouter |
