@@ -862,15 +862,15 @@ describe('convenções da sessão e do acesso (FT-12)', () => {
 describe('fechamento da sessão e do acesso endurecidos (FT-12)', () => {
   it('o MAPA marca a FT-12 entregue com sprints, testes e PR local, e o projeto conta 12 entregues', () => {
     const mapa = ler('docs/projeto/MAPA.md')
-    expect(mapa).toMatch(/^entregues: 12$/m)
-    expect(mapa).toMatch(/^em_andamento: 0$/m)
+    // Estado histórico: o placar só cresce (a FT-13 e as seguintes mudam os contadores).
+    expect(Number(/^entregues: (\d+)$/m.exec(mapa)![1])).toBeGreaterThanOrEqual(12)
     expect(mapa).toMatch(/\| FT-12 \| Sessão e acesso endurecidos \| entregue \| local \(branch feat\/sessao-e-acesso-endurecidos\) \|/)
     const bloco = mapa.split('### FT-12 — ')[1]!.split('\n---')[0]!
     expect(bloco).toMatch(/\*\*Status:\*\* entregue/)
     expect(bloco).toMatch(/\*\*Sprints:\*\* 6 \(26 tasks\)/)
     expect(bloco).toMatch(/\*\*Testes:\*\* \d+ \(suíte inteira\)/)
     expect(bloco).toMatch(/\*\*PR:\*\* local \(branch feat\/sessao-e-acesso-endurecidos\)/)
-    expect(ler('docs/projeto/PROJETO.md')).toMatch(/^features_entregues: 12$/m)
+    expect(Number(/^features_entregues: (\d+)$/m.exec(ler('docs/projeto/PROJETO.md'))![1])).toBeGreaterThanOrEqual(12)
   })
 
   it('a recursão move PEND-12 a PEND-17 para Resolvido nos ciclos (ciclo 2, FT-12) e os contadores batem', () => {
@@ -881,8 +881,7 @@ describe('fechamento da sessão e do acesso endurecidos (FT-12)', () => {
     }
     const emResolucao = recursao.split('## Em resolução no ciclo 2')[1]!.split('## Resolvido nos ciclos')[0]!
     for (let n = 12; n <= 17; n++) expect(emResolucao, `PEND-${n} ainda listada em resolução`).not.toMatch(new RegExp(`\\| PEND-${n} \\|`))
-    for (let n = 18; n <= 27; n++) expect(emResolucao, `PEND-${n}`).toMatch(new RegExp(`\\| PEND-${n} \\|`))
-    expect(recursao).toMatch(/^pendencias_resolvidas: 6$/m)
+    expect(Number(/^pendencias_resolvidas: (\d+)$/m.exec(recursao)![1])).toBeGreaterThanOrEqual(6)
   })
 
   it('o relatório da feature existe com as seções e o que a FT-13 precisa saber, e as mutações estão no ENTREGA.md', () => {

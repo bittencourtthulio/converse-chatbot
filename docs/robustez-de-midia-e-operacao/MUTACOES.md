@@ -1,0 +1,17 @@
+---
+expx_schema: 1
+expx_tool: sprintx
+kind: mutacoes
+trabalho_id: robustez-de-midia-e-operacao
+origem_buildx: plataforma-chatbot-ia
+feature_id: FT-13
+atualizado_em: 2026-10-01
+---
+
+# Mutações que provam as correções da FT-13
+
+Regra da feature: cada correção tem um teste que **falha** quando ela é removida. A mutação é temporária (aplicada, o teste roda e falha, o código volta ao original) e fica registrada aqui, task a task. A tabela é copiada para o `ENTREGA.md` no fechamento.
+
+| Task | Correção | Mutação aplicada (temporária) | Teste que falhou |
+|---|---|---|---|
+| T-01.01 | trava contra rede real nos testes | comentada a chamada `instalarTravaDeRede()` de `tests/setup-rede.ts` | 3 casos de `tests/trava-de-rede.test.ts` (fetch, http/https e net.connect para host público) |

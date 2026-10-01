@@ -11,7 +11,7 @@ tasks:
   - id: T-01.01
     titulo: "Trava contra rede real nos testes"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Instalar nos testes uma trava que recusa conexão de saída para host que não seja loopback (PR-112) e abrir o registro das mutações da feature."
     arquivos:
       cria: ["docs/robustez-de-midia-e-operacao/sprint-01/sprint.md", "docs/robustez-de-midia-e-operacao/sprint-01/fases.md", "docs/robustez-de-midia-e-operacao/sprint-01/tasks.md", "docs/robustez-de-midia-e-operacao/MUTACOES.md", "tests/apoio/trava-de-rede.ts", "tests/setup-rede.ts", "tests/trava-de-rede.test.ts"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/trava-de-rede.test.ts passa, falha quando a instalação da trava sai do setup (mutação registrada em MUTACOES.md), o bloco de fechamento da FT-12 em tests/projeto.test.ts foi relaxado para um estado histórico estável (linha da FT-12 entregue, entregues maior ou igual a 12, sem fixar em_andamento nem pendencias_resolvidas) e a suíte inteira fica verde (teste que tocava a rede real, se houver, corrigido e registrado em desvios do ENTREGA.md)."
     depende_de: []
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
   - id: T-01.02
     titulo: "Teste do embed estável contra o código aleatório"
     fase: F-01.1
@@ -88,7 +88,7 @@ teste_funcional: "ehLoopback devolve true para localhost, 127.0.0.1, 127.1.2.3, 
 criterio_aceite: "tests/trava-de-rede.test.ts passa, falha quando a instalação da trava sai do setup (mutação registrada em MUTACOES.md), o bloco de fechamento da FT-12 em tests/projeto.test.ts foi relaxado para um estado histórico estável (linha da FT-12 entregue, entregues maior ou igual a 12, sem fixar em_andamento nem pendencias_resolvidas) e a suíte inteira fica verde (teste que tocava a rede real, se houver, corrigido e registrado em desvios do ENTREGA.md)."
 depende_de: []
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 262 arquivos, 3000 passed, 9 skipped, 0 failed; mutação registrada
 ```
 
 ---
