@@ -86,18 +86,18 @@ tasks:
   - id: T-02.06
     titulo: "Auditoria da exclusao de agente"
     fase: F-02.2
-    status: pendente
+    status: concluida
     objetivo: "Gravar agente_excluido com o nome do agente na mesma transacao da exclusao."
     arquivos:
       cria: ["tests/auditoria-agentes.test.ts"]
-      altera: ["src/servicos/agentes.ts"]
+      altera: ["src/servicos/agentes.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md"]
     teste_integracao: "Excluir agente grava agente_excluido na mesma transacao e, com a auditoria forcada a falhar, o agente continua existindo."
     teste_funcional: "Excluir um agente com duas conversas e uma fonte grava o nome do agente e as contagens 2 e 1 e nenhum texto de instrucao ou de conversa."
     criterio_aceite: "tests/auditoria-agentes.test.ts passa e tests/agentes.test.ts continua passando."
     depende_de: ["T-02.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
 ---
 
 # Tasks — Sprint 02
@@ -195,12 +195,12 @@ titulo: "Auditoria da exclusao de agente"
 objetivo: "Gravar agente_excluido com o nome do agente na mesma transacao da exclusao."
 arquivos:
   cria: ["tests/auditoria-agentes.test.ts"]
-  altera: ["src/servicos/agentes.ts"]
+  altera: ["src/servicos/agentes.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md"]
 teste_integracao: "Excluir agente grava agente_excluido na mesma transacao e, com a auditoria forcada a falhar, o agente continua existindo."
 teste_funcional: "Excluir um agente com duas conversas e uma fonte grava o nome do agente e as contagens 2 e 1 e nenhum texto de instrucao ou de conversa."
 criterio_aceite: "tests/auditoria-agentes.test.ts passa e tests/agentes.test.ts continua passando."
 depende_de: ["T-02.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2320 testes, 2317 passed na rodada e os 3 de citacao de linha de integracoes.ts corrigidos e reexecutados (projeto.test.ts 144 passed); build antes
 ```
 

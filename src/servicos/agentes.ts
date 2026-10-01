@@ -10,6 +10,7 @@ import { entradaInvalida, naoAutenticado, naoEncontrado } from '@/lib/erros'
 import { listarModelos } from '@/lib/openrouter'
 import { obterChaveDoOpenrouter } from '@/servicos/integracoes'
 import type { UsuarioAutenticado } from '@/servicos/autenticacao'
+import { registrar } from '@/servicos/auditoria'
 
 export const MODELO_PADRAO = 'openai/gpt-4o-mini'
 export const TEMPERATURA_PADRAO = 0.7
@@ -148,8 +149,26 @@ export async function editar(
 /** Exclusão definitiva (PR-40). A confirmação é da tela. */
 export async function excluir(autor: UsuarioAutenticado, id: string): Promise<void> {
   exigirAutor(autor)
-  const { count } = await prisma.agente.deleteMany({ where: { id } })
-  if (count === 0) throw naoEncontrado('Agente não encontrado.')
+  // A auditoria entra na mesma transação (PR-87): sem registro, o agente não é excluído. O
+  // nome e as contagens são lidos antes, porque depois da exclusão já não existem.
+  await prisma.$transaction(async (tx) => {
+    const agente = await tx.agente.findUnique({
+      where: { id },
+      select: { nome: true, _count: { select: { conversas: true, fontes: true } } },
+    })
+    if (!agente) throw naoEncontrado('Agente não encontrado.')
+    await tx.agente.delete({ where: { id } })
+    await registrar(
+      {
+        ator: autor,
+        acao: 'agente_excluido',
+        alvoTipo: 'agente',
+        alvoId: id,
+        detalhes: { nome: agente.nome.slice(0, 100), conversas: agente._count.conversas, fontes: agente._count.fontes },
+      },
+      tx,
+    )
+  })
   // As fontes saem em cascata; os arquivos delas, daqui (PR-47). Falha ao
   // apagar o diretório vai para o log e não desfaz a exclusão no banco.
   try {
