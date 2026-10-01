@@ -71,7 +71,7 @@ tasks:
   - id: T-02.05
     titulo: "Entrar, validar e revogar a sessao no servico"
     fase: F-02.2
-    status: pendente
+    status: concluida
     objetivo: "Fazer entrar emitir jti e aceitar o relogio por parametro, usuarioDaSessao conferir revogacao e limite absoluto com relogio injetado (mantendo por ora o corte da troca de senha) e criar revogarSessao."
     arquivos:
       cria: ["tests/sessao-revogacao.test.ts"]
@@ -81,8 +81,8 @@ tasks:
     criterio_aceite: "tests/sessao-revogacao.test.ts e tests/autenticacao.test.ts passam e falham quando a conferencia de revogados ou a de ini mais o maximo e removida (mutacoes registradas) e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
     depende_de: ["T-02.01", "T-02.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
   - id: T-02.06
     titulo: "Troca de senha por versao de sessao"
     fase: F-02.3
@@ -216,7 +216,7 @@ teste_funcional: "Revogar duas vezes nao falha e grava uma linha com expiraEm ig
 criterio_aceite: "tests/sessao-revogacao.test.ts e tests/autenticacao.test.ts passam e falham quando a conferencia de revogados ou a de ini mais o maximo e removida (mutacoes registradas) e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
 depende_de: ["T-02.01", "T-02.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 249 arquivos, 2905 passed, 9 skipped, 0 failed
 ```
 
 ---

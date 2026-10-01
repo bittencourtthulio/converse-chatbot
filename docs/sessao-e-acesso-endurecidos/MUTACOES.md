@@ -20,3 +20,5 @@ Regra da feature: cada proteção tem um teste que **falha** quando ela é remov
 | T-02.04 | cookie de sessão `HttpOnly` | `httpOnly: false` em `opcoesDoCookie` | 3 casos de `tests/sessao-cookie.test.ts` |
 | T-02.04 | cookie de sessão `Secure` em produção | `secure: false` fixo | `tests/sessao-cookie.test.ts` ("em produção: os mesmos atributos e Secure") |
 | T-02.04 | cookie de sessão `SameSite=Lax` | `sameSite: 'none'` | 3 casos de `tests/sessao-cookie.test.ts` |
+| T-02.05 | `usuarioDaSessao` recusa token revogado | removida a consulta a `sessoes_revogadas` | `tests/sessao-revogacao.test.ts` ("depois de revogar, o token recebe 401 e outra sessão do mesmo usuário continua válida") |
+| T-02.05 | `usuarioDaSessao` recusa sessão além do limite absoluto mesmo com `exp` válido | removida a conferência de início mais o máximo | `tests/sessao-revogacao.test.ts` ("um token forjado com início antigo e exp ainda válido") |
