@@ -766,11 +766,11 @@ describe('convenções da operação e do backup (FT-11)', () => {
 describe('fechamento da operação e do backup (FT-11)', () => {
   it('o MAPA marca a FT-11 entregue com sprints, testes e PR local, e o projeto conta 11 entregues', () => {
     const mapa = ler('docs/projeto/MAPA.md')
-    expect(mapa).toMatch(/^entregues: 11$/m)
-    expect(mapa).toMatch(/^em_andamento: 0$/m)
+    // A FT-11 continua entregue quando as features seguintes avançam: o placar só cresce (FT-12 em diante).
+    expect(mapa).toMatch(/^entregues: (1[1-9]|[2-9]\d)$/m)
     expect(mapa).toMatch(/\| FT-11 \| Operação e backup \| entregue \| local \(branch feat\/operacao-e-backup\) \|/)
     expect(mapa).toMatch(/\*\*Sprints:\*\* 8 \(38 tasks\)/)
-    expect(ler('docs/projeto/PROJETO.md')).toMatch(/^features_entregues: 11$/m)
+    expect(ler('docs/projeto/PROJETO.md')).toMatch(/^features_entregues: (1[1-9]|[2-9]\d)$/m)
   })
 
   it('PR-92 a PR-100 estão registradas e PR-20, PR-21 e PR-24 realizadas na FT-11', () => {

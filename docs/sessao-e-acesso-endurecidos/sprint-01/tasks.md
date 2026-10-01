@@ -11,7 +11,7 @@ tasks:
   - id: T-01.01
     titulo: "Relogio do limitador alcancavel por relogio falso"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Fazer o limitador padrao do processo usar o relogio de Date.now no instante da chamada, para que vi.setSystemTime o alcance, e abrir o registro das mutacoes da feature."
     arquivos:
       cria: ["docs/sessao-e-acesso-endurecidos/sprint-01/sprint.md", "docs/sessao-e-acesso-endurecidos/sprint-01/fases.md", "docs/sessao-e-acesso-endurecidos/sprint-01/tasks.md", "docs/sessao-e-acesso-endurecidos/MUTACOES.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/limite-de-uso.test.ts passa e falha quando o relogio padrao volta a ser a referencia Date.now capturada na criacao (mutacao registrada em MUTACOES.md) e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
     depende_de: []
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
   - id: T-01.02
     titulo: "Cookies e cabecalhos falsos do next/headers"
     fase: F-01.1
@@ -73,7 +73,7 @@ teste_funcional: "Com a chave x e max 5, as 5 primeiras chamadas passam, a sexta
 criterio_aceite: "tests/limite-de-uso.test.ts passa e falha quando o relogio padrao volta a ser a referencia Date.now capturada na criacao (mutacao registrada em MUTACOES.md) e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
 depende_de: []
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 243 arquivos, 2866 passed, 9 skipped, 0 failed; mutação do relógio registrada
 ```
 
 ---

@@ -43,7 +43,10 @@ interface Entrada {
 /** A cada tantas chamadas o limitador varre as chaves vencidas. */
 const CHAMADAS_ENTRE_LIMPEZAS = 256
 
-export function criarLimitador(relogio: () => number = Date.now): Limitador {
+// O relógio padrão é lido na hora da chamada (`() => Date.now()`), não capturado como referência: o
+// `limitadorPadrao` nasce quando o módulo carrega, e um relógio falso instalado depois pelo teste
+// (`vi.setSystemTime`) só o alcança assim (FT-12, D-09).
+export function criarLimitador(relogio: () => number = () => Date.now()): Limitador {
   const entradas = new Map<string, Entrada>()
   let chamadas = 0
 

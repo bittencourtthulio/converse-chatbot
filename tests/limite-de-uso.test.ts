@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest'
-import { criarLimitador, verificarLimite } from '@/lib/limite-de-uso'
+import { describe, it, expect, afterEach, vi } from 'vitest'
+import { criarLimitador, limitadorPadrao, verificarLimite } from '@/lib/limite-de-uso'
 
 /** Relógio controlado pelo teste: nada de timers reais. */
 function relogioFalso(inicio = 1_000_000) {
@@ -112,5 +112,44 @@ describe('limite de uso (janela deslizante)', () => {
     const chave = `padrao-${Math.random()}`
     expect(verificarLimite(chave, { max: 1, janelaMs: 60_000 }).permitido).toBe(true)
     expect(verificarLimite(chave, { max: 1, janelaMs: 60_000 }).permitido).toBe(false)
+  })
+})
+
+describe('o limitador padrão do processo e o relógio falso do teste (FT-12, PEND-12)', () => {
+  afterEach(() => {
+    limitadorPadrao.reiniciar('padrao:relogio')
+    vi.useRealTimers()
+  })
+
+  // O limitador padrão é criado quando o módulo carrega, antes de o teste instalar o relógio falso:
+  // só um relógio lido na hora da chamada (`() => Date.now()`) enxerga `vi.setSystemTime`.
+  it('a janela anda com vi.setSystemTime depois do import (integração)', () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date('2026-10-01T12:00:00Z'))
+    const regra5 = { max: 5, janelaMs: 60_000 }
+    for (let i = 0; i < 5; i += 1) expect(limitadorPadrao.verificarLimite('padrao:relogio', regra5).permitido).toBe(true)
+    expect(limitadorPadrao.verificarLimite('padrao:relogio', regra5).permitido).toBe(false)
+    vi.setSystemTime(new Date('2026-10-01T12:01:01Z'))
+    expect(limitadorPadrao.verificarLimite('padrao:relogio', regra5).permitido).toBe(true)
+  })
+
+  it('a sexta chamada é recusada com 60000 ms para liberar e a sétima passa 61 s depois (funcional)', () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date('2026-10-01T12:00:00Z'))
+    const regra5 = { max: 5, janelaMs: 60_000 }
+    for (let i = 0; i < 5; i += 1) limitadorPadrao.verificarLimite('padrao:relogio', regra5)
+    expect(limitadorPadrao.verificarLimite('padrao:relogio', regra5)).toEqual({ permitido: false, restante: 0, reiniciaEmMs: 60_000 })
+    vi.setSystemTime(new Date('2026-10-01T12:01:01Z'))
+    expect(limitadorPadrao.verificarLimite('padrao:relogio', regra5).permitido).toBe(true)
+  })
+
+  it('criarLimitador() sem argumento também lê o relógio na hora da chamada', () => {
+    const l = criarLimitador()
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date('2026-10-01T12:00:00Z'))
+    expect(l.verificarLimite('x', { max: 1, janelaMs: 1000 }).permitido).toBe(true)
+    expect(l.verificarLimite('x', { max: 1, janelaMs: 1000 }).permitido).toBe(false)
+    vi.setSystemTime(new Date('2026-10-01T12:00:02Z'))
+    expect(l.verificarLimite('x', { max: 1, janelaMs: 1000 }).permitido).toBe(true)
   })
 })
