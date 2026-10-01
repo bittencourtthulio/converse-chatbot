@@ -10,7 +10,7 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-07.1
     titulo: "Desligamento limpo e administrador inicial"
-    status: nao_iniciado
+    status: em_andamento
     criterio_saida: "A fila para de reivindicar e o desligamento drena, e o comando cria o administrador sem imprimir senha"
     paralelizavel: false
     paralela_com: []
@@ -51,7 +51,7 @@ flowchart LR
   classDef pendente  fill:#eceff1,stroke:#78909c,color:#263238
   classDef critico   stroke-width:3px
 
-  class T_07_01 pendente
+  class T_07_01 concluida
   class T_07_02 pendente
   class T_07_03 pendente
   class T_07_04 pendente

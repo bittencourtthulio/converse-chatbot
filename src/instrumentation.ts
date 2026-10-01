@@ -42,6 +42,64 @@ export async function register(): Promise<void> {
     // Sem a fila, o sistema segue de pé; o operador vê o evento no log.
     log.erro('fila_nao_iniciou', camposDoErro(erro))
   }
+  // Desligamento limpo (FT-11, PR-99): só com NEXT_MANUAL_SIG_HANDLE=1, que desliga o tratamento de sinal do
+  // próprio Next (o contêiner define). Sem a variável o Next trata SIGTERM sozinho e sai sem esperar a fila.
+  if (process.env.NEXT_MANUAL_SIG_HANDLE === '1') instalarDesligamento()
+}
+
+const PRAZO_DA_FILA_NO_DESLIGAMENTO_MS = 20_000
+const CHAVE_DO_DESLIGAMENTO = Symbol.for('converse.desligamentoInstalado')
+
+export interface OpcoesDoDesligamento {
+  agendador?: { parar(): void }
+  fila?: { parar(): void; aguardarEncerramento(prazoMs: number): Promise<boolean> }
+  /** Espera as gravações de auditoria de melhor esforço em andamento. */
+  auditoria?: () => Promise<void>
+  prazoDaFilaMs?: number
+  sair?: (codigo: number) => void
+  sinal?: string
+}
+
+/**
+ * O desligamento limpo: para o agendador do expurgo, manda a fila parar de reivindicar e espera ela
+ * terminar o passo corrente (até o prazo; o que sobrar volta a `pendente` e é retomado no próximo start),
+ * espera as gravações de auditoria pendentes, registra e sai com 0. Cada passo é independente: a falha de
+ * um vai ao log (só o nome do erro) e não impede os outros nem a saída.
+ */
+export async function desligarComCalma(opcoes: OpcoesDoDesligamento = {}): Promise<void> {
+  const { camposDoErro, log } = await import('@/lib/log')
+  log.info('desligamento_iniciado', { ...(opcoes.sinal && { sinal: opcoes.sinal }) })
+  const passo = async (nome: string, tarefa: () => void | Promise<unknown>) => {
+    try {
+      return await tarefa()
+    } catch (erro) {
+      log.erro('desligamento_falhou', { passo: nome, ...camposDoErro(erro) })
+      return undefined
+    }
+  }
+  const agendador = opcoes.agendador ?? (await import('@/servicos/expurgo')).obterAgendadorDoExpurgo()
+  const fila = opcoes.fila ?? (await import('@/servicos/fontes-fila')).obterFila()
+  const auditoria = opcoes.auditoria ?? (await import('@/servicos/auditoria')).aguardarGravacoesPendentes
+  await passo('expurgo', () => agendador.parar())
+  await passo('fila_parar', () => fila.parar())
+  const ociosa = await passo('fila_aguardar', () => fila.aguardarEncerramento(opcoes.prazoDaFilaMs ?? PRAZO_DA_FILA_NO_DESLIGAMENTO_MS))
+  await passo('auditoria', () => auditoria())
+  log.info('desligamento_concluido', { filaOciosa: ociosa === true })
+  ;(opcoes.sair ?? ((codigo: number) => process.exit(codigo)))(0)
+}
+
+function instalarDesligamento(): void {
+  const g = globalThis as unknown as Record<symbol, boolean | undefined>
+  if (g[CHAVE_DO_DESLIGAMENTO]) return
+  g[CHAVE_DO_DESLIGAMENTO] = true
+  let desligando = false
+  for (const sinal of ['SIGTERM', 'SIGINT'] as const) {
+    process.on(sinal, () => {
+      if (desligando) return // o segundo sinal não reinicia o desligamento
+      desligando = true
+      void desligarComCalma({ sinal })
+    })
+  }
 }
 
 const FORMATO_DA_CORRELACAO = /^[0-9a-f]{8}$/

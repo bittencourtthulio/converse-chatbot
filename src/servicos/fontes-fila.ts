@@ -50,6 +50,17 @@ export interface Fila {
   acordar(): void
   /** Resolve quando a drenagem em curso (se houver) terminar. */
   ocioso(): Promise<void>
+  /**
+   * Desligamento (FT-11, PR-99): para de reivindicar fontes novas, para sempre neste processo. A fonte em
+   * curso termina o passo corrente.
+   */
+  parar(): void
+  /**
+   * Espera o que está em curso terminar, até `prazoMs`. Devolve `true` se terminou; `false` se o prazo
+   * acabou, e então já devolve a `pendente` as fontes ainda em `processando`, para o próximo start as
+   * retomar (o `retomar()` da subida faria o mesmo).
+   */
+  aguardarEncerramento(prazoMs: number): Promise<boolean>
 }
 
 const MENSAGEM_GENERICA = 'Não foi possível processar este arquivo. Tente reprocessar ou envie outro arquivo.'
@@ -226,12 +237,16 @@ export function criarFila(opcoes: OpcoesDaFila = {}): Fila {
   const concorrencia = opcoes.concorrencia ?? 2
   const concorrenciaDeMidia = opcoes.concorrenciaDeMidia ?? 1
   let ativa = false
+  let parada = false
   let drenagem: Promise<void> | null = null
   let reexecutar = false
+  /** O processamento de cada fonte em curso: o desligamento espera por ele. */
+  const emCurso = new Set<Promise<void>>()
 
   async function trabalhador(midia: boolean): Promise<number> {
     let feitas = 0
     for (;;) {
+      if (parada) return feitas
       const proxima = await prisma.fonte.findFirst({
         where: { status: 'pendente', tipo: midia ? { in: TIPOS_DE_MIDIA } : { notIn: TIPOS_DE_MIDIA } },
         orderBy: { criadoEm: 'asc' },
@@ -270,6 +285,7 @@ export function criarFila(opcoes: OpcoesDaFila = {}): Fila {
   }
 
   async function processarUma(fonteId: string): Promise<boolean> {
+    if (parada) return false
     // Reivindicação atômica: só uma execução passa de `pendente` para `processando`.
     const { count } = await prisma.fonte.updateMany({
       where: { id: fonteId, status: 'pendente' },
@@ -279,7 +295,13 @@ export function criarFila(opcoes: OpcoesDaFila = {}): Fila {
     const fonte = await prisma.fonte.findUnique({ where: { id: fonteId } })
     if (!fonte) return true
     // Cada fonte tem a própria correlação: todas as linhas do log do processamento dela a levam.
-    await comCorrelacao(novaCorrelacao(), () => processar(fonte))
+    const tarefa = comCorrelacao(novaCorrelacao(), () => processar(fonte))
+    emCurso.add(tarefa)
+    try {
+      await tarefa
+    } finally {
+      emCurso.delete(tarefa)
+    }
     return true
   }
 
@@ -294,12 +316,31 @@ export function criarFila(opcoes: OpcoesDaFila = {}): Fila {
       return count
     },
     iniciar() {
+      if (parada) return
       ativa = true
       acordar()
     },
     acordar,
     async ocioso() {
       while (drenagem) await drenagem
+    },
+    parar() {
+      parada = true
+      ativa = false
+    },
+    async aguardarEncerramento(prazoMs: number) {
+      const ocupada = async () => {
+        while (emCurso.size > 0 || drenagem) await Promise.allSettled([...emCurso, ...(drenagem ? [drenagem] : [])])
+      }
+      let relogio: ReturnType<typeof setTimeout> | undefined
+      const prazo = new Promise<false>((resolver) => {
+        relogio = setTimeout(() => resolver(false), prazoMs)
+        relogio.unref?.()
+      })
+      const terminou = await Promise.race([ocupada().then(() => true as const), prazo])
+      if (relogio) clearTimeout(relogio)
+      if (!terminou) await prisma.fonte.updateMany({ where: { status: 'processando' }, data: { status: 'pendente' } })
+      return terminou
     },
   }
 }

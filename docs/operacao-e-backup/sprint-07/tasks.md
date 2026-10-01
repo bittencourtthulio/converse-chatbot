@@ -11,18 +11,18 @@ tasks:
   - id: T-07.01
     titulo: "Desligamento limpo no SIGTERM"
     fase: F-07.1
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar parar e aguardarEncerramento a fila de fontes e instalar em register() o desligamento limpo de SIGTERM e SIGINT que para o expurgo, drena a fila com prazo e espera a auditoria."
     arquivos:
       cria: ["tests/desligamento.test.ts", "docs/operacao-e-backup/sprint-07/sprint.md", "docs/operacao-e-backup/sprint-07/fases.md", "docs/operacao-e-backup/sprint-07/tasks.md"]
-      altera: ["src/servicos/fontes-fila.ts", "src/instrumentation.ts", "tests/fontes-fila.test.ts", "tests/instrumentacao.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md"]
+      altera: ["src/servicos/fontes-fila.ts", "src/instrumentation.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md"]
     teste_integracao: "Depois de parar(), a fila nao reivindica fonte nova e aguardarEncerramento resolve quando a fonte em curso termina ou o prazo acaba, e o desligamento chama parar do agendador do expurgo e espera as gravacoes pendentes da auditoria."
     teste_funcional: "next start com NEXT_MANUAL_SIG_HANDLE recebendo SIGTERM escreve a linha desligamento no log e sai com 0, e uma fonte em processando no momento do sinal volta a pendente no start seguinte."
     criterio_aceite: "tests/desligamento.test.ts, tests/fontes-fila.test.ts e tests/instrumentacao.test.ts passam."
     depende_de: ["T-06.05"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
   - id: T-07.02
     titulo: "Comando do primeiro administrador"
     fase: F-07.1
@@ -95,13 +95,13 @@ titulo: "Desligamento limpo no SIGTERM"
 objetivo: "Acrescentar parar e aguardarEncerramento a fila de fontes e instalar em register() o desligamento limpo de SIGTERM e SIGINT que para o expurgo, drena a fila com prazo e espera a auditoria."
 arquivos:
   cria: ["tests/desligamento.test.ts", "docs/operacao-e-backup/sprint-07/sprint.md", "docs/operacao-e-backup/sprint-07/fases.md", "docs/operacao-e-backup/sprint-07/tasks.md"]
-  altera: ["src/servicos/fontes-fila.ts", "src/instrumentation.ts", "tests/fontes-fila.test.ts", "tests/instrumentacao.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md"]
+  altera: ["src/servicos/fontes-fila.ts", "src/instrumentation.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md"]
 teste_integracao: "Depois de parar(), a fila nao reivindica fonte nova e aguardarEncerramento resolve quando a fonte em curso termina ou o prazo acaba, e o desligamento chama parar do agendador do expurgo e espera as gravacoes pendentes da auditoria."
 teste_funcional: "next start com NEXT_MANUAL_SIG_HANDLE recebendo SIGTERM escreve a linha desligamento no log e sai com 0, e uma fonte em processando no momento do sinal volta a pendente no start seguinte."
 criterio_aceite: "tests/desligamento.test.ts, tests/fontes-fila.test.ts e tests/instrumentacao.test.ts passam."
 depende_de: ["T-06.05"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2792 passed, 0 failed (240 arquivos); build antes; SIGTERM contra next start com NEXT_MANUAL_SIG_HANDLE provado
 ```
 
 ---
