@@ -26,7 +26,7 @@ tasks:
   - id: T-03.02
     titulo: "Rota de documentos com corpo limitado"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Fazer o POST de documentos ler o corpo por lerCorpoLimitado e só então o multipart, com 413 inclusive para corpo chunked (PR-106)."
     arquivos:
       cria: ["tests/fontes-rota-chunked.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "Os testes passam depois de npm run build e o de corpo chunked falha (422 no lugar de 413) quando a rota volta a chamar request.formData() direto (mutação registrada); a prova de bytes lidos fica na T-03.01."
     depende_de: ["T-03.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-03.03
     titulo: "Extração isolada em processo filho"
     fase: F-03.2
@@ -120,7 +120,7 @@ teste_funcional: "Um multipart de 3 arquivos de 400 KB com MAX_UPLOAD_MB=1 receb
 criterio_aceite: "Os testes passam depois de npm run build e o de corpo chunked falha (422 no lugar de 413) quando a rota volta a chamar request.formData() direto (mutação registrada); a prova de bytes lidos fica na T-03.01."
 depende_de: ["T-03.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — fontes-rota-chunked, fontes-rota-upload, fontes-rota, fontes-rota-formatos, fontes-rota-ciclo, video-rota e projeto: 271 passed após npm run build; mutação registrada
 ```
 
 ---

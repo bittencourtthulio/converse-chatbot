@@ -1,7 +1,8 @@
 // GET /api/agentes/[id]/fontes: a lista e o resumo da base, para o polling da
 // tela. POST: envio de arquivos em multipart (vários por vez), com resposta por
-// arquivo (PR-49). Handler fino: sessão, leitura do corpo e tradução do serviço.
+// arquivo (PR-49). Handler fino: sessão, leitura do corpo (em stream, com teto) e tradução do serviço.
 import { ambiente } from '@/lib/ambiente'
+import { CorpoGrandeDemais, lerCorpoLimitado } from '@/lib/corpo-limitado'
 import { LIMITES } from '@/lib/extracao/limites'
 import { entradaInvalida } from '@/lib/erros'
 import { adicionarArquivos, listar, resumo } from '@/servicos/fontes'
@@ -34,14 +35,26 @@ export async function POST(request: Request, contexto: Contexto) {
     }
     if (passaDoTeto(request, tetoDoCorpo())) return erroDeTamanho()
 
-    const formulario = await request.formData().catch(() => {
-      throw entradaInvalida('Não foi possível ler os arquivos enviados.')
+    // Sem Content-Length (corpo em pedaços) o tamanho só se conhece lendo: os bytes são contados em stream e a
+    // leitura é cancelada ao passar do teto (PR-106), então a memória nunca passa dele. O multipart é lido do
+    // buffer já limitado, com o mesmo `content-type` (e o boundary) da requisição.
+    let corpo: Uint8Array
+    try {
+      corpo = await lerCorpoLimitado(request.body, tetoDoCorpo())
+    } catch (erro) {
+      if (erro instanceof CorpoGrandeDemais) return erroDeTamanho()
+      throw erro
+    }
+    const formulario = await new Response(corpo as BodyInit, {
+      headers: { 'content-type': request.headers.get('content-type') ?? '' },
     })
+      .formData()
+      .catch(() => {
+        throw entradaInvalida('Não foi possível ler os arquivos enviados.')
+      })
     const enviados = [...formulario.getAll('arquivos'), ...formulario.getAll('arquivo')].filter(
       (v): v is File => typeof v !== 'string',
     )
-    // Content-Length pode faltar (transferência em pedaços): confere o tamanho real.
-    if (enviados.reduce((soma, f) => soma + f.size, 0) > tetoDoCorpo()) return erroDeTamanho()
 
     const arquivos = await Promise.all(
       enviados.map(async (f) => ({ nome: f.name, bytes: new Uint8Array(await f.arrayBuffer()) })),
