@@ -11,18 +11,18 @@ tasks:
   - id: T-06.01
     titulo: "Itens de menu e guardas de admin"
     fase: F-06.1
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar os itens Privacidade e Auditoria ao grupo Configuracoes e as guardas e loading das duas pastas."
     arquivos:
-      cria: ["src/app/(sistema)/configuracoes/privacidade/layout.tsx", "src/app/(sistema)/configuracoes/privacidade/loading.tsx", "src/app/(sistema)/configuracoes/auditoria/layout.tsx", "src/app/(sistema)/configuracoes/auditoria/loading.tsx", "docs/privacidade-e-auditoria/sprint-06/sprint.md", "docs/privacidade-e-auditoria/sprint-06/fases.md", "docs/privacidade-e-auditoria/sprint-06/tasks.md"]
+      cria: ["src/app/(sistema)/configuracoes/privacidade/layout.tsx", "src/app/(sistema)/configuracoes/privacidade/loading.tsx", "src/app/(sistema)/configuracoes/auditoria/layout.tsx", "src/app/(sistema)/configuracoes/auditoria/loading.tsx", "src/app/(sistema)/configuracoes/privacidade/page.tsx", "src/app/(sistema)/configuracoes/auditoria/page.tsx", "docs/privacidade-e-auditoria/sprint-06/sprint.md", "docs/privacidade-e-auditoria/sprint-06/fases.md", "docs/privacidade-e-auditoria/sprint-06/tasks.md"]
       altera: ["src/componentes/itens-de-menu.ts", "tests/menu.test.ts", "tests/rotas.test.ts"]
     teste_integracao: "No servidor de producao /configuracoes/privacidade e /configuracoes/auditoria redirecionam com 307 para o login sem sessao e para o painel com usuario comum."
     teste_funcional: "itensVisiveis para admin inclui Privacidade e Auditoria no grupo Configuracoes, para usuario comum nao inclui e migalhasDaRota devolve Configuracoes e o rotulo."
     criterio_aceite: "tests/menu.test.ts e tests/rotas.test.ts passam com a contagem de itens atualizada."
     depende_de: ["T-05.02", "T-04.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-06.02
     titulo: "Logica da tela de auditoria: rotulos e detalhes em portugues"
     fase: F-06.2
@@ -94,14 +94,14 @@ id: T-06.01
 titulo: "Itens de menu e guardas de admin"
 objetivo: "Acrescentar os itens Privacidade e Auditoria ao grupo Configuracoes e as guardas e loading das duas pastas."
 arquivos:
-  cria: ["src/app/(sistema)/configuracoes/privacidade/layout.tsx", "src/app/(sistema)/configuracoes/privacidade/loading.tsx", "src/app/(sistema)/configuracoes/auditoria/layout.tsx", "src/app/(sistema)/configuracoes/auditoria/loading.tsx", "docs/privacidade-e-auditoria/sprint-06/sprint.md", "docs/privacidade-e-auditoria/sprint-06/fases.md", "docs/privacidade-e-auditoria/sprint-06/tasks.md"]
+  cria: ["src/app/(sistema)/configuracoes/privacidade/layout.tsx", "src/app/(sistema)/configuracoes/privacidade/loading.tsx", "src/app/(sistema)/configuracoes/auditoria/layout.tsx", "src/app/(sistema)/configuracoes/auditoria/loading.tsx", "src/app/(sistema)/configuracoes/privacidade/page.tsx", "src/app/(sistema)/configuracoes/auditoria/page.tsx", "docs/privacidade-e-auditoria/sprint-06/sprint.md", "docs/privacidade-e-auditoria/sprint-06/fases.md", "docs/privacidade-e-auditoria/sprint-06/tasks.md"]
   altera: ["src/componentes/itens-de-menu.ts", "tests/menu.test.ts", "tests/rotas.test.ts"]
 teste_integracao: "No servidor de producao /configuracoes/privacidade e /configuracoes/auditoria redirecionam com 307 para o login sem sessao e para o painel com usuario comum."
 teste_funcional: "itensVisiveis para admin inclui Privacidade e Auditoria no grupo Configuracoes, para usuario comum nao inclui e migalhasDaRota devolve Configuracoes e o rotulo."
 criterio_aceite: "tests/menu.test.ts e tests/rotas.test.ts passam com a contagem de itens atualizada."
 depende_de: ["T-05.02", "T-04.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/rotas.test.ts e tests/menu.test.ts 70 passed contra next start (build antes); suite inteira no fim da sprint
 ```
 
 ---

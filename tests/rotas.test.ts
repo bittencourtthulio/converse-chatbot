@@ -80,7 +80,7 @@ async function cookieDe(email: string): Promise<string> {
 }
 
 describe('sem sessão', () => {
-  it.each(['/', '/perfil', '/perfil/senha', '/configuracoes/usuarios', '/configuracoes/integracoes', '/agentes', '/agentes/novo', '/conversas'])(
+  it.each(['/', '/perfil', '/perfil/senha', '/configuracoes/usuarios', '/configuracoes/integracoes', '/configuracoes/privacidade', '/configuracoes/auditoria', '/agentes', '/agentes/novo', '/conversas'])(
     'manda %s para o login',
     async (rota) => {
       const r = await pedir(rota)
@@ -159,6 +159,18 @@ describe('com sessão de usuário comum', () => {
     const r = await pedir('/', await cookieDe('comum.rota@teste.local'))
     expect(await r.text()).not.toContain('/configuracoes/usuarios')
   })
+
+  it('Privacidade e Auditoria são negadas no servidor com 307 para o painel, e os itens não aparecem no menu (FT-10)', async () => {
+    const cookie = await cookieDe('comum.rota@teste.local')
+    for (const rota of ['/configuracoes/privacidade', '/configuracoes/auditoria']) {
+      const r = await pedir(rota, cookie)
+      expect(r.status).toBe(307)
+      expect(r.headers.get('location')).not.toContain('/configuracoes')
+    }
+    const menu = await (await pedir('/', cookie)).text()
+    expect(menu).not.toContain('/configuracoes/privacidade')
+    expect(menu).not.toContain('/configuracoes/auditoria')
+  })
 })
 
 describe('com sessão de admin', () => {
@@ -187,6 +199,12 @@ describe('com sessão de admin', () => {
   it('o item Usuários aparece na navegação', async () => {
     const r = await pedir('/', await cookieDe('admin.rota@teste.local'))
     expect(await r.text()).toContain('/configuracoes/usuarios')
+  })
+
+  it('os itens Privacidade e Auditoria aparecem na navegação (FT-10)', async () => {
+    const menu = await (await pedir('/', await cookieDe('admin.rota@teste.local'))).text()
+    expect(menu).toContain('href="/configuracoes/privacidade"')
+    expect(menu).toContain('href="/configuracoes/auditoria"')
   })
 })
 

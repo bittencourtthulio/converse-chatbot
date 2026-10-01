@@ -67,6 +67,18 @@ export const GRUPOS_DE_MENU: GrupoDeMenu[] = [
         icone: 'integracoes',
         somenteAdmin: true,
       },
+      {
+        rotulo: 'Privacidade',
+        href: '/configuracoes/privacidade',
+        icone: 'informacao',
+        somenteAdmin: true,
+      },
+      {
+        rotulo: 'Auditoria',
+        href: '/configuracoes/auditoria',
+        icone: 'relogio',
+        somenteAdmin: true,
+      },
       { rotulo: 'Meu perfil', href: '/perfil', icone: 'perfil' },
     ],
   },

@@ -28,6 +28,23 @@ describe('itens de menu', () => {
     expect(item?.somenteAdmin).toBe(true)
   })
 
+  it('só admin vê Privacidade e Auditoria, no grupo Configurações, entre Integrações e Meu perfil (FT-10)', () => {
+    const doGrupo = (admin: boolean) =>
+      gruposVisiveis(admin).find((g) => g.titulo === 'Configurações')?.itens ?? []
+    expect(doGrupo(false).map((i) => i.rotulo)).not.toContain('Privacidade')
+    expect(doGrupo(false).map((i) => i.rotulo)).not.toContain('Auditoria')
+    expect(doGrupo(true).map((i) => [i.rotulo, i.href])).toEqual([
+      ['Usuários', '/configuracoes/usuarios'],
+      ['Integrações', '/configuracoes/integracoes'],
+      ['Privacidade', '/configuracoes/privacidade'],
+      ['Auditoria', '/configuracoes/auditoria'],
+      ['Meu perfil', '/perfil'],
+    ])
+    for (const rotulo of ['Privacidade', 'Auditoria']) {
+      expect(doGrupo(true).find((i) => i.rotulo === rotulo)?.somenteAdmin).toBe(true)
+    }
+  })
+
   it('Painel vem primeiro, Agentes logo abaixo e Conversas depois, para todos os papéis', () => {
     for (const admin of [true, false]) {
       const semTitulo = gruposVisiveis(admin).find((g) => g.titulo === null)!
@@ -82,6 +99,8 @@ describe('título por rota (migalhas)', () => {
       'Configurações',
       'Integrações',
     ])
+    expect(migalhasDaRota('/configuracoes/privacidade')).toEqual(['Configurações', 'Privacidade'])
+    expect(migalhasDaRota('/configuracoes/auditoria')).toEqual(['Configurações', 'Auditoria'])
   })
 
   it('rota fora do menu herda a do pai', () => {
