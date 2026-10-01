@@ -8,7 +8,7 @@ feature_id: FT-08
 sprint_id: sprint-01
 atualizado_em: 2026-09-30
 titulo: "Capacidade de testar: dados, ambiente, simulados e ffmpeg"
-status: nao_iniciado
+status: concluido
 criterio_saida: "A suite inteira esta verde com a migration nova, as variaveis de ambiente lidas, os simulados de OpenRouter com audio e de YouTube testados e o apoio de ffmpeg no CI."
 fases: ["F-01.1", "F-01.2"]
 riscos: ["migration tem de so acrescentar (tests/migracoes.test.ts)", "o simulado do OpenRouter nao pode quebrar os testes existentes (base/upload-testes-e-ci.md)", "o formato real do YouTube e NAO DOCUMENTADO e a fixture o imita por suposicao (base/youtube-legendas.md)"]

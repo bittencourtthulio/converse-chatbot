@@ -10,14 +10,14 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-01.1
     titulo: "Dados e ambiente"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Migration e variaveis de ambiente prontas e testadas."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-01.01", "T-01.02"]
   - id: F-01.2
     titulo: "Simulados e apoio de teste"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Simulados de OpenRouter com audio e de YouTube, e apoio de ffmpeg, testados."
     paralelizavel: false
     paralela_com: []
