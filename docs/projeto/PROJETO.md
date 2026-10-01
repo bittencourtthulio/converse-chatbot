@@ -8,10 +8,10 @@ modo: autonomo
 criado_em: 2026-09-30
 atualizado_em: 2026-10-01
 etapa: b4
-total_features: 11
+total_features: 13
 features_entregues: 11
 features_bloqueadas: 0
-ciclos_recursao: 0
+ciclos_recursao: 1
 ---
 
 # Plataforma de chatbot com IA e base de conhecimento — Projeto

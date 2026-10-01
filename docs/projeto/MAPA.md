@@ -4,8 +4,8 @@ expx_tool: buildx
 kind: mapa
 projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-10-01
-total_features: 11
-pendentes: 0
+total_features: 13
+pendentes: 2
 em_andamento: 0
 entregues: 11
 bloqueadas: 0
@@ -35,6 +35,8 @@ da feature de que depende (PRs empilhados).
 | FT-09 | Histórico de conversas e painel | entregue | local (branch feat/historico-de-conversas) |
 | FT-10 | Privacidade e auditoria | entregue | local (branch feat/privacidade-e-auditoria) |
 | FT-11 | Operação e backup | entregue | local (branch feat/operacao-e-backup) |
+| FT-12 | Sessão e acesso endurecidos | pendente | — |
+| FT-13 | Robustez de mídia, upload e operação | pendente | — |
 
 ---
 
@@ -224,6 +226,38 @@ Trabalho: adaptar o template (nome, layout e tokens SaaS no lugar do VS Code, te
 **Sprints:** 8 (38 tasks)
 **Testes:** 2863 (suíte inteira)
 **PR:** local (branch feat/operacao-e-backup)
+
+---
+
+### FT-12 — Sessão e acesso endurecidos
+
+**Slug:** `sessao-e-acesso-endurecidos` → `docs/sessao-e-acesso-endurecidos/`
+**Entrega:** o usuário que sai tem a sessão encerrada de fato, quem usa o sistema continua logado sem ser derrubado a cada 15 minutos, o login logo depois de trocar a senha funciona, e o excesso de tentativas de login e de leituras públicas é barrado, tudo provado por teste.
+**Depende de:** [FT-11]
+**Paralelizável:** false
+**Origem:** recursao
+**Premissas que realiza:** [PR-12, PR-16, PR-27, PR-31, PR-36, PR-56]
+**Módulo disponível:** -
+**Fatias candidatas:** -
+**Status:** pendente
+
+Vem do B6 (ciclo 2): `docs/projeto/validacao/premissas-01-34.md` (A-01, A-02, A-04, R-01 a R-03), `premissas-35-70.md` (achados 1 e 4) e `sistema-de-pe.md` (A-1). Premissas de segurança com evidência parcial não podem sair como pendência aceita.
+
+---
+
+### FT-13 — Robustez de mídia, upload e operação
+
+**Slug:** `robustez-de-midia-e-operacao` → `docs/robustez-de-midia-e-operacao/`
+**Entrega:** o usuário envia vídeo com trechos sem fala e documentos grandes sem derrubar a fonte nem o servidor, o operador só restaura um backup com o servidor parado mesmo em outro contêiner, e o que as premissas prometem de interface, correlação e proteção está provado por teste.
+**Depende de:** [FT-12]
+**Paralelizável:** false
+**Origem:** recursao
+**Premissas que realiza:** [PR-09, PR-19, PR-23, PR-26, PR-44, PR-45, PR-85, PR-93, PR-98]
+**Módulo disponível:** -
+**Fatias candidatas:** -
+**Status:** pendente
+
+Vem do B6 (ciclo 2): `premissas-71-100.md` (PR-93, PR-85, PR-98), `premissas-35-70.md` (PR-44, PR-45), `premissas-01-34.md` (A-03, R-03), `pedido-aceite-entregas.md` (A-03) e a lacuna 13 de `docs/stack/LACUNAS.md`.
 
 ---
 

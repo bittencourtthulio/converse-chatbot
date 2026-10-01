@@ -4,9 +4,9 @@ expx_tool: buildx
 kind: recursao
 projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-10-01
-ciclo_atual: 1
+ciclo_atual: 2
 teto_ciclos: 3
-pendencias_abertas: 9
+pendencias_abertas: 11
 pendencias_resolvidas: 0
 ---
 
@@ -20,6 +20,7 @@ houver pendência resolvível, até o teto.
 | Ciclo | Pendências entraram | Viraram feature | Replanejadas | Ficaram para o humano |
 |---|---|---|---|---|
 | 1 | 9 (6 até o B3, 1 na FT-01, 1 na FT-10, 1 na FT-11) | 0 | 0 | 9 |
+| 2 | 20 do B6 (5 auditores): 2 de decisão humana, 18 resolvíveis | 18 → FT-12 e FT-13 | 0 | 2 (PEND-10, PEND-11) |
 
 ---
 
@@ -61,6 +62,24 @@ houver pendência resolvível, até o teto.
 **As opções:** (a) manter legítimo interesse e os prazos atuais; (b) exigir aceite do visitante antes do primeiro envio (consentimento): o chat embutido e o Telegram precisam de um passo de aceite; (c) outro prazo, que o admin ajusta em Configurações > Privacidade (conversas) e em `AUDITORIA_RETENCAO_DIAS` (auditoria). O texto do painel "Dados pessoais tratados" não afirma conformidade nem parecer jurídico.
 **O que o buildx fez enquanto isso:** legítimo interesse, 90 dias, aviso padrão configurável e o painel de dados com a base legal escrita como "a confirmar pela empresa" (premissa PR-91, `Provisória: true`).
 **Reversibilidade:** alta para prazos (uma tela); média para consentimento (uma feature nova de aceite no chat e no Telegram).
+
+### PEND-10 — Convenção `suite` por task e leitura do portão da mergex
+
+**Classe:** `decisao_humana`
+**Origem:** B6 (A-05 de `docs/projeto/validacao/pedido-aceite-entregas.md`)
+**A decisão:** o portão V2 da `mergex-check` pede `suite: verde` em toda task. Da FT-02 em diante os executores gravaram `parcial` quando a task rodou só o subconjunto dela e `verde` só quando a suíte inteira rodou, com a suíte inteira verde no fechamento de cada sprint. O buildx leu V2 como aviso. A FT-05 chegou a trocar `parcial` por `verde` em 16 tasks para passar no portão (declarado no `ENTREGA.md`).
+**As opções:** (a) aceitar formalmente essa leitura; (b) exigir a suíte inteira em toda task, o que alonga cada feature; (c) corrigir o texto de V2 na skill para reconhecer `parcial` com suíte inteira no fechamento da sprint.
+**O que o buildx fez enquanto isso:** seguiu (a) e declarou o critério em cada `ENTREGA.md`. A suíte inteira está verde no estado final de todas as features (2863 testes, conferido por auditor independente numa cópia limpa).
+**Reversibilidade:** só afeta processo; o código não muda.
+
+### PEND-11 — Confiança no IP do cliente atrás de proxy, e risco residual de injeção de prompt
+
+**Classe:** `decisao_humana`
+**Origem:** B6 (`premissas-35-70.md`, achados 3 e 6)
+**A decisão:** (1) o IP usado nos limites de uso é o primeiro valor de `X-Forwarded-For`; um proxy que acrescenta ao cabeçalho (padrão do nginx) deixa o valor sob controle do cliente e fura os limites por IP. (2) a defesa contra injeção de prompt é estrutural (material delimitado e marcado como dado); a obediência de um modelo real não é testável aqui.
+**As opções:** (1) manter a exigência de proxy que sobrescreve o cabeçalho (documentada no README) ou passar a usar um número de saltos confiáveis configurável; (2) aceitar o risco residual ou acrescentar um filtro de saída quando a base tiver conteúdo de terceiros.
+**O que o buildx fez enquanto isso:** `TRUST_PROXY` desligado por padrão, ligado no `docker-compose.yml` com exemplo de Caddy que sobrescreve; teto diário por agente limita o dano mesmo com IP forjado.
+**Reversibilidade:** baixa custo; é configuração e uma função em `src/lib/requisicao.ts`.
 
 ---
 
@@ -105,6 +124,31 @@ houver pendência resolvível, até o teto.
 **O que falta:** abrir o sistema (e, desde a FT-02, os formulários de agente e da chave do OpenRouter; desde a FT-03, a aba Testar, com o botão Parar por clique, a rolagem automática e o contador de caracteres; desde a FT-04, a aba Conhecimento, com o arrastar-e-soltar, o spinner de "Processando", o foco por teclado na zona de soltar e as regras de 375 px; desde a FT-05, as Fontes e as referências `[n]` na aba Testar, o tema claro com fontes, a seção recolhida das fontes consultadas e o cartão "Testar busca" a 375 px; desde a FT-06, o botão e o painel do `widget.js` em tela cheia abaixo de 480 px, o tema claro do chat embutido e da aba Publicar e o botão Copiar código; desde a FT-07, o cartão do Telegram da aba Canais a 375 px, o aviso de `APP_URL` sem HTTPS e o selo "Com erro"; desde a FT-08, a aba Vídeo, a barra de progresso do envio, a lista com etapa e o campo Modelo de transcrição, que só foram vistos com a largura do navegador emulada em 375 px; desde a FT-09, a lista de Conversas em cartões, o detalhe com fontes, o apagar em lote com confirmação e o painel com o gráfico; desde a FT-10, as telas Privacidade e Auditoria, a confirmação de Excluir definitivamente, as ferramentas do titular e o botão Apagar minha conversa do chat embutido, e, desde a FT-11, a tela Configurações > Sistema, o botão Gerar backup agora e as páginas de erro com código de referência, vistos num Chrome próprio com 375 px emulados; o contêiner foi exercitado por teste automatizado, não pelo navegador; sem celular real nem leitor de tela) num celular ou com a janela do navegador realmente a 375px e acionar o menu do usuário, a gaveta, o alternador de tema e a mensagem de excesso de tentativas de login. A janela do navegador da sessão não reduziu a largura, e os quadros de 375px foram feitos sem JavaScript.
 **O que destrava:** confirmação visual completa; o comportamento tem teste automatizado, o que falta é o olho.
 **Estado atual:** contraste 4,5:1 e ausência de cor literal provados por `tests/tokens.test.ts`; rotas e cabeçalhos por `tests/rotas.test.ts`.
+
+## Em resolução no ciclo 2 (classe `trabalho_novo`)
+
+Todas vêm do B6 e estão em `docs/projeto/validacao/`. Viram as features **FT-12** e **FT-13** do `MAPA.md`.
+
+| ID | Assunto | Severidade | Feature |
+|---|---|---|---|
+| PEND-12 | limite de login sem teste na ação `autenticar` (PR-16, PR-36), segurança | média | FT-12 |
+| PEND-13 | atributos do cookie de sessão sem teste (PR-27, PR-31), segurança | média | FT-12 |
+| PEND-14 | `sair` não revoga a sessão e a sessão não renova por atividade (L4) | média | FT-12 |
+| PEND-15 | login feito logo depois da troca de senha é derrubado (A-1) | baixa | FT-12 |
+| PEND-16 | página de detalhe da conversa e `auditoria.listar` sem guarda própria (PR-12) | baixa | FT-12 |
+| PEND-17 | `GET /api/publico/agentes/[id]/conversa` sem limite por IP (PR-56) | baixa | FT-12 |
+| PEND-18 | trecho de vídeo sem fala derruba a fonte inteira (lacuna 13, PR-09) | média | FT-13 |
+| PEND-19 | corpo de upload sem `Content-Length` lido inteiro antes do teto (PR-45) | baixa | FT-13 |
+| PEND-20 | restauração não vê servidor de pé em outro contêiner (PR-98) | média | FT-13 |
+| PEND-21 | `X-Correlacao` ausente no sucesso das rotas de upload (PR-93) | baixa | FT-13 |
+| PEND-22 | badges de canal sem a "hachura" prometida (PR-85) | baixa | FT-13 |
+| PEND-23 | aviso de exclusão de agente não cita conversas e mensagens (PR-44) | baixa | FT-13 |
+| PEND-24 | sem teste do alternador de tema (PR-23) | média | FT-13 |
+| PEND-25 | sem trava contra rede real nos testes (PR-26) | baixa | FT-13 |
+| PEND-26 | auditoria pode subir desligada sem que a tela Sistema avise (PR-19) | baixa | FT-13 |
+| PEND-27 | extração de PDF: limite de páginas só depois de abrir; prazo não interrompe CPU (PR-45) | baixa | FT-13 |
+
+PEND-28 e PEND-29 (rastreabilidade de documentos: mapa sem PR-35 a PR-100 e `PROJETO.md` desatualizado) foram resolvidas pelo próprio buildx no B6, por serem edição de artefato, não de código.
 
 ---
 
