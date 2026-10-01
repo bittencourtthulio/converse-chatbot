@@ -41,7 +41,7 @@ tasks:
   - id: T-05.03
     titulo: "Renovacao do usuario ativo e queda do inativo"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Provar contra next start com TTL curto que quem usa continua logado alem do TTL e quem some e derrubado."
     arquivos:
       cria: []
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "npm run build executado depois da ultima mudanca em src/, o caso passa e falha quando o proxy deixa de renovar (mutacao registrada)."
     depende_de: ["T-05.02", "T-03.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-05.04
     titulo: "Portoes: suite inteira, tsc, lint, build e audit"
     fase: F-05.2
@@ -122,7 +122,7 @@ teste_funcional: "Com o cookie renovado a pagina segue 200 depois do instante em
 criterio_aceite: "npm run build executado depois da ultima mudanca em src/, o caso passa e falha quando o proxy deixa de renovar (mutacao registrada)."
 depende_de: ["T-05.02", "T-03.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/sessao-fim-a-fim.test.ts 4 passed contra next start (TTL 8 s, esperas reais); build antes; só teste novo
 ```
 
 ---

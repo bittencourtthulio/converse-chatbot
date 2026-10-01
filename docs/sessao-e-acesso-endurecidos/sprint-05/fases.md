@@ -51,7 +51,7 @@ flowchart LR
 
   class T_05_01 concluida
   class T_05_02 concluida
-  class T_05_03 pendente
+  class T_05_03 concluida
   class T_05_04 pendente
   class T_05_01,T_05_02,T_05_03,T_05_04 critico
 ```

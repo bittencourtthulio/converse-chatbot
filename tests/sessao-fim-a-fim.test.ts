@@ -95,3 +95,37 @@ describe('sair revoga de verdade (integração)', () => {
     expect((await pedir('/api/conversas/qualquer-id/exportar', doOutroAparelho)).status).toBe(404)
   })
 })
+
+describe('renovação do usuário ativo e queda do inativo (funcional)', () => {
+  const esperarAte = (instante: number) => new Promise((r) => setTimeout(r, Math.max(0, instante - Date.now())))
+
+  it('quem usa depois da metade da vida recebe o cookie renovado e segue logado além do TTL; quem some cai', async () => {
+    const ativo = await criarUsuario()
+    const inativo = await criarUsuario()
+    const t0 = Date.now()
+    const cookieAtivo = await entrar(ativo.email, SENHA_PADRAO)
+    const cookieInativo = await entrar(inativo.email, SENHA_PADRAO)
+
+    // Antes da metade da vida (4 s) a visita não renova.
+    const cedo = await pedir('/perfil', cookieAtivo)
+    expect(cedo.status).toBe(200)
+    expect(cedo.headers.getSetCookie().filter((c) => c.startsWith('expx_sessao='))).toEqual([])
+
+    // Aos 5 s a sessão passou da metade da vida: a visita reemite o cookie, com a vida cheia de novo.
+    await esperarAte(t0 + 5000)
+    const visita = await pedir('/perfil', cookieAtivo)
+    expect(visita.status).toBe(200)
+    const renovado = cookieDeSessaoDe(visita.headers.getSetCookie())
+    expect(renovado, 'o proxy reemitiu o cookie').not.toBeNull()
+    expect(renovado).not.toBe(cookieAtivo)
+    expect(visita.headers.getSetCookie().find((c) => c.startsWith('expx_sessao='))).toMatch(/Max-Age=8(;|$)/)
+
+    // Aos 10,5 s o token original (vida de 8 s) já expirou; o renovado, emitido aos 5 s, ainda vale; quem sumiu caiu.
+    await esperarAte(t0 + 10_500)
+    expect((await pedir('/perfil', renovado!)).status).toBe(200)
+    expect((await pedir('/perfil', cookieAtivo)).status).toBe(307)
+    const aposSumir = await pedir('/perfil', cookieInativo)
+    expect(aposSumir.status).toBe(307)
+    expect(aposSumir.headers.get('location')).toContain('/entrar')
+  })
+})
