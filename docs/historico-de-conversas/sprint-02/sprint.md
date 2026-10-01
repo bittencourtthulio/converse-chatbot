@@ -8,7 +8,7 @@ feature_id: FT-09
 sprint_id: sprint-02
 atualizado_em: 2026-10-01
 titulo: "Servico de historico"
-status: nao_iniciado
+status: concluido
 criterio_saida: "A suite relativa a sprint passa, tsc e lint sem erro e todas as tasks da sprint estao concluidas (T-02.01, T-02.02, T-02.03, T-02.04, T-02.05)."
 fases: ["F-02.1", "F-02.2"]
 riscos: ["LIKE sobre mensagens varre a tabela: limite de 200 conversas casadas e texto de ate 200 caracteres (PR-79)", "dado pessoal no rotulo e no ouvinte: so o mascarado (PR-78, PR-80)"]

@@ -10,14 +10,14 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-02.1
     titulo: "Listar com filtros"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "listarConversas pagina, filtra e ordena com uma consulta agregada."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-02.01", "T-02.02", "T-02.03"]
   - id: F-02.2
     titulo: "Ler, exportar e apagar"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "obterConversa, exportarConversaTexto, apagarConversa e apagarConversas passam em teste."
     paralelizavel: false
     paralela_com: []
