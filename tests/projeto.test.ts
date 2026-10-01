@@ -792,3 +792,69 @@ describe('fechamento da operação e do backup (FT-11)', () => {
     expect(relatorio).toContain('docker compose up -d --build')
   })
 })
+
+describe('convenções da sessão e do acesso (FT-12)', () => {
+  const convencoes = ler('docs/stack/CONVENCOES.md')
+  const lacunas = ler('docs/stack/LACUNAS.md')
+
+  const CITACOES: Array<[string, RegExp]> = [
+    ['src/lib/sessao.ts:50', /export async function assinarSessao/],
+    ['src/lib/sessao.ts:67', /export async function lerSessao/],
+    ['src/lib/sessao.ts:96', /export function opcoesDoCookie/],
+    ['src/servicos/autenticacao.ts:102', /export async function usuarioDaSessao/],
+    ['src/servicos/autenticacao.ts:136', /export async function revogarSessao/],
+    ['src/servicos/autenticacao.ts:157', /export async function renovarSessaoSePreciso/],
+    ['src/app/renovar-sessao.ts:34', /export async function renovarCookieNaResposta/],
+    ['src/app/acoes.ts:83', /export async function sair/],
+    ['src/servicos/expurgo.ts:82', /sessaoRevogada\.deleteMany/],
+    ['src/servicos/auditoria.ts:202', /export async function listar\(autor/],
+    ['src/servicos/chat-publico.ts:171', /export async function retomarConversaDoVisitante/],
+    ['tests/apoio/guardas.ts:25', /export const ROTAS_PUBLICAS/],
+    ['tests/apoio/guardas.ts:46', /export function verificarGuardas/],
+  ]
+
+  it.each(CITACOES)('%s existe e contém o que o CONVENCOES.md diz', (citacao, esperado) => {
+    expect(convencoes.includes(citacao) || lacunas.includes(citacao), `${citacao} não citada`).toBe(true)
+    const [arquivo, linha] = citacao.split(':')
+    expect(ler(arquivo!).split('\n')[Number(linha) - 1]).toMatch(esperado)
+  })
+
+  it('registra as regras: token com jti, revogação, versão, renovação no proxy, limite absoluto, cookie e guarda própria', () => {
+    expect(convencoes).toMatch(/### Sessão revogável e renovável \(FT-12, PR-101 a PR-104\)/)
+    for (const termo of ['`jti`', 'sessoes_revogadas', 'versaoDaSessao', 'renovarCookieNaResposta', 'SESSAO_MAXIMA_HORAS', 'SameSite=Lax', 'MUTACOES.md']) {
+      expect(convencoes, termo).toContain(termo)
+    }
+    expect(convencoes).toMatch(/### Guarda própria em toda tela e rota \(FT-12, PR-104\)/)
+    expect(convencoes).toContain('tests/guardas-arquitetura.test.ts')
+    expect(convencoes).toMatch(/a página repete a guarda \(FT-12: o layout não é a fronteira\)/)
+  })
+
+  it('as lacunas registram o que ficou: roubo sem logout, upload sem renovação, limites em memória e relógio do servidor', () => {
+    expect(lacunas).toMatch(/FT-12, resolvidas e novas:/)
+    for (const termo of ['SEM logout', 'fora do `matcher` do proxy', 'em memória do processo', 'não é injetável de fora', 'sessoesValidasDesde']) {
+      expect(lacunas, termo).toContain(termo)
+    }
+  })
+
+  it('o README explica a renovação, o logout real, o limite absoluto e a atualização que pede novo login', () => {
+    const readme = ler('README.md')
+    expect(readme).toMatch(/^## Sessão e acesso$/m)
+    for (const termo of ['renovada por atividade', 'SESSAO_MAXIMA_HORAS', 'Sair encerra a sessão de verdade', 'revoga a sessão no servidor', 'entra uma vez de novo', 'tests/guardas-arquitetura.test.ts']) {
+      expect(readme, termo).toContain(termo)
+    }
+  })
+
+  it('PR-101 a PR-104 estão registradas com origem recursao e etapa b5, e as premissas de segurança realizadas na FT-12', () => {
+    const premissas = ler('docs/projeto/PREMISSAS.md')
+    for (let n = 101; n <= 104; n++) {
+      const trecho = premissas.split(`### PR-${n} — `)[1]!.split('\n---')[0]!
+      expect(trecho, `PR-${n}`).toMatch(/\*\*Origem:\*\* recursao/)
+      expect(trecho, `PR-${n}`).toMatch(/\*\*Etapa:\*\* b5/)
+      expect(trecho, `PR-${n}`).toMatch(/\*\*Realizada em:\*\* FT-12/)
+    }
+    for (const n of [12, 16, 27, 31, 36, 56]) {
+      const trecho = premissas.split(`### PR-${n} — `)[1]!.split('\n---')[0]!
+      expect(trecho, `PR-${n}`).toMatch(/\*\*Realizada em:\*\*.*FT-12/)
+    }
+  })
+})

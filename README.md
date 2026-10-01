@@ -104,6 +104,15 @@ Só o administrador vê estas telas (Configurações > **Privacidade** e **Audit
 5. **Aviso de privacidade padrão.** O texto (até 300 caracteres) e o link de Privacidade aparecem no chat embutido dos agentes sem aviso próprio e junto do `/start` do Telegram. O painel "Dados pessoais tratados" descreve o que é guardado, por quê, onde e quem acessa; a **base legal está marcada "legítimo interesse, a confirmar pela empresa"**: o sistema não afirma conformidade, a empresa precisa confirmar.
 6. Para ver tudo sem serviços reais: depois de `npm run setup`, rode `DATABASE_URL=file:./prisma/dev.db npx tsx tests/apoio/semear-privacidade.ts` (conversas antigas e recentes, dois usuários e um agente fictícios) e siga o roteiro de `docs/entregas/privacidade-e-auditoria/QA-PACOTE.md`.
 
+## Sessão e acesso
+
+1. **Quem usa não é derrubado.** A sessão dura `JWT_TTL_SEGUNDOS` (padrão 900, 15 minutos) a partir da última renovação e é **renovada por atividade**: em toda requisição autenticada que passou da metade da vida do token, o sistema reemite o cookie. Quem sai do computador por mais de 15 minutos precisa entrar de novo. A renovação nunca passa de `SESSAO_MAXIMA_HORAS` (padrão 12) contadas do login: depois disso é preciso entrar de novo, mesmo em uso contínuo. Só enviar arquivos (as rotas de upload ficam fora do proxy) não renova a sessão.
+2. **Sair encerra a sessão de verdade.** O botão Sair revoga a sessão no servidor: um cookie copiado antes do logout deixa de valer na hora (página volta ao login, API responde 401). As outras sessões da mesma pessoa, em outros aparelhos, continuam. As revogações vencidas são apagadas pela tarefa de expurgo.
+3. **Trocar a senha encerra as outras sessões** e quem trocou continua logado; entrar de novo logo depois da troca funciona.
+4. **Tentativas em excesso são barradas.** O login aceita 5 tentativas por minuto por IP e e-mail e 20 por IP; a leitura pública da conversa do chat embutido tem o mesmo limite por IP e agente do envio de mensagem. Os limites valem por processo (um servidor só) e dependem de `TRUST_PROXY=1` atrás de um proxy que sobrescreve `X-Forwarded-For`.
+5. **Quem entra em cada tela** é conferido no servidor, em cada página e rota (não só no menu nem no layout); um teste de arquitetura (`tests/guardas-arquitetura.test.ts`) falha se uma tela ou rota nova ficar sem guarda.
+6. Depois de atualizar para esta versão, cada pessoa entra uma vez de novo: as sessões antigas não têm identificador e não poderiam ser revogadas.
+
 ## Operação e backup
 
 Para quem põe o Converse no ar e cuida dele. O sistema roda como **um processo de longa duração** (SQLite em arquivo, disco local e processamento em segundo plano): não roda em função serverless.

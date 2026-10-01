@@ -11,7 +11,7 @@ tasks:
   - id: T-06.01
     titulo: "README, convencoes e lacunas com evidencia"
     fase: F-06.1
-    status: pendente
+    status: concluida
     objetivo: "Documentar a sessao revogavel e renovavel, a guarda no layout e na pagina e o teste de arquitetura, convertendo as lacunas com arquivo e linha."
     arquivos:
       cria: ["docs/sessao-e-acesso-endurecidos/sprint-06/sprint.md", "docs/sessao-e-acesso-endurecidos/sprint-06/fases.md", "docs/sessao-e-acesso-endurecidos/sprint-06/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/projeto.test.ts passa."
     depende_de: ["T-05.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-06.02
     titulo: "Verificacao no navegador"
     fase: F-06.2
@@ -73,7 +73,7 @@ teste_funcional: "O README explica a renovacao, o logout real e SESSAO_MAXIMA_HO
 criterio_aceite: "tests/projeto.test.ts passa."
 depende_de: ["T-05.04"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/projeto.test.ts 237 passed; só documentação e teste de documentação (a suíte inteira roda no fechamento)
 ```
 
 ---

@@ -178,7 +178,7 @@ entram no relatório final como o que o usuário precisa confirmar.
 **Origem:** catalogo_lacunas
 **Etapa:** b1
 **Provisória:** false
-**Realizada em:** FT-01
+**Realizada em:** FT-01, FT-12
 
 ---
 
@@ -230,7 +230,7 @@ entram no relatório final como o que o usuário precisa confirmar.
 **Origem:** catalogo_lacunas
 **Etapa:** b1
 **Provisória:** false
-**Realizada em:** FT-06, FT-07
+**Realizada em:** FT-06, FT-07, FT-12
 
 ---
 
@@ -373,7 +373,7 @@ entram no relatório final como o que o usuário precisa confirmar.
 **Origem:** catalogo_lacunas
 **Etapa:** b1
 **Provisória:** false
-**Realizada em:** FT-01, FT-09
+**Realizada em:** FT-01, FT-09, FT-12
 
 ---
 
@@ -425,7 +425,7 @@ entram no relatório final como o que o usuário precisa confirmar.
 **Origem:** decisao_de_stack
 **Etapa:** b2
 **Provisória:** false
-**Realizada em:** FT-01
+**Realizada em:** FT-01, FT-12
 
 ---
 
@@ -490,7 +490,7 @@ entram no relatório final como o que o usuário precisa confirmar.
 **Origem:** f2_autonoma
 **Etapa:** b4
 **Provisória:** false
-**Realizada em:** FT-01
+**Realizada em:** FT-01, FT-12
 
 ---
 
@@ -750,7 +750,7 @@ entram no relatório final como o que o usuário precisa confirmar.
 **Origem:** f2_autonoma
 **Etapa:** b4
 **Provisória:** false
-**Realizada em:** FT-06
+**Realizada em:** FT-06, FT-12
 
 ---
 
