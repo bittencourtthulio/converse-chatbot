@@ -10,14 +10,14 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-07.1
     titulo: "Verificacao e documentacao"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Verificacao no navegador registrada e convencoes, lacunas e README atualizados."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-07.01", "T-07.02"]
   - id: F-07.2
     titulo: "Fechamento"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "MAPA, premissas, recursao e projeto atualizados e o portao pronto."
     paralelizavel: false
     paralela_com: []

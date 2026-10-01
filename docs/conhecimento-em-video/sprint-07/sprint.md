@@ -6,9 +6,9 @@ trabalho_id: conhecimento-em-video
 origem_buildx: plataforma-chatbot-ia
 feature_id: FT-08
 sprint_id: sprint-07
-atualizado_em: 2026-09-30
+atualizado_em: 2026-10-01
 titulo: "Verificacao ponta a ponta, convencoes e fechamento"
-status: nao_iniciado
+status: concluido
 criterio_saida: "A suite inteira esta verde, tsc, lint, build e auditoria sem achado alto, a verificacao no navegador esta registrada e a feature esta fechada no mapa."
 fases: ["F-07.1", "F-07.2"]
 riscos: ["transcricao real, YouTube real e 375 px nao podem ser vistos aqui (VERIFICACAO-VISUAL.md)", "maquina compartilhada pode causar database is locked por processo alheio pesado"]
