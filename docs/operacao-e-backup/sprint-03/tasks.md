@@ -41,7 +41,7 @@ tasks:
   - id: T-03.03
     titulo: "Servico de saude e GET /api/saude"
     fase: F-03.2
-    status: pendente
+    status: concluida
     objetivo: "Criar verificarSaude (banco, disco gravavel, FTS5, midia com cache) e a rota publica que devolve so o status."
     arquivos:
       cria: ["src/servicos/saude.ts", "src/app/api/saude/route.ts", "tests/saude.test.ts", "tests/saude-rota.test.ts"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/saude.test.ts e tests/saude-rota.test.ts passam e o corpo da resposta tem uma unica chave."
     depende_de: ["T-03.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-03.04
     titulo: "Dados do sistema para a tela e ultima rodada do expurgo"
     fase: F-03.2
@@ -120,7 +120,7 @@ teste_funcional: "GET /api/saude sem sessao devolve 200 e apenas {status:'ok'} c
 criterio_aceite: "tests/saude.test.ts e tests/saude-rota.test.ts passam e o corpo da resposta tem uma unica chave."
 depende_de: ["T-03.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/saude.test.ts e tests/saude-rota.test.ts passam (build antes); só arquivos novos
 ```
 
 ---
