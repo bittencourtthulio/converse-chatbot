@@ -56,7 +56,7 @@ tasks:
   - id: T-02.04
     titulo: "Chat, auditoria e expurgo usam o log"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Trocar os console.* do turno de conversa, da auditoria de melhor esforco e do agendador do expurgo pelo log."
     arquivos:
       cria: []
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "Os testes listados passam e grep console\\. nesses tres servicos nao acha nada."
     depende_de: ["T-02.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
   - id: T-02.05
     titulo: "Regra que proibe console novo em src"
     fase: F-02.1
@@ -182,7 +182,7 @@ teste_funcional: "O erro inesperado do chat continua devolvendo Codigo de refere
 criterio_aceite: "Os testes listados passam e grep console\\. nesses tres servicos nao acha nada."
 depende_de: ["T-02.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2594 passed, 0 failed (214 arquivos); build antes
 ```
 
 ---

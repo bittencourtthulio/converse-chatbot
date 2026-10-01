@@ -135,7 +135,7 @@ describe('log com correlação e sem conteúdo', () => {
     const linhas = logado()
     expect(linhas).toHaveLength(1)
     const registro = JSON.parse(linhas[0]!)
-    expect(registro).toMatchObject({ evento: 'chat_erro', codigo: 'provedor_sem_saldo' })
+    expect(registro).toMatchObject({ nivel: 'erro', msg: 'chat_erro', codigo: 'provedor_sem_saldo' })
     expect(registro.correlacao).toMatch(/^[0-9a-f]{8}$/)
     expect(registro.agenteId).toBeTruthy()
     expect(registro.conversaId).toBeTruthy()

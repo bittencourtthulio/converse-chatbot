@@ -35,6 +35,7 @@ import {
   gerarCorrelacao,
   mensagemParaOperador,
 } from '@/servicos/chat-erros'
+import { log } from '@/lib/log'
 
 export { mensagemParaOperador, mensagemParaVisitante } from '@/servicos/chat-erros'
 
@@ -72,21 +73,18 @@ const textoDaMensagem = z
 /** Uma linha JSON, sem o conteúdo da conversa (PR-42). */
 function registrarErro(erro: unknown, contexto: { agenteId: string; conversaId?: string }): string {
   const correlacao = gerarCorrelacao()
-  console.error(
-    JSON.stringify({
-      evento: 'chat_erro',
-      correlacao,
-      codigo: erro instanceof ErroDeAplicacao ? erro.codigo : CODIGO_INESPERADO,
-      agenteId: contexto.agenteId,
-      conversaId: contexto.conversaId ?? null,
-    }),
-  )
+  log.erro('chat_erro', {
+    correlacao,
+    codigo: erro instanceof ErroDeAplicacao ? erro.codigo : CODIGO_INESPERADO,
+    agenteId: contexto.agenteId,
+    conversaId: contexto.conversaId ?? null,
+  })
   return correlacao
 }
 
 /** Uma linha JSON, sem a pergunta nem o texto dos trechos (PR-42). */
 function registrarRecuperacao(agenteId: string, conversaId: string, trechos: number): void {
-  console.info(JSON.stringify({ evento: 'recuperacao', agenteId, conversaId, trechos }))
+  log.info('recuperacao', { agenteId, conversaId, trechos })
 }
 
 interface MaterialDoTurno {
@@ -121,7 +119,7 @@ async function materialDaBase(
 
 /** Falha nas fontes não derruba a resposta: vai ao log, sem conteúdo (PR-42, PR-53). */
 function registrarFalhaDeFontes(agenteId: string, conversaId: string): void {
-  console.error(JSON.stringify({ evento: 'fontes_nao_gravadas', agenteId, conversaId }))
+  log.erro('fontes_nao_gravadas', { agenteId, conversaId })
 }
 
 /**

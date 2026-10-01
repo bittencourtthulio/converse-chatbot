@@ -80,7 +80,7 @@ describe('registrarMelhorEsforco (funcional)', () => {
     falha.mockRestore()
     expect(log).toHaveBeenCalledTimes(1)
     const linha = String(log.mock.calls[0]?.[0])
-    expect(JSON.parse(linha)).toMatchObject({ evento: 'auditoria_falhou', acao: 'retencao_alterada' })
+    expect(JSON.parse(linha)).toMatchObject({ nivel: 'erro', msg: 'auditoria_falhou', acao: 'retencao_alterada', erro: 'Error' })
     expect(linha).not.toContain('segredo-do-erro')
     log.mockRestore()
     expect(await prisma.registroDeAuditoria.count()).toBe(0)

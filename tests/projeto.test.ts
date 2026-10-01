@@ -220,7 +220,7 @@ describe('convenções da busca textual (FT-05, PR-30)', () => {
     ['src/servicos/recuperacao.ts:76', /prisma\.\$queryRaw</],
     ['src/servicos/recuperacao.ts:126', /export async function reconstruirIndiceDeTrechos/],
     ['src/servicos/recuperacao-termos.ts:66', /export function montarExpressaoMatch/],
-    ['src/servicos/chat.ts:106', /async function materialDaBase/],
+    ['src/servicos/chat.ts:104', /async function materialDaBase/],
   ]
 
   it.each(CITACOES)('%s existe e contém o que o CONVENCOES.md diz', (citacao, esperado) => {
@@ -545,19 +545,19 @@ describe('convenções da privacidade e da auditoria (FT-10)', () => {
   const readme = ler('README.md')
 
   const CITACOES: Array<[string, RegExp]> = [
-    ['src/servicos/auditoria.ts:101', /export async function registrar\(/],
-    ['src/servicos/auditoria.ts:127', /export function registrarMelhorEsforco/],
-    ['src/servicos/auditoria.ts:250', /export async function purgarAnterioresA/],
+    ['src/servicos/auditoria.ts:102', /export async function registrar\(/],
+    ['src/servicos/auditoria.ts:128', /export function registrarMelhorEsforco/],
+    ['src/servicos/auditoria.ts:245', /export async function purgarAnterioresA/],
     ['src/servicos/auditoria-acoes.ts:10', /export const ACOES/],
     ['src/servicos/auditoria-acoes.ts:94', /export function validarDetalhes/],
     ['src/servicos/auditoria-ouvintes.ts:71', /export function ligarAuditoria/],
     ['src/servicos/auditoria-ouvintes.ts:42', /export function tratarConversaApagada/],
     ['src/instrumentation.ts:13', /ligarAuditoria/],
     ['src/instrumentation.ts:19', /obterAgendadorDoExpurgo/],
-    ['src/servicos/expurgo.ts:63', /export async function executarExpurgo/],
-    ['src/servicos/expurgo.ts:18', /export const TAMANHO_DO_LOTE/],
-    ['src/servicos/expurgo.ts:135', /export function criarAgendadorDoExpurgo/],
-    ['src/servicos/expurgo.ts:192', /export function obterAgendadorDoExpurgo/],
+    ['src/servicos/expurgo.ts:64', /export async function executarExpurgo/],
+    ['src/servicos/expurgo.ts:19', /export const TAMANHO_DO_LOTE/],
+    ['src/servicos/expurgo.ts:136', /export function criarAgendadorDoExpurgo/],
+    ['src/servicos/expurgo.ts:193', /export function obterAgendadorDoExpurgo/],
     ['src/servicos/usuarios.ts:188', /export async function excluirDefinitivamente/],
     ['src/servicos/privacidade.ts:111', /export async function retencaoEfetivaDias/],
     ['src/servicos/privacidade.ts:116', /export async function avisoPadraoDoWorkspace/],

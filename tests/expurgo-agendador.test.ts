@@ -110,7 +110,7 @@ describe('agendador do expurgo (funcional)', () => {
     await expect(a.ocioso()).resolves.toBeUndefined()
     expect(log).toHaveBeenCalledTimes(1)
     const linha = String(log.mock.calls[0]![0])
-    expect(JSON.parse(linha)).toMatchObject({ evento: 'expurgo_falhou', erro: 'Error' })
+    expect(JSON.parse(linha)).toMatchObject({ nivel: 'erro', msg: 'expurgo_falhou', erro: 'Error' })
     expect(linha).not.toMatch(/locked|segredo|\/var/)
     expect(t.agendados).toHaveLength(2)
     t.agendados[1]!.fn()

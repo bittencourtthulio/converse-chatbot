@@ -13,6 +13,7 @@ import { prisma } from '@/lib/prisma'
 import { purgarAnterioresA, registrarMelhorEsforco } from '@/servicos/auditoria'
 import { retencaoEfetivaDias } from '@/servicos/privacidade'
 import { purgarAtualizacoes } from '@/servicos/telegram-webhook'
+import { camposDoErro, log } from '@/lib/log'
 
 /** Conversas apagadas por transação: cada uma é curta e o SQLite não fica preso (PR-89). */
 export const TAMANHO_DO_LOTE = 500
@@ -160,7 +161,7 @@ export function criarAgendadorDoExpurgo(opcoes: OpcoesDoAgendador = {}): Agendad
       try {
         await executar()
       } catch (erro) {
-        console.error(JSON.stringify({ evento: 'expurgo_falhou', erro: erro instanceof Error ? erro.name : 'desconhecido' }))
+        log.erro('expurgo_falhou', camposDoErro(erro))
       } finally {
         rodada = null
         if (ligado) agendarProxima(intervalo)

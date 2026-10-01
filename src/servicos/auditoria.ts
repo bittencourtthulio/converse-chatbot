@@ -20,6 +20,7 @@ import {
   type TipoDeAlvo,
 } from '@/servicos/auditoria-acoes'
 import { fimDoDia, inicioDoDia } from '@/servicos/historico-logica'
+import { camposDoErro, log } from '@/lib/log'
 
 export const ROTULO_DO_SISTEMA = 'Sistema'
 export const ROTULO_DO_VISITANTE = 'Visitante (chat embutido)'
@@ -135,13 +136,7 @@ export function registrarMelhorEsforco(
       await registrar(e)
     })
     .catch((erro: unknown) => {
-      console.error(
-        JSON.stringify({
-          evento: 'auditoria_falhou',
-          acao: acaoParaOLog,
-          erro: erro instanceof Error ? erro.name : 'desconhecido',
-        }),
-      )
+      log.erro('auditoria_falhou', { acao: acaoParaOLog, ...camposDoErro(erro) })
     })
   const pendentes = obterPendentes()
   pendentes.add(tarefa)

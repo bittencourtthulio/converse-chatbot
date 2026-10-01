@@ -99,6 +99,8 @@ describe('falha nas fontes não derruba a resposta', () => {
     expect(gravada.fontes).toBeNull()
     const linhas = log.mock.calls.map((c) => String(c[0])).join('\n')
     expect(linhas).toContain('fontes_nao_gravadas')
+    const linhaDeFontes = JSON.parse(log.mock.calls.map((c) => String(c[0])).find((l) => l.includes('fontes_nao_gravadas'))!)
+    expect(linhaDeFontes).toMatchObject({ nivel: 'erro', msg: 'fontes_nao_gravadas', agenteId: agente.id })
     expect(linhas).not.toContain('segredo-da-conversa')
     expect(linhas).not.toContain('Aceitamos')
   })
@@ -118,5 +120,23 @@ describe('falha nas fontes não derruba a resposta', () => {
     expect(eventos.at(-1)!.tipo).toBe('fim')
     expect((await prisma.mensagem.findFirstOrThrow({ where: { papel: 'assistant' } })).fontes).toBeNull()
     expect(log.mock.calls.map((c) => String(c[0])).join('\n')).toContain('fontes_nao_gravadas')
+  })
+})
+
+describe('log da recuperação (FT-11, PR-92)', () => {
+  it('grava a linha info recuperacao com os ids e o número de trechos, sem a pergunta nem o texto', async () => {
+    const { admin, agente } = await cenarioDeChat()
+    await criarBase({ agenteId: agente.id, textos: ['Aceitamos a troca em até sete dias.'] })
+    const info = vi.spyOn(console, 'info').mockImplementation(() => undefined)
+
+    await turno(agente.id, admin.id, 'Qual o prazo de troca?')
+
+    const linhas = info.mock.calls.map((c) => String(c[0]))
+    const linha = JSON.parse(linhas.find((l) => l.includes('recuperacao'))!)
+    expect(linha).toMatchObject({ nivel: 'info', msg: 'recuperacao', agenteId: agente.id })
+    expect(linha.trechos).toBeGreaterThan(0)
+    expect(linha.conversaId).toBeTruthy()
+    expect(linhas.join('\n')).not.toContain('prazo de troca')
+    expect(linhas.join('\n')).not.toContain('Aceitamos')
   })
 })
