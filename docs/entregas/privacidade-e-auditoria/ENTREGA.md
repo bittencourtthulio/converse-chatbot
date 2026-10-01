@@ -9,7 +9,7 @@ entregue_por: mergex
 titulo: Privacidade e auditoria
 tipo_trabalho: feature
 tipo_ocorrencia: null
-estado: aberto
+estado: entregue
 versionado: true
 branch: feat/privacidade-e-auditoria
 branch_base: feat/historico-de-conversas
@@ -495,18 +495,42 @@ pr_url: null
 pr_estado: null
 criado_em: 2026-10-01
 atualizado_em: 2026-10-01
-entregue_em: null
+entregue_em: 2026-10-01
 ---
 
 # Entrega — Privacidade e auditoria
 
-Branch aberta a partir de `feat/historico-de-conversas` (PRs empilhados, convenção `feat/<slug>` do repositório). Sem remoto: push e PR não serão feitos.
+Entregue na branch `feat/privacidade-e-auditoria` (a partir de `feat/historico-de-conversas`), sem remoto: a descrição está em `PR.md` e o pacote de QA em `QA-PACOTE.md`.
 
-## Avisos
+## Onde está o quê
 
-- O `ORQUESTRADOR.md` foi gerado na F4 com a linha da branch.
-- Branch base determinada pelo pedido do laço do buildx (a base é a branch da feature de que FT-10 depende).
+| O quê | Onde |
+|---|---|
+| Descrição do pull request | [PR.md](PR.md) |
+| Pacote de QA | [QA-PACOTE.md](QA-PACOTE.md) |
+| Classificação da atenção | [ATENCAO.md](ATENCAO.md) |
+| Trabalho de origem | [docs/privacidade-e-auditoria](../../privacidade-e-auditoria/ORQUESTRADOR.md) |
+| Pull request | não aberto (sem remoto) |
+
+## Estado da entrega
+
+- Portão de prontidão: PRONTO (V2 como aviso: `suite` por task é `parcial` ou `verde`, ver Desvios)
+- Commits: 28, um por task, mais os de planejamento, fechamento e registro
+- Atenção humana: 32 olho obrigatório, 27 leitura rápida, 75 dispensável
+- Push: não feito — `git remote -v` vazio (PEND-05); nenhum repositório remoto foi criado nem credencial pedida
+- Pull request: não aberto; a descrição já está em `PR.md`
+- Falta para o merge: criar o remoto e abrir o PR a partir de `PR.md`, a revisão humana (leia primeiro a faixa OLHO OBRIGATÓRIO), o QA com o roteiro de 24 casos e a decisão da empresa sobre a base legal e os prazos (PEND-08)
 
 ## Critério da suíte
 
-`suite: parcial` quando a task rodou só os testes do seu assunto e `suite: verde` quando a suíte inteira (`npm test`, depois de `npm run build`) rodou verde; a suíte inteira roda ao fechar toda task que mexe em código compartilhado (serviços, `acoes.ts`, `global.css`, `instrumentation.ts`, esquema) e no fechamento.
+`suite: parcial` quando a task rodou só os testes do seu assunto e `suite: verde` quando a suíte inteira (`npm test`, depois de `npm run build`) rodou verde; a suíte inteira roda ao fechar toda task que mexe em código compartilhado e no fechamento. Estado final: 2544 testes em 208 arquivos, verdes.
+
+## Avisos
+
+- Sem modo legado, sem raio, sem relatório de cobertura e sem agente `revisor-diff`: a classificação de atenção foi aplicada pelo próprio executor.
+- A verificação no navegador usou um Chrome sem janela com 375 px emulados (a extensão não conectou); celular real, leitor de tela, Telegram real e o `widget.js` em site de terceiro não foram vistos.
+- A primeira tentativa de verificação se conectou por engano a um aplicativo Electron de outro projeto na porta 9333 e foi refeita num Chrome próprio (registrado em `docs/privacidade-e-auditoria/VERIFICACAO-VISUAL.md`).
+
+## Desvios
+
+Os desvios, task a task (incluindo `suite: parcial` ou `verde` por task e os arquivos além da lista inicial), estão listados no campo `desvios` acima e em `docs/privacidade-e-auditoria/FECHAMENTO.md`.
