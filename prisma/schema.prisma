@@ -37,6 +37,9 @@ model Usuario {
 model ConfiguracaoDoWorkspace {
   id                     String   @id @default("unica")
   openrouterChaveCifrada String?
+  // Modelo do OpenRouter que transcreve áudio (FT-08, PR-73); nulo vale o
+  // padrão do ambiente ou da constante.
+  modeloDeTranscricao    String?
   atualizadoEm           DateTime @updatedAt
   // Id do usuário que gravou por último (sem chave estrangeira: a exclusão de
   // usuário é da FT-10).
@@ -136,6 +139,13 @@ model Fonte {
   criadoEm       DateTime  @default(now())
   atualizadoEm   DateTime  @updatedAt
   processadoEm   DateTime?
+  // Vídeo e YouTube (FT-08, PR-74, PR-75): andamento do processamento (0 a
+  // 100) e a etapa em texto curto, só enquanto processa; duração em segundos;
+  // URL de origem do link do YouTube.
+  progresso       Int?
+  etapa           String?
+  duracaoSegundos Int?
+  urlOrigem       String?
 
   trechos Trecho[]
 

@@ -11,7 +11,7 @@ tasks:
   - id: T-01.01
     titulo: "Migration e campos de video"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar progresso, etapa, duracaoSegundos e urlOrigem em Fonte e modeloDeTranscricao em ConfiguracaoDoWorkspace por migration aditiva."
     arquivos:
       cria: ["prisma/migrations/20261001000000_conhecimento_em_video/migration.sql", "tests/video-modelo.test.ts", "docs/conhecimento-em-video/sprint-01/sprint.md", "docs/conhecimento-em-video/sprint-01/fases.md", "docs/conhecimento-em-video/sprint-01/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/video-modelo.test.ts e tests/migracoes.test.ts passam."
     depende_de: []
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-01.02
     titulo: "Variaveis de ambiente do video"
     fase: F-01.1
@@ -103,7 +103,7 @@ teste_funcional: "Uma fonte criada sem os campos novos devolve os quatro como nu
 criterio_aceite: "tests/video-modelo.test.ts e tests/migracoes.test.ts passam."
 depende_de: []
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/video-modelo.test.ts e tests/migracoes.test.ts, 19 passed
 ```
 
 ---
