@@ -41,18 +41,18 @@ tasks:
   - id: T-03.03
     titulo: "Servico: adicionar video"
     fase: F-03.2
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar a fontes.ts adicionarVideo (nome sanitizado, limite, assinatura, gravacao em stream, linha pendente) e os quatro campos novos em FonteVisivel e visaoDaFonte."
     arquivos:
       cria: ["tests/fontes-video.test.ts"]
-      altera: ["src/servicos/fontes.ts"]
+      altera: ["src/servicos/fontes.ts", "src/lib/midia-formatos.ts", "tests/conhecimento-paginas.test.tsx", "tests/painel-de-conhecimento.test.tsx"]
     teste_integracao: "Um stream de MP3 gerado pelo ffmpeg vira uma fonte pendente de tipo video com o original em disco, o tamanho real e o nome sanitizado como titulo."
     teste_funcional: "Extensao fora da lista da erro formato_nao_aceito 415, assinatura incoerente da assinatura_incoerente 415, corpo vazio da arquivo_vazio 422, acima do limite da arquivo_grande_demais 413 e nenhuma falha deixa diretorio ou linha."
     criterio_aceite: "tests/fontes-video.test.ts e tests/fontes.test.ts passam."
     depende_de: ["T-03.01", "T-02.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-03.04
     titulo: "Rota de upload de video"
     fase: F-03.2
@@ -116,13 +116,13 @@ titulo: "Servico: adicionar video"
 objetivo: "Acrescentar a fontes.ts adicionarVideo (nome sanitizado, limite, assinatura, gravacao em stream, linha pendente) e os quatro campos novos em FonteVisivel e visaoDaFonte."
 arquivos:
   cria: ["tests/fontes-video.test.ts"]
-  altera: ["src/servicos/fontes.ts"]
+  altera: ["src/servicos/fontes.ts", "src/lib/midia-formatos.ts", "tests/conhecimento-paginas.test.tsx", "tests/painel-de-conhecimento.test.tsx"]
 teste_integracao: "Um stream de MP3 gerado pelo ffmpeg vira uma fonte pendente de tipo video com o original em disco, o tamanho real e o nome sanitizado como titulo."
 teste_funcional: "Extensao fora da lista da erro formato_nao_aceito 415, assinatura incoerente da assinatura_incoerente 415, corpo vazio da arquivo_vazio 422, acima do limite da arquivo_grande_demais 413 e nenhuma falha deixa diretorio ou linha."
 criterio_aceite: "tests/fontes-video.test.ts e tests/fontes.test.ts passam."
 depende_de: ["T-03.01", "T-02.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/fontes-video.test.ts, tests/fontes.test.ts, tests/conhecimento-paginas.test.tsx e tests/painel-de-conhecimento.test.tsx, 35 passed
 ```
 
 ---

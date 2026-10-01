@@ -21,6 +21,10 @@ const fonte = (extra: Partial<FonteDaTela> = {}): FonteDaTela => ({
   criadoEm: '2026-09-30T15:00:00.000Z',
   atualizadoEm: '2026-09-30T15:00:00.000Z',
   processadoEm: '2026-09-30T15:01:00.000Z',
+  progresso: null,
+  etapa: null,
+  duracaoSegundos: null,
+  urlOrigem: null,
   ...extra,
 })
 

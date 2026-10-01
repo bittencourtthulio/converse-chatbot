@@ -49,3 +49,23 @@ const CONFERIDORES: Record<FormatoDeMidia, (b: Uint8Array) => boolean> = {
 export function conferirAssinaturaDeMidia(formato: FormatoDeMidia, primeirosBytes: Uint8Array): boolean {
   return CONFERIDORES[formato](primeirosBytes.subarray(0, BYTES_DE_ASSINATURA))
 }
+
+const MIMES: Record<FormatoDeMidia, string> = {
+  mp4: 'video/mp4',
+  mov: 'video/quicktime',
+  m4v: 'video/x-m4v',
+  webm: 'video/webm',
+  mkv: 'video/x-matroska',
+  avi: 'video/x-msvideo',
+  mp3: 'audio/mpeg',
+  wav: 'audio/wav',
+  m4a: 'audio/mp4',
+  ogg: 'audio/ogg',
+  aac: 'audio/aac',
+  flac: 'audio/flac',
+}
+
+/** O tipo MIME gravado vem do formato, nunca do que o navegador enviou (PR-45). */
+export function mimeDeMidia(formato: FormatoDeMidia): string {
+  return MIMES[formato]
+}

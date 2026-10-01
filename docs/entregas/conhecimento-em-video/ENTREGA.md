@@ -23,7 +23,8 @@ atencao:
   leitura_rapida: 0
   dispensavel: 0
 portao: null
-desvios: []
+desvios:
+  - "T-03.03: src/lib/midia-formatos.ts (mimeDeMidia) alterado depois da T-02.03, e tests/conhecimento-paginas.test.tsx e tests/painel-de-conhecimento.test.tsx ganharam os quatro campos novos de FonteVisivel para o tsc passar"
 push_feito: false
 pr_url: null
 pr_estado: null
@@ -50,5 +51,7 @@ Branch `feat/conhecimento-em-video`, aberta em 2026-09-30 a partir de `feat/cana
 - `ORQUESTRADOR.md` ainda nao existe (F4 do sprintx); a linha da branch sera acrescentada quando ele for gerado.
 
 ## Desvios
+
+- T-03.03: src/lib/midia-formatos.ts (mimeDeMidia) alterado depois da T-02.03, e tests/conhecimento-paginas.test.tsx e tests/painel-de-conhecimento.test.tsx ganharam os quatro campos novos de FonteVisivel para o tsc passar
 
 Nenhum ate agora.

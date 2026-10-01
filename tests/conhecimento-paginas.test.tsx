@@ -19,6 +19,10 @@ const fonte = (extra: Partial<FonteVisivel> = {}): FonteVisivel => ({
   criadoEm: new Date('2026-09-30T15:00:00Z'),
   atualizadoEm: new Date('2026-09-30T15:00:00Z'),
   processadoEm: new Date('2026-09-30T15:01:00Z'),
+  progresso: null,
+  etapa: null,
+  duracaoSegundos: null,
+  urlOrigem: null,
   ...extra,
 })
 

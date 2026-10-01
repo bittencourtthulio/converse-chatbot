@@ -16,6 +16,13 @@ import {
   mimeDoFormato,
   sanitizarNome,
 } from '@/lib/extracao/formatos'
+import {
+  BYTES_DE_ASSINATURA,
+  EXTENSOES_DE_MIDIA,
+  conferirAssinaturaDeMidia,
+  formatoDeMidia,
+  mimeDeMidia,
+} from '@/lib/midia-formatos'
 import { obterFila } from '@/servicos/fontes-fila'
 import type { UsuarioAutenticado } from '@/servicos/autenticacao'
 
@@ -51,6 +58,12 @@ export interface FonteVisivel {
   criadoEm: Date
   atualizadoEm: Date
   processadoEm: Date | null
+  /** Vídeo e YouTube (FT-08): andamento de 0 a 100 e etapa em texto curto, só enquanto processa. */
+  progresso: number | null
+  etapa: string | null
+  duracaoSegundos: number | null
+  /** Link do YouTube de origem. */
+  urlOrigem: string | null
 }
 
 export interface ResumoDaBase {
@@ -102,6 +115,10 @@ export function visaoDaFonte(f: FonteVisivel & Record<string, unknown>): FonteVi
     criadoEm: f.criadoEm,
     atualizadoEm: f.atualizadoEm,
     processadoEm: f.processadoEm,
+    progresso: f.progresso,
+    etapa: f.etapa,
+    duracaoSegundos: f.duracaoSegundos,
+    urlOrigem: f.urlOrigem,
   }
 }
 
@@ -329,4 +346,85 @@ export async function reprocessar(
   if (count === 0) throw conflito('Só é possível reprocessar uma fonte que terminou com erro.')
   obterFila().acordar()
   return obter(autor, agenteId, fonteId)
+}
+
+export interface VideoEnviado {
+  /** O nome que o usuário enviou: só título e exibição, nunca caminho (PR-13). */
+  nome: unknown
+  /** O corpo bruto da requisição; nunca carregado inteiro em memória. */
+  corpo: ReadableStream<Uint8Array> | null
+  /** `Content-Length` declarado, se houver: acima do limite é recusado sem ler o corpo. */
+  tamanhoDeclarado?: number | null
+}
+
+/**
+ * Vídeo ou áudio para a base (FT-08, PR-71): confere o nome e a extensão, grava
+ * o corpo em disco por stream com teto de bytes e conferência da assinatura
+ * real, e cria a fonte `pendente` do tipo `video`. Qualquer falha apaga o
+ * diretório da fonte e não deixa linha. A transcrição é da fila.
+ */
+export async function adicionarVideo(
+  autor: UsuarioAutenticado,
+  agenteId: string,
+  entrada: VideoEnviado,
+): Promise<FonteVisivel> {
+  exigirAutor(autor)
+  if (typeof entrada.nome !== 'string' || entrada.nome.trim() === '') {
+    throw entradaInvalida('Informe o nome do arquivo.')
+  }
+  const nome = sanitizarNome(entrada.nome)
+  const formato = formatoDeMidia(nome)
+  if (!formato) {
+    throw new ErroDeAplicacao(
+      `Formato não aceito. Formatos aceitos: ${EXTENSOES_DE_MIDIA.join(', ')}.`,
+      415,
+      'formato_nao_aceito',
+    )
+  }
+  if (!entrada.corpo) throw entradaInvalida('Envie o arquivo no corpo da requisição.')
+  await exigirAgente(agenteId)
+
+  const limite = ambiente.maxVideoBytes
+  const noLimite = `O arquivo passa do limite de ${megabytes(limite)}.`
+  if (typeof entrada.tamanhoDeclarado === 'number' && entrada.tamanhoDeclarado > limite) {
+    await entrada.corpo.cancel().catch(() => undefined)
+    throw new ErroDeAplicacao(noLimite, 413, 'arquivo_grande_demais')
+  }
+
+  const id = novoIdDeFonte()
+  const armazenamento = armazenamentoPadrao()
+  try {
+    const { caminho, tamanhoBytes } = await armazenamento.gravarDeStream(agenteId, id, entrada.corpo, {
+      maxBytes: limite,
+      bytesDeInicio: BYTES_DE_ASSINATURA,
+      conferirInicio: (inicio) => {
+        if (inicio.length === 0) throw new ErroDeAplicacao('O arquivo está vazio.', 422, 'arquivo_vazio')
+        if (!conferirAssinaturaDeMidia(formato, inicio)) {
+          throw new ErroDeAplicacao(
+            `O conteúdo não parece ser um arquivo ${formato.toUpperCase()}: a extensão não bate com o arquivo.`,
+            415,
+            'assinatura_incoerente',
+          )
+        }
+      },
+    })
+    const fonte = await prisma.fonte.create({
+      data: {
+        id,
+        agenteId,
+        tipo: 'video',
+        titulo: nome,
+        nomeOriginal: nome,
+        tipoMime: mimeDeMidia(formato),
+        tamanhoBytes,
+        caminhoArquivo: caminho,
+        criadoPorId: autor.id,
+      },
+    })
+    obterFila().acordar()
+    return visaoDaFonte(fonte)
+  } catch (erro) {
+    await armazenamento.apagarFonte(agenteId, id).catch(() => undefined)
+    throw erro
+  }
 }
