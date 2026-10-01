@@ -8,7 +8,7 @@ feature_id: FT-09
 sprint_id: sprint-05
 atualizado_em: 2026-10-01
 titulo: "Painel inicial preenchido"
-status: nao_iniciado
+status: concluido
 criterio_saida: "A suite relativa a sprint passa, tsc e lint sem erro e todas as tasks da sprint estao concluidas (T-05.01, T-05.02, T-05.03, T-05.04)."
 fases: ["F-05.1", "F-05.2"]
 riscos: ["agrupar por dia no fuso do servidor: teste de borda com TZ fixado e dias sem mensagem (PR-81)", "o passo da chave do OpenRouter nunca recebe a chave, so um booleano (PR-82, PR-14)"]

@@ -10,14 +10,14 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-05.1
     titulo: "Servico do painel"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "painel.ts devolve numeros, serie, recentes e primeiros passos."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-05.01", "T-05.02"]
   - id: F-05.2
     titulo: "Tela do painel"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "O painel renderiza grafico acessivel, cartoes e listas com os tres estados."
     paralelizavel: false
     paralela_com: []
