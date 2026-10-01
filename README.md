@@ -65,6 +65,15 @@ Só o administrador cadastra outros usuários (Configurações, Usuários) e a c
 5. **Limites de uso** (PR-16): por IP e agente 10 mensagens por minuto, por IP 30 por minuto, 60 mensagens por conversa e o **limite diário** do agente (mensagens dos visitantes por dia, padrão 500); passou, o visitante vê uma mensagem amigável e a resposta leva `Retry-After`. Sem `TRUST_PROXY=1` o sistema não distingue os visitantes e o limite por minuto vale para o site inteiro. O erro que o visitante vê é sempre a mesma frase genérica; o detalhe fica só no log.
 6. Para ver o chat num site de outra origem: suba o app, o OpenRouter simulado (`npx tsx tests/apoio/servir-falso.ts`) e o site de teste `npx tsx tests/apoio/servir-site-de-teste.ts 4321 http://localhost:3000 agente-de-exemplo`, e abra `http://localhost:4321/`. O agente de exemplo da seed já vem com o chat publicado.
 
+## Canal Telegram (aba Canais)
+
+1. Em Agentes, abra o agente e a aba **Canais**. No cartão **Telegram**, abra o @BotFather no Telegram, crie um bot com `/newbot`, copie o token, cole no campo e clique em **Conectar**. O sistema confere o token (`getMe`), registra o webhook e mostra o nome do bot, o `@usuário` com link e o estado (Conectado, Pausado ou Com erro). Um bot serve a um agente só; o mesmo bot em outro agente é recusado.
+2. **O Telegram só entrega mensagens em um endereço HTTPS público.** Defina `APP_URL` com o endereço HTTPS do sistema (o webhook fica em `APP_URL/api/telegram/[agenteId]/webhook`). Sem isso a tela avisa e o botão Conectar fica desabilitado. Em desenvolvimento, exponha o servidor por um túnel (por exemplo ngrok ou Cloudflare Tunnel) e use o endereço dele em `APP_URL`. `TELEGRAM_PERMITIR_URL_NAO_HTTPS=1` aceita `APP_URL` sem HTTPS só em teste com o simulado e é ignorada em produção.
+3. O token é criptografado em repouso (`ENCRYPTION_KEY`) e nunca volta ao navegador; o segredo do webhook (cabeçalho `X-Telegram-Bot-Api-Secret-Token`) é gerado a cada conexão e só o SHA-256 dele é guardado. O webhook responde 200 logo e atende depois; o reenvio do mesmo `update_id` não gera resposta duplicada.
+4. O bot atende só **conversas privadas** de texto: `/start` mostra a mensagem inicial do agente, `/novo` (ou `/reiniciar`) começa uma conversa nova, mensagens que não são texto recebem um aviso e grupos e canais são ignorados. A resposta sai em texto puro, com as referências `[n]` e uma linha final "Fontes:" com os títulos citados. Falha do provedor aparece ao usuário como uma frase única; o detalhe fica no último erro do cartão.
+5. **Limites** (PR-16): 10 mensagens por minuto por chat, 60 por conversa e o limite diário do canal (mensagens recebidas pelo bot no dia, padrão 500, editável no cartão); passou, o bot responde com uma frase amigável. **Pausar** faz o bot ignorar as mensagens (elas não são atendidas depois); **Desconectar** apaga o token e o segredo e mantém o histórico das conversas (canal `telegram`, o `identificadorExterno` é o id do chat).
+6. Para ver o canal sem o Telegram real: suba o app, o OpenRouter simulado (`npx tsx tests/apoio/servir-falso.ts`) e o Telegram simulado (`npx tsx tests/apoio/servir-telegram-falso.ts`), aponte `TELEGRAM_API_BASE` para a URL que ele imprime, cole o token fictício dele na aba Canais e dispare os updates com `curl` (o exemplo vem impresso, com o segredo lido da porta de controle).
+
 ## Configuração
 
 Toda variável é lida em um ponto só, `src/lib/ambiente.ts`. O que cada uma faz está no `.env.example`.
@@ -79,6 +88,8 @@ Toda variável é lida em um ponto só, `src/lib/ambiente.ts`. O que cada uma fa
 | `ENCRYPTION_KEY` | 32 bytes em hexadecimal ou base64; criptografa a chave do OpenRouter. Só é exigida ao gravar ou ler um segredo | para usar a chave do OpenRouter |
 | `OPENROUTER_BASE_URL` | endereço da API do OpenRouter (padrão `https://openrouter.ai/api/v1`) | não |
 | `APP_URL` | URL pública do sistema: endereço do trecho da aba Publicar (vazia, vale a origem da requisição) e `HTTP-Referer` do OpenRouter (padrão `http://localhost:3000`) | não, mas defina em produção |
+| `TELEGRAM_API_BASE` | endereço da API do Telegram (padrão `https://api.telegram.org`); os testes apontam para o simulado | não |
+| `TELEGRAM_PERMITIR_URL_NAO_HTTPS` | `1` aceita `APP_URL` sem HTTPS ao conectar o bot, só em desenvolvimento e teste; sempre ignorada em produção | não |
 | `MAX_TOKENS_RESPOSTA` | teto de tokens da resposta do modelo em cada turno (padrão 1024) | não |
 | `STORAGE_DIR` | pasta dos arquivos enviados à base de conhecimento (padrão `./storage`); entra no backup | não |
 | `MAX_UPLOAD_MB` | tamanho máximo de cada arquivo enviado, em MB (padrão 25) | não |

@@ -15,7 +15,7 @@ tasks:
     objetivo: "Subir o app de producao, o OpenRouter falso e o Telegram falso, conectar um bot pela tela, disparar updates por curl e registrar o resultado."
     arquivos:
       cria: ["tests/apoio/servir-telegram-falso.ts", "docs/canal-telegram/VERIFICACAO-VISUAL.md", "docs/canal-telegram/sprint-07/sprint.md", "docs/canal-telegram/sprint-07/fases.md", "docs/canal-telegram/sprint-07/tasks.md"]
-      altera: []
+      altera: ["src/componentes/CartaoTelegram.tsx", "src/estilos/global.css"]
     teste_integracao: "O roteiro roda contra o app de producao e o Telegram falso e o simulado registra a sendMessage da resposta, o dedupe, /start, /novo, o limite e o 401 de segredo errado."
     teste_funcional: "A tela conecta o bot falso e mostra nome, usuario e selo, e a varredura dos logs do servidor nao encontra o token de teste."
     criterio_aceite: "docs/canal-telegram/VERIFICACAO-VISUAL.md lista o que foi visto e o que nao pode ser visto e o grep do token nos logs devolve zero linhas."
@@ -26,7 +26,7 @@ tasks:
   - id: T-07.02
     titulo: "Convencoes, lacunas e README"
     fase: F-07.1
-    status: pendente
+    status: concluida
     objetivo: "Converter as lacunas do Telegram em regras com arquivo:linha em CONVENCOES.md e LACUNAS.md e documentar o canal e as variaveis no README."
     arquivos:
       cria: []
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/projeto.test.ts passa e o grep de telegram em CONVENCOES.md devolve as regras."
     depende_de: ["T-07.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-07.03
     titulo: "Fechamento no laco do buildx"
     fase: F-07.2
@@ -73,7 +73,7 @@ teste_funcional: "A tela conecta o bot falso e mostra nome, usuario e selo, e a 
 criterio_aceite: "docs/canal-telegram/VERIFICACAO-VISUAL.md lista o que foi visto e o que nao pode ser visto e o grep do token nos logs devolve zero linhas."
 depende_de: ["T-06.02"]
 paralelizavel: false
-status: concluida   # 2026-09-30 · suíte: parcial — tests/canais-ui.test.tsx, 22 passed; verificação manual no navegador registrada
+status: concluida   # 2026-09-30 · suíte: parcial — tests/canais-ui.test.tsx, 17 passed; verificação manual no navegador registrada
 ```
 
 ---
@@ -90,7 +90,7 @@ teste_funcional: "CONVENCOES.md traz as regras de webhook de terceiro com segred
 criterio_aceite: "tests/projeto.test.ts passa e o grep de telegram em CONVENCOES.md devolve as regras."
 depende_de: ["T-07.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/projeto.test.ts, 77 passed
 ```
 
 ---

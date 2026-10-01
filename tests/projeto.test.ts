@@ -284,3 +284,74 @@ describe('convenções do chat embutido (FT-06)', () => {
     expect(readme).toMatch(/TRUST_PROXY=1/)
   })
 })
+
+describe('convenções do canal Telegram (FT-07)', () => {
+  const convencoes = ler('docs/stack/CONVENCOES.md')
+  const lacunas = ler('docs/stack/LACUNAS.md')
+  const readme = ler('README.md')
+
+  // Cada citação `arquivo:linha` nova do CONVENCOES.md precisa apontar para a linha certa.
+  const CITACOES: Array<[string, RegExp]> = [
+    ['src/lib/telegram.ts:107', /export async function chamar/],
+    ['src/lib/telegram.ts:44', /export function erroDoTelegram/],
+    ['src/lib/telegram.ts:23', /export function redigirToken/],
+    ['src/lib/telegram.ts:222', /export function dividirTexto/],
+    ['src/lib/telegram.ts:241', /async function enviarPedaco/],
+    ['src/servicos/canal-telegram.ts:167', /export async function conectar/],
+    ['src/servicos/canal-telegram.ts:83', /export function origemDoWebhook/],
+    ['src/servicos/canal-telegram.ts:29', /export function aoAlterarCanal/],
+    ['src/servicos/telegram-webhook.ts:29', /export async function autenticarWebhook/],
+    ['src/servicos/telegram-webhook.ts:38', /timingSafeEqual\(esperado/],
+    ['src/servicos/telegram-webhook.ts:95', /export async function registrarAtualizacao/],
+    ['src/servicos/telegram-webhook.ts:156', /export async function tratarWebhook/],
+    ['src/app/api/telegram/[agenteId]/webhook/route.ts:21', /after\(depois\)/],
+    ['src/lib/exclusao-mutua.ts:13', /export function criarExclusaoMutua/],
+    ['src/servicos/telegram-atendimento.ts:104', /export async function atenderUpdate/],
+    ['src/servicos/telegram-atendimento.ts:192', /async function responderAoChat/],
+    ['src/servicos/telegram-limites.ts:22', /export function permitirMensagemDoChat/],
+    ['src/servicos/telegram-limites.ts:36', /export async function frasePorLimiteDoBanco/],
+    ['tests/apoio/telegram-falso.ts:91', /export async function iniciarTelegramFalso/],
+    ['tests/apoio/servidor.ts:31', /logs: \(\) => saida/],
+    ['src/componentes/canais.ts:13', /export const CANAIS_DO_AGENTE/],
+    ['src/componentes/canais-logica.ts:72', /export function visaoDoCartaoTelegram/],
+    ['src/lib/ambiente.ts:99', /get telegramApiBase/],
+    ['src/lib/ambiente.ts:107', /get telegramPermitirUrlNaoHttps/],
+  ]
+
+  it.each(CITACOES)('%s existe e contém o que o CONVENCOES.md diz', (citacao, esperado) => {
+    expect(convencoes).toContain(citacao)
+    const [arquivo, linha] = citacao.split(':')
+    expect(ler(arquivo!).split('\n')[Number(linha) - 1]).toMatch(esperado)
+  })
+
+  it('registra o webhook de terceiro com segredo, o token na URL com redação, o atendimento pós-resposta e o simulado', () => {
+    expect(convencoes).toMatch(/Webhook de terceiro/)
+    expect(convencoes).toMatch(/X-Telegram-Bot-Api-Secret-Token/)
+    expect(convencoes).toMatch(/Segredo na URL do provedor/)
+    expect(convencoes).toMatch(/redigirToken/)
+    expect(convencoes).toMatch(/`after\(\)`/)
+    expect(convencoes).toMatch(/Exclusão mútua por chave/)
+    expect(convencoes).toMatch(/TELEGRAM_API_BASE/)
+    expect(convencoes).toMatch(/TELEGRAM_PERMITIR_URL_NAO_HTTPS/)
+    expect(convencoes).not.toContain('Telegram e YouTube seguem `decidido_pelo_buildx`')
+  })
+
+  it('as lacunas registram o que a FT-07 resolveu e o que ficou (Telegram real, perda no reinício, 375 px)', () => {
+    expect(lacunas).toMatch(/Resolvidas na FT-07/)
+    expect(lacunas).toMatch(/Telegram real/)
+    expect(lacunas).toMatch(/PEND-06/)
+    expect(lacunas).toMatch(/reinício/)
+    expect(lacunas).toMatch(/375 px/)
+  })
+
+  it('o README explica a aba Canais, o passo a passo, o webhook HTTPS com túnel, os limites e o simulado', () => {
+    expect(readme).toContain('Canais')
+    expect(readme).toContain('@BotFather')
+    expect(readme).toContain('/api/telegram/[agenteId]/webhook')
+    expect(readme).toMatch(/túnel/)
+    expect(readme).toContain('X-Telegram-Bot-Api-Secret-Token')
+    expect(readme).toContain('tests/apoio/servir-telegram-falso.ts')
+    expect(readme).toMatch(/\/novo/)
+    for (const variavel of ['TELEGRAM_API_BASE', 'TELEGRAM_PERMITIR_URL_NAO_HTTPS']) expect(readme, variavel).toContain(variavel)
+  })
+})
