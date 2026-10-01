@@ -198,3 +198,77 @@ export async function getWebhookInfo(token: string, opcoes?: OpcoesDeChamada): P
     ultimoErroEm: typeof r.last_error_date === 'number' ? new Date(r.last_error_date * 1000) : null,
   }
 }
+
+export const LIMITE_DO_TEXTO = 4096
+export const TEMPO_DE_ENVIO_MS = 15_000
+/** `retry_after` acima disto não vale esperar dentro de um turno. */
+export const ESPERA_MAXIMA_SEGUNDOS = 30
+
+function pontoDeCorte(resto: string, limite: number): number {
+  const piso = Math.floor(limite / 2)
+  for (const separador of ['\n\n', '\n', ' ']) {
+    const i = resto.lastIndexOf(separador, limite)
+    if (i >= piso) return i
+  }
+  // Corte seco: não parte um par substituto (emoji) ao meio.
+  const anterior = resto.charCodeAt(limite - 1)
+  return anterior >= 0xd800 && anterior <= 0xdbff ? limite - 1 : limite
+}
+
+/**
+ * Divide o texto em pedaços de até `limite` caracteres, preferindo cortar em
+ * linha em branco, depois em quebra de linha, depois em espaço. Sem pedaço vazio.
+ */
+export function dividirTexto(texto: string, limite: number = LIMITE_DO_TEXTO): string[] {
+  const pedacos: string[] = []
+  let resto = texto.trim()
+  while (resto.length > limite) {
+    const corte = pontoDeCorte(resto, limite)
+    pedacos.push(resto.slice(0, corte).trimEnd())
+    resto = resto.slice(corte).trimStart()
+  }
+  if (resto.length > 0) pedacos.push(resto)
+  return pedacos.filter((p) => p.length > 0)
+}
+
+export interface OpcoesDeEnvio extends OpcoesDeChamada {
+  /** Espera do `retry_after`; o teste injeta uma que não dorme. */
+  esperar?: (ms: number) => Promise<void>
+}
+
+const dormir = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
+
+async function enviarPedaco(token: string, chatId: number | string, texto: string, opcoes: OpcoesDeEnvio): Promise<void> {
+  // Texto puro: nunca `parse_mode` (PR-67).
+  const enviar = () =>
+    chamar(token, 'sendMessage', { chat_id: chatId, text: texto }, {
+      tempoLimiteMs: opcoes.tempoLimiteMs ?? TEMPO_DE_ENVIO_MS,
+      sinal: opcoes.sinal,
+    })
+  try {
+    await enviar()
+  } catch (erro) {
+    const espera = erro instanceof ErroDoTelegram && erro.codigo === 'telegram_limite' ? erro.retryAfterSegundos : undefined
+    if (espera === undefined || espera > ESPERA_MAXIMA_SEGUNDOS) throw erro
+    await (opcoes.esperar ?? dormir)(Math.max(1, espera) * 1000)
+    await enviar()
+  }
+}
+
+/**
+ * Envia o texto ao chat, dividido em pedaços de até 4096 caracteres, em ordem.
+ * O 429 com `retry_after` até 30 s é esperado e repetido uma única vez por pedaço.
+ */
+export async function sendMessage(
+  token: string,
+  chatId: number | string,
+  texto: string,
+  opcoes: OpcoesDeEnvio = {},
+): Promise<void> {
+  for (const pedaco of dividirTexto(texto)) await enviarPedaco(token, chatId, pedaco, opcoes)
+}
+
+/** Mostra "digitando…" por cerca de 5 segundos. */
+export async function sendChatAction(token: string, chatId: number | string, opcoes?: OpcoesDeChamada): Promise<void> {
+  await chamar(token, 'sendChatAction', { chat_id: chatId, action: 'typing' }, opcoes)
+}

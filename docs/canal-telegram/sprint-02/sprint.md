@@ -8,7 +8,7 @@ feature_id: FT-07
 sprint_id: sprint-02
 atualizado_em: 2026-09-30
 titulo: "Adaptador do Telegram"
-status: pendente
+status: concluido
 criterio_saida: "src/lib/telegram.ts cobre os seis metodos com erro em portugues e o token nunca aparece em erro, log ou pilha, provado por teste."
 fases: ["F-02.1", "F-02.2"]
 riscos: ["o token vai na URL: qualquer erro de fetch pode incluir o endereco inteiro", "retry_after do 429 nao e documentado na consulta (lacuna 1): tratado como opcional"]

@@ -10,14 +10,14 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-02.1
     titulo: "Nucleo e metodos de configuracao"
-    status: pendente
+    status: concluido
     criterio_saida: "Chamada, redacao e erros prontos, com getMe, setWebhook, deleteWebhook e getWebhookInfo."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-02.01"]
   - id: F-02.2
     titulo: "Envio e prova do token"
-    status: pendente
+    status: concluido
     criterio_saida: "Envio dividido, digitando e a prova de que o token nao vaza."
     paralelizavel: false
     paralela_com: []
@@ -48,8 +48,8 @@ flowchart LR
   classDef critico   stroke-width:3px
 
   class T_02_01 concluida
-  class T_02_02 pendente
-  class T_02_03 pendente
+  class T_02_02 concluida
+  class T_02_03 concluida
   class T_02_01,T_02_02,T_02_03 critico
 ```
 

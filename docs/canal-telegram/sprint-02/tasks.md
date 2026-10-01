@@ -26,7 +26,7 @@ tasks:
   - id: T-02.02
     titulo: "Envio de mensagem, digitando e divisao em pedacos"
     fase: F-02.2
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar sendMessage (divide acima de 4096 respeitando quebras, sem parse_mode, retry_after uma vez) e sendChatAction typing."
     arquivos:
       cria: ["tests/telegram-envio.test.ts"]
@@ -36,12 +36,12 @@ tasks:
     criterio_aceite: "tests/telegram-envio.test.ts passa e um segundo 429 seguido vira telegram_limite sem terceira tentativa."
     depende_de: ["T-02.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-02.03
     titulo: "O token nunca aparece em erro, log ou pilha"
     fase: F-02.2
-    status: pendente
+    status: concluida
     objetivo: "Provar por teste que, em erro de rede, 401, 403, 404, 429, 400, 500 e JSON invalido, o token nao aparece na mensagem, na pilha, na causa nem no que o adaptador escreve no console."
     arquivos:
       cria: ["tests/telegram-token-nao-vaza.test.ts"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/telegram-token-nao-vaza.test.ts passa com ao menos 10 combinacoes de metodo e falha."
     depende_de: ["T-02.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
 ---
 
 # Tasks — Sprint 02
@@ -90,7 +90,7 @@ teste_funcional: "dividirTexto quebra em linha em branco, depois em quebra de li
 criterio_aceite: "tests/telegram-envio.test.ts passa e um segundo 429 seguido vira telegram_limite sem terceira tentativa."
 depende_de: ["T-02.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/telegram-envio.test.ts, 11 passed
 ```
 
 ---
@@ -107,5 +107,5 @@ teste_funcional: "Com o servidor fora do ar (conexao recusada) o erro e telegram
 criterio_aceite: "tests/telegram-token-nao-vaza.test.ts passa com ao menos 10 combinacoes de metodo e falha."
 depende_de: ["T-02.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/telegram-token-nao-vaza.test.ts, 51 passed
 ```
