@@ -13,7 +13,47 @@ estado: aberto
 versionado: true
 branch: feat/canal-telegram
 branch_base: feat/chat-embutido
-commits: []
+commits:
+  - task: T-01.01
+    commit: 0c280c9
+  - task: T-01.02
+    commit: 3eac4af
+  - task: T-01.03
+    commit: 6a7880a
+  - task: T-02.01
+    commit: d7bc784
+  - task: T-02.02
+    commit: db902c0
+  - task: T-02.03
+    commit: db902c0
+  - task: T-03.01
+    commit: 49699f1
+  - task: T-03.02
+    commit: ad3ba4d
+  - task: T-03.03
+    commit: cdfbc1a
+  - task: T-04.01
+    commit: ec104ef
+  - task: T-04.02
+    commit: b7ee921
+  - task: T-04.03
+    commit: 3fef879
+  - task: T-04.04
+    commit: 01fc026
+  - task: T-05.01
+    commit: 0502b23
+  - task: T-05.02
+    commit: c1bd9b4
+  - task: T-06.01
+    commit: f5440a5
+  - task: T-06.02
+    commit: 29da8ba
+  - task: T-07.01
+    commit: 4399316
+  - task: T-07.02
+    commit: db717c1
+  - task: T-07.03
+    commit: b1ab740
 modulo_afetado: []
 arquivos_alterados: []
 faixa_atencao: []
