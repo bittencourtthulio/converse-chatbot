@@ -2,7 +2,7 @@
 // fonte em <raiz>/fontes/<agenteId>/<fonteId>/original. Só ids gerados pelo
 // servidor entram no caminho, nunca o nome que o usuário enviou (PR-13).
 // Sem imports com alias `@/`: a seed também usa este módulo.
-import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
+import { mkdir, open, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { ErroDeAplicacao } from './erros'
 
@@ -50,6 +50,51 @@ export function criarArmazenamento(raiz: string): Armazenamento {
       return relativo
     },
 
+    async gravarDeStream(agenteId, fonteId, corpo, opcoes) {
+      const relativo = `fontes/${conferirId(agenteId)}/${conferirId(fonteId)}/original`
+      const destino = dentroDaRaiz(relativo)
+      await mkdir(path.dirname(destino), { recursive: true, mode: 0o700 })
+      const parcial = `${destino}.parcial`
+      const leitor = corpo.getReader()
+      const necessarios = opcoes.bytesDeInicio ?? 16
+      let inicio = Buffer.alloc(0)
+      let conferido = false
+      let total = 0
+      const arquivo = await open(parcial, 'w', 0o600)
+      try {
+        for (;;) {
+          const { done, value } = await leitor.read()
+          if (done) break
+          total += value.length
+          if (total > opcoes.maxBytes) {
+            throw new ErroDeAplicacao(
+              `O arquivo passa do limite de ${Math.floor(opcoes.maxBytes / (1024 * 1024))} MB.`,
+              413,
+              'arquivo_grande_demais',
+            )
+          }
+          if (!conferido) {
+            inicio = Buffer.concat([inicio, value.subarray(0, necessarios - inicio.length)])
+            if (inicio.length >= necessarios) {
+              opcoes.conferirInicio?.(inicio)
+              conferido = true
+            }
+          }
+          // Escrita aguardada pedaço a pedaço: o disco dá o ritmo e a memória fica constante.
+          await arquivo.write(value)
+        }
+        if (!conferido) opcoes.conferirInicio?.(inicio)
+        await arquivo.close()
+        await rename(parcial, destino)
+        return { caminho: relativo, tamanhoBytes: total }
+      } catch (erro) {
+        await leitor.cancel().catch(() => undefined)
+        await arquivo.close().catch(() => undefined)
+        await rm(parcial, { force: true })
+        throw erro
+      }
+    },
+
     async ler(caminhoRelativo) {
       if (typeof caminhoRelativo !== 'string' || !CAMINHO_RELATIVO.test(caminhoRelativo)) {
         throw idInvalido()
@@ -76,4 +121,21 @@ export function criarArmazenamento(raiz: string): Armazenamento {
       await rm(alvo, { recursive: true, force: true })
     },
   }
+}
+
+// Gravação em stream, para vídeo e áudio de até centenas de megabytes (FT-08,
+// PR-71): o corpo nunca é carregado inteiro em memória.
+export interface Armazenamento {
+  /**
+   * Grava o corpo em `original.parcial` por stream, conta os bytes, aborta com
+   * 413 acima de `maxBytes`, chama `conferirInicio` uma vez com os primeiros
+   * `bytesDeInicio` (padrão 16; menos, se o stream acabar antes) e só então
+   * renomeia para `original`. Em qualquer falha apaga o parcial e cancela a leitura.
+   */
+  gravarDeStream(
+    agenteId: string,
+    fonteId: string,
+    corpo: ReadableStream<Uint8Array>,
+    opcoes: { maxBytes: number; bytesDeInicio?: number; conferirInicio?: (primeirosBytes: Uint8Array) => void },
+  ): Promise<{ caminho: string; tamanhoBytes: number }>
 }

@@ -11,7 +11,7 @@ tasks:
   - id: T-03.01
     titulo: "Armazenamento: gravar em stream"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar a armazenamento.ts gravarDeStream que escreve o corpo em original.parcial por stream, conta bytes, aborta no teto, confere os primeiros bytes e renomeia."
     arquivos:
       cria: ["tests/armazenamento-stream.test.ts", "docs/conhecimento-em-video/sprint-03/sprint.md", "docs/conhecimento-em-video/sprint-03/fases.md", "docs/conhecimento-em-video/sprint-03/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/armazenamento-stream.test.ts e tests/armazenamento.test.ts passam."
     depende_de: ["T-02.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-03.02
     titulo: "Armazenamento: pastas e segmentos"
     fase: F-03.1
@@ -88,7 +88,7 @@ teste_funcional: "Um stream acima do teto aborta com erro de tamanho e apaga o p
 criterio_aceite: "tests/armazenamento-stream.test.ts e tests/armazenamento.test.ts passam."
 depende_de: ["T-02.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/armazenamento-stream.test.ts e tests/armazenamento.test.ts, 15 passed
 ```
 
 ---
