@@ -5,7 +5,7 @@ import { ambiente } from '@/lib/ambiente'
 
 const original = { ...process.env }
 afterEach(() => {
-  for (const chave of ['APP_NAME', 'TRUST_PROXY', 'MAX_TOKENS_RESPOSTA', 'MAX_UPLOAD_MB']) {
+  for (const chave of ['APP_NAME', 'TRUST_PROXY', 'MAX_TOKENS_RESPOSTA', 'MAX_UPLOAD_MB', 'TELEGRAM_API_BASE', 'TELEGRAM_PERMITIR_URL_NAO_HTTPS', 'NODE_ENV']) {
     if (original[chave] === undefined) delete process.env[chave]
     else process.env[chave] = original[chave]
   }
@@ -173,5 +173,25 @@ describe('armazenamento e upload (PR-11, PR-45)', () => {
     expect(() => ambiente.maxUploadBytes).toThrow(/MAX_UPLOAD_MB/)
     process.env.MAX_UPLOAD_MB = '0'
     expect(() => ambiente.maxUploadBytes).toThrow(/MAX_UPLOAD_MB/)
+  })
+})
+
+describe('Telegram (FT-07, PR-70)', () => {
+  it('sem TELEGRAM_API_BASE usa a API oficial e tira a barra final', () => {
+    delete process.env.TELEGRAM_API_BASE
+    expect(ambiente.telegramApiBase).toBe('https://api.telegram.org')
+    process.env.TELEGRAM_API_BASE = ' http://127.0.0.1:5555/// '
+    expect(ambiente.telegramApiBase).toBe('http://127.0.0.1:5555')
+  })
+
+  it('a permissão de URL não HTTPS só liga com 1 e fora de produção', () => {
+    delete process.env.TELEGRAM_PERMITIR_URL_NAO_HTTPS
+    expect(ambiente.telegramPermitirUrlNaoHttps).toBe(false)
+    process.env.TELEGRAM_PERMITIR_URL_NAO_HTTPS = 'true'
+    expect(ambiente.telegramPermitirUrlNaoHttps).toBe(false)
+    process.env.TELEGRAM_PERMITIR_URL_NAO_HTTPS = '1'
+    expect(ambiente.telegramPermitirUrlNaoHttps).toBe(true)
+    Object.assign(process.env, { NODE_ENV: 'production' })
+    expect(ambiente.telegramPermitirUrlNaoHttps).toBe(false)
   })
 })

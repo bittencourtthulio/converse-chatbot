@@ -26,7 +26,7 @@ tasks:
   - id: T-01.02
     titulo: "Variaveis de ambiente do Telegram"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar ambiente.telegramApiBase e ambiente.telegramPermitirUrlNaoHttps (ignorada em producao) e documentar no .env.example."
     arquivos:
       cria: []
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/ambiente.test.ts e tests/projeto.test.ts passam."
     depende_de: ["T-01.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-01.03
     titulo: "Servidor simulado do Telegram"
     fase: F-01.2
@@ -90,7 +90,7 @@ teste_funcional: "Sem TELEGRAM_API_BASE o valor e https://api.telegram.org, com 
 criterio_aceite: "tests/ambiente.test.ts e tests/projeto.test.ts passam."
 depende_de: ["T-01.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/ambiente.test.ts e tests/projeto.test.ts, 75 passed
 ```
 
 ---

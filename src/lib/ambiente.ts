@@ -95,6 +95,19 @@ export const ambiente = {
   get maxUploadBytes(): number {
     return inteiroComPadrao('MAX_UPLOAD_MB', 25) * 1024 * 1024
   },
+  /** Endereço da API do Telegram; os testes apontam para o servidor simulado (FT-07, PR-70). */
+  get telegramApiBase(): string {
+    const url = process.env.TELEGRAM_API_BASE?.trim()
+    return (url ? url : 'https://api.telegram.org').replace(/\/+$/, '')
+  },
+  /**
+   * Aceita `APP_URL` sem HTTPS ao conectar um bot (só desenvolvimento e teste,
+   * PR-65). Desligada por padrão e sempre ignorada em produção.
+   */
+  get telegramPermitirUrlNaoHttps(): boolean {
+    if (process.env.NODE_ENV === 'production') return false
+    return process.env.TELEGRAM_PERMITIR_URL_NAO_HTTPS === '1'
+  },
   get ehProducao(): boolean {
     return process.env.NODE_ENV === 'production'
   },

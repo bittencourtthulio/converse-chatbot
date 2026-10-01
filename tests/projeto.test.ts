@@ -51,6 +51,13 @@ describe('exemplo de ambiente', () => {
     expect(exemplo).not.toMatch(/sk-or-/)
   })
 
+  it('documenta as variáveis do Telegram, sem ligar a exceção de HTTP por padrão', () => {
+    expect(exemplo).toContain('TELEGRAM_API_BASE')
+    expect(valorDe('TELEGRAM_API_BASE')).toBe('https://api.telegram.org')
+    expect(exemplo).toContain('TELEGRAM_PERMITIR_URL_NAO_HTTPS')
+    expect(valorDe('TELEGRAM_PERMITIR_URL_NAO_HTTPS')).toBe('')
+  })
+
   it('documenta o limite de tokens da resposta, sem valor secreto', () => {
     expect(exemplo).toContain('MAX_TOKENS_RESPOSTA')
     expect(valorDe('MAX_TOKENS_RESPOSTA')).toBe('1024')
