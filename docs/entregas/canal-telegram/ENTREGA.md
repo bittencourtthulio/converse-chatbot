@@ -9,7 +9,7 @@ entregue_por: mergex
 titulo: Canal Telegram
 tipo_trabalho: feature
 tipo_ocorrencia: null
-estado: aberto
+estado: entregue
 versionado: true
 branch: feat/canal-telegram
 branch_base: feat/chat-embutido
@@ -251,25 +251,52 @@ atencao:
   leitura_rapida: 22
   dispensavel: 60
 portao: pronto
-desvios: []
+desvios:
+  - "tests/apoio/servidor.ts: parametro capturarLogs e logs() para varrer o log do servidor de producao (T-05.01)"
+  - "tests/rotas.test.ts e tests/publicar-rota.test.ts: a contagem de abas passou de quatro para cinco (T-06.01 e T-06.02)"
+  - "src/componentes/CartaoTelegram.tsx e src/estilos/global.css: achados da verificacao no navegador (T-07.01)"
+  - "tests/apoio/servir-telegram-falso.ts: endpoint de controle POST /enviar para o QA escrever ao bot (T-07.01, durante o E5)"
+  - "suite: as tasks guardam parcial (subconjunto da task); a suite inteira rodou verde em cada fechamento de sprint e no estado final, 1730 testes"
+
 push_feito: false
 pr_url: null
 pr_estado: null
 criado_em: 2026-09-30
 atualizado_em: 2026-09-30
-entregue_em: null
+entregue_em: 2026-09-30
 ---
 
 # Entrega — Canal Telegram
 
-Entrega aberta: o usuário conecta o token de um bot do Telegram a um agente e passa a conversar com ele pelo aplicativo.
+O usuário conecta o token de um bot do Telegram a um agente, na aba Canais, e passa a conversar com esse agente pelo aplicativo. Está na branch `feat/canal-telegram`, empilhada sobre `feat/chat-embutido`.
+
+## Onde está o quê
+
+| O quê | Onde |
+|---|---|
+| Descrição do pull request | [PR.md](PR.md) |
+| Pacote de QA | [QA-PACOTE.md](QA-PACOTE.md) |
+| Classificação da atenção | [ATENCAO.md](ATENCAO.md) |
+| Trabalho de origem | [docs/canal-telegram](../../canal-telegram/) |
+| Relatório da feature | [RELATORIO-FEATURE.md](../../canal-telegram/RELATORIO-FEATURE.md) |
+| Pull request | não aberto (sem remoto) |
 
 ## Estado da entrega
 
-- Branch `feat/canal-telegram`, criada a partir de `feat/chat-embutido` (PRs empilhados; a base foi escolhida pelo pedido do laço).
-- A FT-07 depende funcionalmente só da FT-05 (respostas com conhecimento); a FT-06 (chat embutido) é irmã e a branch apenas empilha sobre ela para evitar conflito nos arquivos compartilhados (`abas-do-agente.ts`, `ambiente.ts`, `.env.example`, `next.config.ts`, `proxy.ts`, `chat-publico*`).
-- Sem remoto configurado: push e PR não serão feitos.
+- Portão de prontidão: PRONTO
+- Commits: 20, um por task (hashes no frontmatter)
+- Atenção humana: 12 olho obrigatório, 22 leitura rápida, 60 dispensável
+- Push: não feito — o repositório não tem remoto configurado (PEND-05); nenhuma credencial foi pedida
+- Pull request: não aberto — sem remoto e sem ferramenta de hospedagem; a descrição está em `PR.md`
+- Falta para o merge: revisão humana da faixa OLHO OBRIGATÓRIO, execução do pacote de QA e um remoto para abrir o PR (o merge é decisão humana)
 
 ## Avisos
 
-- O `ORQUESTRADOR.md` ainda não existe (a abertura rodou antes da F1); a linha da branch é acrescentada quando a F4 o gerar.
+- A FT-07 não depende funcionalmente da FT-06 (chat embutido): a branch só empilha sobre ela para evitar conflito nos arquivos compartilhados (`abas-do-agente.ts`, `ambiente.ts`, `.env.example`, `chat-publico-limites.ts`).
+- Sem modo legado, sem raio calculado, sem agente `revisor-diff`, sem memox e sem relatório de cobertura: a classificação de atenção veio do tipo de arquivo e da evidência das tasks.
+- O Telegram real nunca foi chamado (PEND-06); a aba Canais não foi vista a 375 px (PEND-07).
+- Convenção de suíte: `suite: verde` só quando a suíte inteira rodou na task; subconjunto é `parcial`, com o subconjunto declarado na linha da task.
+
+## Desvios
+
+Arquivos além da lista inicial das tasks, declarados nelas no momento em que surgiram (lista em `desvios`, no frontmatter): `tests/apoio/servidor.ts`, `tests/rotas.test.ts`, `tests/publicar-rota.test.ts`, `src/componentes/CartaoTelegram.tsx`, `src/estilos/global.css` e `tests/apoio/servir-telegram-falso.ts`. Em todas as tasks o teste foi escrito antes do código e rodou vermelho primeiro, exceto a T-01.01 (migration e teste na mesma passada) e a T-02.03 (o teste provou que discrimina por mutação temporária do adaptador).
