@@ -23,6 +23,7 @@ import {
   formatoDeMidia,
   mimeDeMidia,
 } from '@/lib/midia-formatos'
+import { extrairIdDoYoutube, urlDeOrigem } from '@/lib/youtube'
 import { obterFila } from '@/servicos/fontes-fila'
 import type { UsuarioAutenticado } from '@/servicos/autenticacao'
 
@@ -41,6 +42,14 @@ const entradaDeTexto = z.object({
       `O conteúdo pode ter até ${LIMITES.conteudoDoTexto.toLocaleString('pt-BR')} caracteres.`,
     )
     .refine((c) => c.trim().length > 0, 'Informe o conteúdo do texto.'),
+})
+
+const entradaDoYoutube = z.object({
+  url: z
+    .string({ message: 'Informe o link do vídeo do YouTube.' })
+    .trim()
+    .min(1, 'Informe o link do vídeo do YouTube.')
+    .max(300, 'O link pode ter até 300 caracteres.'),
 })
 
 export interface FonteVisivel {
@@ -427,4 +436,36 @@ export async function adicionarVideo(
     await armazenamento.apagarFonte(agenteId, id).catch(() => undefined)
     throw erro
   }
+}
+
+/** O título provisório de uma fonte do YouTube até a fila ler o título do vídeo. */
+export const tituloProvisorioDoYoutube = (id: string) => `YouTube: ${id}`
+
+/**
+ * Link do YouTube para a base (FT-08, PR-75): valida a URL (host do YouTube e
+ * id de 11 caracteres) e cria a fonte `pendente` do tipo `youtube`, sem falar
+ * com o YouTube: quem lê as legendas é a fila. Sem arquivo em disco.
+ */
+export async function adicionarYoutube(
+  autor: UsuarioAutenticado,
+  agenteId: string,
+  entrada: unknown,
+): Promise<FonteVisivel> {
+  exigirAutor(autor)
+  const dados = entradaDoYoutube.safeParse(entrada)
+  if (!dados.success) throw entradaInvalida(dados.error.issues[0]?.message ?? 'Entrada inválida.')
+  const id = extrairIdDoYoutube(dados.data.url)
+  await exigirAgente(agenteId)
+  const fonte = await prisma.fonte.create({
+    data: {
+      agenteId,
+      tipo: 'youtube',
+      titulo: tituloProvisorioDoYoutube(id),
+      tamanhoBytes: 0,
+      urlOrigem: urlDeOrigem(id),
+      criadoPorId: autor.id,
+    },
+  })
+  obterFila().acordar()
+  return visaoDaFonte(fonte)
 }

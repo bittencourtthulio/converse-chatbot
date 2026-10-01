@@ -56,7 +56,7 @@ tasks:
   - id: T-05.04
     titulo: "Servico: adicionar YouTube"
     fase: F-05.2
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar a fontes.ts adicionarYoutube com validacao zod da URL, fonte pendente de tipo youtube com urlOrigem e titulo provisorio."
     arquivos:
       cria: ["tests/fontes-youtube.test.ts"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "tests/fontes-youtube.test.ts passa."
     depende_de: ["T-05.01", "T-03.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-05.05
     titulo: "Rota do YouTube"
     fase: F-05.2
@@ -169,7 +169,7 @@ teste_funcional: "URL de outro host da 422, url ausente ou acima de 300 caracter
 criterio_aceite: "tests/fontes-youtube.test.ts passa."
 depende_de: ["T-05.01", "T-03.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/fontes-youtube.test.ts, tests/fontes.test.ts e tests/fontes-video.test.ts, 20 passed
 ```
 
 ---
