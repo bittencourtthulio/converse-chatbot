@@ -4,13 +4,13 @@ expx_tool: buildx
 kind: premissas
 projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-10-01
-total: 100
+total: 104
 por_origem:
   catalogo_lacunas: 27
   briefing: 0
   decisao_de_stack: 7
   f2_autonoma: 66
-  recursao: 0
+  recursao: 4
 ---
 
 # Plataforma de chatbot com IA e base de conhecimento — Premissas
@@ -1323,6 +1323,58 @@ entram no relatório final como o que o usuário precisa confirmar.
 **Etapa:** b4
 **Provisória:** false
 **Realizada em:** FT-11
+
+---
+
+### PR-101 — Sair revoga a sessão: identificador `jti` e tabela de revogados
+
+**Assunto:** F2 da FT-12 — PR-27, PR-31 (L4, "logout invalida de fato"), achado A-04 do B6
+**Decisão:** Todo token de sessão leva um identificador `jti` (UUID gerado no login). `sair` grava o `jti` na tabela `sessoes_revogadas` (`jti`, `usuarioId`, `revogadaEm`, `expiraEm`; migration que só acrescenta), com `expiraEm` igual ao fim máximo possível daquela sessão (início da sessão mais `SESSAO_MAXIMA_HORAS`), e a validação de sessão (`usuarioDaSessao`, usada pelas páginas, ações, rotas e pelo proxy) recusa o token cujo `jti` está na tabela. Só a sessão que saiu é revogada: as outras sessões do mesmo usuário continuam valendo. O token renovado (PR-102) mantém o mesmo `jti`, então revogar uma vez cobre o token roubado antes e depois de qualquer renovação. Token sem `jti` (emitido antes desta feature) é recusado: cada usuário entra de novo uma vez. O expurgo existente apaga as linhas com `expiraEm` no passado (a revogação já não tem o que proteger). Se a gravação da revogação falhar, o cookie é apagado mesmo assim e a falha vai ao log pelo nome do erro.
+**Por quê:** O B6 achou que `sair` só apagava o cookie: um token copiado antes do logout continuava valendo até 15 minutos. Revogação por identificador é o mínimo que torna o logout real sem trocar a autenticação sem estado por sessão em banco.
+**O que invalida:** se o dono preferir sessão guardada em banco (cada requisição consulta a sessão, não o token) ou se o sistema rodar em mais de um processo com bancos separados (a tabela é por banco, não por processo, então vale com um banco só).
+**Origem:** recursao
+**Etapa:** b5
+**Provisória:** false
+**Realizada em:** FT-12
+
+---
+
+### PR-102 — Renovação deslizante da sessão e limite absoluto de duração
+
+**Assunto:** F2 da FT-12 — PR-27, PR-31 (L4, "expiração curta com refresh"), achado A-04 do B6
+**Decisão:** A sessão dura `JWT_TTL_SEGUNDOS` (padrão 900) a partir da última emissão e é renovada por atividade: em requisição autenticada que passa pelo `src/proxy.ts`, se já passou a metade da vida do token, o proxy reemite o cookie (mesmo `jti`, mesma versão, mesmo início, `iat` e `exp` novos) na resposta. A sessão nunca passa de `SESSAO_MAXIMA_HORAS` (padrão 12, lida só em `src/lib/ambiente.ts`) contados do login: o `exp` do token renovado é o menor entre "agora mais o TTL" e "início mais o máximo", e a validação recusa o token cujo início mais o máximo já passou. A renovação só ocorre para token válido, não revogado e de versão corrente, e não ocorre em requisição de Server Action (POST a uma página, com ou sem o cabeçalho `next-action`; a que faz `sair` ou trocar a senha grava o próprio cookie), embora um POST a `/api` renove, nas rotas públicas (`/embed`, `/api/publico`, `/api/telegram`, `/api/saude`) nem nas rotas de upload, que ficam fora do `matcher` do proxy; o uso só por upload, portanto, não estende a sessão. Falha na renovação não derruba o usuário: o proxy segue sem reemitir e as guardas dos handlers continuam decidindo. O relógio é injetável (parâmetro `agora` em segundos) nas funções de serviço e de biblioteca.
+**Por quê:** Derrubar quem usa o sistema a cada 15 minutos era o preço do TTL curto; renovar por atividade mantém o TTL curto para quem some e o limite absoluto impede que um cookie roubado e renovado dure para sempre. O proxy é o único ponto do Next 16, além de ações e rotas, que pode gravar cookie, e já roda em Node.
+**O que invalida:** se o dono quiser sessões que sobrevivem ao fechamento do navegador por dias ("lembrar de mim"), ou se o hospedeiro não permitir que o proxy grave cookie.
+**Origem:** recursao
+**Etapa:** b5
+**Provisória:** false
+**Realizada em:** FT-12
+
+---
+
+### PR-103 — Contador de versão de sessão no lugar do corte por relógio
+
+**Assunto:** F2 da FT-12 — PR-31 (troca de senha invalida outras sessões), achado A-1 do B6
+**Decisão:** `Usuario.versaoDaSessao` (inteiro, padrão 0) substitui o corte `sessoesValidasDesde = agora + 1 s`. O token carrega a versão (`v`) do usuário no momento do login; `trocarSenha` incrementa a versão numa só atualização junto da senha nova e devolve um token já com a versão nova; `usuarioDaSessao` recusa o token cuja versão é menor que a do usuário. Não há comparação de relógio, então um login feito no mesmo segundo da troca vale. A coluna `sessoesValidasDesde` permanece no banco (migration só acrescenta, e o teste de restauração a usa), deixa de ser lida e de ser gravada pela troca de senha. Os usuários existentes ficam com a versão 0 pelo padrão da coluna.
+**Por quê:** O corte em segundos tinha uma janela em que o login legítimo logo depois da troca era derrubado; um contador inteiro não tem ambiguidade nem depende do relógio do servidor.
+**O que invalida:** se uma nova forma de derrubar sessões (por exemplo "encerrar todas as sessões" pelo admin) exigir granularidade por dispositivo; aí a versão passa a ser por sessão em tabela.
+**Origem:** recursao
+**Etapa:** b5
+**Provisória:** false
+**Realizada em:** FT-12
+
+---
+
+### PR-104 — Guarda própria em toda tela e rota, provada por teste de arquitetura
+
+**Assunto:** F2 da FT-12 — PR-12 (papéis verificados no servidor), ressalvas R-01 e R-02 do B6
+**Decisão:** Toda página sob `src/app/(sistema)` chama `exigirUsuario()` ou `exigirUsuarioAdmin()` na própria página (o `layout.tsx` também chama, mas não conta como fronteira); toda página de `configuracoes/` chama `exigirUsuarioAdmin()`; toda rota sob `src/app/api` usa `usuarioAtual()` ou `exigirSessao()`, exceto uma lista explícita e comentada de rotas públicas por desenho (`saude`, as três de `publico/agentes/[id]`, e o webhook do Telegram, autenticado por segredo). Um teste de arquitetura enumera os arquivos e falha se um novo não tiver guarda ou não estiver na lista de exceções, e falha se uma exceção listada deixar de existir. Todo serviço que só o admin deve usar confere o papel por conta própria: `auditoria.listar` passa a receber o ator e a exigir admin.
+**Por quê:** O B6 encontrou uma tela e um serviço que confiavam no layout ou na página; a defesa em profundidade só vale se uma tela nova esquecida for pega pelo teste, não pela revisão.
+**O que invalida:** se a convenção de guarda passar a ser um único ponto central (por exemplo, o proxy decidir o acesso por rota); o teste então muda de forma, não de objetivo.
+**Origem:** recursao
+**Etapa:** b5
+**Provisória:** false
+**Realizada em:** FT-12
 
 ---
 
