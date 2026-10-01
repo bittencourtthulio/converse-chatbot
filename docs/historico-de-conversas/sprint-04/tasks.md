@@ -41,18 +41,18 @@ tasks:
   - id: T-04.03
     titulo: "Selecao e apagar em lote com confirmacao"
     fase: F-04.2
-    status: pendente
+    status: concluida
     objetivo: "Criar o componente de cliente com caixas de selecao, barra de acoes e confirmacao na propria tela."
     arquivos:
       cria: ["src/componentes/ListaComSelecao.tsx", "src/componentes/apagar-conversas.ts", "tests/conversas-lote-ui.test.tsx"]
-      altera: ["src/componentes/ListaDeConversas.tsx", "src/estilos/global.css"]
+      altera: ["src/componentes/ListaDeConversas.tsx", "src/estilos/global.css", "src/app/(sistema)/conversas/(lista)/page.tsx"]
     teste_integracao: "Com happy-dom e fetch simulado, marcar duas linhas, clicar em Apagar selecionadas e confirmar chama POST /api/conversas/apagar com os dois ids e recarrega a lista."
     teste_funcional: "A barra mostra a contagem, Cancelar fecha a confirmacao sem chamar a rede, window.confirm nunca e usado, falha do servidor mostra o erro na tela e o foco volta ao botao."
     criterio_aceite: "tests/conversas-lote-ui.test.tsx passa."
     depende_de: ["T-04.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-04.04
     titulo: "Detalhe da conversa"
     fase: F-04.2
@@ -116,13 +116,13 @@ titulo: "Selecao e apagar em lote com confirmacao"
 objetivo: "Criar o componente de cliente com caixas de selecao, barra de acoes e confirmacao na propria tela."
 arquivos:
   cria: ["src/componentes/ListaComSelecao.tsx", "src/componentes/apagar-conversas.ts", "tests/conversas-lote-ui.test.tsx"]
-  altera: ["src/componentes/ListaDeConversas.tsx", "src/estilos/global.css"]
+  altera: ["src/componentes/ListaDeConversas.tsx", "src/estilos/global.css", "src/app/(sistema)/conversas/(lista)/page.tsx"]
 teste_integracao: "Com happy-dom e fetch simulado, marcar duas linhas, clicar em Apagar selecionadas e confirmar chama POST /api/conversas/apagar com os dois ids e recarrega a lista."
 teste_funcional: "A barra mostra a contagem, Cancelar fecha a confirmacao sem chamar a rede, window.confirm nunca e usado, falha do servidor mostra o erro na tela e o foco volta ao botao."
 criterio_aceite: "tests/conversas-lote-ui.test.tsx passa."
 depende_de: ["T-04.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/conversas-lote-ui, lista-ui, lista-estilos, tokens 77 passed; desvio: page.tsx da lista passa a usar ListaComSelecao
 ```
 
 ---

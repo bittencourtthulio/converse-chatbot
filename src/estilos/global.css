@@ -1511,4 +1511,13 @@ textarea { min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: verti
   .link-da-conversa { min-height: var(--alvo-toque); display: inline-flex; align-items: center; }
 }
 
+/* barra de ações em lote */
+.barra-do-lote { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.barra-do-lote-contagem { margin: 0; font-weight: 600; min-height: 1.5em; }
+.barra-do-lote-contagem .texto-de-apoio { font-weight: 400; }
+@media (max-width: 768px) {
+  .barra-do-lote .botao { min-height: var(--alvo-toque); }
+  .barra-do-lote > .linha { width: 100%; }
+}
+
 /* ---------- fim das conversas (FT-09) ---------- */

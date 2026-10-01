@@ -1,9 +1,11 @@
+import { redirect } from 'next/navigation'
 import { exigirUsuario } from '@/app/sessao-servidor'
 import { Alerta } from '@/componentes/Alerta'
 import { CabecalhoDaPagina } from '@/componentes/CabecalhoDaPagina'
 import { FiltrosDeConversas } from '@/componentes/FiltrosDeConversas'
-import { EstadoVazioDeConversas, ListaDeConversas, PaginacaoDeConversas } from '@/componentes/ListaDeConversas'
-import { entradaDeFiltros } from '@/componentes/conversas-logica'
+import { ListaComSelecao } from '@/componentes/ListaComSelecao'
+import { EstadoVazioDeConversas, PaginacaoDeConversas } from '@/componentes/ListaDeConversas'
+import { entradaDeFiltros, hrefDaPagina } from '@/componentes/conversas-logica'
 import { ErroDeAplicacao } from '@/lib/erros'
 import { listar as listarAgentes } from '@/servicos/agentes'
 import { listarConversas, type PaginaDoHistorico } from '@/servicos/historico'
@@ -30,6 +32,10 @@ export default async function Conversas({
     if (erro instanceof ErroDeAplicacao && erro.status === 422) recusa = erro.message
     else throw erro
   }
+  // Apagou o fim da lista: a página pedida deixou de existir, vai para a última.
+  if (pagina && pagina.itens.length === 0 && pagina.total > 0 && filtros.pagina > 1) {
+    redirect(hrefDaPagina(filtros, pagina.totalDePaginas))
+  }
   const filtrado = Boolean(filtros.agenteId || filtros.canal || filtros.texto || filtros.de || filtros.ate)
 
   return (
@@ -49,9 +55,7 @@ export default async function Conversas({
       )}
       {pagina && pagina.itens.length > 0 && (
         <>
-          <section className="cartao" aria-label="Lista de conversas">
-            <ListaDeConversas itens={pagina.itens} />
-          </section>
+          <ListaComSelecao itens={pagina.itens.map((i) => ({ ...i, atualizadoEm: i.atualizadoEm.toISOString() }))} />
           <PaginacaoDeConversas filtros={filtros} pagina={pagina.pagina} tamanho={pagina.tamanho} total={pagina.total} totalDePaginas={pagina.totalDePaginas} />
         </>
       )}
