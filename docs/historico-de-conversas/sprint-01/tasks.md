@@ -41,7 +41,7 @@ tasks:
   - id: T-01.03
     titulo: "Caracterizacao do SQLite: DateTime, dia local e LIKE"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Provar por teste o formato real de DateTime e o comportamento de strftime com fuso local e de LIKE com ESCAPE sobre texto em portugues."
     arquivos:
       cria: ["tests/sqlite-formatos.test.ts"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/sqlite-formatos.test.ts passa e cada afirmacao sobre formato esta no proprio teste como expectativa."
     depende_de: ["T-01.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-01.04
     titulo: "Tokens de canal e de serie do grafico"
     fase: F-01.2
@@ -122,7 +122,7 @@ teste_funcional: "Com TZ fixado, uma mensagem gravada as 23:30 locais cai no dia
 criterio_aceite: "tests/sqlite-formatos.test.ts passa e cada afirmacao sobre formato esta no proprio teste como expectativa."
 depende_de: ["T-01.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/sqlite-formatos.test.ts 7 passed; DateTime e texto ISO
 ```
 
 ---
