@@ -4,12 +4,12 @@ expx_tool: buildx
 kind: premissas
 projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-10-01
-total: 85
+total: 91
 por_origem:
   catalogo_lacunas: 27
   briefing: 0
   decisao_de_stack: 7
-  f2_autonoma: 51
+  f2_autonoma: 57
   recursao: 0
 ---
 
@@ -1128,6 +1128,84 @@ entram no relatório final como o que o usuário precisa confirmar.
 **Etapa:** b4
 **Provisória:** false
 **Realizada em:** FT-09
+
+---
+
+### PR-86 — Trilha de auditoria somente-acréscimo e ligação dos ouvintes
+
+**Assunto:** F2 da FT-10 — PR-19
+**Decisão:** `RegistroDeAuditoria` (`id`, `quando`, `usuarioId` com `SET NULL`, `usuarioRotulo` "Nome <e-mail>" gravado na hora da ação, `acao` de conjunto fechado validado por zod, `alvoTipo`, `alvoId` opcional, `detalhes` JSON de até 1000 caracteres, índices em `quando` e `acao`). `detalhes` nunca leva segredo, máscara de chave, conteúdo de conversa nem identificador de visitante ou de chat; só nomes de campos, contagens e ids internos. O serviço só expõe `registrar` e `listar`; nenhuma rota ou ação apaga ou altera registro, e só o expurgo por idade (365 dias, `AUDITORIA_RETENCAO_DIAS`) remove linhas. `aoAlterarCanal` e `aoApagarConversa` são ligados por `ligarAuditoria()`, idempotente, chamada por `src/instrumentation.ts`; o conjunto de ouvintes dos dois serviços passa a viver em `globalThis` para valer mesmo que o Next carregue o módulo mais de uma vez.
+**Por quê:** uma trilha que o admin não consegue editar é o que a torna confiável; e a recomendação de retenção curta de log limita o próprio dado pessoal que a trilha guarda (o rótulo do usuário).
+**O que invalida:** se a empresa exigir guarda de auditoria por mais de um ano (aumente `AUDITORIA_RETENCAO_DIAS`) ou assinatura criptográfica dos registros (a trilha atual não prova inviolabilidade contra quem tem acesso ao arquivo do banco).
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-10
+
+---
+
+### PR-87 — Falha de gravação da auditoria: transação para o crítico, melhor esforço para o resto
+
+**Assunto:** F2 da FT-10 — PR-19
+**Decisão:** troca e remoção da chave do OpenRouter, criação, edição e exclusão de usuário e exclusão de agente gravam a auditoria na mesma transação da ação: se a auditoria falha, a ação não acontece. Modelo de transcrição, retenção, canal, conversa apagada, dados do titular e expurgo gravam logo depois da ação, e uma falha vira uma linha JSON de log (`evento: auditoria_falhou`, ação e erro, sem detalhes) sem derrubar a ação já confirmada.
+**Por quê:** nas ações que mudam acesso, custo ou apagam dado de terceiros, agir sem deixar rastro é pior do que não agir; nas demais a ação já está confirmada e desfazê-la por causa do log seria pior.
+**O que invalida:** se a empresa preferir que nenhuma ação dependa da auditoria (inverta para gravação imediata em todas) ou exigir transação em todas.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-10
+
+---
+
+### PR-88 — Exclusão definitiva de usuário preserva o conteúdo da empresa
+
+**Assunto:** F2 da FT-10 — PR-18
+**Decisão:** `excluirDefinitivamente(id, adminId)` só para admin, recusa excluir a si mesmo e o último admin ativo (409). Numa transação: os agentes criados pelo usuário passam ao admin que exclui (`Agente.criadoPorId` é obrigatório com chave estrangeira restritiva, e torná-lo anulável exigiria recriar a tabela `agentes` por migration destrutiva), `Conversa.criadoPorId` e `Fonte.criadoPorId` ficam nulos pela regra `SET NULL` já existente, `ConfiguracaoDoWorkspace.atualizadoPor` igual ao id vira nulo, o usuário é apagado e a auditoria `usuario_excluido` leva o rótulo dele. Agentes, conversas e fontes permanecem. A sessão do usuário deixa de valer porque `usuarioDaSessao` exige que a conta exista. A confirmação na tela exige digitar o e-mail do usuário.
+**Por quê:** o conteúdo (agentes, base, conversas) é da empresa, não da pessoa; evita migration destrutiva no esquema de agentes e mantém todo agente com um responsável.
+**O que invalida:** se a empresa quiser que o agente fique sem responsável (torne `criadoPorId` anulável por migration com a marca `-- destrutiva-autorizada` e backup antes) ou que a exclusão apague também o que o usuário criou.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-10
+
+---
+
+### PR-89 — Retenção das conversas e expurgo automático
+
+**Assunto:** F2 da FT-10 — PR-18
+**Decisão:** `ConfiguracaoDoWorkspace.retencaoDiasConversas` (inteiro, padrão 90, faixa de 7 a 3650; `null` significa "sem expurgo automático", escolha explícita do admin com aviso de risco). O expurgo apaga em lotes de 500 as conversas com `atualizadoEm` estritamente anterior a agora menos N dias (instante exato, em UTC, sem depender do `TZ`), com as mensagens em cascata; a conversa que está exatamente no limite fica. Roda 1 minuto depois da subida e a cada 6 horas, sem sobreposição, com relógio injetável. Também purga as atualizações do Telegram com mais de 7 dias (reaproveita `purgarAtualizacoes`) e os registros de auditoria com mais de 365 dias, mesmo com a retenção de conversas desligada. Registra `expurgo_automatico` só com contagens (conversas, mensagens, atualizações, registros de auditoria) e só quando algo foi apagado. A tarefa vale por processo (PR-05) e uma falha dela nunca derruba o servidor.
+**Por quê:** 90 dias é a recomendação de retenção curta para dado pessoal de atendimento; o limite mínimo de 7 dias evita configuração que apaga conversa ativa; lotes de 500 mantêm cada transação curta no SQLite.
+**O que invalida:** se a empresa tiver exigência de guarda maior que 3650 dias, ou se a regra de retenção for por agente ou por canal (hoje é uma só por workspace).
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-10
+
+---
+
+### PR-90 — Direitos do titular: admin e visitante
+
+**Assunto:** F2 da FT-10 — PR-18
+**Decisão:** O admin, em Configurações > Privacidade, busca por canal e identificador (widget: o id completo ou um prefixo de pelo menos 6 caracteres, e a busca lista os titulares casados com contagem de conversas e última atividade para desambiguar; Telegram: o id numérico do chat), vê o resumo, exporta (JSON e TXT, nome `titular-<canal>-<data>` sem o identificador, `no-store`, `nosniff`) e apaga todas as conversas do titular, o que avisa `aoApagarConversa` por conversa e grava `dados_do_titular_apagados` e `dados_do_titular_exportados` só com contagens. O visitante do chat embutido apaga a própria conversa por `DELETE /api/publico/agentes/[id]/conversa` com o id no cabeçalho `X-Visitante-Id`: só as conversas dele naquele agente, exige agente ativo, a `Origin` da plataforma (como o POST) e o limite de uso por IP e agente; depois limpa o estado local. A exclusão feita pelo visitante é auditada como `conversa_apagada` com `usuarioId` nulo e rótulo "Visitante (chat embutido)", sem o identificador dele.
+**Por quê:** cumpre os direitos de acesso e eliminação do titular sem expor o identificador completo em tela de lista; o prefixo de 6 caracteres é o que a lista de conversas mostra (PR-78).
+**O que invalida:** se a empresa exigir verificação de identidade do titular antes de entregar a exportação (o fluxo é do admin, que atende o pedido por fora), ou exportação por e-mail ao titular.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-10
+
+---
+
+### PR-91 — Aviso de privacidade padrão do workspace e painel de dados tratados
+
+**Assunto:** F2 da FT-10 — PR-18
+**Decisão:** `ConfiguracaoDoWorkspace` guarda `avisoDePrivacidadePadrao` (até 300 caracteres) e `avisoDePrivacidadePadraoUrl` (http ou https, até 500). O chat embutido usa o aviso do agente quando ele tem texto e, se não tem, o do workspace; o `/start` do Telegram anexa o aviso padrão (com a URL) à mensagem inicial quando configurado. A tela Privacidade traz o painel somente leitura "Dados pessoais tratados" com texto fixo (campos por canal, finalidade de atendimento, retenção atual lida da configuração, onde ficam e quem acessa) e a base legal escrita como "legítimo interesse, a confirmar pela empresa", sem afirmar parecer jurídico.
+**Por quê:** o aviso precisa chegar ao titular em todos os canais e a base legal é decisão da empresa, não do sistema.
+**O que invalida:** se a base legal for consentimento (o chat precisaria de aceite antes do primeiro envio) ou se o texto do painel precisar de revisão jurídica.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** true
+**Realizada em:** FT-10
 
 ---
 
