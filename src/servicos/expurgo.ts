@@ -99,3 +99,97 @@ export async function executarExpurgo(opcoes: OpcoesDoExpurgo = {}): Promise<Res
   }
   return resultado
 }
+
+// --- o agendador em segundo plano -----------------------------------------------------------
+
+/** A primeira rodada é 1 minuto depois da subida: o servidor não fica preso ao expurgo. */
+export const PRIMEIRA_RODADA_DO_EXPURGO_MS = 60_000
+/** Depois, uma rodada a cada 6 horas (contadas do fim da anterior, então nunca se sobrepõem). */
+export const INTERVALO_DO_EXPURGO_MS = 6 * 3600 * 1000
+
+export interface AgendadorDoExpurgo {
+  /** Liga o agendador: a primeira rodada em 1 minuto. Chamar de novo não faz nada. */
+  iniciar(): void
+  /** Cancela a próxima rodada e impede novas (a FT-11 usa antes de restaurar um backup). */
+  parar(): void
+  /** O agendador está ligado? */
+  ativo(): boolean
+  /** Espera a rodada em andamento terminar (os testes). */
+  ocioso(): Promise<void>
+}
+
+export interface OpcoesDoAgendador {
+  executar?: () => Promise<unknown>
+  agendar?: (fn: () => void, ms: number) => unknown
+  cancelar?: (handle: unknown) => void
+  primeiraRodadaMs?: number
+  intervaloMs?: number
+}
+
+/**
+ * Cria um agendador. Temporizador, relógio da rodada e intervalos são injetáveis; o padrão usa
+ * `setTimeout` sem segurar o processo (`unref`), então o expurgo nunca impede o servidor de
+ * encerrar. Uma falha da rodada vira a linha de log `expurgo_falhou` (só o nome do erro) e a
+ * próxima é agendada do mesmo jeito.
+ */
+export function criarAgendadorDoExpurgo(opcoes: OpcoesDoAgendador = {}): AgendadorDoExpurgo {
+  const executar = opcoes.executar ?? (() => executarExpurgo())
+  const agendar =
+    opcoes.agendar ??
+    ((fn: () => void, ms: number) => {
+      const handle = setTimeout(fn, ms)
+      handle.unref?.()
+      return handle
+    })
+  const cancelar = opcoes.cancelar ?? ((handle: unknown) => clearTimeout(handle as ReturnType<typeof setTimeout>))
+  const primeira = opcoes.primeiraRodadaMs ?? PRIMEIRA_RODADA_DO_EXPURGO_MS
+  const intervalo = opcoes.intervaloMs ?? INTERVALO_DO_EXPURGO_MS
+
+  let ligado = false
+  let handle: unknown = null
+  let rodada: Promise<void> | null = null
+
+  function agendarProxima(ms: number): void {
+    handle = agendar(disparar, ms)
+  }
+
+  function disparar(): void {
+    // Parado, ou uma rodada ainda em andamento: este disparo não faz nada.
+    if (!ligado || rodada) return
+    rodada = (async () => {
+      try {
+        await executar()
+      } catch (erro) {
+        console.error(JSON.stringify({ evento: 'expurgo_falhou', erro: erro instanceof Error ? erro.name : 'desconhecido' }))
+      } finally {
+        rodada = null
+        if (ligado) agendarProxima(intervalo)
+      }
+    })()
+  }
+
+  return {
+    iniciar() {
+      if (ligado) return
+      ligado = true
+      agendarProxima(primeira)
+    },
+    parar() {
+      ligado = false
+      if (handle !== null) cancelar(handle)
+      handle = null
+    },
+    ativo: () => ligado,
+    async ocioso() {
+      await rodada
+    },
+  }
+}
+
+const CHAVE_DO_AGENDADOR = Symbol.for('converse.agendadorDoExpurgo')
+
+/** O agendador do processo, em `globalThis` para sobreviver à recarga do módulo. */
+export function obterAgendadorDoExpurgo(): AgendadorDoExpurgo {
+  const g = globalThis as unknown as Record<symbol, AgendadorDoExpurgo | undefined>
+  return (g[CHAVE_DO_AGENDADOR] ??= criarAgendadorDoExpurgo())
+}

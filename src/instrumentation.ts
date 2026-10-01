@@ -3,7 +3,8 @@
 // liga a fila de processamento em segundo plano. A fila é importada de forma
 // dinâmica para não ser carregada em outros runtimes, e o processamento não é
 // esperado: a subida nunca fica presa a uma fonte lenta. Também liga a auditoria aos pontos
-// de extensão de canal e de conversa apagada (FT-10, PR-86).
+// de extensão de canal e de conversa apagada e inicia o expurgo automático (FT-10, PR-86,
+// PR-89): a primeira rodada é 1 minuto depois, então a subida não espera por ela.
 export async function register(): Promise<void> {
   if (process.env.NEXT_RUNTIME !== 'nodejs') return
   try {
@@ -11,6 +12,12 @@ export async function register(): Promise<void> {
     ligarAuditoria()
   } catch {
     console.error(JSON.stringify({ evento: 'auditoria_nao_ligou' }))
+  }
+  try {
+    const { obterAgendadorDoExpurgo } = await import('@/servicos/expurgo')
+    obterAgendadorDoExpurgo().iniciar()
+  } catch {
+    console.error(JSON.stringify({ evento: 'expurgo_nao_iniciou' }))
   }
   try {
     const { obterFila } = await import('@/servicos/fontes-fila')

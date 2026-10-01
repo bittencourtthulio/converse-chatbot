@@ -26,7 +26,7 @@ tasks:
   - id: T-04.02
     titulo: "Agendador do expurgo e subida do servidor"
     fase: F-04.2
-    status: pendente
+    status: concluida
     objetivo: "Rodar o expurgo 1 minuto depois da subida e a cada 6 horas, sem sobreposicao, e inicia-lo por instrumentation.ts."
     arquivos:
       cria: ["tests/expurgo-agendador.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/expurgo-agendador.test.ts e tests/instrumentacao.test.ts passam."
     depende_de: ["T-04.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
 ---
 
 # Tasks — Sprint 04
@@ -73,6 +73,6 @@ teste_funcional: "Com temporizador e relogio injetados a primeira rodada ocorre 
 criterio_aceite: "tests/expurgo-agendador.test.ts e tests/instrumentacao.test.ts passam."
 depende_de: ["T-04.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2382 passed, 0 failed (193 arquivos); build antes
 ```
 
