@@ -3,6 +3,8 @@
 // de `Origin` do POST. Camada de apresentação: só traduz o que o serviço decide.
 import { ambiente } from '@/lib/ambiente'
 import { origemPermitida } from '@/lib/dominios-permitidos'
+import { ErroDeAplicacao } from '@/lib/erros'
+import { camposDoErro, log } from '@/lib/log'
 import { ErroDeLimite } from '@/servicos/chat-publico-limites'
 import { erroParaVisitante } from '@/servicos/chat-publico'
 
@@ -10,6 +12,8 @@ export const semCache = { 'Cache-Control': 'no-store' }
 
 /** Erro para o visitante em JSON, com o status certo e `Retry-After` no 429. */
 export function erroPublico(erro: unknown): Response {
+  // O visitante recebe sempre a frase única; o operador acha a causa pelo nome do erro no log.
+  if (!(erro instanceof ErroDeAplicacao)) log.erro('erro_inesperado', { rota: 'publico', ...camposDoErro(erro) })
   const e = erroParaVisitante(erro)
   const cabecalhos: Record<string, string> = { ...semCache }
   if (erro instanceof ErroDeLimite && erro.retryAfterSegundos !== null) {

@@ -26,6 +26,8 @@ import {
   verificar as verificarCanalTelegram,
 } from '@/servicos/canal-telegram'
 import { ErroDeAplicacao } from '@/lib/erros'
+import { camposDoErro, log } from '@/lib/log'
+import { correlacaoDaRequisicao } from '@/app/correlacao-servidor'
 import {
   exigirUsuario,
   exigirUsuarioAdmin,
@@ -41,25 +43,16 @@ export interface EstadoDoFormulario {
 }
 
 /**
- * Converte o erro em mensagem para a tela. Erro de aplicação carrega
- * mensagem segura; qualquer outro vira uma frase genérica — rastro de
- * pilha não chega ao usuário (L17).
+ * Converte o erro em mensagem para a tela. Erro de aplicação carrega mensagem segura; qualquer
+ * outro vira a frase genérica com o código de referência (a correlação da requisição, a mesma do
+ * `X-Correlacao`), e o log leva só o nome do erro, nunca a mensagem nem o objeto, que poderiam
+ * carregar um segredo, como a chave do OpenRouter (L17, PR-93).
  */
-function mensagemDe(erro: unknown): string {
+async function mensagemDe(erro: unknown): Promise<string> {
   if (erro instanceof ErroDeAplicacao) return erro.message
-  console.error(erro)
-  return 'Não foi possível concluir. Tente de novo.'
-}
-
-/**
- * Como `mensagemDe`, para ações que lidam com segredo: um erro inesperado
- * registra só o nome, nunca o objeto (que poderia carregar a chave, como o
- * erro de validação do Prisma, que imprime os argumentos).
- */
-function mensagemSemSegredo(erro: unknown): string {
-  if (erro instanceof ErroDeAplicacao) return erro.message
-  console.error('Erro inesperado numa ação de integração:', erro instanceof Error ? erro.name : 'desconhecido')
-  return 'Não foi possível concluir. Tente de novo.'
+  const correlacao = await correlacaoDaRequisicao()
+  log.erro('erro_inesperado_na_acao', { correlacao, ...camposDoErro(erro) })
+  return `Não foi possível concluir. Código de referência: ${correlacao}.`
 }
 
 export async function autenticar(
@@ -74,7 +67,7 @@ export async function autenticar(
     })
     await gravarCookieDeSessao(token)
   } catch (erro) {
-    return { erro: mensagemDe(erro), email: String(form.get('email') ?? '') }
+    return { erro: await mensagemDe(erro), email: String(form.get('email') ?? '') }
   }
   redirect('/')
 }
@@ -97,7 +90,7 @@ export async function criarUsuario(
       papel: form.get('papel') ?? 'usuario',
     })
   } catch (erro) {
-    return { erro: mensagemDe(erro) }
+    return { erro: await mensagemDe(erro) }
   }
   revalidatePath('/configuracoes/usuarios')
   return { sucesso: 'Usuário criado.' }
@@ -116,7 +109,7 @@ export async function editarUsuario(
       papel: form.get('papel'),
     })
   } catch (erro) {
-    return { erro: mensagemDe(erro) }
+    return { erro: await mensagemDe(erro) }
   }
   revalidatePath('/configuracoes/usuarios')
   return { sucesso: 'Usuário atualizado.' }
@@ -130,7 +123,7 @@ export async function desativarUsuario(
     const autor = await exigirUsuarioAdmin()
     await desativar(autor, String(form.get('id')))
   } catch (erro) {
-    return { erro: mensagemDe(erro) }
+    return { erro: await mensagemDe(erro) }
   }
   revalidatePath('/configuracoes/usuarios')
   return { sucesso: 'Usuário desativado.' }
@@ -153,7 +146,7 @@ export async function excluirUsuario(
       typeof confirmacao === 'string' ? confirmacao : '',
     )
   } catch (erro) {
-    return { erro: mensagemDe(erro) }
+    return { erro: await mensagemDe(erro) }
   }
   revalidatePath('/configuracoes/usuarios')
   return { sucesso: 'Usuário excluído definitivamente.' }
@@ -177,7 +170,7 @@ export async function salvarRetencaoDasConversas(
         ? 'Retenção salva: sem expurgo automático. As conversas ficam guardadas até alguém apagá-las.'
         : `Retenção salva: as conversas sem atividade há mais de ${salva.retencaoDias} dias serão apagadas.`
   } catch (erro) {
-    return { erro: mensagemDe(erro) }
+    return { erro: await mensagemDe(erro) }
   }
   revalidatePath('/configuracoes/privacidade')
   return { sucesso }
@@ -192,7 +185,7 @@ export async function salvarAvisoPadraoDoWorkspace(
     const admin = await exigirUsuarioAdmin()
     await salvarAvisoPadrao(admin, { texto: form.get('texto') ?? '', url: form.get('url') ?? '' })
   } catch (erro) {
-    return { erro: mensagemDe(erro) }
+    return { erro: await mensagemDe(erro) }
   }
   revalidatePath('/configuracoes/privacidade')
   return { sucesso: 'Aviso de privacidade padrão salvo.' }
@@ -220,7 +213,7 @@ export async function buscarTitularNaTela(
       },
     }
   } catch (erro) {
-    return { erro: mensagemDe(erro) }
+    return { erro: await mensagemDe(erro) }
   }
 }
 
@@ -243,7 +236,7 @@ export async function apagarTitularNaTela(
     const m = `${r.mensagens} ${r.mensagens === 1 ? 'mensagem' : 'mensagens'}`
     return { sucesso: `Apagadas ${c} e ${m} do titular.` }
   } catch (erro) {
-    return { erro: mensagemDe(erro) }
+    return { erro: await mensagemDe(erro) }
   }
 }
 
@@ -258,7 +251,7 @@ export async function salvarPerfil(
       email: form.get('email'),
     })
   } catch (erro) {
-    return { erro: mensagemDe(erro) }
+    return { erro: await mensagemDe(erro) }
   }
   revalidatePath('/perfil')
   return { sucesso: 'Perfil atualizado.' }
@@ -279,7 +272,7 @@ export async function salvarSenha(
     })
     await gravarCookieDeSessao(token)
   } catch (erro) {
-    return { erro: mensagemDe(erro) }
+    return { erro: await mensagemDe(erro) }
   }
   return { sucesso: 'Senha alterada. As outras sessões foram encerradas.' }
 }
@@ -292,7 +285,7 @@ export async function salvarChaveOpenrouter(
     const admin = await exigirUsuarioAdmin()
     await salvarChaveDoOpenrouter(admin, { chave: form.get('chave') })
   } catch (erro) {
-    return { erro: mensagemSemSegredo(erro) }
+    return { erro: await mensagemDe(erro) }
   }
   revalidatePath('/configuracoes/integracoes')
   return { sucesso: 'Chave salva. Use "Testar conexão" para conferir.' }
@@ -309,7 +302,7 @@ export async function testarConexaoOpenrouter(): Promise<EstadoDoFormulario> {
           : `Conexão funcionando. Crédito restante da chave: US$ ${saldoRestante.toFixed(2)}.`,
     }
   } catch (erro) {
-    return { erro: mensagemSemSegredo(erro) }
+    return { erro: await mensagemDe(erro) }
   }
 }
 
@@ -318,7 +311,7 @@ export async function removerChaveOpenrouter(): Promise<EstadoDoFormulario> {
     const admin = await exigirUsuarioAdmin()
     await removerChaveDoOpenrouter(admin)
   } catch (erro) {
-    return { erro: mensagemSemSegredo(erro) }
+    return { erro: await mensagemDe(erro) }
   }
   revalidatePath('/configuracoes/integracoes')
   return { sucesso: 'Chave removida.' }
@@ -336,7 +329,7 @@ export async function salvarModeloTranscricao(
     restaurado = typeof modelo === 'string' && modelo.trim() === ''
     await salvarModeloDeTranscricao(admin, { modelo: modelo ?? '' })
   } catch (erro) {
-    return { erro: mensagemDe(erro) }
+    return { erro: await mensagemDe(erro) }
   }
   revalidatePath('/configuracoes/integracoes')
   return { sucesso: restaurado ? 'Modelo restaurado para o padrão.' : 'Modelo de transcrição salvo.' }
@@ -362,7 +355,7 @@ export async function criarAgente(
     const autor = await exigirUsuario()
     id = (await criarAgenteNoServico(autor, camposDoAgente(form))).id
   } catch (erro) {
-    return { erro: mensagemDe(erro) }
+    return { erro: await mensagemDe(erro) }
   }
   revalidatePath('/agentes')
   // Fora do try/catch: `redirect` lança um sinal que não pode ser engolido.
@@ -377,7 +370,7 @@ export async function editarAgente(
     const autor = await exigirUsuario()
     await editarAgenteNoServico(autor, String(form.get('id')), camposDoAgente(form))
   } catch (erro) {
-    return { erro: mensagemDe(erro) }
+    return { erro: await mensagemDe(erro) }
   }
   revalidatePath('/agentes')
   revalidatePath(`/agentes/${String(form.get('id'))}`)
@@ -392,7 +385,7 @@ export async function excluirAgente(
     const autor = await exigirUsuario()
     await excluirAgenteNoServico(autor, String(form.get('id')))
   } catch (erro) {
-    return { erro: mensagemDe(erro) }
+    return { erro: await mensagemDe(erro) }
   }
   revalidatePath('/agentes')
   redirect('/agentes')
@@ -425,14 +418,14 @@ export async function salvarChat(
     const autor = await exigirUsuario()
     await salvarConfiguracaoDoChat(autor, id, camposDoChat(form))
   } catch (erro) {
-    return { erro: mensagemDe(erro) }
+    return { erro: await mensagemDe(erro) }
   }
   revalidatePath(`/agentes/${id}/publicar`)
   return { sucesso: 'Configuração do chat salva.' }
 }
 
 // Canal Telegram (FT-07, PR-65, PR-69). As ações lidam com token: erro inesperado
-// só registra o nome (`mensagemSemSegredo`) e nenhum retorno leva segredo.
+// só registra o nome (`mensagemDe`) e nenhum retorno leva segredo.
 const abaDeCanais = (agenteId: string) => `/agentes/${agenteId}/canais`
 
 export async function conectarTelegram(
@@ -446,7 +439,7 @@ export async function conectarTelegram(
     const canal = await conectarCanalTelegram(autor, id, form.get('token'))
     usuario = canal.bot.username
   } catch (erro) {
-    return { erro: mensagemSemSegredo(erro) }
+    return { erro: await mensagemDe(erro) }
   }
   revalidatePath(abaDeCanais(id))
   return { sucesso: `Bot conectado: @${usuario}. Envie uma mensagem a ele no Telegram para testar.` }
@@ -465,7 +458,7 @@ export async function desconectarTelegram(
       aviso = ' O Telegram não confirmou a remoção do webhook; revogue o token no @BotFather se quiser garantir que o bot pare de enviar atualizações.'
     }
   } catch (erro) {
-    return { erro: mensagemSemSegredo(erro) }
+    return { erro: await mensagemDe(erro) }
   }
   revalidatePath(abaDeCanais(id))
   return { sucesso: `Bot desconectado. O histórico das conversas foi mantido.${aviso}` }
@@ -479,7 +472,7 @@ export async function pausarTelegram(
   try {
     await pausarCanalTelegram(await exigirUsuario(), id)
   } catch (erro) {
-    return { erro: mensagemSemSegredo(erro) }
+    return { erro: await mensagemDe(erro) }
   }
   revalidatePath(abaDeCanais(id))
   return { sucesso: 'Bot pausado. Ele não responderá até você retomar; as mensagens enviadas nesse período não serão atendidas depois.' }
@@ -493,7 +486,7 @@ export async function retomarTelegram(
   try {
     await retomarCanalTelegram(await exigirUsuario(), id)
   } catch (erro) {
-    return { erro: mensagemSemSegredo(erro) }
+    return { erro: await mensagemDe(erro) }
   }
   revalidatePath(abaDeCanais(id))
   return { sucesso: 'Bot retomado.' }
@@ -517,7 +510,7 @@ export async function verificarTelegram(
     return { sucesso: `O webhook está correto.${pendentes}${ultimo}` }
   } catch (erro) {
     revalidatePath(abaDeCanais(id))
-    return { erro: mensagemSemSegredo(erro) }
+    return { erro: await mensagemDe(erro) }
   }
 }
 
@@ -529,7 +522,7 @@ export async function salvarLimiteTelegram(
   try {
     await definirLimiteDoCanalTelegram(await exigirUsuario(), id, form.get('limiteDiario'))
   } catch (erro) {
-    return { erro: mensagemSemSegredo(erro) }
+    return { erro: await mensagemDe(erro) }
   }
   revalidatePath(abaDeCanais(id))
   return { sucesso: 'Limite diário salvo.' }

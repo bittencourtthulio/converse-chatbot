@@ -7,25 +7,27 @@
 // PR-89): a primeira rodada é 1 minuto depois, então a subida não espera por ela.
 export async function register(): Promise<void> {
   if (process.env.NEXT_RUNTIME !== 'nodejs') return
+  // Import dinâmico: o log usa módulos do Node e este arquivo também é analisado para o runtime de borda.
+  const { camposDoErro, log } = await import('@/lib/log')
   try {
     const { ligarAuditoria } = await import('@/servicos/auditoria-ouvintes')
     ligarAuditoria()
-  } catch {
-    console.error(JSON.stringify({ evento: 'auditoria_nao_ligou' }))
+  } catch (erro) {
+    log.erro('auditoria_nao_ligou', camposDoErro(erro))
   }
   try {
     const { obterAgendadorDoExpurgo } = await import('@/servicos/expurgo')
     obterAgendadorDoExpurgo().iniciar()
-  } catch {
-    console.error(JSON.stringify({ evento: 'expurgo_nao_iniciou' }))
+  } catch (erro) {
+    log.erro('expurgo_nao_iniciou', camposDoErro(erro))
   }
   try {
     const { obterFila } = await import('@/servicos/fontes-fila')
     const fila = obterFila()
     await fila.retomar()
     fila.iniciar()
-  } catch {
+  } catch (erro) {
     // Sem a fila, o sistema segue de pé; o operador vê o evento no log.
-    console.error(JSON.stringify({ evento: 'fila_nao_iniciou' }))
+    log.erro('fila_nao_iniciou', camposDoErro(erro))
   }
 }

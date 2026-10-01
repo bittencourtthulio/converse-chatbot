@@ -41,18 +41,18 @@ tasks:
   - id: T-02.03
     titulo: "Camada de apresentacao e instrumentacao usam o log com codigo de referencia"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Trocar os console.* de acoes, fluxo SSE, respostas de erro das rotas e instrumentation pelo log, com o erro inesperado devolvendo o codigo de referencia e gravando so nome e codigo."
     arquivos:
-      cria: []
-      altera: ["src/app/acoes.ts", "src/app/eventos-sse.ts", "src/app/api/conversas/resposta.ts", "src/app/api/agentes/[id]/fontes/resposta.ts", "src/instrumentation.ts", "tests/eventos-sse.test.ts", "tests/instrumentacao.test.ts", "tests/integracoes-conexao.test.ts", "tests/conversas-apagar-rota.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md", "docs/stack/LACUNAS.md"]
+      cria: ["src/app/api/resposta-de-erro.ts", "tests/erro-inesperado.test.ts"]
+      altera: ["src/app/acoes.ts", "src/app/eventos-sse.ts", "src/app/api/conversas/resposta.ts", "src/app/api/agentes/[id]/fontes/resposta.ts", "src/instrumentation.ts", "tests/eventos-sse.test.ts", "tests/instrumentacao.test.ts", "tests/integracoes-conexao.test.ts", "tests/conversas-apagar-rota.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md", "docs/stack/LACUNAS.md", "src/app/api/agentes/[id]/conversar/route.ts", "src/app/api/publico/resposta.ts"]
     teste_integracao: "Um erro inesperado numa acao de servidor e numa rota de conversas grava uma linha do log com o nome do erro e a correlacao e devolve a mensagem generica com Codigo de referencia igual a correlacao gravada."
     teste_funcional: "A mensagem devolvida ao usuario e a linha do log nao contem a mensagem do erro, a pilha, a chave nem o objeto do erro, e register() registra falha de tarefa pelo log sem derrubar as demais."
     criterio_aceite: "tests/eventos-sse.test.ts, tests/instrumentacao.test.ts, tests/integracoes-conexao.test.ts e tests/conversas-apagar-rota.test.ts passam e esses arquivos nao tem console."
     depende_de: ["T-02.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
   - id: T-02.04
     titulo: "Chat, auditoria e expurgo usam o log"
     fase: F-02.1
@@ -158,14 +158,14 @@ id: T-02.03
 titulo: "Camada de apresentacao e instrumentacao usam o log com codigo de referencia"
 objetivo: "Trocar os console.* de acoes, fluxo SSE, respostas de erro das rotas e instrumentation pelo log, com o erro inesperado devolvendo o codigo de referencia e gravando so nome e codigo."
 arquivos:
-  cria: []
-  altera: ["src/app/acoes.ts", "src/app/eventos-sse.ts", "src/app/api/conversas/resposta.ts", "src/app/api/agentes/[id]/fontes/resposta.ts", "src/instrumentation.ts", "tests/eventos-sse.test.ts", "tests/instrumentacao.test.ts", "tests/integracoes-conexao.test.ts", "tests/conversas-apagar-rota.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md", "docs/stack/LACUNAS.md"]
+  cria: ["src/app/api/resposta-de-erro.ts", "tests/erro-inesperado.test.ts"]
+  altera: ["src/app/acoes.ts", "src/app/eventos-sse.ts", "src/app/api/conversas/resposta.ts", "src/app/api/agentes/[id]/fontes/resposta.ts", "src/instrumentation.ts", "tests/eventos-sse.test.ts", "tests/instrumentacao.test.ts", "tests/integracoes-conexao.test.ts", "tests/conversas-apagar-rota.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md", "docs/stack/LACUNAS.md", "src/app/api/agentes/[id]/conversar/route.ts", "src/app/api/publico/resposta.ts"]
 teste_integracao: "Um erro inesperado numa acao de servidor e numa rota de conversas grava uma linha do log com o nome do erro e a correlacao e devolve a mensagem generica com Codigo de referencia igual a correlacao gravada."
 teste_funcional: "A mensagem devolvida ao usuario e a linha do log nao contem a mensagem do erro, a pilha, a chave nem o objeto do erro, e register() registra falha de tarefa pelo log sem derrubar as demais."
 criterio_aceite: "tests/eventos-sse.test.ts, tests/instrumentacao.test.ts, tests/integracoes-conexao.test.ts e tests/conversas-apagar-rota.test.ts passam e esses arquivos nao tem console."
 depende_de: ["T-02.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2593 passed, 0 failed (214 arquivos); build antes
 ```
 
 ---

@@ -268,8 +268,8 @@ describe('convenções do chat embutido (FT-06)', () => {
     ['src/lib/ambiente.ts:85', /get maxTokensDaResposta/],
     ['src/lib/ambiente.ts:92', /get storageDir/],
     ['src/lib/ambiente.ts:99', /get maxUploadBytes/],
-    ['src/app/eventos-sse.ts:15', /export type MapeadorDeErro/],
-    ['src/app/eventos-sse.ts:38', /export function fluxoDeEventos/],
+    ['src/app/eventos-sse.ts:16', /export type MapeadorDeErro/],
+    ['src/app/eventos-sse.ts:39', /export function fluxoDeEventos/],
   ]
 
   it.each(CITACOES)('%s existe e contém o que o CONVENCOES.md diz', (citacao, esperado) => {
@@ -416,7 +416,7 @@ describe('convenções do vídeo (FT-08)', () => {
     ['src/lib/youtube.ts:298', /export async function baixarLegenda/],
     ['src/lib/youtube.ts:331', /export async function obterLegendas/],
     ['src/componentes/AdicionarFontes.tsx:21', /const PAINEIS/],
-    ['src/app/acoes.ts:50', /console\.error\(erro\)/],
+    ['src/app/acoes.ts:51', /async function mensagemDe\(/],
     ['tests/apoio/ffmpeg.ts:40', /export function descreverComFfmpeg/],
     ['tests/apoio/youtube-falso.ts:116', /export async function iniciarYoutubeFalso/],
     ['tests/apoio/openrouter-falso.ts:111', /function extrairAudio/],
@@ -552,8 +552,8 @@ describe('convenções da privacidade e da auditoria (FT-10)', () => {
     ['src/servicos/auditoria-acoes.ts:94', /export function validarDetalhes/],
     ['src/servicos/auditoria-ouvintes.ts:71', /export function ligarAuditoria/],
     ['src/servicos/auditoria-ouvintes.ts:42', /export function tratarConversaApagada/],
-    ['src/instrumentation.ts:11', /ligarAuditoria/],
-    ['src/instrumentation.ts:17', /obterAgendadorDoExpurgo/],
+    ['src/instrumentation.ts:13', /ligarAuditoria/],
+    ['src/instrumentation.ts:19', /obterAgendadorDoExpurgo/],
     ['src/servicos/expurgo.ts:63', /export async function executarExpurgo/],
     ['src/servicos/expurgo.ts:18', /export const TAMANHO_DO_LOTE/],
     ['src/servicos/expurgo.ts:135', /export function criarAgendadorDoExpurgo/],

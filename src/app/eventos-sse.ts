@@ -1,6 +1,7 @@
 // Tradução dos eventos do turno de conversa para o formato SSE do navegador
 // (PR-43). Camada de apresentação: o serviço não conhece este formato.
 import { ErroDeAplicacao } from '@/lib/erros'
+import { camposDoErro, log } from '@/lib/log'
 import { mensagemParaOperador, type EventoDoChat } from '@/servicos/chat'
 import { gerarCorrelacao } from '@/servicos/chat-erros'
 
@@ -23,7 +24,7 @@ function quadroDoErro(erro: unknown, mapearErro?: MapeadorDeErro): string {
   // Erro de aplicação já foi registrado pelo serviço; o resto é registrado aqui,
   // só com o código de referência, nunca com o texto do erro (PR-42).
   const correlacao = erro instanceof ErroDeAplicacao ? undefined : gerarCorrelacao()
-  if (correlacao) console.error(JSON.stringify({ evento: 'chat_erro_no_fluxo', correlacao }))
+  if (correlacao) log.erro('chat_erro_no_fluxo', { correlacao, ...camposDoErro(erro) })
   const { codigo, mensagem } = mensagemParaOperador(erro, correlacao)
   return formatarEvento('erro', { codigo, mensagem, ...(correlacao && { correlacao }) })
 }

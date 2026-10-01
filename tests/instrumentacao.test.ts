@@ -102,8 +102,8 @@ describe('register (src/instrumentation.ts)', () => {
     await expect(register()).resolves.toBeUndefined()
     expect(log).toHaveBeenCalledTimes(1)
     const linha = JSON.parse(String(log.mock.calls[0]![0])) as Record<string, string>
-    expect(linha.evento).toBe('fila_nao_iniciou')
-    expect(JSON.stringify(linha)).not.toMatch(/\/var/)
+    expect(linha).toMatchObject({ nivel: 'erro', msg: 'fila_nao_iniciou', erro: 'Error' })
+    expect(JSON.stringify(linha)).not.toMatch(/\/var|indisponível/)
   })
 
   it('importa a fila por import dinâmico, para não carregá-la fora do runtime Node', () => {
@@ -176,8 +176,9 @@ describe('register (src/instrumentation.ts)', () => {
     await expect(register()).resolves.toBeUndefined()
     await fila.ocioso()
     expect(await statusDe(fonte.id)).toBe('pronto')
-    const linhas = log.mock.calls.map((c) => String(c[0]))
-    expect(linhas).toEqual([JSON.stringify({ evento: 'expurgo_nao_iniciou' })])
+    const linhas = log.mock.calls.map((c) => JSON.parse(String(c[0])) as Record<string, unknown>)
+    expect(linhas).toHaveLength(1)
+    expect(linhas[0]).toMatchObject({ nivel: 'erro', msg: 'expurgo_nao_iniciou', erro: 'Error' })
   })
 
   it('fora do runtime Node o expurgo não é iniciado, e a importação é dinâmica', async () => {

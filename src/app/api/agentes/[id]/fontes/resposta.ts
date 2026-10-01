@@ -2,19 +2,14 @@
 // do erro de aplicação, e o erro inesperado com código de correlação e sem
 // pilha (PR-21, PR-42). Não é uma rota.
 import { usuarioAtual } from '@/app/sessao-servidor'
-import { ErroDeAplicacao, naoAutenticado } from '@/lib/erros'
-import { mensagemParaOperador } from '@/servicos/chat-erros'
+import { respostaDeErro } from '@/app/api/resposta-de-erro'
+import { naoAutenticado } from '@/lib/erros'
 import type { UsuarioAutenticado } from '@/servicos/autenticacao'
 
 export const semCache = { 'Cache-Control': 'no-store' }
 
-export function erroEmJson(erro: unknown): Response {
-  const { codigo, mensagem, correlacao } = mensagemParaOperador(erro)
-  if (!(erro instanceof ErroDeAplicacao)) {
-    console.error(JSON.stringify({ evento: 'erro_inesperado', rota: 'fontes', correlacao }))
-  }
-  const status = erro instanceof ErroDeAplicacao ? erro.status : 500
-  return Response.json({ codigo, mensagem }, { status, headers: semCache })
+export function erroEmJson(erro: unknown): Promise<Response> {
+  return respostaDeErro(erro, 'fontes')
 }
 
 /** O usuário da sessão; sem sessão lança 401 (JSON, sem redirecionar). */

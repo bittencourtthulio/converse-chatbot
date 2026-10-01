@@ -4,17 +4,16 @@
 // JSON com o status certo; depois do início, vira o evento `erro` do stream.
 import { usuarioAtual } from '@/app/sessao-servidor'
 import { fluxoDeEventos } from '@/app/eventos-sse'
-import { ErroDeAplicacao, entradaInvalida, naoAutenticado } from '@/lib/erros'
-import { mensagemParaOperador, responderMensagem } from '@/servicos/chat'
+import { respostaDeErro } from '@/app/api/resposta-de-erro'
+import { entradaInvalida, naoAutenticado } from '@/lib/erros'
+import { responderMensagem } from '@/servicos/chat'
 
 export const dynamic = 'force-dynamic'
 
 const semCache = { 'Cache-Control': 'no-store' }
 
-function erroEmJson(erro: unknown): Response {
-  const { codigo, mensagem } = mensagemParaOperador(erro)
-  const status = erro instanceof ErroDeAplicacao ? erro.status : 500
-  return Response.json({ codigo, mensagem }, { status, headers: semCache })
+function erroEmJson(erro: unknown): Promise<Response> {
+  return respostaDeErro(erro, 'conversar')
 }
 
 async function lerCorpo(request: Request): Promise<{ conversaId?: string; mensagem: unknown }> {
