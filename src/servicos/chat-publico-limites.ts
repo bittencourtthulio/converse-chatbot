@@ -68,18 +68,19 @@ function inicioDoDia(agora: Date): Date {
 }
 
 /**
- * Teto diário do agente (PR-57): mensagens `user` do canal widget criadas desde
- * a meia-noite do fuso do servidor. Conta tentativas, inclusive as que falharam
+ * Teto diário do agente (PR-57, PR-68): mensagens `user` do canal (`widget`, ou
+ * `telegram` na FT-07) criadas desde a meia-noite do fuso do servidor. Conta tentativas, inclusive as que falharam
  * no provedor, porque a pergunta é gravada antes de chamá-lo (PR-41).
  */
 export async function exigirTetoDiario(
   agenteId: string,
   limiteDiario: number,
   agora: Date = new Date(),
+  canal: 'widget' | 'telegram' = 'widget',
 ): Promise<void> {
   const inicio = inicioDoDia(agora)
   const enviadas = await prisma.mensagem.count({
-    where: { papel: 'user', criadoEm: { gte: inicio }, conversa: { agenteId, canal: 'widget' } },
+    where: { papel: 'user', criadoEm: { gte: inicio }, conversa: { agenteId, canal } },
   })
   if (enviadas >= limiteDiario) {
     const amanha = new Date(inicio.getFullYear(), inicio.getMonth(), inicio.getDate() + 1)

@@ -10,14 +10,14 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-03.1
     titulo: "Conectar e estado"
-    status: pendente
+    status: concluido
     criterio_saida: "Conectar valida, grava cifrado e expoe o estado sem segredo."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-03.01"]
   - id: F-03.2
     titulo: "Ciclo e limite"
-    status: pendente
+    status: concluido
     criterio_saida: "Desconectar, pausar, retomar, verificar, limite diario e o teto por canal."
     paralelizavel: false
     paralela_com: []
@@ -49,7 +49,7 @@ flowchart LR
 
   class T_03_01 concluida
   class T_03_02 concluida
-  class T_03_03 pendente
+  class T_03_03 concluida
   class T_03_01,T_03_02,T_03_03 critico
 ```
 

@@ -41,7 +41,7 @@ tasks:
   - id: T-03.03
     titulo: "Teto diario parametrizado por canal"
     fase: F-03.2
-    status: pendente
+    status: concluida
     objetivo: "Dar a exigirTetoDiario o parametro de canal (padrao widget) sem mudar o comportamento do chat embutido."
     arquivos:
       cria: []
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/chat-publico-limites.test.ts e tests/chat-publico.test.ts passam."
     depende_de: ["T-03.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
 ---
 
 # Tasks — Sprint 03
@@ -107,5 +107,5 @@ teste_funcional: "Com 3 mensagens de usuario no canal telegram e limite 3, exigi
 criterio_aceite: "tests/chat-publico-limites.test.ts e tests/chat-publico.test.ts passam."
 depende_de: ["T-03.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/chat-publico-limites.test.ts e tests/chat-publico.test.ts, 42 passed
 ```

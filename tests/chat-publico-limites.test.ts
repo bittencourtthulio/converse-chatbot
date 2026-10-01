@@ -180,4 +180,22 @@ describe('teto diário por agente (banco)', () => {
     await expect(exigirTetoDiario(agente.id, 4, meioDia())).rejects.toBeInstanceOf(ErroDeLimite)
     await expect(exigirTetoDiario(agente.id, 5, meioDia())).resolves.toBeUndefined()
   })
+
+  it('o teto do canal telegram conta só conversas telegram do agente e o do widget não conta as dele (FT-07, PR-68)', async () => {
+    const agente = await agenteDe()
+    await conversaComMensagens(agente.id, { canal: 'telegram', usuario: 3, quando: meioDia() })
+    const erro = await erroDe(() => exigirTetoDiario(agente.id, 3, meioDia(), 'telegram'))
+    expect(erro).toMatchObject({ status: 429, codigo: 'limite_diario' })
+    await expect(exigirTetoDiario(agente.id, 4, meioDia(), 'telegram')).resolves.toBeUndefined()
+    // O mesmo agente, mesmas mensagens: o widget não as vê, e sem o parâmetro o padrão segue sendo widget.
+    await expect(exigirTetoDiario(agente.id, 1, meioDia(), 'widget')).resolves.toBeUndefined()
+    await expect(exigirTetoDiario(agente.id, 1, meioDia())).resolves.toBeUndefined()
+  })
+
+  it('o teto do canal telegram não conta o widget nem o painel', async () => {
+    const agente = await agenteDe()
+    await conversaComMensagens(agente.id, { canal: 'widget', usuario: 5, quando: meioDia() })
+    await conversaComMensagens(agente.id, { canal: 'painel', usuario: 5, quando: meioDia() })
+    await expect(exigirTetoDiario(agente.id, 1, meioDia(), 'telegram')).resolves.toBeUndefined()
+  })
 })

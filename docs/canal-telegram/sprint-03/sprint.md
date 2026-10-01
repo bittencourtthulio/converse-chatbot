@@ -8,7 +8,7 @@ feature_id: FT-07
 sprint_id: sprint-03
 atualizado_em: 2026-09-30
 titulo: "Servico do canal"
-status: pendente
+status: concluido
 criterio_saida: "conectar, desconectar, pausar, retomar, estado e verificar funcionam contra o simulado, com token cifrado, segredo em hash e HTTPS exigido."
 fases: ["F-03.1", "F-03.2"]
 riscos: ["a pausa nao pode re-registrar o webhook porque o segredo em claro nao e guardado (PR-65)", "a regra HTTPS tem excecao so fora de producao"]
