@@ -71,7 +71,7 @@ tasks:
   - id: T-01.05
     titulo: "Simulado do YouTube"
     fase: F-01.2
-    status: pendente
+    status: concluida
     objetivo: "Escrever tests/apoio/youtube-falso.ts que serve a pagina do video com ytInitialPlayerResponse e as legendas em json3 e XML de fixture, com redirect, tamanho, atraso e host de legenda configuraveis."
     arquivos:
       cria: ["tests/apoio/youtube-falso.ts", "tests/youtube-falso.test.ts"]
@@ -81,8 +81,8 @@ tasks:
     criterio_aceite: "tests/youtube-falso.test.ts passa e o simulado nao importa nada de src."
     depende_de: ["T-01.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
 ---
 
 # Tasks — Sprint 01
@@ -171,7 +171,7 @@ teste_funcional: "A pagina de um id conhecido traz o titulo e duas faixas, a leg
 criterio_aceite: "tests/youtube-falso.test.ts passa e o simulado nao importa nada de src."
 depende_de: ["T-01.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/youtube-falso.test.ts, 5 passed
 ```
 
 ---
