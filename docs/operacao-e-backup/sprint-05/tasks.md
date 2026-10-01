@@ -11,7 +11,7 @@ tasks:
   - id: T-05.01
     titulo: "gerarBackup: copia consistente, manifest e arquivo unico"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Criar src/lib/backup.ts com a copia do banco pela API online, a conferencia de integridade, o manifest com SHA-256 e o empacotamento em .tar.gz."
     arquivos:
       cria: ["src/lib/backup.ts", "tests/backup-lib.test.ts", "docs/operacao-e-backup/sprint-05/sprint.md", "docs/operacao-e-backup/sprint-05/fases.md", "docs/operacao-e-backup/sprint-05/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/backup-lib.test.ts passa e nenhum processo de shell e usado."
     depende_de: ["T-04.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-05.02
     titulo: "Backup sem temporarios, com permissao 0600 e retencao"
     fase: F-05.1
@@ -131,7 +131,7 @@ teste_funcional: "O manifest traz formato, data, versao do app, migrations, cont
 criterio_aceite: "tests/backup-lib.test.ts passa e nenhum processo de shell e usado."
 depende_de: ["T-04.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/backup-lib.test.ts 7 passed; arquivos novos
 ```
 
 ---
