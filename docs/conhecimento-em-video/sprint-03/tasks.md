@@ -26,7 +26,7 @@ tasks:
   - id: T-03.02
     titulo: "Armazenamento: pastas e segmentos"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar a armazenamento.ts o caminho absoluto interno do original, a pasta de audio e os arquivos de segmento NN.txt (gravar, ler, listar e apagar a pasta de trabalho)."
     arquivos:
       cria: ["tests/armazenamento-segmentos.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/armazenamento-segmentos.test.ts passa."
     depende_de: ["T-03.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-03.03
     titulo: "Servico: adicionar video"
     fase: F-03.2
@@ -105,7 +105,7 @@ teste_funcional: "Um id fora do alfabeto fechado lanca erro de identificador, o 
 criterio_aceite: "tests/armazenamento-segmentos.test.ts passa."
 depende_de: ["T-03.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/armazenamento-segmentos.test.ts, tests/armazenamento-stream.test.ts, tests/armazenamento.test.ts e tests/projeto.test.ts, 99 passed
 ```
 
 ---
