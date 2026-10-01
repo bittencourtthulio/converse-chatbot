@@ -41,7 +41,7 @@ tasks:
   - id: T-04.03
     titulo: "Estilos e responsividade da tela Sistema"
     fase: F-04.2
-    status: pendente
+    status: concluida
     objetivo: "Dar acabamento SaaS aos cartoes sobre os tokens, com cartoes em coluna unica a 375 px, alvos de 44 px e foco visivel."
     arquivos:
       cria: ["tests/sistema-estilos.test.ts"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/sistema-estilos.test.ts e tests/tokens.test.ts passam."
     depende_de: ["T-04.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
 ---
 
 # Tasks — Sprint 04
@@ -105,6 +105,6 @@ teste_funcional: "tests/tokens.test.ts continua passando sem cor literal e os al
 criterio_aceite: "tests/sistema-estilos.test.ts e tests/tokens.test.ts passam."
 depende_de: ["T-04.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2694 passed, 0 failed (227 arquivos); build antes (portão da sprint 04)
 ```
 

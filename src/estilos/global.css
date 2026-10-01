@@ -1750,3 +1750,40 @@ textarea { min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: verti
   user-select: all;
   overflow-wrap: anywhere;
 }
+
+/* ---------- sistema (FT-11, PR-95) ---------- */
+
+.sistema-grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 16px;
+  align-items: start;
+}
+.sistema-grade > .sistema-cartao:first-child { grid-column: 1 / -1; }
+.sistema-cartao { min-width: 0; }
+.sistema-lista { margin: 0; display: grid; gap: 12px; }
+.sistema-lista > div {
+  display: grid;
+  grid-template-columns: minmax(0, 12rem) minmax(0, 1fr);
+  gap: 4px 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.sistema-lista > div:last-child { padding-bottom: 0; border-bottom: 0; }
+.sistema-lista dt { color: var(--fg-muted); font-size: var(--texto-pequeno); font-weight: 600; }
+.sistema-lista dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.sistema-itens-de-saude { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 12px; }
+.sistema-itens-de-saude li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 12px;
+  align-items: center;
+}
+.sistema-item-rotulo { font-weight: 600; }
+.sistema-item-detalhe { grid-column: 1 / -1; }
+
+@media (max-width: 480px) {
+  .sistema-lista > div { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ---------- fim do sistema */
