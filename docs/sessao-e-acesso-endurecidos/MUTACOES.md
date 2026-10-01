@@ -37,3 +37,4 @@ Regra da feature: cada proteção tem um teste que **falha** quando ela é remov
 | T-04.02 | o GET público da conversa tem limite por IP e agente (PR-56, PR-57) | a chamada `exigirLimiteDeIp` sai de `retomarConversaDoVisitante` | `tests/publico-conversa-limite.test.ts` (o caso de serviço e o caso da rota real contra `next start`, depois de novo build) |
 | T-04.03 | `auditoria.listar` só para admin, no serviço (PR-12, ressalva R-02) | `exigirAdmin(autor)` e a conferência do ator saem de `listar` | `tests/auditoria-guarda.test.ts` (403 do usuário comum, 403 antes do 422) |
 | T-04.03 | `auditoria.listar` sem ator é 401, não TypeError | removida a conferência `autor?.id` | `tests/auditoria-guarda.test.ts` ("ator ausente recebe 401") |
+| T-04.04 | a página de detalhe da conversa chama `exigirUsuario()` por conta própria (PR-12, ressalva R-01) | `await exigirUsuario()` sai de `conversas/[id]/page.tsx` | 2 casos de `tests/conversas-detalhe-guarda.test.tsx` |

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { exigirUsuario } from '@/app/sessao-servidor'
 import { carregarConversa } from '@/app/(sistema)/conversas/[id]/carregar-conversa'
 import { AcoesDaConversa } from '@/componentes/AcoesDaConversa'
 import { BadgeDeCanal } from '@/componentes/BadgeDeCanal'
@@ -8,9 +9,12 @@ import { formatarAtividade } from '@/componentes/conversas-logica'
 
 /**
  * O detalhe da conversa (FT-09): metadados do canal, a transcrição com as fontes de cada
- * resposta, Exportar e Apagar. Sessão e 404 são do layout; carregando é o `loading.tsx`.
+ * resposta, Exportar e Apagar. A página chama `exigirUsuario()` por conta própria, antes de ler a
+ * conversa (FT-12, PR-104): o layout também confere, mas não é a fronteira. O 404 é do layout;
+ * carregando é o `loading.tsx`.
  */
 export default async function DetalheDaConversa({ params }: { params: Promise<{ id: string }> }) {
+  await exigirUsuario()
   const { id } = await params
   const c = await carregarConversa(id)
   const mensagens = c.mensagens.map((m) => ({ ...m, criadoEm: m.criadoEm.toISOString() }))

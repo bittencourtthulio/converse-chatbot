@@ -56,7 +56,7 @@ tasks:
   - id: T-04.04
     titulo: "Pagina de detalhe da conversa com guarda propria"
     fase: F-04.2
-    status: pendente
+    status: concluida
     objetivo: "Fazer conversas/[id]/page.tsx chamar exigirUsuario antes de ler a conversa."
     arquivos:
       cria: ["tests/conversas-detalhe-guarda.test.tsx"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "Os dois testes passam e o novo falha quando exigirUsuario sai da pagina (mutacao registrada) e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
     depende_de: ["T-04.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
   - id: T-04.05
     titulo: "Teste de arquitetura das guardas e varredura dos servicos"
     fase: F-04.2
@@ -154,7 +154,7 @@ teste_funcional: "Sem sessao a pagina redireciona sem chamar carregarConversa e 
 criterio_aceite: "Os dois testes passam e o novo falha quando exigirUsuario sai da pagina (mutacao registrada) e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
 depende_de: ["T-04.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 259 arquivos, 2956 passed, 9 skipped, 0 failed
 ```
 
 ---
