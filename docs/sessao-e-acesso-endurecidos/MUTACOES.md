@@ -35,3 +35,5 @@ Regra da feature: cada proteção tem um teste que **falha** quando ela é remov
 | T-03.03 | o proxy não renova rotas públicas (`/embed`, `/api/publico`, `/api/telegram`, `/api/saude`) | lista de prefixos esvaziada | 4 casos de `tests/proxy-renovacao.test.ts` |
 | T-04.01 | o limite de tentativas de login vale na ação `autenticar` (PR-16, PR-36) | a chamada `exigirLimiteDeLogin` sai de `autenticar` | 5 casos de `tests/acao-autenticar-limite.test.ts` |
 | T-04.02 | o GET público da conversa tem limite por IP e agente (PR-56, PR-57) | a chamada `exigirLimiteDeIp` sai de `retomarConversaDoVisitante` | `tests/publico-conversa-limite.test.ts` (o caso de serviço e o caso da rota real contra `next start`, depois de novo build) |
+| T-04.03 | `auditoria.listar` só para admin, no serviço (PR-12, ressalva R-02) | `exigirAdmin(autor)` e a conferência do ator saem de `listar` | `tests/auditoria-guarda.test.ts` (403 do usuário comum, 403 antes do 422) |
+| T-04.03 | `auditoria.listar` sem ator é 401, não TypeError | removida a conferência `autor?.id` | `tests/auditoria-guarda.test.ts` ("ator ausente recebe 401") |

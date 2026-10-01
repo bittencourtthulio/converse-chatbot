@@ -27,7 +27,7 @@ export default async function Auditoria({
   let pagina: PaginaDaAuditoria | null = null
   let recusa: string | null = null
   try {
-    pagina = await listarRegistros({ ...filtros, pagina: paginaPedida })
+    pagina = await listarRegistros(admin, { ...filtros, pagina: paginaPedida })
   } catch (erro) {
     if (erro instanceof ErroDeAplicacao && erro.status === 422) recusa = erro.message
     else throw erro

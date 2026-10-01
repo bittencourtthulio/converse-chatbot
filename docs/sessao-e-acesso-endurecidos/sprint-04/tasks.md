@@ -41,7 +41,7 @@ tasks:
   - id: T-04.03
     titulo: "auditoria.listar confere o papel admin"
     fase: F-04.2
-    status: pendente
+    status: concluida
     objetivo: "Fazer listar receber o ator e exigir admin no servico, ajustando a pagina e os testes que a chamam."
     arquivos:
       cria: ["tests/auditoria-guarda.test.ts"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/auditoria-guarda.test.ts e os testes de auditoria passam e o novo falha quando exigirAdmin sai de listar (mutacao registrada) e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
     depende_de: ["T-04.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
   - id: T-04.04
     titulo: "Pagina de detalhe da conversa com guarda propria"
     fase: F-04.2
@@ -137,7 +137,7 @@ teste_funcional: "Usuario comum recebe 403, ator ausente recebe 401, o admin rec
 criterio_aceite: "tests/auditoria-guarda.test.ts e os testes de auditoria passam e o novo falha quando exigirAdmin sai de listar (mutacao registrada) e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
 depende_de: ["T-04.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 258 arquivos, 2954 passed, 9 skipped, 0 failed
 ```
 
 ---

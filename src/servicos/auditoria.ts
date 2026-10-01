@@ -9,8 +9,8 @@
 import { z } from 'zod'
 import type { Prisma } from '@/gerado/prisma/client'
 import { prisma } from '@/lib/prisma'
-import { entradaInvalida } from '@/lib/erros'
-import type { UsuarioAutenticado } from '@/servicos/autenticacao'
+import { entradaInvalida, naoAutenticado } from '@/lib/erros'
+import { exigirAdmin, type UsuarioAutenticado } from '@/servicos/autenticacao'
 import {
   ACOES,
   validarAcao,
@@ -194,8 +194,14 @@ export interface PaginaDaAuditoria {
   totalDePaginas: number
 }
 
-/** Lista os registros, do mais recente ao mais antigo, com filtros e paginação. Entrada inválida é 422. */
-export async function listar(entrada: FiltrosDaAuditoria = {}): Promise<PaginaDaAuditoria> {
+/**
+ * Lista os registros, do mais recente ao mais antigo, com filtros e paginação. Só admin (PR-12, PR-104): o papel é
+ * conferido aqui, no serviço, antes de qualquer consulta ou validação, e não só pela página. Sem ator é 401,
+ * usuário comum é 403, entrada inválida é 422.
+ */
+export async function listar(autor: UsuarioAutenticado, entrada: FiltrosDaAuditoria = {}): Promise<PaginaDaAuditoria> {
+  if (!autor?.id) throw naoAutenticado()
+  exigirAdmin(autor)
   const dados = esquemaDosFiltros.safeParse(entrada)
   if (!dados.success) throw entradaInvalida(dados.error.issues[0]?.message ?? 'Filtro inválido.')
   const f = dados.data

@@ -558,7 +558,7 @@ describe('convenções da privacidade e da auditoria (FT-10)', () => {
   const CITACOES: Array<[string, RegExp]> = [
     ['src/servicos/auditoria.ts:102', /export async function registrar\(/],
     ['src/servicos/auditoria.ts:128', /export function registrarMelhorEsforco/],
-    ['src/servicos/auditoria.ts:245', /export async function purgarAnterioresA/],
+    ['src/servicos/auditoria.ts:251', /export async function purgarAnterioresA/],
     ['src/servicos/auditoria-acoes.ts:10', /export const ACOES/],
     ['src/servicos/auditoria-acoes.ts:96', /export function validarDetalhes/],
     ['src/servicos/auditoria-ouvintes.ts:71', /export function ligarAuditoria/],

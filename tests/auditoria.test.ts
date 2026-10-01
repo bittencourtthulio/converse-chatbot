@@ -105,15 +105,20 @@ describe('registrarMelhorEsforco (funcional)', () => {
 })
 
 describe('listar (integração e funcional)', () => {
+  let admin: Awaited<ReturnType<typeof criarAdmin>>
+  beforeEach(async () => {
+    admin = await criarAdmin()
+  })
+
   it('devolve do mais recente ao mais antigo, com o total e a paginação', async () => {
     for (let i = 0; i < 5; i += 1) {
       await criarRegistroDeTeste({ acao: 'usuario_criado', quando: new Date(Date.UTC(2026, 0, 1 + i)) })
     }
-    const pagina1 = await listar({ pagina: 1, tamanho: 2 })
+    const pagina1 = await listar(admin, { pagina: 1, tamanho: 2 })
     expect(pagina1.total).toBe(5)
     expect(pagina1.totalDePaginas).toBe(3)
     expect(pagina1.itens.map((i) => i.quando.toISOString().slice(0, 10))).toEqual(['2026-01-05', '2026-01-04'])
-    const pagina3 = await listar({ pagina: 3, tamanho: 2 })
+    const pagina3 = await listar(admin, { pagina: 3, tamanho: 2 })
     expect(pagina3.itens).toHaveLength(1)
     expect(pagina3.itens[0]?.quando.toISOString().slice(0, 10)).toBe('2026-01-01')
   })
@@ -125,24 +130,24 @@ describe('listar (integração e funcional)', () => {
     await criarRegistroDeTeste({ acao: 'agente_excluido', usuarioId: u1.id, alvoTipo: 'agente', quando: new Date(2026, 2, 11, 12) })
     await criarRegistroDeTeste({ acao: 'agente_excluido', usuarioId: u2.id, alvoTipo: 'agente', quando: new Date(2026, 2, 12, 12) })
 
-    expect((await listar({ acao: 'agente_excluido' })).total).toBe(2)
-    expect((await listar({ usuarioId: u1.id })).total).toBe(2)
-    expect((await listar({ acao: 'agente_excluido', usuarioId: u2.id })).total).toBe(1)
-    expect((await listar({ de: '2026-03-11', ate: '2026-03-11' })).total).toBe(1)
-    expect((await listar({ de: '2026-03-11', ate: '2026-03-12' })).total).toBe(2)
+    expect((await listar(admin, { acao: 'agente_excluido' })).total).toBe(2)
+    expect((await listar(admin, { usuarioId: u1.id })).total).toBe(2)
+    expect((await listar(admin, { acao: 'agente_excluido', usuarioId: u2.id })).total).toBe(1)
+    expect((await listar(admin, { de: '2026-03-11', ate: '2026-03-11' })).total).toBe(1)
+    expect((await listar(admin, { de: '2026-03-11', ate: '2026-03-12' })).total).toBe(2)
   })
 
   it('recusa ação desconhecida, período invertido e página inválida com 422', async () => {
-    await expect(listar({ acao: 'apagar_tudo' })).rejects.toMatchObject({ status: 422 })
-    await expect(listar({ de: '2026-03-12', ate: '2026-03-10' })).rejects.toMatchObject({ status: 422 })
-    await expect(listar({ pagina: 0 })).rejects.toMatchObject({ status: 422 })
+    await expect(listar(admin, { acao: 'apagar_tudo' })).rejects.toMatchObject({ status: 422 })
+    await expect(listar(admin, { de: '2026-03-12', ate: '2026-03-10' })).rejects.toMatchObject({ status: 422 })
+    await expect(listar(admin, { pagina: 0 })).rejects.toMatchObject({ status: 422 })
   })
 
   it('os detalhes voltam como objeto e o usuário removido aparece pelo rótulo gravado', async () => {
     const u = await criarUsuario()
     await criarRegistroDeTeste({ acao: 'usuario_criado', usuarioId: u.id, detalhes: { papel: 'admin' } })
     await prisma.usuario.delete({ where: { id: u.id } })
-    const { itens } = await listar({})
+    const { itens } = await listar(admin, {})
     expect(itens[0]?.detalhes).toEqual({ papel: 'admin' })
     expect(itens[0]?.usuarioId).toBeNull()
     expect(itens[0]?.usuarioRotulo).toContain('<')
