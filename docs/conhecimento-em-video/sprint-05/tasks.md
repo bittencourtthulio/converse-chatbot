@@ -71,7 +71,7 @@ tasks:
   - id: T-05.05
     titulo: "Rota do YouTube"
     fase: F-05.2
-    status: pendente
+    status: concluida
     objetivo: "Criar POST /api/agentes/[id]/fontes/youtube com sessao, corpo JSON e resposta 202 com a fonte."
     arquivos:
       cria: ["src/app/api/agentes/[id]/fontes/youtube/route.ts", "tests/youtube-rota.test.ts"]
@@ -81,8 +81,8 @@ tasks:
     criterio_aceite: "tests/youtube-rota.test.ts passa com npm run build feito antes."
     depende_de: ["T-05.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-05.06
     titulo: "Fila: fonte YouTube"
     fase: F-05.2
@@ -186,7 +186,7 @@ teste_funcional: "Sem sessao responde 401, tipo de conteudo errado responde 415,
 criterio_aceite: "tests/youtube-rota.test.ts passa com npm run build feito antes."
 depende_de: ["T-05.04"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/youtube-rota.test.ts, 4 passed
 ```
 
 ---
