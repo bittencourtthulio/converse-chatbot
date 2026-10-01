@@ -8,7 +8,7 @@ feature_id: FT-13
 sprint_id: sprint-02
 atualizado_em: 2026-10-01
 titulo: "Vídeo com trecho sem fala"
-status: pendente
+status: concluido
 criterio_saida: "um trecho sem fala vira [sem fala] e a fonte de vídeo só falha sem nenhuma fala, provado de ponta a ponta com ffmpeg real"
 fases: ["F-02.1", "F-02.2"]
 riscos: ["o modelo real pode devolver texto para o silêncio, o que passa como fala (PR-105)", "o ffmpeg precisa existir na máquina de teste"]

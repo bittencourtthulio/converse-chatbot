@@ -10,14 +10,14 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-02.1
     titulo: "Núcleo da transcrição sem fala"
-    status: pendente
+    status: concluido
     criterio_saida: "as tasks T-02.01, T-02.02 concluídas com os dois testes passando"
     paralelizavel: false
     paralela_com: []
     tasks: ["T-02.01", "T-02.02"]
   - id: F-02.2
     titulo: "Fila e vídeo mudo ponta a ponta"
-    status: pendente
+    status: concluido
     criterio_saida: "as tasks T-02.03 concluídas com os dois testes passando"
     paralelizavel: false
     paralela_com: []
