@@ -41,7 +41,7 @@ tasks:
   - id: T-08.03
     titulo: "Verificacao no navegador"
     fase: F-08.2
-    status: pendente
+    status: concluida
     objetivo: "Verificar num Chrome proprio, com porta livre e alvo confirmado, a tela Sistema, o backup, as paginas de erro e o conteiner, nos dois temas e a 375 px, e registrar o resultado."
     arquivos:
       cria: ["docs/operacao-e-backup/VERIFICACAO-VISUAL.md"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "VERIFICACAO-VISUAL.md existe, lista o que foi visto e o que nao foi e os defeitos achados estao corrigidos."
     depende_de: ["T-08.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-08.04
     titulo: "Fechamento no laco do buildx"
     fase: F-08.2
@@ -120,7 +120,7 @@ teste_funcional: "A pagina de erro e o 404 mostram o codigo de referencia e a te
 criterio_aceite: "VERIFICACAO-VISUAL.md existe, lista o que foi visto e o que nao foi e os defeitos achados estao corrigidos."
 depende_de: ["T-08.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — verificação em Chrome próprio: Sistema, backup, 404 e erro nos dois temas e a 375 px
 ```
 
 ---
