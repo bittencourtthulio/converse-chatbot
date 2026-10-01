@@ -25,6 +25,7 @@ atencao:
 portao: null
 desvios:
   - "T-03.03: src/lib/midia-formatos.ts (mimeDeMidia) alterado depois da T-02.03, e tests/conhecimento-paginas.test.tsx e tests/painel-de-conhecimento.test.tsx ganharam os quatro campos novos de FonteVisivel para o tsc passar"
+  - "T-04.03: src/lib/armazenamento.ts ganhou apagarAudio (apaga só audio/), usado ao fim da transcricao para limpar o audio e manter os segmentos"
 push_feito: false
 pr_url: null
 pr_estado: null
@@ -53,3 +54,4 @@ Branch `feat/conhecimento-em-video`, aberta em 2026-09-30 a partir de `feat/cana
 ## Desvios
 
 - T-03.03: src/lib/midia-formatos.ts (mimeDeMidia) alterado depois da T-02.03, e tests/conhecimento-paginas.test.tsx e tests/painel-de-conhecimento.test.tsx ganharam os quatro campos novos de FonteVisivel para o tsc passar
+- T-04.03: src/lib/armazenamento.ts ganhou apagarAudio (apaga só audio/), usado ao fim da transcricao para limpar o audio e manter os segmentos

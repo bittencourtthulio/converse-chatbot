@@ -41,18 +41,18 @@ tasks:
   - id: T-04.03
     titulo: "Transcricao de midia por parte"
     fase: F-04.1
-    status: pendente
+    status: concluida
     objetivo: "Criar src/servicos/transcricao-de-midia.ts que sonda, confere limites, extrai, divide, transcreve cada parte com repeticao do transitorio, grava segmentos, informa etapa e progresso e devolve o texto montado."
     arquivos:
       cria: ["src/servicos/transcricao-de-midia.ts", "tests/transcricao-de-midia.test.ts"]
-      altera: []
+      altera: ["src/lib/armazenamento.ts"]
     teste_integracao: "Com a midia e o transcritor injetados, tres partes geram tres arquivos de segmento, o texto montado com marcadores, as etapas em ordem e o progresso crescente ate 100."
     teste_funcional: "Com o segmento 1 ja em disco o transcritor nao e chamado para a parte 1, uma falha permanente na parte 2 lanca erro com a parte indicada e mantem os segmentos, uma falha transitoria e repetida ate duas vezes e a fonte excluida entre partes interrompe sem novo gasto."
     criterio_aceite: "tests/transcricao-de-midia.test.ts passa sem precisar de ffmpeg."
     depende_de: ["T-04.01", "T-04.02", "T-03.02", "T-02.04", "T-02.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-04.04
     titulo: "Fila: duas raias e andamento"
     fase: F-04.2
@@ -131,13 +131,13 @@ titulo: "Transcricao de midia por parte"
 objetivo: "Criar src/servicos/transcricao-de-midia.ts que sonda, confere limites, extrai, divide, transcreve cada parte com repeticao do transitorio, grava segmentos, informa etapa e progresso e devolve o texto montado."
 arquivos:
   cria: ["src/servicos/transcricao-de-midia.ts", "tests/transcricao-de-midia.test.ts"]
-  altera: []
+  altera: ["src/lib/armazenamento.ts"]
 teste_integracao: "Com a midia e o transcritor injetados, tres partes geram tres arquivos de segmento, o texto montado com marcadores, as etapas em ordem e o progresso crescente ate 100."
 teste_funcional: "Com o segmento 1 ja em disco o transcritor nao e chamado para a parte 1, uma falha permanente na parte 2 lanca erro com a parte indicada e mantem os segmentos, uma falha transitoria e repetida ate duas vezes e a fonte excluida entre partes interrompe sem novo gasto."
 criterio_aceite: "tests/transcricao-de-midia.test.ts passa sem precisar de ffmpeg."
 depende_de: ["T-04.01", "T-04.02", "T-03.02", "T-02.04", "T-02.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/transcricao-de-midia.test.ts e tests/armazenamento-segmentos.test.ts, 14 passed
 ```
 
 ---

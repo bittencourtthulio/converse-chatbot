@@ -134,6 +134,10 @@ export function criarArmazenamento(raiz: string): Armazenamento {
         .sort((a, b) => a - b)
     },
 
+    async apagarAudio(agenteId, fonteId) {
+      await rm(pastaDe(agenteId, fonteId, 'audio'), { recursive: true, force: true })
+    },
+
     async apagarTrabalho(agenteId, fonteId) {
       await rm(pastaDe(agenteId, fonteId, 'audio'), { recursive: true, force: true })
       await rm(pastaDe(agenteId, fonteId, 'segmentos'), { recursive: true, force: true })
@@ -197,6 +201,8 @@ export interface Armazenamento {
   lerSegmento(agenteId: string, fonteId: string, indice: number): Promise<string | null>
   /** Os índices dos segmentos gravados, em ordem. */
   listarSegmentos(agenteId: string, fonteId: string): Promise<number[]>
+  /** Apaga só `audio/` (o áudio extraído e as partes), que é sempre refeito. */
+  apagarAudio(agenteId: string, fonteId: string): Promise<void>
   /** Apaga `audio/` e `segmentos/` e mantém o original. */
   apagarTrabalho(agenteId: string, fonteId: string): Promise<void>
 }
