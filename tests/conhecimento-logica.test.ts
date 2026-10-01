@@ -80,13 +80,13 @@ describe('status e polling', () => {
   it('o ícone do tipo', () => {
     expect(iconeDoTipo('texto')).toBe('texto')
     expect(iconeDoTipo('arquivo')).toBe('arquivo')
-    expect(iconeDoTipo('video')).toBe('arquivo')
+    expect(iconeDoTipo('video')).toBe('video')
   })
 })
 
-describe('opções de adicionar (extensível para a FT-08)', () => {
-  it('traz Arquivos e Texto, com id único, rótulo, ícone e descrição', () => {
-    expect(OPCOES_DE_FONTE.map((o) => o.id)).toEqual(['arquivos', 'texto'])
+describe('opções de adicionar (lista única, a FT-08 acrescentou Vídeo)', () => {
+  it('traz Arquivos, Texto e Vídeo, com id único, rótulo, ícone e descrição', () => {
+    expect(OPCOES_DE_FONTE.map((o) => o.id)).toEqual(['arquivos', 'texto', 'video'])
     expect(new Set(OPCOES_DE_FONTE.map((o) => o.id)).size).toBe(OPCOES_DE_FONTE.length)
     for (const o of OPCOES_DE_FONTE) {
       expect(o.rotulo).toBeTruthy()

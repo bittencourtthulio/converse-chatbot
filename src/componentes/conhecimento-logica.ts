@@ -81,7 +81,9 @@ export function deveContinuarPolling(fontes: Array<{ status: string }>): boolean
 }
 
 export function iconeDoTipo(tipo: string): NomeDeIcone {
-  return tipo === 'texto' ? 'texto' : 'arquivo'
+  if (tipo === 'texto') return 'texto'
+  if (tipo === 'video' || tipo === 'youtube') return 'video'
+  return 'arquivo'
 }
 
 export const INTERVALO_DO_POLLING_MS = 2000

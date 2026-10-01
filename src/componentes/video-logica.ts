@@ -88,3 +88,11 @@ export function interpretarRespostaDaFonte(status: number, corpo: string): Resul
   }
   return { aceito: false, motivo: mensagem ?? `Não foi possível enviar (erro ${status}).` }
 }
+
+const MARCADOR_NO_COMECO = /^\[(?:\d{1,2}:)?\d{2}:\d{2}\]/
+
+/** O marcador de tempo (`[00:00]`, `[1:02:05]`) que abre o texto de um trecho, separado do resto. */
+export function separarMarcador(texto: string): { marcador: string | null; resto: string } {
+  const m = MARCADOR_NO_COMECO.exec(texto)
+  return m ? { marcador: m[0], resto: texto.slice(m[0].length) } : { marcador: null, resto: texto }
+}

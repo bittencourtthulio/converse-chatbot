@@ -7,6 +7,7 @@ import { BotaoExcluirFonte } from '@/componentes/BotaoExcluirFonte'
 import { Icone } from '@/componentes/Icones'
 import { formatarData, formatarTamanho, iconeDoTipo, rotuloDoStatus } from '@/componentes/conhecimento-logica'
 import { mensagemDaResposta, serializarFonte, type FonteDaTela } from '@/componentes/fonte-da-tela'
+import { ehLinkDoYoutube, formatarDuracao, textoDaEtapa } from '@/componentes/video-logica'
 
 /** Uma fonte na lista: ícone do tipo, título, tamanho, data, status, motivo do erro e ações. */
 export function LinhaDeFonte({
@@ -19,6 +20,11 @@ export function LinhaDeFonte({
   aoExcluir: (id: string) => void
 }) {
   const status = rotuloDoStatus(fonte.status)
+  const duracao = formatarDuracao(fonte.duracaoSegundos)
+  const etapa = fonte.status === 'processando' ? textoDaEtapa(fonte.etapa, fonte.progresso) : null
+  const comBarra = fonte.status === 'processando' && typeof fonte.progresso === 'number'
+  // Fonte do YouTube não tem arquivo: mostrar "0 B" não diz nada.
+  const tamanho = fonte.tipo === 'youtube' && fonte.tamanhoBytes === 0 ? 'YouTube' : formatarTamanho(fonte.tamanhoBytes)
   const [reprocessando, setReprocessando] = useState(false)
   const [erroDaAcao, setErroDaAcao] = useState<string | null>(null)
 
@@ -48,8 +54,23 @@ export function LinhaDeFonte({
       <div className="fonte-texto">
         <p className="fonte-titulo">{fonte.titulo}</p>
         <p className="fonte-meta">
-          {formatarTamanho(fonte.tamanhoBytes)} · {formatarData(fonte.criadoEm)}
+          {tamanho} · {formatarData(fonte.criadoEm)}
+          {duracao && ` · ${duracao}`}
+          {ehLinkDoYoutube(fonte.urlOrigem) && (
+            <>
+              {' · '}
+              <a className="fonte-origem" href={fonte.urlOrigem} target="_blank" rel="noopener noreferrer">
+                Abrir no YouTube
+              </a>
+            </>
+          )}
         </p>
+        {comBarra && (
+          <progress className="fonte-progresso" max={100} value={fonte.progresso ?? 0} aria-label={`Processando ${fonte.titulo}`}>
+            {fonte.progresso}%
+          </progress>
+        )}
+        {etapa && <p className="fonte-etapa">{etapa}</p>}
         {fonte.status === 'erro' && fonte.mensagemErro && (
           <p className="fonte-erro">{fonte.mensagemErro}</p>
         )}

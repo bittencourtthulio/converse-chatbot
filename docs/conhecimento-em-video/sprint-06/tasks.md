@@ -41,18 +41,18 @@ tasks:
   - id: T-06.03
     titulo: "Lista e Ver conteudo do video"
     fase: F-06.2
-    status: pendente
+    status: concluida
     objetivo: "Mostrar na LinhaDeFonte o icone de video, a barra de progresso com etapa, a duracao e o link de origem do YouTube, e a duracao em Ver conteudo."
     arquivos:
       cria: []
-      altera: ["src/componentes/LinhaDeFonte.tsx", "src/componentes/ListaDeTrechos.tsx", "src/componentes/conhecimento-logica.ts", "src/componentes/fonte-da-tela.ts", "src/estilos/global.css", "tests/linha-de-fonte-video.test.tsx"]
+      altera: ["src/componentes/LinhaDeFonte.tsx", "src/componentes/ListaDeTrechos.tsx", "src/componentes/conhecimento-logica.ts", "src/componentes/fonte-da-tela.ts", "src/estilos/global.css", "tests/linha-de-fonte-video.test.tsx", "src/componentes/video-logica.ts", "tests/conhecimento-logica.test.ts"]
     teste_integracao: "A renderizacao de uma fonte video processando mostra a barra com valor, a etapa e a duracao e a de uma fonte youtube pronta mostra o link de origem com rel noopener noreferrer."
     teste_funcional: "Uma fonte em erro mostra o motivo com Reprocessar e Excluir, uma urlOrigem que nao e http ou https de host do YouTube nao vira link e Ver conteudo exibe os trechos com [00:00] e a duracao."
     criterio_aceite: "tests/linha-de-fonte-video.test.tsx e tests/conhecimento-logica.test.ts passam."
     depende_de: ["T-06.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-06.04
     titulo: "Modelo de transcricao nas Integracoes"
     fase: F-06.2
@@ -116,13 +116,13 @@ titulo: "Lista e Ver conteudo do video"
 objetivo: "Mostrar na LinhaDeFonte o icone de video, a barra de progresso com etapa, a duracao e o link de origem do YouTube, e a duracao em Ver conteudo."
 arquivos:
   cria: []
-  altera: ["src/componentes/LinhaDeFonte.tsx", "src/componentes/ListaDeTrechos.tsx", "src/componentes/conhecimento-logica.ts", "src/componentes/fonte-da-tela.ts", "src/estilos/global.css", "tests/linha-de-fonte-video.test.tsx"]
+  altera: ["src/componentes/LinhaDeFonte.tsx", "src/componentes/ListaDeTrechos.tsx", "src/componentes/conhecimento-logica.ts", "src/componentes/fonte-da-tela.ts", "src/estilos/global.css", "tests/linha-de-fonte-video.test.tsx", "src/componentes/video-logica.ts", "tests/conhecimento-logica.test.ts"]
 teste_integracao: "A renderizacao de uma fonte video processando mostra a barra com valor, a etapa e a duracao e a de uma fonte youtube pronta mostra o link de origem com rel noopener noreferrer."
 teste_funcional: "Uma fonte em erro mostra o motivo com Reprocessar e Excluir, uma urlOrigem que nao e http ou https de host do YouTube nao vira link e Ver conteudo exibe os trechos com [00:00] e a duracao."
 criterio_aceite: "tests/linha-de-fonte-video.test.tsx e tests/conhecimento-logica.test.ts passam."
 depende_de: ["T-06.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/linha-de-fonte-video.test.tsx, tests/painel-de-conhecimento.test.tsx, tests/conhecimento-paginas.test.tsx, tests/conhecimento-logica.test.ts, tests/conhecimento-estilos.test.ts e tests/tokens.test.ts, 100+ passed
 ```
 
 ---

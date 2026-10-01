@@ -10,6 +10,7 @@ import {
   iconeDoTipo,
   rotuloDoStatus,
 } from '@/componentes/conhecimento-logica'
+import { ehLinkDoYoutube, formatarDuracao, separarMarcador } from '@/componentes/video-logica'
 import type { PaginaDeTrechos } from '@/servicos/fontes'
 
 /**
@@ -30,6 +31,7 @@ export function ListaDeTrechos({
   const { fonte, trechos, pagina, porPagina, totalPaginas, totalTrechos } = dados
   const status = rotuloDoStatus(fonte.status)
   const primeiroNumero = (pagina - 1) * porPagina
+  const duracao = formatarDuracao(fonte.duracaoSegundos)
 
   return (
     <div className="pilha">
@@ -52,6 +54,15 @@ export function ListaDeTrechos({
             <p className="texto-de-apoio sem-margem">
               {formatarTamanho(fonte.tamanhoBytes)} · {formatarCaracteres(fonte.caracteres)} caracteres ·{' '}
               {totalTrechos} {totalTrechos === 1 ? 'trecho' : 'trechos'} · enviada em {formatarData(fonte.criadoEm)}
+              {duracao && ` · duração ${duracao}`}
+              {ehLinkDoYoutube(fonte.urlOrigem) && (
+                <>
+                  {' · '}
+                  <a className="fonte-origem" href={fonte.urlOrigem} target="_blank" rel="noopener noreferrer">
+                    Abrir no YouTube
+                  </a>
+                </>
+              )}
             </p>
           </div>
           <Badge variante={status.variante}>{status.rotulo}</Badge>
@@ -80,7 +91,7 @@ export function ListaDeTrechos({
                 <strong>Trecho {t.indice + 1}</strong>
                 <span className="texto-de-apoio">{formatarCaracteres(t.caracteres)} caracteres</span>
               </div>
-              <pre className="trecho-texto">{t.texto}</pre>
+              <TextoDoTrecho texto={t.texto} />
             </li>
           ))}
         </ol>
@@ -112,5 +123,16 @@ export function ListaDeTrechos({
         </nav>
       )}
     </div>
+  )
+}
+
+/** O texto do trecho como texto; o marcador de tempo que o abre (vídeo e YouTube) ganha destaque. */
+function TextoDoTrecho({ texto }: { texto: string }) {
+  const { marcador, resto } = separarMarcador(texto)
+  return (
+    <pre className="trecho-texto">
+      {marcador && <strong className="trecho-marcador">{marcador}</strong>}
+      {resto}
+    </pre>
   )
 }
