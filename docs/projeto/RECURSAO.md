@@ -6,7 +6,7 @@ projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-10-01
 ciclo_atual: 1
 teto_ciclos: 3
-pendencias_abertas: 7
+pendencias_abertas: 8
 pendencias_resolvidas: 0
 ---
 
@@ -19,7 +19,7 @@ houver pendência resolvível, até o teto.
 
 | Ciclo | Pendências entraram | Viraram feature | Replanejadas | Ficaram para o humano |
 |---|---|---|---|---|
-| 1 | 7 (6 até o B3, 1 na FT-01) | 0 | 0 | 7 |
+| 1 | 8 (6 até o B3, 1 na FT-01, 1 na FT-10) | 0 | 0 | 8 |
 
 ---
 
@@ -52,6 +52,16 @@ houver pendência resolvível, até o teto.
 **O que o buildx fez enquanto isso:** construiu a leitura mais simples de cada uma, marcada `Provisória: true` no `PREMISSAS.md`.
 **Reversibilidade:** varia; embeddings e OCR entram como features novas sem quebrar o que existe; hospedagem serverless exige trocar banco e armazenamento.
 
+
+### PEND-08 — Base legal do tratamento de dados pessoais e prazo de retenção
+
+**Classe:** `decisao_humana`
+**Origem:** B4, FT-10 (PR-18, PR-89, PR-91)
+**A decisão:** a empresa confirma a base legal do tratamento das conversas (o sistema assume legítimo interesse de atendimento, sem consentimento do visitante) e se o prazo padrão de 90 dias de retenção das conversas e de 365 dias da auditoria atende à sua política.
+**As opções:** (a) manter legítimo interesse e os prazos atuais; (b) exigir aceite do visitante antes do primeiro envio (consentimento): o chat embutido e o Telegram precisam de um passo de aceite; (c) outro prazo, que o admin ajusta em Configurações > Privacidade (conversas) e em `AUDITORIA_RETENCAO_DIAS` (auditoria). O texto do painel "Dados pessoais tratados" não afirma conformidade nem parecer jurídico.
+**O que o buildx fez enquanto isso:** legítimo interesse, 90 dias, aviso padrão configurável e o painel de dados com a base legal escrita como "a confirmar pela empresa" (premissa PR-91, `Provisória: true`).
+**Reversibilidade:** alta para prazos (uma tela); média para consentimento (uma feature nova de aceite no chat e no Telegram).
+
 ---
 
 ## Aberto — o que exige recurso externo
@@ -83,8 +93,8 @@ houver pendência resolvível, até o teto.
 ### PEND-07 — Verificação visual em celular real e dos fluxos interativos
 
 **Classe:** `recurso_externo`
-**Origem:** B4, FT-01 (`docs/fundacao-e-esqueleto/VERIFICACAO-VISUAL.md`), FT-02 (`docs/agentes-e-openrouter/VERIFICACAO-VISUAL.md`), FT-03 (`docs/conversa-de-teste/VERIFICACAO-VISUAL.md`), FT-04 (`docs/conhecimento-arquivos-e-texto/VERIFICACAO-VISUAL.md`) FT-05 (`docs/respostas-com-conhecimento/VERIFICACAO-VISUAL.md`) FT-06 (`docs/chat-embutido/VERIFICACAO-VISUAL.md`) FT-07 (`docs/canal-telegram/VERIFICACAO-VISUAL.md`) FT-08 (`docs/conhecimento-em-video/VERIFICACAO-VISUAL.md`) e FT-09 (`docs/historico-de-conversas/VERIFICACAO-VISUAL.md`)
-**O que falta:** abrir o sistema (e, desde a FT-02, os formulários de agente e da chave do OpenRouter; desde a FT-03, a aba Testar, com o botão Parar por clique, a rolagem automática e o contador de caracteres; desde a FT-04, a aba Conhecimento, com o arrastar-e-soltar, o spinner de "Processando", o foco por teclado na zona de soltar e as regras de 375 px; desde a FT-05, as Fontes e as referências `[n]` na aba Testar, o tema claro com fontes, a seção recolhida das fontes consultadas e o cartão "Testar busca" a 375 px; desde a FT-06, o botão e o painel do `widget.js` em tela cheia abaixo de 480 px, o tema claro do chat embutido e da aba Publicar e o botão Copiar código; desde a FT-07, o cartão do Telegram da aba Canais a 375 px, o aviso de `APP_URL` sem HTTPS e o selo "Com erro"; desde a FT-08, a aba Vídeo, a barra de progresso do envio, a lista com etapa e o campo Modelo de transcrição, que só foram vistos com a largura do navegador emulada em 375 px; desde a FT-09, a lista de Conversas em cartões, o detalhe com fontes, o apagar em lote com confirmação e o painel com o gráfico, vistos num Chrome sem janela com 375 px emulados, sem celular real nem leitor de tela) num celular ou com a janela do navegador realmente a 375px e acionar o menu do usuário, a gaveta, o alternador de tema e a mensagem de excesso de tentativas de login. A janela do navegador da sessão não reduziu a largura, e os quadros de 375px foram feitos sem JavaScript.
+**Origem:** B4, FT-01 (`docs/fundacao-e-esqueleto/VERIFICACAO-VISUAL.md`), FT-02 (`docs/agentes-e-openrouter/VERIFICACAO-VISUAL.md`), FT-03 (`docs/conversa-de-teste/VERIFICACAO-VISUAL.md`), FT-04 (`docs/conhecimento-arquivos-e-texto/VERIFICACAO-VISUAL.md`) FT-05 (`docs/respostas-com-conhecimento/VERIFICACAO-VISUAL.md`) FT-06 (`docs/chat-embutido/VERIFICACAO-VISUAL.md`) FT-07 (`docs/canal-telegram/VERIFICACAO-VISUAL.md`) FT-08 (`docs/conhecimento-em-video/VERIFICACAO-VISUAL.md`) FT-09 (`docs/historico-de-conversas/VERIFICACAO-VISUAL.md`) e FT-10 (`docs/privacidade-e-auditoria/VERIFICACAO-VISUAL.md`)
+**O que falta:** abrir o sistema (e, desde a FT-02, os formulários de agente e da chave do OpenRouter; desde a FT-03, a aba Testar, com o botão Parar por clique, a rolagem automática e o contador de caracteres; desde a FT-04, a aba Conhecimento, com o arrastar-e-soltar, o spinner de "Processando", o foco por teclado na zona de soltar e as regras de 375 px; desde a FT-05, as Fontes e as referências `[n]` na aba Testar, o tema claro com fontes, a seção recolhida das fontes consultadas e o cartão "Testar busca" a 375 px; desde a FT-06, o botão e o painel do `widget.js` em tela cheia abaixo de 480 px, o tema claro do chat embutido e da aba Publicar e o botão Copiar código; desde a FT-07, o cartão do Telegram da aba Canais a 375 px, o aviso de `APP_URL` sem HTTPS e o selo "Com erro"; desde a FT-08, a aba Vídeo, a barra de progresso do envio, a lista com etapa e o campo Modelo de transcrição, que só foram vistos com a largura do navegador emulada em 375 px; desde a FT-09, a lista de Conversas em cartões, o detalhe com fontes, o apagar em lote com confirmação e o painel com o gráfico; desde a FT-10, as telas Privacidade e Auditoria, a confirmação de Excluir definitivamente, as ferramentas do titular e o botão Apagar minha conversa do chat embutido, tudo visto num Chrome sem janela com 375 px emulados, sem celular real nem leitor de tela) num celular ou com a janela do navegador realmente a 375px e acionar o menu do usuário, a gaveta, o alternador de tema e a mensagem de excesso de tentativas de login. A janela do navegador da sessão não reduziu a largura, e os quadros de 375px foram feitos sem JavaScript.
 **O que destrava:** confirmação visual completa; o comportamento tem teste automatizado, o que falta é o olho.
 **Estado atual:** contraste 4,5:1 e ausência de cor literal provados por `tests/tokens.test.ts`; rotas e cabeçalhos por `tests/rotas.test.ts`.
 

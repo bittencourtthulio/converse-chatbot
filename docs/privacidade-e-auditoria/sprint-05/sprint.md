@@ -8,7 +8,7 @@ feature_id: FT-10
 sprint_id: sprint-05
 atualizado_em: 2026-10-01
 titulo: "Direitos do titular: admin e visitante"
-status: nao_iniciado
+status: concluido
 criterio_saida: "a suite inteira passa com 0 failed e o admin busca, exporta e apaga os dados de um titular e o visitante apaga so a propria conversa"
 fases: ["F-05.1", "F-05.2"]
 riscos: ["o identificador completo do visitante nao pode aparecer na tela, na URL nem no nome do arquivo (PR-78, PR-90): a busca por prefixo resolve a um titular unico", "DELETE publico sem sessao precisa de Origin da plataforma e limite de uso (PR-90)"]

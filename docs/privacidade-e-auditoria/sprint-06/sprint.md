@@ -8,7 +8,7 @@ feature_id: FT-10
 sprint_id: sprint-06
 atualizado_em: 2026-10-01
 titulo: "Telas de Privacidade e Auditoria"
-status: nao_iniciado
+status: concluido
 criterio_saida: "a suite inteira passa com 0 failed, as duas rotas redirecionam quem nao e admin com 307 e os itens aparecem so para admin"
 fases: ["F-06.1", "F-06.2", "F-06.3"]
 riscos: ["a guarda de admin precisa ficar em layout.tsx acima do loading.tsx para o 307 ser real (docs/stack/CONVENCOES.md, Interface)", "tests/menu.test.ts e tests/rotas.test.ts fixam a lista de itens e rotas e precisam ser atualizados e declarados"]

@@ -8,7 +8,7 @@ feature_id: FT-10
 sprint_id: sprint-04
 atualizado_em: 2026-10-01
 titulo: "Expurgo automatico em segundo plano"
-status: nao_iniciado
+status: concluido
 criterio_saida: "a suite inteira passa com 0 failed e o expurgo apaga so o que passou do corte, em lotes, e roda pela subida do servidor"
 fases: ["F-04.1", "F-04.2"]
 riscos: ["lote de exclusao no SQLite sem medida de limite seguro (base/00-LACUNAS.md, lacuna 3): usa 500 por premissa PR-89", "o agendador e por processo (PR-05) e nao deve rodar durante a restauracao da FT-11"]

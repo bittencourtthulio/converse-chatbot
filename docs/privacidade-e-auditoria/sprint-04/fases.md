@@ -10,14 +10,14 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-04.1
     titulo: "Regra do expurgo"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "tests/expurgo.test.ts passa com os testes de fronteira"
     paralelizavel: false
     paralela_com: []
     tasks: ["T-04.01"]
   - id: F-04.2
     titulo: "Agendador"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "tests/expurgo-agendador.test.ts e tests/instrumentacao.test.ts passam"
     paralelizavel: false
     paralela_com: []

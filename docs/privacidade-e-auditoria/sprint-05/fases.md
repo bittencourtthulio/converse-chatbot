@@ -10,14 +10,14 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-05.1
     titulo: "Titular pelo admin"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "tests/titular.test.ts e tests/titulares-exportar-rota.test.ts passam"
     paralelizavel: false
     paralela_com: []
     tasks: ["T-05.01", "T-05.02"]
   - id: F-05.2
     titulo: "Visitante apaga a propria conversa"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "tests/publico-apagar.test.ts, tests/publico-apagar-rota.test.ts e os testes do embed passam"
     paralelizavel: false
     paralela_com: []

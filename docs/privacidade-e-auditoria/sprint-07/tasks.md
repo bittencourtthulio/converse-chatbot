@@ -56,7 +56,7 @@ tasks:
   - id: T-07.04
     titulo: "Fechamento no laco do buildx"
     fase: F-07.2
-    status: pendente
+    status: concluida
     objetivo: "Registrar a feature no mapa, nas premissas, na recursao e no projeto e fechar os artefatos da entrega."
     arquivos:
       cria: ["docs/privacidade-e-auditoria/ORQUESTRADOR.md", "docs/privacidade-e-auditoria/00-AUDITORIA.md", "docs/privacidade-e-auditoria/FECHAMENTO.md", "docs/privacidade-e-auditoria/RELATORIO-FEATURE.md", "docs/privacidade-e-auditoria/BRIEFING-BUILDX.md", "docs/privacidade-e-auditoria/00-DECISOES.md", "docs/privacidade-e-auditoria/00-BLOQUEIOS.md", "docs/privacidade-e-auditoria/base/00-INDICE.md", "docs/privacidade-e-auditoria/base/00-LACUNAS.md", "docs/privacidade-e-auditoria/base/schema-e-migracoes.md", "docs/privacidade-e-auditoria/base/usuarios-e-sessao.md", "docs/privacidade-e-auditoria/base/integracoes-e-agentes.md", "docs/privacidade-e-auditoria/base/canais-e-conversas.md", "docs/privacidade-e-auditoria/base/segundo-plano-e-ambiente.md", "docs/privacidade-e-auditoria/base/telas-menu-e-publico.md", "docs/privacidade-e-auditoria/base/testes-e-ci.md", "docs/entregas/privacidade-e-auditoria/ENTREGA.md", "docs/entregas/privacidade-e-auditoria/PR.md", "docs/entregas/privacidade-e-auditoria/QA-PACOTE.md", "docs/entregas/privacidade-e-auditoria/ATENCAO.md"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "grep de FT-10 no painel do MAPA.md devolve entregue, o total de premissas do frontmatter e 91 e tests/projeto.test.ts passa."
     depende_de: ["T-07.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
 ---
 
 # Tasks — Sprint 07
@@ -137,6 +137,6 @@ teste_funcional: "O MAPA.md mostra a FT-10 entregue com sprints, testes e PR loc
 criterio_aceite: "grep de FT-10 no painel do MAPA.md devolve entregue, o total de premissas do frontmatter e 91 e tests/projeto.test.ts passa."
 depende_de: ["T-07.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2544 passed, 0 failed (208 arquivos); tsc, lint, build e audit verdes
 ```
 

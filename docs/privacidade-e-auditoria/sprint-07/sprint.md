@@ -8,7 +8,7 @@ feature_id: FT-10
 sprint_id: sprint-07
 atualizado_em: 2026-10-01
 titulo: "Prova ponta a ponta, verificacao e fechamento"
-status: nao_iniciado
+status: concluido
 criterio_saida: "a suite inteira passa com 0 failed, tsc, lint, build e audit verdes e a documentacao e o mapa fechados"
 fases: ["F-07.1", "F-07.2"]
 riscos: ["a verificacao no navegador depende de Chrome por CDP e de servidores simulados (docs/historico-de-conversas/VERIFICACAO-VISUAL.md)", "o laco do buildx precisa fechar MAPA, PREMISSAS, RECURSAO e PROJETO no mesmo commit"]

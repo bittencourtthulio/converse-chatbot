@@ -8,11 +8,11 @@ feature_id: FT-10
 titulo: Privacidade e auditoria
 tipo_trabalho: feature
 tipo_ocorrencia: null
-estagio: f4
-status: em_andamento
+estagio: f6
+status: concluido
 criado_em: 2026-10-01
 atualizado_em: 2026-10-01
-concluido_em: null
+concluido_em: 2026-10-01
 sprints: [sprint-01, sprint-02, sprint-03, sprint-04, sprint-05, sprint-06, sprint-07]
 caminho_critico: [F-01.1, F-01.2, F-02.1, F-02.2, F-03.1, F-03.2, F-04.1, F-04.2, F-05.1, F-05.2, F-06.1, F-06.2, F-06.3, F-07.1, F-07.2]
 ---

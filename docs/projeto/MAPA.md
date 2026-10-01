@@ -6,8 +6,8 @@ projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-10-01
 total_features: 11
 pendentes: 1
-em_andamento: 1
-entregues: 9
+em_andamento: 0
+entregues: 10
 bloqueadas: 0
 ---
 
@@ -33,7 +33,7 @@ da feature de que depende (PRs empilhados).
 | FT-07 | Canal Telegram | entregue | local (branch feat/canal-telegram) |
 | FT-08 | Base de conhecimento: vídeo | entregue | local (branch feat/conhecimento-em-video) |
 | FT-09 | Histórico de conversas e painel | entregue | local (branch feat/historico-de-conversas) |
-| FT-10 | Privacidade e auditoria | em_andamento | — |
+| FT-10 | Privacidade e auditoria | entregue | local (branch feat/privacidade-e-auditoria) |
 | FT-11 | Operação e backup | pendente | — |
 
 ---
@@ -203,7 +203,10 @@ Trabalho: adaptar o template (nome, layout e tokens SaaS no lugar do VS Code, te
 **Premissas que realiza:** [PR-18, PR-19]
 **Módulo disponível:** -
 **Fatias candidatas:** -
-**Status:** em_andamento
+**Status:** entregue
+**Sprints:** 7 (28 tasks)
+**Testes:** 2544 (suíte inteira)
+**PR:** local (branch feat/privacidade-e-auditoria)
 
 ---
 

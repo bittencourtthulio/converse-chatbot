@@ -8,7 +8,7 @@ feature_id: FT-10
 sprint_id: sprint-01
 atualizado_em: 2026-10-01
 titulo: "Capacidade de testar: esquema, fixtures e ambiente"
-status: nao_iniciado
+status: concluido
 criterio_saida: "tests/privacidade-modelo.test.ts, tests/privacidade-apoio.test.ts, tests/ambiente.test.ts, tests/migracoes.test.ts e tests/projeto.test.ts passam, tsc e lint sem erro"
 fases: ["F-01.1", "F-01.2"]
 riscos: ["Prisma 7 com SQLite: a migration de colunas novas precisa ter padrao para a linha existente (base/schema-e-migracoes.md)", "instante de atualizadoEm precisa ser gravado explicitamente em teste, o @updatedAt pode sobrescrever (testado na T-01.02)"]

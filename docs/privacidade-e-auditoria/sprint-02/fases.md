@@ -10,14 +10,14 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-02.1
     titulo: "Servico de auditoria"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "tests/auditoria.test.ts e tests/auditoria-somente-acrescimo.test.ts passam"
     paralelizavel: false
     paralela_com: []
     tasks: ["T-02.01", "T-02.02"]
   - id: F-02.2
     titulo: "Ligacoes nos servicos"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Cada acao de PR-19 grava registro e as de transacao desfazem a acao se a auditoria falha"
     paralelizavel: false
     paralela_com: []

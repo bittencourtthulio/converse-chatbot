@@ -10,14 +10,14 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-03.1
     titulo: "Exclusao definitiva de usuario"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "tests/usuarios-excluir.test.ts e tests/usuarios-excluir-ui.test.tsx passam"
     paralelizavel: false
     paralela_com: []
     tasks: ["T-03.01", "T-03.02"]
   - id: F-03.2
     titulo: "Retencao e aviso padrao"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "tests/privacidade.test.ts e tests/privacidade-aviso-canais.test.ts passam"
     paralelizavel: false
     paralela_com: []

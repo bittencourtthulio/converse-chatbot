@@ -10,14 +10,14 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-07.1
     titulo: "Prova ponta a ponta"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "tests/privacidade-fim-a-fim.test.ts passa contra next start"
     paralelizavel: false
     paralela_com: []
     tasks: ["T-07.01"]
   - id: F-07.2
     titulo: "Verificacao, documentacao e fechamento"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "VERIFICACAO-VISUAL.md, README, convencoes e o mapa estao fechados"
     paralelizavel: false
     paralela_com: []

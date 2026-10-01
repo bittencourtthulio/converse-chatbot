@@ -10,21 +10,21 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-06.1
     titulo: "Menu e guardas"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "tests/menu.test.ts e tests/rotas.test.ts passam com os dois itens e as duas guardas"
     paralelizavel: false
     paralela_com: []
     tasks: ["T-06.01"]
   - id: F-06.2
     titulo: "Tela de auditoria"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "tests/auditoria-logica.test.ts e tests/auditoria-ui.test.tsx passam"
     paralelizavel: false
     paralela_com: []
     tasks: ["T-06.02", "T-06.03"]
   - id: F-06.3
     titulo: "Tela de privacidade"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "tests/privacidade-ui.test.tsx e tests/titular-ui.test.tsx passam"
     paralelizavel: false
     paralela_com: []

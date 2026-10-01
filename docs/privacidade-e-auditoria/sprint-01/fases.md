@@ -10,14 +10,14 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-01.1
     titulo: "Esquema e migration"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "tests/privacidade-modelo.test.ts e tests/migracoes.test.ts passam com a migration aplicada por migrate deploy"
     paralelizavel: false
     paralela_com: []
     tasks: ["T-01.01"]
   - id: F-01.2
     titulo: "Apoio de teste e ambiente"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "As fixtures e a leitura de AUDITORIA_RETENCAO_DIAS passam em teste"
     paralelizavel: false
     paralela_com: []
