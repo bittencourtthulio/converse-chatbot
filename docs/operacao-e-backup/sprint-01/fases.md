@@ -17,7 +17,7 @@ fases:
     tasks: ["T-01.01", "T-01.02"]
   - id: F-01.2
     titulo: "Nucleo do log"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "tests/log.test.ts passa com redacao, niveis, correlacao e erro sem pilha"
     paralelizavel: false
     paralela_com: []
@@ -49,7 +49,7 @@ flowchart LR
 
   class T_01_01 concluida
   class T_01_02 concluida
-  class T_01_03 pendente
+  class T_01_03 concluida
   class T_01_03,T_01_02,T_01_01 critico
 ```
 

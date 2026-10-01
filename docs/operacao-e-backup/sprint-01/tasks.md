@@ -41,18 +41,18 @@ tasks:
   - id: T-01.03
     titulo: "Modulo de log com redacao, niveis e correlacao"
     fase: F-01.2
-    status: pendente
+    status: concluida
     objetivo: "Criar src/lib/log.ts com log.debug, log.info, log.aviso e log.erro, redacao central, nivel por LOG_LEVEL e correlacao por AsyncLocalStorage."
     arquivos:
       cria: ["src/lib/log.ts", "tests/log.test.ts"]
-      altera: ["src/lib/ambiente.ts", "tests/ambiente.test.ts"]
+      altera: ["src/lib/ambiente.ts", "tests/ambiente.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md"]
     teste_integracao: "Cada chamada de log escreve uma unica linha JSON com nivel, quando, msg e os campos pelo console do nivel correspondente, e abaixo do nivel de LOG_LEVEL nao escreve nada."
     teste_funcional: "Um evento com senha, token, chave, authorization, cookie, secret, texto de mensagem, e-mail, chave sk-, texto v1:, token de bot e JWT nao deixa nenhum desses valores na linha, o e-mail sai mascarado e um Error sai so com nome e codigo."
     criterio_aceite: "tests/log.test.ts e tests/ambiente.test.ts passam e dentro de comCorrelacao a linha leva o campo correlacao."
     depende_de: ["T-01.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
 ---
 
 # Tasks — Sprint 01
@@ -99,12 +99,12 @@ titulo: "Modulo de log com redacao, niveis e correlacao"
 objetivo: "Criar src/lib/log.ts com log.debug, log.info, log.aviso e log.erro, redacao central, nivel por LOG_LEVEL e correlacao por AsyncLocalStorage."
 arquivos:
   cria: ["src/lib/log.ts", "tests/log.test.ts"]
-  altera: ["src/lib/ambiente.ts", "tests/ambiente.test.ts"]
+  altera: ["src/lib/ambiente.ts", "tests/ambiente.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md"]
 teste_integracao: "Cada chamada de log escreve uma unica linha JSON com nivel, quando, msg e os campos pelo console do nivel correspondente, e abaixo do nivel de LOG_LEVEL nao escreve nada."
 teste_funcional: "Um evento com senha, token, chave, authorization, cookie, secret, texto de mensagem, e-mail, chave sk-, texto v1:, token de bot e JWT nao deixa nenhum desses valores na linha, o e-mail sai mascarado e um Error sai so com nome e codigo."
 criterio_aceite: "tests/log.test.ts e tests/ambiente.test.ts passam e dentro de comCorrelacao a linha leva o campo correlacao."
 depende_de: ["T-01.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/log.test.ts, tests/ambiente.test.ts e tests/projeto.test.ts passam; suíte inteira da sprint 01: 2561 passed, 9 failed só em citações de linha do projeto.test.ts (ambiente.ts deslocado), refeitas e reexecutadas
 ```
 

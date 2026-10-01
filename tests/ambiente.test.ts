@@ -5,7 +5,7 @@ import { ambiente, MODELO_DE_TRANSCRICAO_PADRAO } from '@/lib/ambiente'
 
 const original = { ...process.env }
 afterEach(() => {
-  for (const chave of ['APP_NAME', 'TRUST_PROXY', 'MAX_TOKENS_RESPOSTA', 'MAX_UPLOAD_MB', 'TELEGRAM_API_BASE', 'TELEGRAM_PERMITIR_URL_NAO_HTTPS', 'MAX_VIDEO_MB', 'MAX_VIDEO_MINUTOS', 'FFMPEG_PATH', 'FFPROBE_PATH', 'OPENROUTER_MODELO_TRANSCRICAO', 'YOUTUBE_BASE', 'AUDITORIA_RETENCAO_DIAS', 'NODE_ENV']) {
+  for (const chave of ['APP_NAME', 'TRUST_PROXY', 'MAX_TOKENS_RESPOSTA', 'MAX_UPLOAD_MB', 'TELEGRAM_API_BASE', 'TELEGRAM_PERMITIR_URL_NAO_HTTPS', 'MAX_VIDEO_MB', 'MAX_VIDEO_MINUTOS', 'FFMPEG_PATH', 'FFPROBE_PATH', 'OPENROUTER_MODELO_TRANSCRICAO', 'YOUTUBE_BASE', 'AUDITORIA_RETENCAO_DIAS', 'LOG_LEVEL', 'NODE_ENV']) {
     if (original[chave] === undefined) delete process.env[chave]
     else process.env[chave] = original[chave]
   }
@@ -254,5 +254,24 @@ describe('retenção dos registros de auditoria (FT-10, PR-86)', () => {
       process.env.AUDITORIA_RETENCAO_DIAS = ruim
       expect(() => ambiente.auditoriaRetencaoDias).toThrow(/AUDITORIA_RETENCAO_DIAS/)
     }
+  })
+})
+
+describe('nível do log (FT-11, PR-92)', () => {
+  it('sem LOG_LEVEL, é info', () => {
+    delete process.env.LOG_LEVEL
+    expect(ambiente.logLevel).toBe('info')
+  })
+
+  it('aceita debug, info, aviso e erro, sem distinguir maiúsculas', () => {
+    for (const nivel of ['debug', 'info', 'aviso', 'erro']) {
+      process.env.LOG_LEVEL = nivel.toUpperCase()
+      expect(ambiente.logLevel).toBe(nivel)
+    }
+  })
+
+  it('recusa outro valor com erro claro que nomeia a variável', () => {
+    process.env.LOG_LEVEL = 'barulhento'
+    expect(() => ambiente.logLevel).toThrow(/LOG_LEVEL.*debug, info, aviso ou erro/)
   })
 })

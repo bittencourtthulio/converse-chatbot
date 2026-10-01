@@ -8,7 +8,7 @@ feature_id: FT-11
 sprint_id: sprint-01
 atualizado_em: 2026-10-01
 titulo: "Capacidade de testar: dependencias, instalacao de teste e nucleo do log"
-status: em_andamento
+status: concluido
 criterio_saida: "tests/dependencias-operacao.test.ts, tests/instalacao-apoio.test.ts, tests/log.test.ts e tests/ambiente.test.ts passam, npm audit sem vulnerabilidade high, tsc e lint sem erro"
 fases: ["F-01.1", "F-01.2"]
 riscos: ["o pacote tar pode trazer vulnerabilidade high (alternativa registrada na D-15)", "mover prisma e tsx para dependencies muda o lockfile inteiro (conferir npm audit e o build)"]

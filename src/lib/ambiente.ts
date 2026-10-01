@@ -24,6 +24,10 @@ function inteiroComPadrao(nome: string, padrao: number): number {
   return valor
 }
 
+/** Os níveis do log, do mais barulhento ao mais quieto (FT-11, PR-92). */
+export const NIVEIS_DE_LOG = ['debug', 'info', 'aviso', 'erro'] as const
+export type NivelDeLog = (typeof NIVEIS_DE_LOG)[number]
+
 export const ambiente = {
   get jwtSecret(): string {
     return obrigatoria('JWT_SECRET')
@@ -141,6 +145,13 @@ export const ambiente = {
    */
   get auditoriaRetencaoDias(): number {
     return inteiroComPadrao('AUDITORIA_RETENCAO_DIAS', 365)
+  },
+  /** Nível mínimo do log (FT-11, PR-92). Opcional: o padrão é `info`. */
+  get logLevel(): NivelDeLog {
+    const valor = process.env.LOG_LEVEL?.trim().toLowerCase()
+    if (!valor) return 'info'
+    if ((NIVEIS_DE_LOG as readonly string[]).includes(valor)) return valor as NivelDeLog
+    throw new Error('Variável LOG_LEVEL precisa ser debug, info, aviso ou erro.')
   },
   /** Endereço do YouTube; só o simulado de teste muda o padrão (PR-75, PR-77). */
   get youtubeBase(): string {
