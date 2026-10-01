@@ -204,7 +204,7 @@ entram no relatório final como o que o usuário precisa confirmar.
 **Origem:** catalogo_lacunas
 **Etapa:** b1
 **Provisória:** false
-**Realizada em:** FT-02
+**Realizada em:** FT-02, FT-07
 
 ---
 
@@ -230,7 +230,7 @@ entram no relatório final como o que o usuário precisa confirmar.
 **Origem:** catalogo_lacunas
 **Etapa:** b1
 **Provisória:** false
-**Realizada em:** FT-06
+**Realizada em:** FT-06, FT-07
 
 ---
 

@@ -10,14 +10,14 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-07.1
     titulo: "Verificacao e convencoes"
-    status: pendente
+    status: concluido
     criterio_saida: "Ponta a ponta no navegador e regras com arquivo:linha."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-07.01", "T-07.02"]
   - id: F-07.2
     titulo: "Fechamento"
-    status: pendente
+    status: concluido
     criterio_saida: "Mapa, premissas, recursao e relatorio."
     paralelizavel: false
     paralela_com: []
@@ -49,7 +49,7 @@ flowchart LR
 
   class T_07_01 concluida
   class T_07_02 concluida
-  class T_07_03 pendente
+  class T_07_03 concluida
   class T_07_01,T_07_02,T_07_03 critico
 ```
 

@@ -8,7 +8,7 @@ feature_id: FT-07
 sprint_id: sprint-07
 atualizado_em: 2026-09-30
 titulo: "Verificacao, convencoes e fechamento"
-status: pendente
+status: concluido
 criterio_saida: "Verificacao de ponta a ponta registrada, convencoes e lacunas atualizadas e a feature fechada no mapa."
 fases: ["F-07.1", "F-07.2"]
 riscos: ["o Telegram real nao e testavel (PEND-06)", "a ferramenta de navegador pode nao estar disponivel"]

@@ -41,7 +41,7 @@ tasks:
   - id: T-07.03
     titulo: "Fechamento no laco do buildx"
     fase: F-07.2
-    status: pendente
+    status: concluida
     objetivo: "Registrar a feature no mapa, nas premissas, na recursao e no projeto e conferir dependencias e ambiente."
     arquivos:
       cria: ["docs/canal-telegram/ORQUESTRADOR.md", "docs/canal-telegram/00-AUDITORIA.md", "docs/canal-telegram/FECHAMENTO.md", "docs/canal-telegram/RELATORIO-FEATURE.md", "docs/canal-telegram/BRIEFING-BUILDX.md", "docs/canal-telegram/00-DECISOES.md", "docs/canal-telegram/00-BLOQUEIOS.md", "docs/canal-telegram/base/00-INDICE.md", "docs/canal-telegram/base/00-LACUNAS.md", "docs/canal-telegram/base/telegram-bot-api.md", "docs/canal-telegram/base/turno-e-limites.md", "docs/canal-telegram/base/dados-segredo-e-ambiente.md", "docs/canal-telegram/base/rotas-painel-e-testes.md", "docs/entregas/canal-telegram/ENTREGA.md", "docs/entregas/canal-telegram/PR.md", "docs/entregas/canal-telegram/QA-PACOTE.md", "docs/entregas/canal-telegram/ATENCAO.md"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "grep de FT-07 no painel do MAPA.md devolve entregue, o total de premissas do frontmatter e 70 e tests/projeto.test.ts passa."
     depende_de: ["T-07.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
 ---
 
 # Tasks — Sprint 07
@@ -107,5 +107,5 @@ teste_funcional: "O MAPA.md mostra a FT-07 entregue com sprints, testes e PR loc
 criterio_aceite: "grep de FT-07 no painel do MAPA.md devolve entregue, o total de premissas do frontmatter e 70 e tests/projeto.test.ts passa."
 depende_de: ["T-07.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: verde — suíte inteira, 1730 passed (124 arquivos); tsc, lint, build e audit verdes
 ```
