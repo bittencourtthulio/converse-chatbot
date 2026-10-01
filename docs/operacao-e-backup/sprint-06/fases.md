@@ -10,7 +10,7 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-06.1
     titulo: "Biblioteca de restauracao"
-    status: nao_iniciado
+    status: em_andamento
     criterio_saida: "A validacao recusa o invalido sem efeito e a troca desfaz em falha"
     paralelizavel: false
     paralela_com: []
@@ -51,7 +51,7 @@ flowchart LR
   classDef pendente  fill:#eceff1,stroke:#78909c,color:#263238
   classDef critico   stroke-width:3px
 
-  class T_06_01 pendente
+  class T_06_01 concluida
   class T_06_02 pendente
   class T_06_03 pendente
   class T_06_04 pendente

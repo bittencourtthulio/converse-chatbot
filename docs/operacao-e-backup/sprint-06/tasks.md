@@ -11,18 +11,18 @@ tasks:
   - id: T-06.01
     titulo: "Validacao do backup antes de tocar na instalacao"
     fase: F-06.1
-    status: pendente
+    status: concluida
     objetivo: "Criar src/lib/restauracao.ts com a extracao segura para diretorio temporario, a conferencia do manifest e dos SHA-256 e a comparacao de esquema."
     arquivos:
-      cria: ["src/lib/restauracao.ts", "tests/restauracao-validacao.test.ts", "docs/operacao-e-backup/sprint-06/sprint.md", "docs/operacao-e-backup/sprint-06/fases.md", "docs/operacao-e-backup/sprint-06/tasks.md"]
+      cria: ["src/lib/restauracao.ts", "tests/restauracao-validacao.test.ts", "docs/operacao-e-backup/sprint-06/sprint.md", "docs/operacao-e-backup/sprint-06/fases.md", "docs/operacao-e-backup/sprint-06/tasks.md", "tests/apoio/backups-de-teste.ts"]
       altera: []
     teste_integracao: "lerEValidarBackup sobre um backup gerado extrai para o diretorio temporario, devolve o manifest validado e a posicao de cada parte, e compararEsquema devolve igual para o mesmo conjunto de migrations e mais_antigo para um prefixo."
     teste_funcional: "Arquivo adulterado (um byte do banco), sem manifest, truncado, com parte extra fora do manifesto, com caminho ../ ou absoluto e com link simbolico sao recusados com mensagem clara e esquema com migration desconhecida devolve mais_novo."
     criterio_aceite: "tests/restauracao-validacao.test.ts passa e a instalacao de destino nao e tocada em nenhum caso de recusa."
     depende_de: ["T-05.07"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-06.02
     titulo: "Troca de banco e storage com copia pre-restauracao e desfazer"
     fase: F-06.1
@@ -94,14 +94,14 @@ id: T-06.01
 titulo: "Validacao do backup antes de tocar na instalacao"
 objetivo: "Criar src/lib/restauracao.ts com a extracao segura para diretorio temporario, a conferencia do manifest e dos SHA-256 e a comparacao de esquema."
 arquivos:
-  cria: ["src/lib/restauracao.ts", "tests/restauracao-validacao.test.ts", "docs/operacao-e-backup/sprint-06/sprint.md", "docs/operacao-e-backup/sprint-06/fases.md", "docs/operacao-e-backup/sprint-06/tasks.md"]
+  cria: ["src/lib/restauracao.ts", "tests/restauracao-validacao.test.ts", "docs/operacao-e-backup/sprint-06/sprint.md", "docs/operacao-e-backup/sprint-06/fases.md", "docs/operacao-e-backup/sprint-06/tasks.md", "tests/apoio/backups-de-teste.ts"]
   altera: []
 teste_integracao: "lerEValidarBackup sobre um backup gerado extrai para o diretorio temporario, devolve o manifest validado e a posicao de cada parte, e compararEsquema devolve igual para o mesmo conjunto de migrations e mais_antigo para um prefixo."
 teste_funcional: "Arquivo adulterado (um byte do banco), sem manifest, truncado, com parte extra fora do manifesto, com caminho ../ ou absoluto e com link simbolico sao recusados com mensagem clara e esquema com migration desconhecida devolve mais_novo."
 criterio_aceite: "tests/restauracao-validacao.test.ts passa e a instalacao de destino nao e tocada em nenhum caso de recusa."
 depende_de: ["T-05.07"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/restauracao-validacao.test.ts 16 passed (3 rodadas estáveis); arquivos novos; a troca (restaurarArquivos) já está no mesmo módulo e é testada na T-06.02
 ```
 
 ---

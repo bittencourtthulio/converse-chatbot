@@ -8,7 +8,7 @@ feature_id: FT-11
 sprint_id: sprint-06
 atualizado_em: 2026-10-01
 titulo: "Restauracao e o teste que a prova"
-status: nao_iniciado
+status: em_andamento
 criterio_saida: "npm run restore restaura numa instalacao limpa e o teste fim a fim confere os dados linha a linha, a busca FTS, o arquivo, a auditoria e a chave cifrada; os casos negativos recusam sem efeito"
 fases: ["F-06.1", "F-06.2"]
 riscos: ["a troca de banco e storage precisa de desfazer se falhar no meio", "o teste fim a fim roda o comando como processo filho com banco proprio e nao pode tocar prisma/dev.db", "diretorio sem permissao nao se testa como root"]
