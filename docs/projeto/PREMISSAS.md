@@ -4,12 +4,12 @@ expx_tool: buildx
 kind: premissas
 projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-10-01
-total: 77
+total: 85
 por_origem:
   catalogo_lacunas: 27
   briefing: 0
   decisao_de_stack: 7
-  f2_autonoma: 43
+  f2_autonoma: 51
   recursao: 0
 ---
 
@@ -1024,6 +1024,110 @@ entram no relatório final como o que o usuário precisa confirmar.
 **Etapa:** b4
 **Provisória:** false
 **Realizada em:** FT-08
+
+---
+
+### PR-78 — Rótulo mascarado do interlocutor no histórico
+
+**Assunto:** F2 da FT-09 — PR-18 (dado pessoal) e PR-12
+**Decisão:** o histórico mostra o interlocutor por um rótulo que mascara dado pessoal: widget = "Visitante " mais os 6 primeiros caracteres do `visitanteId`; telegram = o `titulo` da conversa ("Telegram: Nome", nunca `@usuario` nem id do chat); painel = nome do usuário, ou "Usuário removido" quando o usuário não existe mais. O `identificadorExterno` completo não chega à interface, ao nome do arquivo exportado nem ao ouvinte `aoApagarConversa`. Qualquer usuário autenticado lê e apaga todas as conversas (PR-12), verificado no servidor.
+**Por quê:** o histórico é visível a toda a equipe e o texto livre já pode ter dado pessoal; mostrar só o necessário para distinguir interlocutores reduz a exposição, sem a FT-10.
+**O que invalida:** se a empresa exigir que só admin leia conversas, ou que o identificador completo apareça para atendimento.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-09
+
+---
+
+### PR-79 — Busca por texto do histórico: LIKE limitado
+
+**Assunto:** F2 da FT-09 — PR-13, PR-30 e CONVENCOES (texto do usuário nunca concatenado em SQL)
+**Decisão:** o filtro de texto usa `LIKE ... ESCAPE '\'` parametrizado sobre `Mensagem.conteudo`, com `%`, `_` e `\` do usuário escapados; o texto tem no máximo 200 caracteres; no máximo 200 conversas casadas entram no resultado; sem FTS novo nem índice novo. O `LIKE` do SQLite ignora maiúsculas só em ASCII (letras acentuadas diferenciam), e isso fica registrado como limite conhecido.
+**Por quê:** mantém o escopo (PR-04 reserva o FTS5 às fontes) e evita migration pesada; 200 casadas cobrem o uso de um workspace pequeno.
+**O que invalida:** se o volume passar de dezenas de milhares de mensagens (a varredura fica lenta) ou se a busca insensível a acento for requisito.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-09
+
+---
+
+### PR-80 — Apagar em lote e ponto de extensão da auditoria
+
+**Assunto:** F2 da FT-09 — PR-18 (parte de apagar conversa) e PR-19
+**Decisão:** `apagarConversa` e `apagarConversas` (no máximo 50 ids por pedido, uma transação, cascata nas mensagens, só apaga o que existe e devolve a contagem) emitem `aoApagarConversa` com `{conversaId, agenteId, canal, usuarioId, quantidadeDeMensagens}`, nunca o conteúdo nem o identificador externo; nada é gravado em auditoria nesta feature (a FT-10 registra o ouvinte). Confirmação de apagar é na própria tela, sem `window.confirm`. A retenção automática, a exclusão de usuário e o aviso de privacidade seguem sendo da FT-10.
+**Por quê:** o mesmo padrão de `aoAlterarCanal` (FT-07) deixa a auditoria ligável sem acoplar as features; o limite de 50 protege a transação e a tela.
+**O que invalida:** se a empresa quiser apagar por filtro inteiro (todas as conversas de um agente) ou desfazer a exclusão.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-09
+
+---
+
+### PR-81 — Painel inicial: números, gráfico e fuso do servidor
+
+**Assunto:** F2 da FT-09 — PR-27 (painel inicial) e PR-23 (acessibilidade)
+**Decisão:** o painel mostra agentes, fontes prontas e com erro, conversas e mensagens dos últimos 7 dias com quebra por canal, mensagens por dia nos últimos 14 dias e as 5 conversas mais recentes. A agregação é SQL parametrizado (`$queryRaw`) no serviço `src/servicos/painel.ts`; o dia é o do fuso do servidor (mesma convenção do teto diário, PR-57); dias sem mensagem entram com zero. O gráfico é SVG com `role="img"` e rótulo, mais tabela equivalente para leitor de tela, e distingue séries por texto e forma, nunca só por cor.
+**Por quê:** o teto diário já usa a meia-noite do servidor; manter um só fuso evita números que não batem entre telas.
+**O que invalida:** se a empresa atender em fuso diferente do servidor ou quiser períodos escolhidos pelo usuário.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-09
+
+---
+
+### PR-82 — Lista de primeiros passos do painel
+
+**Assunto:** F2 da FT-09 — PR-25 (demonstração) e PR-14 (chave nunca vai ao navegador)
+**Decisão:** o painel mostra uma lista de primeiros passos (chave do OpenRouter configurada, primeiro agente criado, primeira fonte pronta, chat publicado ou canal conectado) que se oculta sozinha quando todos estão feitos; o passo da chave só leva ao link de Integrações para admin (para usuário comum aparece sem link), e a tela nunca recebe a chave nem a máscara, só um booleano.
+**Por quê:** orienta quem chega a uma instalação vazia sem criar tela de onboarding à parte.
+**O que invalida:** se a empresa preferir um assistente de configuração em tela própria.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-09
+
+---
+
+### PR-83 — Exportação de conversa em texto e contrato HTTP do histórico
+
+**Assunto:** F2 da FT-09 — PR-13 e PR-18
+**Decisão:** `GET /api/conversas/[id]/exportar` devolve `text/plain; charset=utf-8` com `Content-Disposition: attachment` de nome fixo `conversa-<id>.txt` (id interno da conversa, nunca rótulo, nome ou identificador externo), `Cache-Control: no-store` e `nosniff`; o texto leva agente, canal, rótulo mascarado, horários e mensagens, sem fontes em trecho. `DELETE /api/conversas/[id]` e `POST /api/conversas/apagar` exigem sessão (401), id inexistente é 404 e lote vazio, acima de 50 ou com id inválido é 422.
+**Por quê:** nome sem dado pessoal evita vazar o interlocutor por nome de arquivo; o contrato espelha os handlers já existentes.
+**O que invalida:** se a empresa precisar de exportação em CSV ou JSON, ou de exportação em massa.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-09
+
+---
+
+### PR-84 — Conversas fictícias da seed
+
+**Assunto:** F2 da FT-09 — PR-25
+**Decisão:** a seed acrescenta ao agente de exemplo duas conversas fictícias com id fixo (uma do painel, do usuário de demonstração, outra do widget com `visitanteId` fictício), com mensagens e fontes que citam a fonte de exemplo; só cria se não existirem (idempotente); continua recusando `NODE_ENV=production`; nenhum dado real.
+**Por quê:** sem conversa as telas novas nasceriam vazias no roteiro do QA.
+**O que invalida:** nada.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-09
+
+---
+
+### PR-85 — Tokens de canal e de série do gráfico
+
+**Assunto:** F2 da FT-09 — PR-23 (tokens semânticos, nenhuma cor literal)
+**Decisão:** as cores das badges de canal (painel, widget, telegram) e das séries do gráfico entram como tokens novos em `src/estilos/tokens.css`, nos três blocos (claro e dois escuros idênticos), com contraste de 4,5:1 conferido por `tests/tokens.test.ts`; a diferença entre canais é também por texto e padrão (rótulo e hachura), nunca só cor.
+**Por quê:** o conjunto atual de tokens não tem série categórica; criar token mantém a regra de nenhum valor literal em componente.
+**O que invalida:** se a identidade visual da marca (PEND-02) trocar a paleta: basta redefinir os tokens.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-09
 
 ---
 
