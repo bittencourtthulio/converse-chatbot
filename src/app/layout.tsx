@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { ambiente } from '@/lib/ambiente'
+import { geist, inter, serifaItalica } from './fontes'
 import '../estilos/global.css'
 
 export function generateMetadata(): Metadata {
@@ -20,7 +21,7 @@ export default function LayoutRaiz({ children }: { children: React.ReactNode }) 
   return (
     // O script altera data-theme antes de o React hidratar; sem o aviso
     // suprimido, o React reclamaria da diferença nesse atributo.
-    <html lang="pt-BR" suppressHydrationWarning>
+    <html lang="pt-BR" className={`${geist.variable} ${inter.variable} ${serifaItalica.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: SCRIPT_DO_TEMA }} />
       </head>
