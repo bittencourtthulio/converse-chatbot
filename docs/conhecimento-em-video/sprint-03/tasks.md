@@ -56,7 +56,7 @@ tasks:
   - id: T-03.04
     titulo: "Rota de upload de video"
     fase: F-03.2
-    status: pendente
+    status: concluida
     objetivo: "Criar POST /api/agentes/[id]/fontes/video com sessao, recusa por Content-Length, corpo bruto em stream ate o servico e resposta 202 com a fonte."
     arquivos:
       cria: ["src/app/api/agentes/[id]/fontes/video/route.ts", "tests/video-rota.test.ts"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "tests/video-rota.test.ts passa com npm run build feito antes."
     depende_de: ["T-03.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
 ---
 
 # Tasks — Sprint 03
@@ -139,7 +139,7 @@ teste_funcional: "Sem sessao responde 401, Content-Length acima do limite respon
 criterio_aceite: "tests/video-rota.test.ts passa com npm run build feito antes."
 depende_de: ["T-03.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/video-rota.test.ts, 6 passed
 ```
 
 ---
