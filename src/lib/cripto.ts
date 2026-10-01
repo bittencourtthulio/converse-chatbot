@@ -3,12 +3,11 @@
 // A chave (`ENCRYPTION_KEY`) só é lida e validada quando um segredo é cifrado
 // ou decifrado: a ausência dela não derruba o resto do sistema.
 import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto'
-import { ambiente } from '@/lib/ambiente'
+import { ambiente, bytesDaChaveDeCriptografia } from '@/lib/ambiente'
 import { ErroDeAplicacao } from '@/lib/erros'
 
 const VERSAO = 'v1'
 const TAMANHO_DO_IV = 12
-const TAMANHO_DA_CHAVE = 32
 
 const configuracaoInvalida = (detalhe: string) =>
   new ErroDeAplicacao(
@@ -25,19 +24,11 @@ const segredoIlegivel = (detalhe: string) =>
     'segredo_ilegivel',
   )
 
-/** Lê e valida a chave. Nunca inclui o valor dela em mensagem. */
+/** Lê e valida a chave (a regra é de `bytesDaChaveDeCriptografia`). Nunca inclui o valor dela em mensagem. */
 function chave(): Buffer {
-  const bruta = ambiente.chaveDeCriptografia
-  if (!bruta) throw configuracaoInvalida('não está definida')
-
-  let bytes: Buffer | null = null
-  if (/^[0-9a-fA-F]{64}$/.test(bruta)) bytes = Buffer.from(bruta, 'hex')
-  else if (/^[A-Za-z0-9+/_-]+={0,2}$/.test(bruta)) {
-    bytes = Buffer.from(bruta, 'base64')
-  }
-  if (!bytes || bytes.length !== TAMANHO_DA_CHAVE) {
-    throw configuracaoInvalida('precisa ter exatamente 32 bytes')
-  }
+  if (!ambiente.chaveDeCriptografia) throw configuracaoInvalida('não está definida')
+  const bytes = bytesDaChaveDeCriptografia(ambiente.chaveDeCriptografia)
+  if (!bytes) throw configuracaoInvalida('precisa ter exatamente 32 bytes')
   return bytes
 }
 

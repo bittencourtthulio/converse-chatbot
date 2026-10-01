@@ -11,7 +11,7 @@ tasks:
   - id: T-03.01
     titulo: "validarAmbiente e variaveis de operacao"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Criar validarAmbiente em src/lib/ambiente.ts, as variaveis LOG_LEVEL, BACKUP_DIR, BACKUP_MANTER, o caminho do arquivo do banco e o fuso, e exportar a validacao da ENCRYPTION_KEY de cripto.ts."
     arquivos:
       cria: ["tests/ambiente-validar.test.ts", "docs/operacao-e-backup/sprint-03/sprint.md", "docs/operacao-e-backup/sprint-03/fases.md", "docs/operacao-e-backup/sprint-03/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/ambiente-validar.test.ts, tests/ambiente.test.ts e tests/cripto.test.ts passam e a mensagem de erro nunca contem o valor de uma variavel."
     depende_de: ["T-02.07"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
   - id: T-03.02
     titulo: "Start de producao derrubado por configuracao ausente"
     fase: F-03.1
@@ -86,7 +86,7 @@ teste_funcional: "JWT_SECRET de 31 caracteres, ENCRYPTION_KEY invalida e BACKUP_
 criterio_aceite: "tests/ambiente-validar.test.ts, tests/ambiente.test.ts e tests/cripto.test.ts passam e a mensagem de erro nunca contem o valor de uma variavel."
 depende_de: ["T-02.07"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2639 passed, 0 failed (218 arquivos); build antes
 ```
 
 ---

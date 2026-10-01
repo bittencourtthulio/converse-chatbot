@@ -264,10 +264,10 @@ describe('convenções do chat embutido (FT-06)', () => {
     ['src/widget/widget.js:233', /e\.origin !== origem/],
     ['src/app/widget.js/route.ts:12', /export function GET/],
     ['src/componentes/embed-logica.ts:64', /export function criarGuardaDoVisitante/],
-    ['src/lib/ambiente.ts:70', /get appUrlPublica/],
-    ['src/lib/ambiente.ts:85', /get maxTokensDaResposta/],
-    ['src/lib/ambiente.ts:92', /get storageDir/],
-    ['src/lib/ambiente.ts:99', /get maxUploadBytes/],
+    ['src/lib/ambiente.ts:176', /get appUrlPublica/],
+    ['src/lib/ambiente.ts:191', /get maxTokensDaResposta/],
+    ['src/lib/ambiente.ts:198', /get storageDir/],
+    ['src/lib/ambiente.ts:205', /get maxUploadBytes/],
     ['src/app/eventos-sse.ts:16', /export type MapeadorDeErro/],
     ['src/app/eventos-sse.ts:39', /export function fluxoDeEventos/],
   ]
@@ -335,8 +335,8 @@ describe('convenções do canal Telegram (FT-07)', () => {
     ['tests/apoio/servidor.ts:31', /logs: \(\) => saida/],
     ['src/componentes/canais.ts:13', /export const CANAIS_DO_AGENTE/],
     ['src/componentes/canais-logica.ts:72', /export function visaoDoCartaoTelegram/],
-    ['src/lib/ambiente.ts:103', /get telegramApiBase/],
-    ['src/lib/ambiente.ts:111', /get telegramPermitirUrlNaoHttps/],
+    ['src/lib/ambiente.ts:209', /get telegramApiBase/],
+    ['src/lib/ambiente.ts:217', /get telegramPermitirUrlNaoHttps/],
   ]
 
   it.each(CITACOES)('%s existe e contém o que o CONVENCOES.md diz', (citacao, esperado) => {
@@ -407,9 +407,9 @@ describe('convenções do vídeo (FT-08)', () => {
     ['src/servicos/integracoes.ts:71', /export async function estadoDoOpenrouter/],
     ['src/servicos/integracoes.ts:206', /export async function modeloDeTranscricaoEfetivo/],
     ['src/servicos/integracoes.ts:219', /export async function salvarModeloDeTranscricao/],
-    ['src/lib/ambiente.ts:119', /get maxVideoBytes/],
-    ['src/lib/ambiente.ts:157', /get youtubeBase/],
-    ['src/lib/ambiente.ts:167', /export const MODELO_DE_TRANSCRICAO_PADRAO/],
+    ['src/lib/ambiente.ts:225', /get maxVideoBytes/],
+    ['src/lib/ambiente.ts:293', /get youtubeBase/],
+    ['src/lib/ambiente.ts:303', /export const MODELO_DE_TRANSCRICAO_PADRAO/],
     ['src/lib/youtube.ts:54', /export function destinoPermitido/],
     ['src/lib/youtube.ts:75', /async function lerComLimite/],
     ['src/lib/youtube.ts:224', /export function escolherFaixa/],

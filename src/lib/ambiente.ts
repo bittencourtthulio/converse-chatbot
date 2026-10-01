@@ -28,6 +28,112 @@ function inteiroComPadrao(nome: string, padrao: number): number {
 export const NIVEIS_DE_LOG = ['debug', 'info', 'aviso', 'erro'] as const
 export type NivelDeLog = (typeof NIVEIS_DE_LOG)[number]
 
+const TAMANHO_DA_CHAVE = 32
+
+/**
+ * Os 32 bytes da `ENCRYPTION_KEY` (hexadecimal de 64 caracteres ou base64), ou `null` se ela não
+ * existe ou não tem 32 bytes. Um só lugar para a validação: `src/lib/cripto.ts` a usa ao cifrar e
+ * `validarAmbiente`, a tela Sistema e o start de produção a usam para não divergir (PR-94).
+ */
+export function bytesDaChaveDeCriptografia(bruta: string | undefined): Buffer | null {
+  const valor = bruta?.trim()
+  if (!valor) return null
+  let bytes: Buffer | null = null
+  if (/^[0-9a-fA-F]{64}$/.test(valor)) bytes = Buffer.from(valor, 'hex')
+  else if (/^[A-Za-z0-9+/_-]+={0,2}$/.test(valor)) bytes = Buffer.from(valor, 'base64')
+  return bytes && bytes.length === TAMANHO_DA_CHAVE ? bytes : null
+}
+
+/** A configuração de produção está errada: lista os NOMES das variáveis, nunca os valores (PR-94). */
+export class ErroDeConfiguracao extends Error {
+  constructor(
+    readonly erros: string[],
+    readonly avisos: string[],
+  ) {
+    super(
+      'Configuração inválida: o servidor não pode subir. Corrija estas variáveis (veja o arquivo de exemplo de ' +
+        `ambiente e o README): ${erros.join('; ')}.`,
+    )
+    this.name = 'ErroDeConfiguracao'
+  }
+}
+
+export interface ResultadoDaValidacao {
+  /** Sempre vazio quando a função devolve: com erro ela lança `ErroDeConfiguracao`. */
+  erros: string[]
+  avisos: string[]
+}
+
+type Env = Record<string, string | undefined>
+
+// Opcionais que, se informadas, precisam ser inteiros positivos (o teto de MAX_VIDEO_MB é conferido à parte).
+const INTEIROS_OPCIONAIS = [
+  'JWT_TTL_SEGUNDOS',
+  'MAX_TOKENS_RESPOSTA',
+  'MAX_UPLOAD_MB',
+  'MAX_VIDEO_MB',
+  'MAX_VIDEO_MINUTOS',
+  'AUDITORIA_RETENCAO_DIAS',
+  'BACKUP_MANTER',
+]
+
+/**
+ * Valida a configuração no start (L20, PR-94). Só age com `NODE_ENV=production`: `JWT_SECRET` (32
+ * caracteres ou mais), `DATABASE_URL` (arquivo SQLite) e `ENCRYPTION_KEY` válida são obrigatórias, e
+ * qualquer opcional informada com formato inválido também entra na lista; com erro, lança
+ * `ErroDeConfiguracao` com os nomes (nunca os valores). `APP_URL` ausente ou sem HTTPS é só aviso, porque o
+ * chat embutido e o Telegram dependem dela mas o sistema sobe sem. Fora de produção devolve listas vazias:
+ * o comportamento lazy da `ENCRYPTION_KEY` continua (especializa a decisão D-02 da FT-02 só para produção).
+ */
+export function validarAmbiente(opcoes: { env?: Env } = {}): ResultadoDaValidacao {
+  const env = opcoes.env ?? process.env
+  if (env.NODE_ENV !== 'production') return { erros: [], avisos: [] }
+  const erros: string[] = []
+  const avisos: string[] = []
+  const valor = (nome: string) => env[nome]?.trim()
+
+  const segredo = valor('JWT_SECRET')
+  if (!segredo) erros.push('JWT_SECRET (ausente)')
+  else if (segredo.length < 32) erros.push('JWT_SECRET (precisa ter 32 caracteres ou mais)')
+
+  const banco = valor('DATABASE_URL')
+  if (!banco) erros.push('DATABASE_URL (ausente)')
+  else if (!banco.startsWith('file:')) erros.push('DATABASE_URL (precisa ser um arquivo SQLite, file:...)')
+
+  const chave = valor('ENCRYPTION_KEY')
+  if (!chave) erros.push('ENCRYPTION_KEY (ausente)')
+  else if (!bytesDaChaveDeCriptografia(chave)) erros.push('ENCRYPTION_KEY (precisa ter 32 bytes em hexadecimal ou base64)')
+
+  for (const nome of INTEIROS_OPCIONAIS) {
+    const bruto = valor(nome)
+    if (bruto === undefined || bruto === '') continue
+    const n = Number(bruto)
+    if (!/^\d+$/.test(bruto) || !Number.isSafeInteger(n) || n <= 0) erros.push(`${nome} (precisa ser um inteiro positivo)`)
+    else if (nome === 'MAX_VIDEO_MB' && n > MAXIMO_DE_VIDEO_MB) erros.push(`MAX_VIDEO_MB (no máximo ${MAXIMO_DE_VIDEO_MB})`)
+  }
+  const nivel = valor('LOG_LEVEL')
+  if (nivel && !(NIVEIS_DE_LOG as readonly string[]).includes(nivel.toLowerCase())) {
+    erros.push(`LOG_LEVEL (precisa ser ${NIVEIS_DE_LOG.slice(0, -1).join(', ')} ou ${NIVEIS_DE_LOG.at(-1)})`)
+  }
+
+  const url = valor('APP_URL')
+  if (!url) {
+    avisos.push('APP_URL não definida: o chat embutido e o webhook do Telegram precisam da URL pública HTTPS do sistema')
+  } else {
+    let protocolo: string | null = null
+    try {
+      protocolo = new URL(url).protocol
+    } catch {
+      protocolo = null
+    }
+    if (protocolo !== 'http:' && protocolo !== 'https:') erros.push('APP_URL (precisa ser uma URL http ou https)')
+    else if (protocolo === 'http:') avisos.push('APP_URL sem HTTPS: o chat embutido e o Telegram exigem uma URL pública HTTPS')
+  }
+
+  if (erros.length > 0) throw new ErroDeConfiguracao(erros, avisos)
+  return { erros, avisos }
+}
+
 export const ambiente = {
   get jwtSecret(): string {
     return obrigatoria('JWT_SECRET')
@@ -145,6 +251,36 @@ export const ambiente = {
    */
   get auditoriaRetencaoDias(): number {
     return inteiroComPadrao('AUDITORIA_RETENCAO_DIAS', 365)
+  },
+  /** A `ENCRYPTION_KEY` existe e tem 32 bytes? Só sim ou não: nunca o valor (tela Sistema, PR-94). */
+  get chaveDeCriptografiaValida(): boolean {
+    return bytesDaChaveDeCriptografia(process.env.ENCRYPTION_KEY) !== null
+  },
+  /**
+   * Onde os backups são gravados (FT-11, PR-96). Relativa ao diretório de execução; o padrão é
+   * `./backups`, que o `.gitignore` já ignora.
+   */
+  get backupDir(): string {
+    return path.resolve(/*turbopackIgnore: true*/ process.cwd(), textoComPadrao('BACKUP_DIR', 'backups'))
+  },
+  /** Quantos backups do padrão de nome ficam em `BACKUP_DIR` (PR-96). Padrão 7. */
+  get backupManter(): number {
+    return inteiroComPadrao('BACKUP_MANTER', 7)
+  },
+  /**
+   * O arquivo SQLite de `DATABASE_URL`, resolvido como o adaptador do Prisma faz: caminho absoluto
+   * fica, relativo é relativo ao diretório de execução, e o que vem depois de `?` sai (FT-11, PR-96).
+   */
+  get bancoArquivo(): string {
+    const url = process.env.DATABASE_URL?.trim()
+    if (!url) throw new Error('Variável de ambiente obrigatória ausente: DATABASE_URL.')
+    if (!url.startsWith('file:')) throw new Error('Variável DATABASE_URL precisa ser um arquivo SQLite, como file:/data/app.db.')
+    const caminho = url.slice('file:'.length).split('?')[0]!.replace(/^\/\/(?=\/)/, '')
+    return path.resolve(/*turbopackIgnore: true*/ process.cwd(), caminho)
+  },
+  /** O fuso do servidor: `TZ`, ou o do processo. O dia local do painel e o filtro da auditoria o seguem (FT-09). */
+  get fusoHorario(): string {
+    return textoComPadrao('TZ', Intl.DateTimeFormat().resolvedOptions().timeZone)
   },
   /** Nível mínimo do log (FT-11, PR-92). Opcional: o padrão é `info`. */
   get logLevel(): NivelDeLog {
