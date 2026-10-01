@@ -26,7 +26,7 @@ tasks:
   - id: T-01.02
     titulo: "Fixtures de conversa antiga e de registro de auditoria"
     fase: F-01.2
-    status: pendente
+    status: concluida
     objetivo: "Criar o apoio que grava conversas com instante exato de atualizacao e registros de auditoria no banco de teste."
     arquivos:
       cria: ["tests/apoio/privacidade.ts", "tests/privacidade-apoio.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/privacidade-apoio.test.ts passa e a fixture aceita instante, agente, canal, identificador e quantidade de mensagens por parametro."
     depende_de: ["T-01.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-01.03
     titulo: "Variavel AUDITORIA_RETENCAO_DIAS"
     fase: F-01.2
@@ -88,7 +88,7 @@ teste_funcional: "Dez conversas criadas em lote com datas e canais distintos sao
 criterio_aceite: "tests/privacidade-apoio.test.ts passa e a fixture aceita instante, agente, canal, identificador e quantidade de mensagens por parametro."
 depende_de: ["T-01.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/privacidade-apoio.test.ts 5 passed; so arquivos novos de teste
 ```
 
 ---
