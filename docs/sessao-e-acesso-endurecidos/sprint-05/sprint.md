@@ -8,7 +8,7 @@ feature_id: FT-12
 sprint_id: sprint-05
 atualizado_em: 2026-10-01
 titulo: "Prova de ponta a ponta no servidor de producao"
-status: nao_iniciado
+status: concluido
 criterio_saida: "contra next start: Set-Cookie do login real, login imediato apos a troca de senha, logout com cookie roubado barrado, renovacao do usuario ativo alem do TTL e queda do inativo; build, tsc, lint, suite inteira e audit verdes"
 fases: ["F-05.1", "F-05.2"]
 riscos: ["o relogio do servidor de producao nao e injetavel: a prova usa JWT_TTL_SEGUNDOS curto e espera real de poucos segundos", "carga alheia na maquina pode estourar o tempo: esperar, nao culpar o codigo"]

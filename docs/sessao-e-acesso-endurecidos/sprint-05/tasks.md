@@ -56,7 +56,7 @@ tasks:
   - id: T-05.04
     titulo: "Portoes: suite inteira, tsc, lint, build e audit"
     fase: F-05.2
-    status: pendente
+    status: concluida
     objetivo: "Rodar os portoes da feature com a suite inteira e registrar o resultado e as mutacoes."
     arquivos:
       cria: []
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "Todos os comandos saem com 0 e MUTACOES.md tem uma linha por protecao provada."
     depende_de: ["T-05.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
 ---
 
 # Tasks — Sprint 05
@@ -139,5 +139,5 @@ teste_funcional: "npm audit --audit-level=high devolve 0 vulnerabilidades e a su
 criterio_aceite: "Todos os comandos saem com 0 e MUTACOES.md tem uma linha por protecao provada."
 depende_de: ["T-05.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — build, tsc --noEmit, eslint e audit (0 vulnerabilidades) limpos; suíte inteira: 261 arquivos, 2972 passed, 9 skipped, 0 failed (portão da sprint 05)
 ```

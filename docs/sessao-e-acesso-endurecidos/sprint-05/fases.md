@@ -10,14 +10,14 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-05.1
     titulo: "Sessao de ponta a ponta"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "as tasks T-05.01, T-05.02, T-05.03 concluidas com os dois testes passando"
     paralelizavel: false
     paralela_com: []
     tasks: ["T-05.01", "T-05.02", "T-05.03"]
   - id: F-05.2
     titulo: "Portoes da suite"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "as tasks T-05.04 concluidas com os dois testes passando"
     paralelizavel: false
     paralela_com: []
@@ -52,7 +52,7 @@ flowchart LR
   class T_05_01 concluida
   class T_05_02 concluida
   class T_05_03 concluida
-  class T_05_04 pendente
+  class T_05_04 concluida
   class T_05_01,T_05_02,T_05_03,T_05_04 critico
 ```
 
