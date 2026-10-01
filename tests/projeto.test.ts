@@ -125,6 +125,17 @@ describe('pipeline de verificação', () => {
     expect(ci).toMatch(/JWT_SECRET:\s*\S+/)
     expect(ci).not.toContain('secrets.')
   })
+
+  it('tem o job construir-imagem (FT-11, PR-24) que roda docker build sem publicar, e o job verificar segue igual', () => {
+    expect(ci).toMatch(/^  verificar:/m)
+    expect(ci).toMatch(/^  construir-imagem:/m)
+    const job = ci.slice(ci.indexOf('  construir-imagem:'))
+    expect(job).toMatch(/run:\s*docker build\b/)
+    expect(job).not.toMatch(/docker push|docker login|docker\/login-action|build-push-action|push:\s*true|registry|secrets\./i)
+    expect(ci.indexOf('  verificar:')).toBeLessThan(ci.indexOf('  construir-imagem:'))
+    // O job verificar mantém os passos, na mesma ordem (o teste de ordem acima só olha para ele).
+    expect(ci.slice(0, ci.indexOf('  construir-imagem:'))).toContain('npm audit --audit-level=high')
+  })
 })
 
 describe('README do projeto', () => {

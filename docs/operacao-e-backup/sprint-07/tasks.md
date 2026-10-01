@@ -71,7 +71,7 @@ tasks:
   - id: T-07.05
     titulo: "Job de CI que constroi a imagem"
     fase: F-07.2
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar ao CI um job que roda docker build sem publicar."
     arquivos:
       cria: []
@@ -81,8 +81,8 @@ tasks:
     criterio_aceite: "tests/projeto.test.ts passa."
     depende_de: ["T-07.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
 ---
 
 # Tasks — Sprint 07
@@ -169,6 +169,6 @@ teste_funcional: "O job verificar existente continua com os passos de lint, tipo
 criterio_aceite: "tests/projeto.test.ts passa."
 depende_de: ["T-07.04"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/projeto.test.ts 176 passed; suíte inteira da sprint 07 no portão
 ```
 
