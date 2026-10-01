@@ -1422,3 +1422,93 @@ textarea { min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: verti
   .canal-acao > .botao, .canal-acoes > .botao { width: 100%; }
   .canal-limite .botao { width: 100%; }
 }
+
+/* ---------- conversas (FT-09) ---------- */
+
+.badge-de-canal {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: var(--texto-pequeno);
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.badge-de-canal-painel { background: var(--canal-painel-bg); color: var(--canal-painel-fg); border-color: var(--canal-painel-borda); }
+.badge-de-canal-widget { background: var(--canal-widget-bg); color: var(--canal-widget-fg); border-color: var(--canal-widget-borda); }
+.badge-de-canal-telegram { background: var(--canal-telegram-bg); color: var(--canal-telegram-fg); border-color: var(--canal-telegram-borda); }
+
+.filtros-de-conversas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  padding: 16px 20px;
+  align-items: end;
+}
+.filtros-de-conversas .campo-largo { grid-column: span 2; }
+.filtros-de-conversas input[type='date'] {
+  width: 100%;
+  min-height: var(--altura-controle);
+  padding: 0 12px;
+  background: var(--bg-surface);
+  color: var(--fg-default);
+  border: 1px solid var(--border-input);
+  border-radius: var(--raio-controle);
+  font: inherit;
+}
+.filtros-acoes { grid-column: 1 / -1; }
+
+.tabela-de-conversas td, .tabela-de-conversas th { vertical-align: top; }
+.tabela-de-conversas tbody tr { position: relative; }
+.tabela-de-conversas .coluna-selecao { width: 44px; padding-right: 0; }
+.tabela-de-conversas input[type='checkbox'] { width: 20px; height: 20px; accent-color: var(--accent); position: relative; z-index: 1; }
+.tabela-de-conversas .celula-numero { font-variant-numeric: tabular-nums; }
+.tabela-de-conversas .celula-previa { max-width: 36ch; overflow-wrap: anywhere; color: var(--fg-muted); }
+.tabela-de-conversas .linha-selecionada { background: var(--bg-selected); }
+.link-da-conversa { font-weight: 600; color: var(--fg-default); text-decoration: none; overflow-wrap: anywhere; }
+.link-da-conversa::after { content: ''; position: absolute; inset: 0; }
+.link-da-conversa:hover { color: var(--accent-text); text-decoration: underline; }
+.link-da-conversa:focus-visible { outline: 2px solid var(--border-focus); outline-offset: -2px; border-radius: var(--raio-controle); }
+
+.paginas-numeradas { display: flex; align-items: center; gap: 4px; list-style: none; margin: 0; padding: 0; flex-wrap: wrap; }
+.paginas-numeradas li { display: flex; align-items: center; gap: 4px; }
+.centralizado { margin-left: auto; margin-right: auto; text-align: center; }
+
+@media (max-width: 768px) {
+  .filtros-de-conversas { grid-template-columns: minmax(0, 1fr); }
+  .filtros-de-conversas .campo-largo { grid-column: auto; }
+  .filtros-de-conversas input, .filtros-de-conversas select, .filtros-de-conversas .botao { min-height: var(--alvo-toque); }
+  .filtros-de-conversas .botao { flex: 1 1 140px; }
+  .paginas-numeradas .botao, .paginacao .botao { min-height: var(--alvo-toque); min-width: var(--alvo-toque); }
+
+  .tabela-envoltorio { overflow-x: visible; }
+  .tabela-de-conversas, .tabela-de-conversas tbody { display: block; }
+  .tabela-de-conversas thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .tabela-de-conversas tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tabela-de-conversas tbody tr:last-child { border-bottom: 0; }
+  .tabela-de-conversas td { display: flex; gap: 8px; padding: 0; border: 0; align-items: baseline; min-width: 0; }
+  .tabela-de-conversas td::before {
+    content: attr(data-rotulo);
+    flex: none;
+    min-width: 8.5rem;
+    color: var(--fg-muted);
+    font-size: var(--texto-pequeno);
+    font-weight: 600;
+  }
+  .tabela-de-conversas td.celula-principal { font-size: var(--texto-grande); }
+  .tabela-de-conversas td.celula-principal::before { display: none; }
+  .tabela-de-conversas .coluna-selecao { width: auto; position: absolute; right: 12px; top: 10px; }
+  .tabela-de-conversas .coluna-selecao::before { display: none; }
+  .tabela-de-conversas .celula-previa { max-width: none; }
+  .link-da-conversa { min-height: var(--alvo-toque); display: inline-flex; align-items: center; }
+}
+
+/* ---------- fim das conversas (FT-09) ---------- */

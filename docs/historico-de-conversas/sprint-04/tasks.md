@@ -26,18 +26,18 @@ tasks:
   - id: T-04.02
     titulo: "Pagina da lista de conversas"
     fase: F-04.1
-    status: pendente
+    status: concluida
     objetivo: "Criar /conversas com filtros, tabela que vira cartoes, badges de canal, paginacao, vazio, carregando e erro."
     arquivos:
-      cria: ["src/app/(sistema)/conversas/page.tsx", "src/app/(sistema)/conversas/loading.tsx", "src/componentes/ListaDeConversas.tsx", "src/componentes/FiltrosDeConversas.tsx", "src/componentes/BadgeDeCanal.tsx", "tests/conversas-lista-ui.test.tsx", "tests/conversas-lista-estilos.test.ts"]
+      cria: ["src/app/(sistema)/conversas/(lista)/page.tsx", "src/app/(sistema)/conversas/(lista)/loading.tsx", "src/componentes/ListaDeConversas.tsx", "src/componentes/FiltrosDeConversas.tsx", "src/componentes/BadgeDeCanal.tsx", "tests/conversas-lista-ui.test.tsx", "tests/conversas-lista-estilos.test.ts"]
       altera: ["src/estilos/global.css", "tests/rotas.test.ts"]
     teste_integracao: "A pagina renderizada contra o servidor de producao do teste com conversas dos tres canais traz filtros, linhas clicaveis, badges com texto do canal e paginacao, e abre vazia com orientacao."
     teste_funcional: "A renderizacao com 3 conversas mostra rotulo, agente, canal, numero de mensagens, atividade e previa, a linha e um link para /conversas/<id>, sem conversas aparece o estado vazio que explica testar, publicar e conectar Telegram e o CSS traz o layout de cartoes abaixo de 768px."
     criterio_aceite: "tests/conversas-lista-ui.test.tsx, tests/conversas-lista-estilos.test.ts e o bloco de conversas de tests/rotas.test.ts passam."
     depende_de: ["T-04.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-04.03
     titulo: "Selecao e apagar em lote com confirmacao"
     fase: F-04.2
@@ -98,14 +98,14 @@ id: T-04.02
 titulo: "Pagina da lista de conversas"
 objetivo: "Criar /conversas com filtros, tabela que vira cartoes, badges de canal, paginacao, vazio, carregando e erro."
 arquivos:
-  cria: ["src/app/(sistema)/conversas/page.tsx", "src/app/(sistema)/conversas/loading.tsx", "src/componentes/ListaDeConversas.tsx", "src/componentes/FiltrosDeConversas.tsx", "src/componentes/BadgeDeCanal.tsx", "tests/conversas-lista-ui.test.tsx", "tests/conversas-lista-estilos.test.ts"]
+  cria: ["src/app/(sistema)/conversas/(lista)/page.tsx", "src/app/(sistema)/conversas/(lista)/loading.tsx", "src/componentes/ListaDeConversas.tsx", "src/componentes/FiltrosDeConversas.tsx", "src/componentes/BadgeDeCanal.tsx", "tests/conversas-lista-ui.test.tsx", "tests/conversas-lista-estilos.test.ts"]
   altera: ["src/estilos/global.css", "tests/rotas.test.ts"]
 teste_integracao: "A pagina renderizada contra o servidor de producao do teste com conversas dos tres canais traz filtros, linhas clicaveis, badges com texto do canal e paginacao, e abre vazia com orientacao."
 teste_funcional: "A renderizacao com 3 conversas mostra rotulo, agente, canal, numero de mensagens, atividade e previa, a linha e um link para /conversas/<id>, sem conversas aparece o estado vazio que explica testar, publicar e conectar Telegram e o CSS traz o layout de cartoes abaixo de 768px."
 criterio_aceite: "tests/conversas-lista-ui.test.tsx, tests/conversas-lista-estilos.test.ts e o bloco de conversas de tests/rotas.test.ts passam."
 depende_de: ["T-04.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/conversas-lista-ui, conversas-lista-estilos, tokens e rotas passam; desvio: pagina em conversas/(lista)/
 ```
 
 ---

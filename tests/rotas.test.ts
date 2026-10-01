@@ -80,7 +80,7 @@ async function cookieDe(email: string): Promise<string> {
 }
 
 describe('sem sessão', () => {
-  it.each(['/', '/perfil', '/perfil/senha', '/configuracoes/usuarios', '/configuracoes/integracoes', '/agentes', '/agentes/novo'])(
+  it.each(['/', '/perfil', '/perfil/senha', '/configuracoes/usuarios', '/configuracoes/integracoes', '/agentes', '/agentes/novo', '/conversas'])(
     'manda %s para o login',
     async (rota) => {
       const r = await pedir(rota)
@@ -119,6 +119,16 @@ describe('com sessão de usuário comum', () => {
     expect(html).toContain('Ainda não há o que mostrar')
     expect(html).toContain('estado-vazio')
     expect(html).not.toContain('Cadastrar usuário')
+  })
+
+  it('a lista de conversas abre, vazia, com a orientação para gerar conversas', async () => {
+    const r = await pedir('/conversas', await cookieDe('comum.rota@teste.local'))
+    const html = await r.text()
+    expect(r.status).toBe(200)
+    expect(html).toContain('Conversas')
+    expect(html).toContain('Nenhuma conversa ainda')
+    expect(html).toContain('Testar')
+    expect(html).toContain('role="search"')
   })
 
   it('o perfil abre', async () => {
