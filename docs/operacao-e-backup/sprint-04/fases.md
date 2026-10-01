@@ -10,7 +10,7 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-04.1
     titulo: "Menu, guarda e esqueleto"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "O item Sistema aparece so para admin e o nao admin recebe 307"
     paralelizavel: false
     paralela_com: []
@@ -47,7 +47,7 @@ flowchart LR
   classDef pendente  fill:#eceff1,stroke:#78909c,color:#263238
   classDef critico   stroke-width:3px
 
-  class T_04_01 pendente
+  class T_04_01 concluida
   class T_04_02 pendente
   class T_04_03 pendente
   class T_04_03,T_04_02,T_04_01 critico

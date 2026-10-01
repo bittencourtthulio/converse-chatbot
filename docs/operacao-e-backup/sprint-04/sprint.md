@@ -8,7 +8,7 @@ feature_id: FT-11
 sprint_id: sprint-04
 atualizado_em: 2026-10-01
 titulo: "Tela Configuracoes > Sistema"
-status: nao_iniciado
+status: em_andamento
 criterio_saida: "A tela /configuracoes/sistema existe so para admin, mostra o estado e os detalhes sem valor de segredo, e funciona a 375 px nos dois temas (provado por teste de estilos)"
 fases: ["F-04.1", "F-04.2"]
 riscos: ["testes que contam itens de menu e abas mudam (menu.test.ts, rotas.test.ts)", "a tela precisa de dado de backup que so existe na sprint 5: nesta sprint o campo mostra Nenhum backup"]

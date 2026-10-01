@@ -28,19 +28,21 @@ describe('itens de menu', () => {
     expect(item?.somenteAdmin).toBe(true)
   })
 
-  it('só admin vê Privacidade e Auditoria, no grupo Configurações, entre Integrações e Meu perfil (FT-10)', () => {
+  it('só admin vê Privacidade, Auditoria e Sistema, no grupo Configurações, entre Integrações e Meu perfil (FT-10, FT-11)', () => {
     const doGrupo = (admin: boolean) =>
       gruposVisiveis(admin).find((g) => g.titulo === 'Configurações')?.itens ?? []
     expect(doGrupo(false).map((i) => i.rotulo)).not.toContain('Privacidade')
     expect(doGrupo(false).map((i) => i.rotulo)).not.toContain('Auditoria')
+    expect(doGrupo(false).map((i) => i.rotulo)).not.toContain('Sistema')
     expect(doGrupo(true).map((i) => [i.rotulo, i.href])).toEqual([
       ['Usuários', '/configuracoes/usuarios'],
       ['Integrações', '/configuracoes/integracoes'],
       ['Privacidade', '/configuracoes/privacidade'],
       ['Auditoria', '/configuracoes/auditoria'],
+      ['Sistema', '/configuracoes/sistema'],
       ['Meu perfil', '/perfil'],
     ])
-    for (const rotulo of ['Privacidade', 'Auditoria']) {
+    for (const rotulo of ['Privacidade', 'Auditoria', 'Sistema']) {
       expect(doGrupo(true).find((i) => i.rotulo === rotulo)?.somenteAdmin).toBe(true)
     }
   })
@@ -139,5 +141,14 @@ describe('item ativo', () => {
     expect(rotaEstaAtiva('/perfil', '/perfil')).toBe(true)
     expect(rotaEstaAtiva('/perfil/senha', '/perfil')).toBe(true)
     expect(rotaEstaAtiva('/perfilx', '/perfil')).toBe(false)
+  })
+})
+
+describe('Sistema no menu (FT-11)', () => {
+  it('a migalha da rota é Configurações e Sistema e o ícone existe', () => {
+    expect(migalhasDaRota('/configuracoes/sistema')).toEqual(['Configurações', 'Sistema'])
+    const item = GRUPOS_DE_MENU.flatMap((g) => g.itens).find((i) => i.href === '/configuracoes/sistema')!
+    expect(item.somenteAdmin).toBe(true)
+    expect(renderToStaticMarkup(createElement(Icone, { nome: item.icone }))).toContain('<svg')
   })
 })

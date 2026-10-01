@@ -27,7 +27,7 @@ export type NomeDeIcone =
   | 'upload'
   | 'relogio'
   | 'atualizar'
-  | 'voltar' | 'video'
+  | 'voltar' | 'video' | 'sistema'
 
 export interface ItemDeMenu {
   rotulo: string
@@ -77,6 +77,12 @@ export const GRUPOS_DE_MENU: GrupoDeMenu[] = [
         rotulo: 'Auditoria',
         href: '/configuracoes/auditoria',
         icone: 'relogio',
+        somenteAdmin: true,
+      },
+      {
+        rotulo: 'Sistema',
+        href: '/configuracoes/sistema',
+        icone: 'sistema',
         somenteAdmin: true,
       },
       { rotulo: 'Meu perfil', href: '/perfil', icone: 'perfil' },

@@ -11,7 +11,7 @@ tasks:
   - id: T-04.01
     titulo: "Item de menu, guarda de admin e esqueleto da tela Sistema"
     fase: F-04.1
-    status: pendente
+    status: concluida
     objetivo: "Criar a rota /configuracoes/sistema com guarda no layout, loading e pagina com o estado geral, e o item Sistema no menu so para admin."
     arquivos:
       cria: ["src/app/(sistema)/configuracoes/sistema/layout.tsx", "src/app/(sistema)/configuracoes/sistema/loading.tsx", "src/app/(sistema)/configuracoes/sistema/page.tsx", "tests/sistema-pagina.test.tsx", "docs/operacao-e-backup/sprint-04/sprint.md", "docs/operacao-e-backup/sprint-04/fases.md", "docs/operacao-e-backup/sprint-04/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/menu.test.ts, tests/sistema-pagina.test.tsx e tests/rotas.test.ts passam com as contagens de menu atualizadas."
     depende_de: ["T-03.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
   - id: T-04.02
     titulo: "Cartoes de detalhe do sistema"
     fase: F-04.2
@@ -71,7 +71,7 @@ teste_funcional: "itensVisiveis(true) tem o item Sistema com href /configuracoes
 criterio_aceite: "tests/menu.test.ts, tests/sistema-pagina.test.tsx e tests/rotas.test.ts passam com as contagens de menu atualizadas."
 depende_de: ["T-03.04"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2674 passed, 0 failed (224 arquivos); build antes
 ```
 
 ---
