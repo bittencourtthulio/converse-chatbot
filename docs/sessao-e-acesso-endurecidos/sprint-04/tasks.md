@@ -71,7 +71,7 @@ tasks:
   - id: T-04.05
     titulo: "Teste de arquitetura das guardas e varredura dos servicos"
     fase: F-04.2
-    status: pendente
+    status: concluida
     objetivo: "Enumerar as telas e rotas e falhar sem guarda propria, com excecoes publicas listadas, e registrar a varredura dos servicos de administracao."
     arquivos:
       cria: ["tests/guardas-arquitetura.test.ts", "tests/apoio/guardas.ts", "docs/sessao-e-acesso-endurecidos/VARREDURA-DE-GUARDAS.md"]
@@ -81,8 +81,8 @@ tasks:
     criterio_aceite: "tests/guardas-arquitetura.test.ts passa, falha em cada amostra sem guarda e VARREDURA-DE-GUARDAS.md lista cada funcao exportada de administracao e o que foi corrigido (mutacao registrada)."
     depende_de: ["T-04.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
 ---
 
 # Tasks — Sprint 04
@@ -171,5 +171,5 @@ teste_funcional: "Uma pagina sem exigirUsuario, uma pagina de configuracoes sem 
 criterio_aceite: "tests/guardas-arquitetura.test.ts passa, falha em cada amostra sem guarda e VARREDURA-DE-GUARDAS.md lista cada funcao exportada de administracao e o que foi corrigido (mutacao registrada)."
 depende_de: ["T-04.04"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/guardas-arquitetura.test.ts 12 passed; só teste e documento novos, nenhum código alterado
 ```

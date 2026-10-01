@@ -8,7 +8,7 @@ feature_id: FT-12
 sprint_id: sprint-04
 atualizado_em: 2026-10-01
 titulo: "Limites e guardas em profundidade"
-status: nao_iniciado
+status: concluido
 criterio_saida: "o limite de login esta provado na acao, o GET publico da conversa tem limite, auditoria.listar e a pagina de conversa se defendem e um teste de arquitetura enumera telas e rotas"
 fases: ["F-04.1", "F-04.2"]
 riscos: ["o limite do GET compartilha a chave chat:ip-agente do POST: testes existentes de rota publica podem passar a bater no limite", "mudar a assinatura de auditoria.listar toca a pagina e tres arquivos de teste"]

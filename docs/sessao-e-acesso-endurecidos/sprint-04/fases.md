@@ -10,14 +10,14 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-04.1
     titulo: "Limites de uso"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "as tasks T-04.01, T-04.02 concluidas com os dois testes passando"
     paralelizavel: false
     paralela_com: []
     tasks: ["T-04.01", "T-04.02"]
   - id: F-04.2
     titulo: "Guardas"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "as tasks T-04.03, T-04.04, T-04.05 concluidas com os dois testes passando"
     paralelizavel: false
     paralela_com: []
@@ -55,7 +55,7 @@ flowchart LR
   class T_04_02 concluida
   class T_04_03 concluida
   class T_04_04 concluida
-  class T_04_05 pendente
+  class T_04_05 concluida
   class T_04_01,T_04_02,T_04_03,T_04_04,T_04_05 critico
 ```
 

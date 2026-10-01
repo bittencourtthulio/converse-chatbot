@@ -38,3 +38,7 @@ Regra da feature: cada proteção tem um teste que **falha** quando ela é remov
 | T-04.03 | `auditoria.listar` só para admin, no serviço (PR-12, ressalva R-02) | `exigirAdmin(autor)` e a conferência do ator saem de `listar` | `tests/auditoria-guarda.test.ts` (403 do usuário comum, 403 antes do 422) |
 | T-04.03 | `auditoria.listar` sem ator é 401, não TypeError | removida a conferência `autor?.id` | `tests/auditoria-guarda.test.ts` ("ator ausente recebe 401") |
 | T-04.04 | a página de detalhe da conversa chama `exigirUsuario()` por conta própria (PR-12, ressalva R-01) | `await exigirUsuario()` sai de `conversas/[id]/page.tsx` | 2 casos de `tests/conversas-detalhe-guarda.test.tsx` |
+| T-04.05 | toda página de `(sistema)` tem guarda própria | `await exigirUsuario()` sai de `conversas/[id]/page.tsx` | `tests/guardas-arquitetura.test.ts` ("toda tela e toda rota tem guarda própria") |
+| T-04.05 | toda rota de `api` tem `usuarioAtual()` ou `exigirSessao()`, salvo as públicas listadas | `exigirSessao()` vira `null` em `api/conversas/apagar/route.ts` | `tests/guardas-arquitetura.test.ts` (mesmo caso) |
+| T-04.05 | telas de `configuracoes/` exigem `exigirUsuarioAdmin()` | a tela de auditoria passa a chamar só `exigirUsuario()` | `tests/guardas-arquitetura.test.ts` (mesmo caso) |
+| T-04.05 | a apresentação não importa funções internas sem ator | `PainelDoSistema.tsx` importa `obterChaveDoOpenrouter` | `tests/guardas-arquitetura.test.ts` ("nenhum arquivo real de src/app ou src/componentes importa...") |
