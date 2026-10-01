@@ -41,7 +41,7 @@ tasks:
   - id: T-06.03
     titulo: "Convencoes, lacunas e README"
     fase: F-06.1
-    status: pendente
+    status: concluida
     objetivo: "Converter as decisoes do historico em regras com arquivo:linha em CONVENCOES.md e LACUNAS.md e documentar a tela e o painel no README."
     arquivos:
       cria: []
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/projeto.test.ts passa e o grep de historico em CONVENCOES.md devolve as regras."
     depende_de: ["T-06.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-06.04
     titulo: "Fechamento no laco do buildx"
     fase: F-06.2
@@ -122,7 +122,7 @@ teste_funcional: "CONVENCOES.md traz as regras do servico de historico sem N+1, 
 criterio_aceite: "tests/projeto.test.ts passa e o grep de historico em CONVENCOES.md devolve as regras."
 depende_de: ["T-06.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/projeto.test.ts 143 passed
 ```
 
 ---

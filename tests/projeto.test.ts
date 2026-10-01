@@ -466,3 +466,70 @@ describe('convenções do vídeo (FT-08)', () => {
     }
   })
 })
+
+describe('convenções do histórico de conversas e do painel (FT-09)', () => {
+  const convencoes = ler('docs/stack/CONVENCOES.md')
+  const lacunas = ler('docs/stack/LACUNAS.md')
+  const readme = ler('README.md')
+
+  const CITACOES: Array<[string, RegExp]> = [
+    ['src/servicos/historico.ts:93', /export async function listarConversas/],
+    ['src/servicos/historico.ts:59', /function condicoes/],
+    ['src/servicos/historico.ts:79', /function universo/],
+    ['src/servicos/historico.ts:243', /export function aoApagarConversa/],
+    ['src/servicos/historico.ts:275', /export async function apagarConversas/],
+    ['src/servicos/historico-logica.ts:29', /export function rotuloDoInterlocutor/],
+    ['src/servicos/historico-logica.ts:56', /export function escaparLike/],
+    ['src/servicos/historico-logica.ts:116', /export function lerFiltros/],
+    ['src/servicos/historico-logica.ts:141', /export function instanteParaSql/],
+    ['src/servicos/painel.ts:48', /export async function numerosDoPainel/],
+    ['src/servicos/painel.ts:85', /export async function serieDeMensagens/],
+    ['src/servicos/painel.ts:150', /export async function primeirosPassos/],
+    ['src/servicos/painel.ts:176', /export async function obterPainel/],
+    ['src/componentes/conversas-logica.ts:128', /export function reduzirLote/],
+    ['src/componentes/GraficoDeMensagens.tsx:22', /export function GraficoDeMensagens/],
+    ['src/app/api/conversas/[id]/route.ts:8', /export async function DELETE/],
+    ['src/app/api/conversas/[id]/exportar/route.ts:9', /export async function GET/],
+    ['src/app/(sistema)/conversas/[id]/carregar-conversa.ts:10', /export const carregarConversa/],
+    ['src/estilos/tokens.css:64', /--canal-painel-bg/],
+    ['tests/apoio/contador-de-consultas.ts:15', /export function criarClienteContador/],
+    ['tests/apoio/contador-de-consultas.ts:29', /export async function contarConsultas/],
+  ]
+
+  it.each(CITACOES)('%s existe e contém o que o CONVENCOES.md diz', (citacao, esperado) => {
+    expect(convencoes).toContain(citacao)
+    const [arquivo, linha] = citacao.split(':')
+    expect(ler(arquivo!).split('\n')[Number(linha) - 1]).toMatch(esperado)
+  })
+
+  it('registra as regras: sem N+1, LIKE escapado, DateTime e dia local, rótulo mascarado, apagar com ouvinte, rotas, loading e painel', () => {
+    expect(convencoes).toMatch(/Listagem sem N\+1 \(FT-09\)/)
+    expect(convencoes).toMatch(/Busca por texto com LIKE escapado/)
+    expect(convencoes).toMatch(/DateTime no SQLite e dia local/)
+    expect(convencoes).toMatch(/Interlocutor mascarado/)
+    expect(convencoes).toMatch(/aoApagarConversa/)
+    expect(convencoes).toMatch(/Rotas de conversas/)
+    expect(convencoes).toMatch(/`loading\.tsx` e `notFound` em rota com `\[id\]`/)
+    expect(convencoes).toMatch(/Painel inicial e gráfico acessível/)
+    expect(convencoes).toMatch(/\| 2026-10-01 \| FT-09 \|/)
+  })
+
+  it('as lacunas registram o LIKE em ASCII, o fuso do servidor, a varredura de mensagens, a exclusão por visitante e o que não foi visto', () => {
+    expect(lacunas).toMatch(/FT-09, novas/)
+    expect(lacunas).toMatch(/ignora maiúsculas só em ASCII/)
+    expect(lacunas).toMatch(/fuso é o do servidor/)
+    expect(lacunas).toMatch(/sem índice próprio/)
+    expect(lacunas).toMatch(/exclusão por `identificadorExterno`/)
+    expect(lacunas).toMatch(/`widget\.js` não foi repetido/)
+  })
+
+  it('o README explica a tela de Conversas, o mascaramento, o apagar em lote, a exportação e o painel', () => {
+    expect(readme).toContain('Conversas e painel inicial')
+    expect(readme).toContain('/api/conversas/apagar')
+    expect(readme).toContain('/api/conversas/[id]/exportar')
+    expect(readme).toContain('aoApagarConversa')
+    expect(readme).toMatch(/mascarado/)
+    expect(readme).toMatch(/mensagens por dia nos últimos 14 dias/)
+    expect(readme).toMatch(/fuso do servidor/)
+  })
+})
