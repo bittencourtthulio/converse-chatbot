@@ -4,7 +4,7 @@
 // `OPENROUTER_BASE_URL` (lido em `ambiente.ts`), o que deixa os testes
 // apontarem para `tests/apoio/openrouter-falso.ts`.
 import { ambiente } from '@/lib/ambiente'
-import { erroDoProvedor } from '@/lib/erros'
+import { ErroDeAplicacao, erroDoProvedor } from '@/lib/erros'
 import { lerTrechosDeSSE } from '@/lib/sse'
 
 export interface Modelo {
@@ -184,6 +184,87 @@ export async function* conversar(pedido: PedidoDeConversa): AsyncGenerator<strin
     if (pedido.sinal?.aborted) return
     if (total.signal.aborted) throw erroDoProvedor('timeout')
     if (erro instanceof Error && erro.name === 'ErroDeAplicacao') throw erro
+    throw erroDoProvedor('rede')
+  } finally {
+    clearTimeout(temporizador)
+  }
+}
+
+/** Prazo total de uma transcrição de áudio de 10 minutos (PR-73): bem acima dos 30 s da conversa. */
+export const TEMPO_DA_TRANSCRICAO_MS = 300_000
+
+/** Instrução fixa da transcrição (PR-73): só o texto falado, sem resumo, tradução nem comentário. */
+export const INSTRUCAO_DE_TRANSCRICAO =
+  'Transcreva fielmente a fala deste áudio, no idioma em que ela foi falada. ' +
+  'Não resuma, não traduza, não comente e não acrescente nada: devolva somente o texto transcrito.'
+
+export interface PedidoDeTranscricao {
+  chave: string
+  modelo: string
+  /** O áudio em base64 (o OpenRouter não aceita URL para áudio). */
+  audioBase64: string
+  /** Formato do áudio, como o OpenRouter o nomeia (`mp3`, `wav`...). */
+  formato: string
+  /** Cancela o pedido; o erro de cancelamento sobe como veio, sem virar erro do provedor. */
+  sinal?: AbortSignal
+  /** Prazo da chamada inteira, cabeçalhos e corpo (padrão 5 minutos). */
+  tempoTotalMs?: number
+}
+
+/**
+ * Transcreve um trecho de áudio por `chat/completions` sem stream, com a parte
+ * `input_audio`. Erros do provedor viram `ErroDeAplicacao` (`provedor_*`); texto
+ * vazio vira `transcricao_vazia` (502). Usada só pelo processamento de vídeo e
+ * áudio da base de conhecimento (FT-08).
+ */
+export async function transcreverAudio(pedido: PedidoDeTranscricao): Promise<string> {
+  const prazoTotal = pedido.tempoTotalMs ?? TEMPO_DA_TRANSCRICAO_MS
+  const total = new AbortController()
+  const temporizador = setTimeout(() => total.abort(), prazoTotal)
+  const sinal = AbortSignal.any([total.signal, ...(pedido.sinal ? [pedido.sinal] : [])])
+  try {
+    const resposta = await chamarProvedor('/chat/completions', {
+      chave: pedido.chave,
+      metodo: 'POST',
+      corpo: {
+        model: pedido.modelo,
+        stream: false,
+        messages: [
+          {
+            role: 'user',
+            content: [
+              { type: 'text', text: INSTRUCAO_DE_TRANSCRICAO },
+              { type: 'input_audio', input_audio: { data: pedido.audioBase64, format: pedido.formato } },
+            ],
+          },
+        ],
+      },
+      tempoLimiteMs: prazoTotal,
+      sinal,
+    })
+    const corpo = (await resposta.json()) as {
+      choices?: Array<{ message?: { content?: unknown } }>
+    }
+    const conteudo = corpo.choices?.[0]?.message?.content
+    const texto = (
+      typeof conteudo === 'string'
+        ? conteudo
+        : Array.isArray(conteudo)
+          ? conteudo.map((p) => (typeof (p as { text?: unknown })?.text === 'string' ? (p as { text: string }).text : '')).join('')
+          : ''
+    ).trim()
+    if (texto === '') {
+      throw new ErroDeAplicacao(
+        'O modelo não devolveu texto para este trecho do áudio.',
+        502,
+        'transcricao_vazia',
+      )
+    }
+    return texto
+  } catch (erro) {
+    if (pedido.sinal?.aborted) throw erro
+    if (total.signal.aborted) throw erroDoProvedor('timeout')
+    if (erro instanceof ErroDeAplicacao) throw erro
     throw erroDoProvedor('rede')
   } finally {
     clearTimeout(temporizador)

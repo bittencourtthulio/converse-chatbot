@@ -56,7 +56,7 @@ tasks:
   - id: T-02.04
     titulo: "Transcricao pelo OpenRouter"
     fase: F-02.2
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar transcreverAudio a src/lib/openrouter.ts, sem stream, com prazo total de 5 minutos, instrucao fixa, erros provedor_* e transcricao_vazia."
     arquivos:
       cria: ["tests/openrouter-transcricao.test.ts"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "tests/openrouter-transcricao.test.ts passa."
     depende_de: ["T-01.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
 ---
 
 # Tasks — Sprint 02
@@ -139,7 +139,7 @@ teste_funcional: "Resposta com texto vazio lanca transcricao_vazia, status 402 v
 criterio_aceite: "tests/openrouter-transcricao.test.ts passa."
 depende_de: ["T-01.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/openrouter-transcricao.test.ts, tests/openrouter.test.ts e tests/openrouter-conversar.test.ts, 29 passed
 ```
 
 ---
