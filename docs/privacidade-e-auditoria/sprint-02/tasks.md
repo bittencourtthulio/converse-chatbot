@@ -56,7 +56,7 @@ tasks:
   - id: T-02.04
     titulo: "Auditoria da chave e do modelo de transcricao"
     fase: F-02.2
-    status: pendente
+    status: concluida
     objetivo: "Gravar chave_openrouter_alterada e chave_openrouter_removida na mesma transacao da gravacao e modelo_transcricao_alterado logo depois."
     arquivos:
       cria: ["tests/auditoria-integracoes.test.ts"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "tests/auditoria-integracoes.test.ts passa e tests/integracoes.test.ts continua passando."
     depende_de: ["T-02.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-02.05
     titulo: "Auditoria de criar e editar usuario"
     fase: F-02.2
@@ -167,7 +167,7 @@ teste_funcional: "Depois de salvar a chave sk-or-segredo-de-teste nenhum registr
 criterio_aceite: "tests/auditoria-integracoes.test.ts passa e tests/integracoes.test.ts continua passando."
 depende_de: ["T-02.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/auditoria-integracoes.test.ts 8 passed e os 3 arquivos de integracoes 31 passed; suite inteira no fim da sprint
 ```
 
 ---

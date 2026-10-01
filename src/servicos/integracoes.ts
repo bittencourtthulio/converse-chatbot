@@ -8,6 +8,7 @@ import { cifrar, decifrar, mascararSegredo } from '@/lib/cripto'
 import { ErroDeAplicacao, entradaInvalida, naoAutenticado } from '@/lib/erros'
 import { verificarChave } from '@/lib/openrouter'
 import { exigirAdmin, type UsuarioAutenticado } from '@/servicos/autenticacao'
+import { registrar, registrarMelhorEsforco } from '@/servicos/auditoria'
 
 const ID_DA_CONFIGURACAO = 'unica'
 
@@ -84,14 +85,22 @@ export async function salvarChaveDoOpenrouter(
     throw entradaInvalida(dados.error.issues[0]?.message ?? 'Entrada inválida.')
   }
   const cifrada = cifrar(dados.data.chave)
-  await prisma.configuracaoDoWorkspace.upsert({
-    where: { id: ID_DA_CONFIGURACAO },
-    create: {
-      id: ID_DA_CONFIGURACAO,
-      openrouterChaveCifrada: cifrada,
-      atualizadoPor: autor.id,
-    },
-    update: { openrouterChaveCifrada: cifrada, atualizadoPor: autor.id },
+  // A auditoria entra na mesma transação (PR-87): sem registro, a chave não muda. Nunca a
+  // chave, a máscara nem o texto cifrado.
+  await prisma.$transaction(async (tx) => {
+    await tx.configuracaoDoWorkspace.upsert({
+      where: { id: ID_DA_CONFIGURACAO },
+      create: {
+        id: ID_DA_CONFIGURACAO,
+        openrouterChaveCifrada: cifrada,
+        atualizadoPor: autor.id,
+      },
+      update: { openrouterChaveCifrada: cifrada, atualizadoPor: autor.id },
+    })
+    await registrar(
+      { ator: autor, acao: 'chave_openrouter_alterada', alvoTipo: 'configuracao', alvoId: ID_DA_CONFIGURACAO },
+      tx,
+    )
   })
   return lerEstado()
 }
@@ -100,10 +109,23 @@ export async function removerChaveDoOpenrouter(
   autor: UsuarioAutenticado,
 ): Promise<EstadoDoOpenrouter> {
   exigirAdmin(autor)
-  await prisma.configuracaoDoWorkspace.upsert({
-    where: { id: ID_DA_CONFIGURACAO },
-    create: { id: ID_DA_CONFIGURACAO, openrouterChaveCifrada: null, atualizadoPor: autor.id },
-    update: { openrouterChaveCifrada: null, atualizadoPor: autor.id },
+  await prisma.$transaction(async (tx) => {
+    const atual = await tx.configuracaoDoWorkspace.findUnique({
+      where: { id: ID_DA_CONFIGURACAO },
+      select: { openrouterChaveCifrada: true },
+    })
+    await tx.configuracaoDoWorkspace.upsert({
+      where: { id: ID_DA_CONFIGURACAO },
+      create: { id: ID_DA_CONFIGURACAO, openrouterChaveCifrada: null, atualizadoPor: autor.id },
+      update: { openrouterChaveCifrada: null, atualizadoPor: autor.id },
+    })
+    // Só há o que auditar se havia chave a remover (PR-87: mesma transação).
+    if (atual?.openrouterChaveCifrada) {
+      await registrar(
+        { ator: autor, acao: 'chave_openrouter_removida', alvoTipo: 'configuracao', alvoId: ID_DA_CONFIGURACAO },
+        tx,
+      )
+    }
   })
   return lerEstado()
 }
@@ -202,10 +224,21 @@ export async function salvarModeloDeTranscricao(
   const dados = entradaDoModelo.safeParse(entrada)
   if (!dados.success) throw entradaInvalida(dados.error.issues[0]?.message ?? 'Entrada inválida.')
   const modelo = dados.data.modelo === '' ? null : dados.data.modelo
+  const anterior = await modeloSalvo()
   await prisma.configuracaoDoWorkspace.upsert({
     where: { id: ID_DA_CONFIGURACAO },
     create: { id: ID_DA_CONFIGURACAO, modeloDeTranscricao: modelo, atualizadoPor: autor.id },
     update: { modeloDeTranscricao: modelo, atualizadoPor: autor.id },
   })
+  if (anterior !== modelo) {
+    // Gravação imediata, de melhor esforço (PR-87): a ação já está confirmada.
+    void registrarMelhorEsforco({
+      ator: autor,
+      acao: 'modelo_transcricao_alterado',
+      alvoTipo: 'configuracao',
+      alvoId: ID_DA_CONFIGURACAO,
+      detalhes: { modelo, restaurado: modelo === null },
+    })
+  }
   return estadoDoModeloDeTranscricao(autor)
 }
