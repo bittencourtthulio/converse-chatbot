@@ -7,7 +7,7 @@ origem_buildx: plataforma-chatbot-ia
 feature_id: FT-06
 sprint_id: sprint-07
 titulo: "Convencoes, verificacao no navegador e fechamento"
-status: nao_iniciado
+status: concluido
 criterio_saida: "CONVENCOES.md e README descrevem o chat embutido, a verificacao esta registrada e o MAPA.md mostra a FT-06 entregue."
 fases: ["F-07.1", "F-07.2"]
 riscos: ["as ferramentas de navegador podem faltar: o que ficar sem verificar e registrado", "a verificacao exige a porta de um site de teste diferente da do app"]

@@ -41,7 +41,7 @@ tasks:
   - id: T-07.03
     titulo: "Fechamento no laco do buildx"
     fase: F-07.2
-    status: pendente
+    status: concluida
     objetivo: "Registrar a feature no mapa, nas premissas, na recursao e no projeto e conferir dependencias e ambiente."
     arquivos:
       cria: ["docs/chat-embutido/ORQUESTRADOR.md", "docs/chat-embutido/00-AUDITORIA.md", "docs/chat-embutido/FECHAMENTO.md", "docs/chat-embutido/RELATORIO-FEATURE.md", "docs/chat-embutido/BRIEFING-BUILDX.md", "docs/chat-embutido/00-DECISOES.md", "docs/chat-embutido/00-BLOQUEIOS.md", "docs/chat-embutido/VERIFICACAO-VISUAL.md", "docs/chat-embutido/base/00-INDICE.md", "docs/chat-embutido/base/00-LACUNAS.md", "docs/chat-embutido/base/api-publica-e-limites.md", "docs/chat-embutido/base/embed-e-csp.md", "docs/chat-embutido/base/widget-e-script.md", "docs/chat-embutido/base/configuracao-e-painel.md", "docs/entregas/chat-embutido/ENTREGA.md", "docs/entregas/chat-embutido/PR.md", "docs/entregas/chat-embutido/QA-PACOTE.md", "docs/entregas/chat-embutido/ATENCAO.md", "docs/chat-embutido/sprint-07/tasks.md"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "grep de FT-06 no painel do MAPA.md devolve entregue, o total de premissas do frontmatter e 62 e tests/projeto.test.ts passa."
     depende_de: ["T-07.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: verde
 ---
 
 # Tasks — Sprint 07
@@ -107,5 +107,5 @@ teste_funcional: "O MAPA.md mostra a FT-06 entregue com sprints, testes e PR loc
 criterio_aceite: "grep de FT-06 no painel do MAPA.md devolve entregue, o total de premissas do frontmatter e 62 e tests/projeto.test.ts passa."
 depende_de: ["T-07.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: verde — 1481 passed
 ```

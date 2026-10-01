@@ -9,3 +9,12 @@ Uma linha por lacuna: o que se procurou, onde, e o que se concluiu.
 5. Se o IP do visitante é distinguível sem proxy: não é (`src/lib/requisicao.ts`, sem `TRUST_PROXY=1` o IP é o valor fixo `desconhecido`), logo todos os visitantes dividem o mesmo balde de limite. Não é lacuna de código, é limite conhecido. (api-publica-e-limites)
 6. Ferramentas de navegador para a verificação ponta a ponta: disponibilidade `NÃO DOCUMENTADO` até a task de verificação. (widget-e-script)
 7. Contexto histórico do `memox`: não consultado; a ausência não é lacuna.
+
+## Resolução (registrada no fechamento)
+
+1. Resolvida: o Prisma roda no `proxy.ts` do Next 16 (`tests/embed-cabecalhos.test.ts`).
+2. Resolvida: a expressão regular de `next.config.ts` exclui `/embed` do `X-Frame-Options: DENY` e mantém `/embedded` negado.
+3. Resolvida: a rota `src/app/widget.js/route.ts`, estática, preserva os cabeçalhos próprios (`tests/widget-rota.test.ts`).
+4. Resolvida: `happy-dom` 20.14.5 cobre Shadow DOM e `postMessage` com `origin` (a prova de `source` usa um `contentWindow` de teste).
+5. Mantida como limite conhecido (lacuna 16 de `docs/stack/LACUNAS.md`).
+6. Resolvida em parte: Chrome disponível; 375 px e tema claro sem verificar (`VERIFICACAO-VISUAL.md`).
