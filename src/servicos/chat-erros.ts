@@ -2,8 +2,8 @@
 // a do operador, no painel, é detalhada e em português; a do visitante, nos
 // canais públicos (FT-06, FT-07), é uma frase única. Nenhuma repete corpo do
 // provedor, chave ou pilha.
-import { randomBytes } from 'node:crypto'
 import { ErroDeAplicacao } from '@/lib/erros'
+import { novaCorrelacao } from '@/lib/log'
 
 export const MENSAGEM_PARA_VISITANTE = 'Não consegui responder agora. Tente novamente em instantes.'
 
@@ -26,9 +26,9 @@ export function erroSemChave(): ErroDeAplicacao {
   )
 }
 
-/** Identificador curto de correlação entre a tela e o log. */
+/** Identificador curto de correlação entre a tela e o log (gerado por `src/lib/log.ts`, PR-93). */
 export function gerarCorrelacao(): string {
-  return randomBytes(4).toString('hex')
+  return novaCorrelacao()
 }
 
 /**

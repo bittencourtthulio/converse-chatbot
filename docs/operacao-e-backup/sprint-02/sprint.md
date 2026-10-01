@@ -8,7 +8,7 @@ feature_id: FT-11
 sprint_id: sprint-02
 atualizado_em: 2026-10-01
 titulo: "Log em todo o sistema e erro com codigo de referencia"
-status: nao_iniciado
+status: em_andamento
 criterio_saida: "Nenhum console.* em src/ fora de src/lib/log.ts, X-Correlacao em toda resposta, e a pilha nao aparece em rota de API nem em pagina contra o servidor de producao"
 fases: ["F-02.1", "F-02.2"]
 riscos: ["os testes que liam o campo evento passam a ler msg (28 pontos em tests/)", "citacoes de linha de CONVENCOES.md e tests/projeto.test.ts deslocam a cada servico tocado", "o proxy passa a rodar em todas as rotas e nao pode quebrar o frame-ancestors do /embed"]

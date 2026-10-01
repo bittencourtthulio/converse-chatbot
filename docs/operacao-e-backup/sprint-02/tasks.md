@@ -11,7 +11,7 @@ tasks:
   - id: T-02.01
     titulo: "Correlacao por requisicao no proxy"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Fazer o proxy gerar a correlacao de toda requisicao, repassa-la por cabecalho ao handler, devolve-la em X-Correlacao e ler o cabecalho no servidor; chat-erros passa a gerar o codigo pelo log."
     arquivos:
       cria: ["src/app/correlacao-servidor.ts", "tests/correlacao.test.ts", "docs/operacao-e-backup/sprint-02/sprint.md", "docs/operacao-e-backup/sprint-02/fases.md", "docs/operacao-e-backup/sprint-02/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/correlacao.test.ts, tests/chat-erros.test.ts e tests/embed-cabecalhos.test.ts passam e toda resposta de teste ao servidor tem X-Correlacao."
     depende_de: ["T-01.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-02.02
     titulo: "Servicos de conhecimento, Telegram e historico usam o log"
     fase: F-02.1
@@ -131,7 +131,7 @@ teste_funcional: "O matcher do proxy cobre a raiz e as rotas de API e de pagina 
 criterio_aceite: "tests/correlacao.test.ts, tests/chat-erros.test.ts e tests/embed-cabecalhos.test.ts passam e toda resposta de teste ao servidor tem X-Correlacao."
 depende_de: ["T-01.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/correlacao.test.ts, chat-erros, embed-cabecalhos, video-rota e fontes-rota-upload passam; suíte inteira 2581/2582 antes da correção do matcher (o proxy truncava o corpo de upload em 10 MB), corrigida e reexecutada nos arquivos afetados
 ```
 
 ---
