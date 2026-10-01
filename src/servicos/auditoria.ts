@@ -199,3 +199,13 @@ export async function listar(entrada: FiltrosDaAuditoria = {}): Promise<PaginaDa
     totalDePaginas: Math.max(1, Math.ceil(total / f.tamanho)),
   }
 }
+
+/**
+ * A única remoção da trilha: apaga os registros com `quando` estritamente anterior ao corte
+ * e devolve quantos. Quem chama é o expurgo por idade (`AUDITORIA_RETENCAO_DIAS`); o registro
+ * exatamente no corte fica.
+ */
+export async function purgarAnterioresA(corte: Date): Promise<number> {
+  const { count } = await prisma.registroDeAuditoria.deleteMany({ where: { quando: { lt: corte } } })
+  return count
+}

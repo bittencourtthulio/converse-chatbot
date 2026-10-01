@@ -26,7 +26,7 @@ tasks:
   - id: T-02.02
     titulo: "Somente-acrescimo e purga por idade"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Provar que nada atualiza ou apaga registro e oferecer a unica remocao, a purga por idade."
     arquivos:
       cria: ["tests/auditoria-somente-acrescimo.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/auditoria-somente-acrescimo.test.ts passa."
     depende_de: ["T-02.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-02.03
     titulo: "Ouvintes de canal e de conversa apagada ligados a auditoria"
     fase: F-02.2
@@ -133,7 +133,7 @@ teste_funcional: "purgarAnterioresA(corte) apaga so os registros com quando estr
 criterio_aceite: "tests/auditoria-somente-acrescimo.test.ts passa."
 depende_de: ["T-02.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/auditoria-somente-acrescimo.test.ts 7 passed e tests/auditoria.test.ts 11 passed
 ```
 
 ---
