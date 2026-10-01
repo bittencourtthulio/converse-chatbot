@@ -71,7 +71,7 @@ tasks:
   - id: T-03.05
     titulo: "Extração isolada sob o build do Next"
     fase: F-03.2
-    status: pendente
+    status: concluida
     objetivo: "Provar o processo filho sob next build e next start, ou registrar o motivo se inviável (PR-107, PEND-27)."
     arquivos:
       cria: ["tests/fontes-rota-pdf-isolado.test.ts"]
@@ -81,8 +81,8 @@ tasks:
     criterio_aceite: "O teste passa; se o filho não funcionar sob o build, a constante EXTRACAO_ISOLADA_ATIVA de src/lib/extracao/isolada.ts passa a false (a fila volta a extrairTexto), um teste prova esse estado, a saída é registrada em 00-BLOQUEIOS.md e a PEND-27 vira decisao_humana no fechamento em vez de entregar algo frágil; nos dois ramos a task conclui."
     depende_de: ["T-03.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
 ---
 
 # Tasks — Sprint 03
@@ -171,6 +171,6 @@ teste_funcional: "npm run build termina com código 0 e o servidor de produção
 criterio_aceite: "O teste passa; se o filho não funcionar sob o build, a constante EXTRACAO_ISOLADA_ATIVA de src/lib/extracao/isolada.ts passa a false (a fila volta a extrairTexto), um teste prova esse estado, a saída é registrada em 00-BLOQUEIOS.md e a PEND-27 vira decisao_humana no fechamento em vez de entregar algo frágil; nos dois ramos a task conclui."
 depende_de: ["T-03.04"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/fontes-rota-pdf-isolado 3 passed contra next start (o filho funciona sob o build); EXTRACAO_ISOLADA_ATIVA segue true, sem bloqueio nem PEND-27 como decisao_humana; mutação registrada
 ```
 
