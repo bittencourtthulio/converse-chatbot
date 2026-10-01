@@ -10,14 +10,14 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-06.1
     titulo: "Logica e painel do video"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Logica pura, opcao Video e painel com duas abas testados."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-06.01", "T-06.02"]
   - id: F-06.2
     titulo: "Lista, trechos e configuracao"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Linha de fonte, ver conteudo e modelo de transcricao testados."
     paralelizavel: false
     paralela_com: []
