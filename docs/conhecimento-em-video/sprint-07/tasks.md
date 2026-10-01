@@ -26,7 +26,7 @@ tasks:
   - id: T-07.02
     titulo: "Convencoes, lacunas e README"
     fase: F-07.1
-    status: pendente
+    status: concluida
     objetivo: "Converter as lacunas de video em regras com arquivo:linha em CONVENCOES.md e LACUNAS.md e documentar as variaveis, o ffmpeg e o YouTube no README."
     arquivos:
       cria: []
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/projeto.test.ts passa e o grep de ffmpeg em CONVENCOES.md e README.md devolve as regras."
     depende_de: ["T-07.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-07.03
     titulo: "Fechamento no laco do buildx"
     fase: F-07.2
@@ -90,7 +90,7 @@ teste_funcional: "CONVENCOES.md traz as regras de upload em stream, processo ext
 criterio_aceite: "tests/projeto.test.ts passa e o grep de ffmpeg em CONVENCOES.md e README.md devolve as regras."
 depende_de: ["T-07.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/projeto.test.ts, 119 passed
 ```
 
 ---

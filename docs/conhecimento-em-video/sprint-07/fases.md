@@ -48,7 +48,7 @@ flowchart LR
   classDef critico   stroke-width:3px
 
   class T_07_01 concluida
-  class T_07_02 pendente
+  class T_07_02 concluida
   class T_07_03 pendente
 ```
 

@@ -48,6 +48,16 @@ Só o administrador cadastra outros usuários (Configurações, Usuários) e a c
 5. As rotas (exigem sessão): `GET` e `POST` (multipart, campo `arquivos`) em `/api/agentes/[id]/fontes`, `POST /api/agentes/[id]/fontes/texto`, `DELETE /api/agentes/[id]/fontes/[fonteId]` e `POST /api/agentes/[id]/fontes/[fonteId]/reprocessar`. O corpo grande é recusado cedo por `Content-Length` (413); quando o cabeçalho falta (envio em pedaços) só o tamanho real, conferido depois de ler o corpo, barra o excesso.
 6. A seed cria, no agente de exemplo, uma fonte de texto fictícia já processada.
 
+## Vídeo, áudio e YouTube (aba Conhecimento)
+
+1. Na aba **Conhecimento**, a opção **Vídeo** tem duas abas: **Enviar arquivo** e **Link do YouTube**. A fala vira texto e a fonte entra na base como as outras, com os mesmos trechos e a mesma busca. Só a fala é aproveitada: as imagens do vídeo não são analisadas.
+2. **Enviar arquivo**: aceita `.mp4`, `.mov`, `.m4v`, `.webm`, `.mkv`, `.avi`, `.mp3`, `.wav`, `.m4a`, `.ogg`, `.aac` e `.flac`, até `MAX_VIDEO_MB` (padrão 500, no máximo 2000) e `MAX_VIDEO_MINUTOS` (padrão 180) por arquivo, um de cada vez, com barra de progresso do envio. O arquivo vai como corpo bruto para `POST /api/agentes/[id]/fontes/video?nome=...` e é gravado em disco em stream, sem carregar tudo em memória; o tipo é conferido pela assinatura dos primeiros bytes, não só pela extensão. A fonte mostra a etapa e o percentual enquanto processa: o servidor extrai o áudio com o **ffmpeg** (mono, 16 kHz), divide em partes de 10 minutos e transcreve cada parte por um modelo do OpenRouter com entrada de áudio. O texto de cada parte começa com o marcador de tempo (`[00:00]`, `[10:00]`...). Se uma parte falha, a fonte fica em **Erro** com a parte indicada e **Reprocessar** retoma das partes que faltam, sem pagar de novo as já transcritas (elas ficam em `fontes/<agente>/<fonte>/segmentos/NN.txt` até a fonte concluir).
+3. **A transcrição consome créditos do OpenRouter** (a chave do workspace) e usa o modelo de transcrição: o admin o troca em Configurações > Integrações (padrão `google/gemini-2.5-flash`, ou `OPENROUTER_MODELO_TRANSCRICAO`). O modelo precisa aceitar entrada de áudio; o sistema não sabe quais aceitam, então um modelo sem áudio só falha na primeira transcrição.
+4. **Requisito: ffmpeg e ffprobe instalados no servidor** (`brew install ffmpeg`, `apt-get install ffmpeg`; o contêiner do projeto, FT-11, os incluirá). `FFMPEG_PATH` e `FFPROBE_PATH` apontam para binários fora do `PATH`. Sem eles a fonte de vídeo fica em erro com a mensagem "Não encontrei o ffmpeg neste servidor". Os testes que usam o ffmpeg pulam sem ele; no CI ele é instalado e `EXIGIR_FFMPEG=1` faz a ausência falhar.
+5. **Link do YouTube**: `POST /api/agentes/[id]/fontes/youtube` com `{ "url": "..." }`. Só links de `youtube.com` e `youtu.be` valem (outro host é recusado com 422); o servidor lê a página do vídeo e as **legendas** (manual em português, depois em inglês, depois a primeira, depois a automática), sem baixar o vídeo e sem gastar créditos. Vídeo sem legendas fica em erro e pede o envio do arquivo. **Fragilidade assumida:** não há API oficial nem formato documentado; o YouTube pode mudar a página ou bloquear o servidor, e o recurso quebra sem mudança de código (`docs/stack/LACUNAS.md`, lacuna 11).
+6. Para ver o fluxo sem o OpenRouter e o YouTube reais: suba o app com `OPENROUTER_BASE_URL` e `YOUTUBE_BASE` apontando para os simulados (`npx tsx tests/apoio/servir-falso.ts` e `npx tsx tests/apoio/servir-youtube-falso.ts`, que imprimem a URL e os links de teste), cadastre a chave de teste dele e gere um áudio com `ffmpeg -f lavfi -i "anoisesrc=color=pink:duration=1500:sample_rate=16000" -ac 1 -c:a libmp3lame -b:a 32k palestra.mp3`.
+7. Em disco, cada fonte de vídeo tem `original` (fica), `original.parcial` (só durante o envio), `audio/` (temporário) e `segmentos/` (parciais da transcrição, apagados ao concluir). O backup (FT-11) pode ignorar os três últimos.
+
 ## Respostas com base no conhecimento
 
 1. O agente que tem ao menos uma fonte **Pronto** responde em **modo fundamentado**: a cada pergunta, `src/servicos/recuperacao.ts` busca os trechos mais relevantes da base do próprio agente (busca textual do SQLite, FTS5, ranking BM25, sem acento e sem caixa, até 6 trechos) e os põe na mensagem de sistema como material de consulta numerado (`[1]`, `[2]`...), dentro de um bloco com marcador aleatório por requisição. O conteúdo da base é tratado como dado: o prompt manda ignorar qualquer instrução escrita nele. Sem nenhuma fonte pronta, o agente se comporta como antes, só com as instruções e o modelo.
@@ -93,6 +103,12 @@ Toda variável é lida em um ponto só, `src/lib/ambiente.ts`. O que cada uma fa
 | `MAX_TOKENS_RESPOSTA` | teto de tokens da resposta do modelo em cada turno (padrão 1024) | não |
 | `STORAGE_DIR` | pasta dos arquivos enviados à base de conhecimento (padrão `./storage`); entra no backup | não |
 | `MAX_UPLOAD_MB` | tamanho máximo de cada arquivo enviado, em MB (padrão 25) | não |
+| `MAX_VIDEO_MB` | tamanho máximo de cada vídeo ou áudio enviado, em MB (padrão 500, no máximo 2000) | não |
+| `MAX_VIDEO_MINUTOS` | duração máxima de cada vídeo ou áudio, em minutos (padrão 180) | não |
+| `FFMPEG_PATH` | caminho do `ffmpeg` (padrão: procura `ffmpeg` no `PATH`); exigido para vídeo e áudio | para usar vídeo |
+| `FFPROBE_PATH` | caminho do `ffprobe` (padrão: procura `ffprobe` no `PATH`) | para usar vídeo |
+| `OPENROUTER_MODELO_TRANSCRICAO` | modelo do OpenRouter que transcreve o áudio (padrão `google/gemini-2.5-flash`); o valor salvo em Configurações > Integrações vale mais | não |
+| `YOUTUBE_BASE` | endereço do YouTube lido para as legendas (padrão `https://www.youtube.com`); só o simulado de teste o muda | não |
 
 ## Comandos
 

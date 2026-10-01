@@ -371,3 +371,98 @@ describe('convenções do canal Telegram (FT-07)', () => {
     for (const variavel of ['TELEGRAM_API_BASE', 'TELEGRAM_PERMITIR_URL_NAO_HTTPS']) expect(readme, variavel).toContain(variavel)
   })
 })
+
+describe('convenções do vídeo (FT-08)', () => {
+  const convencoes = ler('docs/stack/CONVENCOES.md')
+  const lacunas = ler('docs/stack/LACUNAS.md')
+  const readme = ler('README.md')
+
+  // Cada citação `arquivo:linha` nova do CONVENCOES.md precisa apontar para a linha certa.
+  const CITACOES: Array<[string, RegExp]> = [
+    ['src/app/api/agentes/[id]/fontes/video/route.ts:35', /export async function POST/],
+    ['src/app/api/agentes/[id]/fontes/youtube/route.ts:13', /export async function POST/],
+    ['src/servicos/fontes.ts:375', /export async function adicionarVideo/],
+    ['src/lib/armazenamento.ts:56', /async gravarDeStream/],
+    ['src/lib/midia-formatos.ts:49', /export function conferirAssinaturaDeMidia/],
+    ['src/componentes/enviar-video.ts:12', /export function enviarVideo/],
+    ['src/lib/midia.ts:50', /export function executar/],
+    ['src/lib/midia.ts:93', /export function exigirCaminhoInterno/],
+    ['src/lib/midia.ts:107', /export async function verificarMidia/],
+    ['src/lib/midia.ts:141', /export async function sondar/],
+    ['src/lib/midia.ts:183', /export async function extrairAudio/],
+    ['src/servicos/fontes-fila.ts:57', /const TIPOS_DE_MIDIA/],
+    ['src/servicos/fontes-fila.ts:70', /export function criarFila/],
+    ['src/servicos/fontes-fila.ts:141', /async function processarVideo/],
+    ['src/servicos/fontes-fila.ts:241', /async function trabalhador/],
+    ['src/servicos/fontes-fila.ts:321', /export function obterFila/],
+    ['src/servicos/transcricao-de-midia.ts:30', /export interface DependenciasDeMidia/],
+    ['src/servicos/transcricao-de-midia.ts:80', /export async function transcreverMidia/],
+    ['src/servicos/transcricao-marcadores.ts:11', /export function formatarMarcador/],
+    ['src/lib/openrouter.ts:220', /export async function transcreverAudio/],
+    ['src/servicos/integracoes.ts:70', /export async function estadoDoOpenrouter/],
+    ['src/servicos/integracoes.ts:184', /export async function modeloDeTranscricaoEfetivo/],
+    ['src/servicos/integracoes.ts:197', /export async function salvarModeloDeTranscricao/],
+    ['src/lib/ambiente.ts:115', /get maxVideoBytes/],
+    ['src/lib/ambiente.ts:139', /get youtubeBase/],
+    ['src/lib/ambiente.ts:149', /export const MODELO_DE_TRANSCRICAO_PADRAO/],
+    ['src/lib/youtube.ts:54', /export function destinoPermitido/],
+    ['src/lib/youtube.ts:75', /async function lerComLimite/],
+    ['src/lib/youtube.ts:224', /export function escolherFaixa/],
+    ['src/lib/youtube.ts:298', /export async function baixarLegenda/],
+    ['src/lib/youtube.ts:331', /export async function obterLegendas/],
+    ['src/componentes/AdicionarFontes.tsx:21', /const PAINEIS/],
+    ['src/app/acoes.ts:47', /console\.error\(erro\)/],
+    ['tests/apoio/ffmpeg.ts:40', /export function descreverComFfmpeg/],
+    ['tests/apoio/youtube-falso.ts:116', /export async function iniciarYoutubeFalso/],
+    ['tests/apoio/openrouter-falso.ts:111', /function extrairAudio/],
+    ['tests/apoio/openrouter-falso.ts:125', /export async function iniciarOpenRouterFalso/],
+  ]
+
+  it.each(CITACOES)('%s existe e contém o que o CONVENCOES.md diz', (citacao, esperado) => {
+    expect(convencoes).toContain(citacao)
+    const [arquivo, linha] = citacao.split(':')
+    expect(ler(arquivo!).split('\n')[Number(linha) - 1]).toMatch(esperado)
+  })
+
+  it('registra as regras do vídeo: upload em stream, processo sem shell, fila de duas raias, transcrição e YouTube com SSRF', () => {
+    expect(convencoes).toMatch(/Upload de arquivo grande em stream/)
+    expect(convencoes).toMatch(/nunca `request\.formData\(\)`/)
+    expect(convencoes).toMatch(/Processo externo sem shell/)
+    expect(convencoes).toMatch(/`shell: false`/)
+    expect(convencoes).toMatch(/duas raias/)
+    expect(convencoes).toMatch(/segmentos\/NN\.txt/)
+    expect(convencoes).toMatch(/Transcrição de áudio pelo provedor/)
+    expect(convencoes).toMatch(/Leitura de site de terceiro sem API/)
+    expect(convencoes).toMatch(/destinoPermitido/)
+    expect(convencoes).toMatch(/EXIGIR_FFMPEG/)
+    for (const variavel of ['MAX_VIDEO_MB', 'MAX_VIDEO_MINUTOS', 'FFMPEG_PATH', 'FFPROBE_PATH', 'OPENROUTER_MODELO_TRANSCRICAO', 'YOUTUBE_BASE']) {
+      expect(convencoes, variavel).toContain(variavel)
+    }
+    expect(convencoes).not.toContain('a FT-08 acrescenta vídeo nos dois')
+  })
+
+  it('as lacunas registram a fragilidade do YouTube, o modelo sem áudio, a parte sem fala, os restos em disco e a falta de cota', () => {
+    expect(lacunas).toMatch(/fragilidade do YouTube/)
+    expect(lacunas).toMatch(/não há API oficial/)
+    expect(lacunas).toMatch(/modalidade de áudio/)
+    expect(lacunas).toMatch(/sem fala/)
+    expect(lacunas).toMatch(/original\.parcial/)
+    expect(lacunas).toMatch(/cota de créditos/)
+  })
+
+  it('o README explica o vídeo: formatos, limites, ffmpeg, créditos, retomada por parte, YouTube e as variáveis', () => {
+    expect(readme).toContain('Vídeo, áudio e YouTube')
+    for (const ext of ['.mp4', '.mov', '.webm', '.mkv', '.mp3', '.wav', '.flac']) expect(readme, ext).toContain(ext)
+    expect(readme).toMatch(/ffmpeg/)
+    expect(readme).toMatch(/consome créditos do OpenRouter/)
+    expect(readme).toContain('/api/agentes/[id]/fontes/video')
+    expect(readme).toContain('/api/agentes/[id]/fontes/youtube')
+    expect(readme).toContain('segmentos/NN.txt')
+    expect(readme).toContain('tests/apoio/servir-youtube-falso.ts')
+    expect(readme).toMatch(/Fragilidade assumida/)
+    expect(readme).toContain('EXIGIR_FFMPEG=1')
+    for (const variavel of ['MAX_VIDEO_MB', 'MAX_VIDEO_MINUTOS', 'FFMPEG_PATH', 'FFPROBE_PATH', 'OPENROUTER_MODELO_TRANSCRICAO', 'YOUTUBE_BASE']) {
+      expect(readme, variavel).toContain(variavel)
+    }
+  })
+})
