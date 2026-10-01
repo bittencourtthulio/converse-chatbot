@@ -9,7 +9,9 @@ import { decidirTecla, type Bolha } from '@/componentes/estado-da-conversa'
 import {
   LIMITE_DA_MENSAGEM_DO_EMBED,
   LIMITE_PARA_AVISO_DO_EMBED,
+  ESTADO_INICIAL_DO_APAGAR,
   MENSAGEM_DE_SEM_CONEXAO,
+  apagarMinhaConversaNoServidor,
   armazenamentoDoNavegador,
   corpoDoEnvio,
   criarGuardaDoVisitante,
@@ -18,6 +20,7 @@ import {
   estiloDoAgente,
   lerRetomada,
   podeEnviarNoEmbed,
+  reduzirApagar,
   reduzirEmbed,
   sugestoesVisiveis,
   type GuardaDoVisitante,
@@ -127,7 +130,9 @@ export function ChatEmbutido({ agenteId, configuracao: configuracaoInicial, modo
   const [estado, despachar] = useReducer(reduzirEmbed, undefined, () => estadoInicial())
   const [texto, setTexto] = useState('')
   const [retomando, setRetomando] = useState(false)
+  const [apagar, despacharApagar] = useReducer(reduzirApagar, ESTADO_INICIAL_DO_APAGAR)
   const idDoCampo = useId()
+  const idDaConfirmacao = useId()
   const guarda = useRef<GuardaDoVisitante | null>(null)
   const controle = useRef<AbortController | null>(null)
   const campo = useRef<HTMLTextAreaElement>(null)
@@ -257,6 +262,24 @@ export function ChatEmbutido({ agenteId, configuracao: configuracaoInicial, modo
     campo.current?.focus()
   }
 
+  // "Apagar minha conversa" (FT-10, PR-90): apaga no servidor tudo o que este visitante tem com
+  // o agente e recomeça do zero. O id do visitante fica (pode haver conversas com outros agentes).
+  const apagarMinhaConversa = async () => {
+    if (!enderecos.apagar || apagar.apagando) return
+    despacharApagar({ tipo: 'apagando' })
+    const r = await apagarMinhaConversaNoServidor(enderecos.apagar, obterGuarda().visitanteId())
+    if (!r.ok) {
+      despacharApagar({ tipo: 'falhou', mensagem: r.mensagem })
+      return
+    }
+    controle.current?.abort()
+    despachar({ tipo: 'nova' })
+    obterGuarda().esquecerConversa(agenteId)
+    setTexto('')
+    despacharApagar({ tipo: 'concluido' })
+    campo.current?.focus()
+  }
+
   const fechar = aoFechar ?? (() => void avisarOPai(mensagemDeFechar(), window))
   const podeFechar = Boolean(aoFechar) || moldurado
   const alternarTamanho = () => {
@@ -296,6 +319,19 @@ export function ChatEmbutido({ agenteId, configuracao: configuracaoInicial, modo
         >
           <Icone nome="atualizar" tamanho={18} />
         </button>
+        {modo === 'publico' && (
+          <button
+            type="button"
+            className="embed-botao-icone"
+            onClick={() => despacharApagar({ tipo: 'pedir' })}
+            aria-label="Apagar minha conversa"
+            aria-expanded={apagar.confirmando}
+            aria-controls={idDaConfirmacao}
+            title="Apagar minha conversa"
+          >
+            <Icone nome="lixeira" tamanho={18} />
+          </button>
+        )}
         {moldurado && modo === 'publico' && (
           <button
             type="button"
@@ -320,6 +356,41 @@ export function ChatEmbutido({ agenteId, configuracao: configuracaoInicial, modo
           </button>
         )}
       </header>
+
+      {apagar.confirmando && (
+        <div
+          id={idDaConfirmacao}
+          className="embed-apagar"
+          role="alertdialog"
+          aria-labelledby={`${idDaConfirmacao}-titulo`}
+          aria-describedby={`${idDaConfirmacao}-texto`}
+        >
+          <p className="embed-apagar-titulo" id={`${idDaConfirmacao}-titulo`}>
+            Apagar minha conversa?
+          </p>
+          <p className="embed-apagar-texto" id={`${idDaConfirmacao}-texto`}>
+            Todas as suas mensagens com este assistente serão apagadas de vez. Isso não pode ser desfeito.
+          </p>
+          {apagar.erro && (
+            <p className="embed-apagar-erro" role="alert">
+              {apagar.erro}
+            </p>
+          )}
+          <div className="embed-apagar-acoes">
+            <button type="button" className="embed-apagar-confirmar" onClick={() => void apagarMinhaConversa()} disabled={apagar.apagando}>
+              {apagar.apagando ? 'Apagando…' : 'Apagar tudo'}
+            </button>
+            <button type="button" className="embed-apagar-cancelar" onClick={() => despacharApagar({ tipo: 'cancelar' })} disabled={apagar.apagando}>
+              Cancelar
+            </button>
+          </div>
+        </div>
+      )}
+      {apagar.apagada && (
+        <p className="embed-apagar-aviso" role="status">
+          Conversa apagada. Você pode começar uma nova quando quiser.
+        </p>
+      )}
 
       <div
         ref={lista}

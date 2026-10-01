@@ -114,12 +114,17 @@ export function criarGuardaDoVisitante(
 /** `publico` é o visitante do site; `previa` é o usuário do painel vendo o chat (PR-61). */
 export type ModoDoEmbed = 'publico' | 'previa'
 
-export function enderecosDoEmbed(modo: ModoDoEmbed, agenteId: string): { conversar: string; retomar: string | null } {
+export function enderecosDoEmbed(
+  modo: ModoDoEmbed,
+  agenteId: string,
+): { conversar: string; retomar: string | null; apagar: string | null } {
   return modo === 'previa'
-    ? { conversar: `/api/agentes/${agenteId}/conversar`, retomar: null }
+    ? { conversar: `/api/agentes/${agenteId}/conversar`, retomar: null, apagar: null }
     : {
         conversar: `/api/publico/agentes/${agenteId}/conversar`,
         retomar: `/api/publico/agentes/${agenteId}/conversa`,
+        // Apagar a própria conversa (FT-10, PR-90): o mesmo recurso da retomada, com DELETE.
+        apagar: `/api/publico/agentes/${agenteId}/conversa`,
       }
 }
 
@@ -224,4 +229,64 @@ export function reduzirEmbed(estado: EstadoDaConversa, acao: AcaoDoEmbed): Estad
   if (acao.tipo !== 'retomar') return reduzir(estado, acao)
   if (estado.bolhas.length > 0) return estado
   return estadoInicial({ conversaId: acao.retomada.conversaId, mensagens: acao.retomada.mensagens })
+}
+
+// --- "Apagar minha conversa" (FT-10, PR-90) -------------------------------------------------
+
+export interface EstadoDoApagar {
+  /** A pergunta "apagar de vez?" está aberta. */
+  confirmando: boolean
+  apagando: boolean
+  erro: string | null
+  /** A conversa acabou de ser apagada: mostra o aviso até a próxima ação. */
+  apagada: boolean
+}
+
+export const ESTADO_INICIAL_DO_APAGAR: EstadoDoApagar = { confirmando: false, apagando: false, erro: null, apagada: false }
+
+export type AcaoDoApagar =
+  | { tipo: 'pedir' }
+  | { tipo: 'cancelar' }
+  | { tipo: 'apagando' }
+  | { tipo: 'falhou'; mensagem: string }
+  | { tipo: 'concluido' }
+  | { tipo: 'limparAviso' }
+
+/** A confirmação em dois passos como máquina de estados pura: o primeiro clique só pergunta. */
+export function reduzirApagar(estado: EstadoDoApagar, acao: AcaoDoApagar): EstadoDoApagar {
+  switch (acao.tipo) {
+    case 'pedir':
+      return { confirmando: true, apagando: false, erro: null, apagada: false }
+    case 'cancelar':
+    case 'limparAviso':
+      return ESTADO_INICIAL_DO_APAGAR
+    case 'apagando':
+      return { ...estado, apagando: true, erro: null }
+    case 'falhou':
+      return { confirmando: true, apagando: false, erro: acao.mensagem, apagada: false }
+    case 'concluido':
+      return { confirmando: false, apagando: false, erro: null, apagada: true }
+  }
+}
+
+export type ResultadoDeApagar = { ok: true } | { ok: false; mensagem: string }
+
+/**
+ * Pede ao servidor que apague a conversa do visitante. O visitante vai no cabeçalho (nunca na
+ * URL, que vai para o log de acesso). Só os status que o servidor público define levam a
+ * própria mensagem; o resto é a frase genérica. O `fetch` é injetável para o teste.
+ */
+export async function apagarMinhaConversaNoServidor(
+  endereco: string,
+  visitanteId: string,
+  buscar: (url: string, init: RequestInit) => Promise<Response> = (url, init) => fetch(url, init),
+): Promise<ResultadoDeApagar> {
+  try {
+    const resposta = await buscar(endereco, { method: 'DELETE', headers: { 'X-Visitante-Id': visitanteId } })
+    if (resposta.ok) return { ok: true }
+    const corpo: unknown = await resposta.json().catch(() => null)
+    return { ok: false, mensagem: erroDaResposta('publico', resposta.status, corpo).mensagem }
+  } catch {
+    return { ok: false, mensagem: MENSAGEM_DE_SEM_CONEXAO }
+  }
 }

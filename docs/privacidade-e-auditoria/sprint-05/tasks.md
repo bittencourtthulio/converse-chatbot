@@ -56,18 +56,18 @@ tasks:
   - id: T-05.04
     titulo: "Botao Apagar minha conversa no chat embutido"
     fase: F-05.2
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar ao chat do /embed o botao Apagar minha conversa com confirmacao na tela que limpa o estado local e recomeca."
     arquivos:
       cria: ["tests/embed-apagar-logica.test.ts", "tests/embed-apagar-ui.test.tsx"]
-      altera: ["src/componentes/ChatEmbutido.tsx", "src/componentes/embed-logica.ts", "src/estilos/global.css"]
+      altera: ["src/componentes/ChatEmbutido.tsx", "src/componentes/embed-logica.ts", "src/estilos/global.css", "tests/embed-logica.test.ts"]
     teste_integracao: "O componente em modo publico mostra o botao, a confirmacao na tela chama o DELETE com o X-Visitante-Id, limpa a conversa e o visitante do armazenamento e volta ao estado inicial, e na previa o botao nao aparece."
     teste_funcional: "esquecerVisitante remove o id e a conversa do armazenamento e do estado em memoria mesmo se o armazenamento lancar erro, a confirmacao pede dois passos e erro da API mostra a mensagem sem apagar o estado local."
     criterio_aceite: "tests/embed-apagar-logica.test.ts e tests/embed-apagar-ui.test.tsx passam."
     depende_de: ["T-05.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
 ---
 
 # Tasks — Sprint 05
@@ -131,12 +131,12 @@ titulo: "Botao Apagar minha conversa no chat embutido"
 objetivo: "Acrescentar ao chat do /embed o botao Apagar minha conversa com confirmacao na tela que limpa o estado local e recomeca."
 arquivos:
   cria: ["tests/embed-apagar-logica.test.ts", "tests/embed-apagar-ui.test.tsx"]
-  altera: ["src/componentes/ChatEmbutido.tsx", "src/componentes/embed-logica.ts", "src/estilos/global.css"]
+  altera: ["src/componentes/ChatEmbutido.tsx", "src/componentes/embed-logica.ts", "src/estilos/global.css", "tests/embed-logica.test.ts"]
 teste_integracao: "O componente em modo publico mostra o botao, a confirmacao na tela chama o DELETE com o X-Visitante-Id, limpa a conversa e o visitante do armazenamento e volta ao estado inicial, e na previa o botao nao aparece."
 teste_funcional: "esquecerVisitante remove o id e a conversa do armazenamento e do estado em memoria mesmo se o armazenamento lancar erro, a confirmacao pede dois passos e erro da API mostra a mensagem sem apagar o estado local."
 criterio_aceite: "tests/embed-apagar-logica.test.ts e tests/embed-apagar-ui.test.tsx passam."
 depende_de: ["T-05.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2432 passed, 0 failed (199 arquivos); build antes
 ```
 

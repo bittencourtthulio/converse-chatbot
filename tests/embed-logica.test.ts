@@ -115,8 +115,9 @@ describe('enderecos e corpo por modo', () => {
     expect(enderecosDoEmbed('publico', 'ag1')).toEqual({
       conversar: '/api/publico/agentes/ag1/conversar',
       retomar: '/api/publico/agentes/ag1/conversa',
+      apagar: '/api/publico/agentes/ag1/conversa',
     })
-    expect(enderecosDoEmbed('previa', 'ag1')).toEqual({ conversar: '/api/agentes/ag1/conversar', retomar: null })
+    expect(enderecosDoEmbed('previa', 'ag1')).toEqual({ conversar: '/api/agentes/ag1/conversar', retomar: null, apagar: null })
   })
 
   it('o corpo público leva visitanteId; o da prévia não; conversaId só quando há', () => {
