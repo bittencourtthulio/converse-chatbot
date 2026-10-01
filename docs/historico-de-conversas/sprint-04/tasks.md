@@ -11,7 +11,7 @@ tasks:
   - id: T-04.01
     titulo: "Logica da tela de conversas"
     fase: F-04.1
-    status: pendente
+    status: concluida
     objetivo: "Escrever a logica pura de filtros por searchParams, paginacao, selecao e formatacao de data."
     arquivos:
       cria: ["src/componentes/conversas-logica.ts", "tests/conversas-logica.test.ts", "docs/historico-de-conversas/sprint-04/sprint.md", "docs/historico-de-conversas/sprint-04/fases.md", "docs/historico-de-conversas/sprint-04/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/conversas-logica.test.ts passa."
     depende_de: ["T-03.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-04.02
     titulo: "Pagina da lista de conversas"
     fase: F-04.1
@@ -88,7 +88,7 @@ teste_funcional: "searchParams com agente, canal, texto, de, ate e pagina viram 
 criterio_aceite: "tests/conversas-logica.test.ts passa."
 depende_de: ["T-03.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/conversas-logica.test.ts 14 passed
 ```
 
 ---
