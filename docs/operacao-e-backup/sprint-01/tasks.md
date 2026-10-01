@@ -11,7 +11,7 @@ tasks:
   - id: T-01.01
     titulo: "Dependencias tar e better-sqlite3 e prova do backup online"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Fixar tar e better-sqlite3 (e seus tipos) como dependencias diretas, mover prisma e tsx para dependencies e provar que db.backup preserva o rowid das linhas de trechos e que o tar cria e extrai sem shell."
     arquivos:
       cria: ["tests/dependencias-operacao.test.ts", "docs/operacao-e-backup/sprint-01/sprint.md", "docs/operacao-e-backup/sprint-01/fases.md", "docs/operacao-e-backup/sprint-01/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/dependencias-operacao.test.ts passa, npm audit --audit-level=high termina com 0 vulnerabilidades e package.json tem tar e better-sqlite3 com versao fixa e prisma e tsx em dependencies."
     depende_de: []
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
   - id: T-01.02
     titulo: "Instalacao de teste com dados de todas as camadas"
     fase: F-01.1
@@ -71,7 +71,7 @@ teste_funcional: "Um diretorio com um arquivo criado por tar.create com gzip em 
 criterio_aceite: "tests/dependencias-operacao.test.ts passa, npm audit --audit-level=high termina com 0 vulnerabilidades e package.json tem tar e better-sqlite3 com versao fixa e prisma e tsx em dependencies."
 depende_de: []
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2548 passed, 0 failed (209 arquivos); build antes
 ```
 
 ---
