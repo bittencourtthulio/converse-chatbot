@@ -26,7 +26,7 @@ tasks:
   - id: T-05.02
     titulo: "Acoes de servidor do canal"
     fase: F-05.2
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar em src/app/acoes.ts as acoes conectarTelegram, desconectarTelegram, pausarTelegram, retomarTelegram, verificarTelegram e salvarLimiteTelegram, sem token no retorno."
     arquivos:
       cria: ["tests/telegram-acoes.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/telegram-acoes.test.ts passa e o retorno serializado de cada acao nao contem o token de teste."
     depende_de: ["T-05.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
 ---
 
 # Tasks — Sprint 05
@@ -75,5 +75,5 @@ teste_funcional: "O retorno de conectarTelegram com sucesso nao contem o token e
 criterio_aceite: "tests/telegram-acoes.test.ts passa e o retorno serializado de cada acao nao contem o token de teste."
 depende_de: ["T-05.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/telegram-acoes.test.ts, 13 passed; tsc e eslint limpos
 ```

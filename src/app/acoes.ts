@@ -13,6 +13,14 @@ import {
   removerChaveDoOpenrouter,
   testarConexaoDoOpenrouter,
 } from '@/servicos/integracoes'
+import {
+  conectar as conectarCanalTelegram,
+  definirLimiteDiario as definirLimiteDoCanalTelegram,
+  desconectar as desconectarCanalTelegram,
+  pausar as pausarCanalTelegram,
+  retomar as retomarCanalTelegram,
+  verificar as verificarCanalTelegram,
+} from '@/servicos/canal-telegram'
 import { ErroDeAplicacao } from '@/lib/erros'
 import {
   exigirUsuario,
@@ -288,4 +296,108 @@ export async function salvarChat(
   }
   revalidatePath(`/agentes/${id}/publicar`)
   return { sucesso: 'Configuração do chat salva.' }
+}
+
+// Canal Telegram (FT-07, PR-65, PR-69). As ações lidam com token: erro inesperado
+// só registra o nome (`mensagemSemSegredo`) e nenhum retorno leva segredo.
+const abaDeCanais = (agenteId: string) => `/agentes/${agenteId}/canais`
+
+export async function conectarTelegram(
+  _estado: EstadoDoFormulario,
+  form: FormData,
+): Promise<EstadoDoFormulario> {
+  const id = String(form.get('id') ?? '')
+  let usuario: string
+  try {
+    const autor = await exigirUsuario()
+    const canal = await conectarCanalTelegram(autor, id, form.get('token'))
+    usuario = canal.bot.username
+  } catch (erro) {
+    return { erro: mensagemSemSegredo(erro) }
+  }
+  revalidatePath(abaDeCanais(id))
+  return { sucesso: `Bot conectado: @${usuario}. Envie uma mensagem a ele no Telegram para testar.` }
+}
+
+export async function desconectarTelegram(
+  _estado: EstadoDoFormulario,
+  form: FormData,
+): Promise<EstadoDoFormulario> {
+  const id = String(form.get('id') ?? '')
+  let aviso = ''
+  try {
+    const autor = await exigirUsuario()
+    const { webhookRemovido } = await desconectarCanalTelegram(autor, id)
+    if (!webhookRemovido) {
+      aviso = ' O Telegram não confirmou a remoção do webhook; revogue o token no @BotFather se quiser garantir que o bot pare de enviar atualizações.'
+    }
+  } catch (erro) {
+    return { erro: mensagemSemSegredo(erro) }
+  }
+  revalidatePath(abaDeCanais(id))
+  return { sucesso: `Bot desconectado. O histórico das conversas foi mantido.${aviso}` }
+}
+
+export async function pausarTelegram(
+  _estado: EstadoDoFormulario,
+  form: FormData,
+): Promise<EstadoDoFormulario> {
+  const id = String(form.get('id') ?? '')
+  try {
+    await pausarCanalTelegram(await exigirUsuario(), id)
+  } catch (erro) {
+    return { erro: mensagemSemSegredo(erro) }
+  }
+  revalidatePath(abaDeCanais(id))
+  return { sucesso: 'Bot pausado. Ele não responderá até você retomar; as mensagens enviadas nesse período não serão atendidas depois.' }
+}
+
+export async function retomarTelegram(
+  _estado: EstadoDoFormulario,
+  form: FormData,
+): Promise<EstadoDoFormulario> {
+  const id = String(form.get('id') ?? '')
+  try {
+    await retomarCanalTelegram(await exigirUsuario(), id)
+  } catch (erro) {
+    return { erro: mensagemSemSegredo(erro) }
+  }
+  revalidatePath(abaDeCanais(id))
+  return { sucesso: 'Bot retomado.' }
+}
+
+export async function verificarTelegram(
+  _estado: EstadoDoFormulario,
+  form: FormData,
+): Promise<EstadoDoFormulario> {
+  const id = String(form.get('id') ?? '')
+  try {
+    const r = await verificarCanalTelegram(await exigirUsuario(), id)
+    const pendentes = r.pendentes > 0 ? ` Atualizações pendentes no Telegram: ${r.pendentes}.` : ''
+    const ultimo = r.ultimoErroDoTelegram ? ` Último erro de entrega relatado pelo Telegram: ${r.ultimoErroDoTelegram}.` : ''
+    revalidatePath(abaDeCanais(id))
+    if (!r.urlConfere) {
+      return {
+        erro: `O endereço registrado no Telegram é diferente do esperado. Reconecte o bot para registrá-lo de novo.${pendentes}${ultimo}`,
+      }
+    }
+    return { sucesso: `O webhook está correto.${pendentes}${ultimo}` }
+  } catch (erro) {
+    revalidatePath(abaDeCanais(id))
+    return { erro: mensagemSemSegredo(erro) }
+  }
+}
+
+export async function salvarLimiteTelegram(
+  _estado: EstadoDoFormulario,
+  form: FormData,
+): Promise<EstadoDoFormulario> {
+  const id = String(form.get('id') ?? '')
+  try {
+    await definirLimiteDoCanalTelegram(await exigirUsuario(), id, form.get('limiteDiario'))
+  } catch (erro) {
+    return { erro: mensagemSemSegredo(erro) }
+  }
+  revalidatePath(abaDeCanais(id))
+  return { sucesso: 'Limite diário salvo.' }
 }

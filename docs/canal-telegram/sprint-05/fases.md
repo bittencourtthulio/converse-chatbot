@@ -10,14 +10,14 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-05.1
     titulo: "Rota do webhook"
-    status: pendente
+    status: concluido
     criterio_saida: "Handler fino com resposta rapida e processamento posterior."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-05.01"]
   - id: F-05.2
     titulo: "Acoes de servidor"
-    status: pendente
+    status: concluido
     criterio_saida: "Conectar, desconectar, pausar, retomar, verificar e limite pela tela."
     paralelizavel: false
     paralela_com: []
@@ -46,7 +46,7 @@ flowchart LR
   classDef critico   stroke-width:3px
 
   class T_05_01 concluida
-  class T_05_02 pendente
+  class T_05_02 concluida
   class T_05_01,T_05_02 critico
 ```
 

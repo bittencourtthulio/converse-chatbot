@@ -8,7 +8,7 @@ feature_id: FT-07
 sprint_id: sprint-05
 atualizado_em: 2026-09-30
 titulo: "Rota do webhook e acoes de servidor"
-status: pendente
+status: concluido
 criterio_saida: "O webhook responde 200 rapido e atende depois contra o servidor de producao, e as acoes de servidor gerenciam o canal sem expor o token."
 fases: ["F-05.1", "F-05.2"]
 riscos: ["after() em next start precisa ser provado por teste de producao (lacuna 3)", "os testes de rota exigem npm run build antes"]
