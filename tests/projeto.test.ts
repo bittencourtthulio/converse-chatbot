@@ -549,7 +549,7 @@ describe('convenções da privacidade e da auditoria (FT-10)', () => {
     ['src/servicos/auditoria.ts:128', /export function registrarMelhorEsforco/],
     ['src/servicos/auditoria.ts:245', /export async function purgarAnterioresA/],
     ['src/servicos/auditoria-acoes.ts:10', /export const ACOES/],
-    ['src/servicos/auditoria-acoes.ts:94', /export function validarDetalhes/],
+    ['src/servicos/auditoria-acoes.ts:96', /export function validarDetalhes/],
     ['src/servicos/auditoria-ouvintes.ts:71', /export function ligarAuditoria/],
     ['src/servicos/auditoria-ouvintes.ts:42', /export function tratarConversaApagada/],
     ['src/instrumentation.ts:25', /ligarAuditoria/],

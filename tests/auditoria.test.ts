@@ -63,6 +63,16 @@ describe('registrar (funcional): recusas', () => {
     expect(await prisma.registroDeAuditoria.count()).toBe(0)
   })
 
+  it('a ação backup_gerado aceita origem, bytes e arquivos e recusa qualquer outra chave (FT-11)', async () => {
+    const admin = await criarAdmin()
+    const r = await registrar({ ator: admin, acao: 'backup_gerado', alvoTipo: 'sistema', detalhes: { origem: 'tela', bytes: 3145728, arquivos: 12 } })
+    expect(r.acao).toBe('backup_gerado')
+    expect(r.detalhes).toEqual({ origem: 'tela', bytes: 3145728, arquivos: 12 })
+    await expect(
+      registrar({ ator: admin, acao: 'backup_gerado', alvoTipo: 'sistema', detalhes: { nome: 'backup-20260505-102030.tar.gz' } }),
+    ).rejects.toMatchObject({ status: 422 })
+  })
+
   it('a ação restauracao é aceita (ponto de chamada da FT-11)', async () => {
     const admin = await criarAdmin()
     const r = await registrar({ ator: admin, acao: 'restauracao', alvoTipo: 'sistema', detalhes: { origem: 'arquivo de backup' } })

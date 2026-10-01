@@ -3,6 +3,7 @@
 // A frase nunca repete valor sensível: os detalhes já chegam sem segredo, sem texto de conversa
 // e sem identificador de visitante, e o e-mail só aparece onde o próprio registro o guardou
 // (o rótulo de quem foi excluído).
+import { formatarBytes } from '@/componentes/sistema-logica'
 import { ACOES, type AcaoDeAuditoria } from '@/servicos/auditoria-acoes'
 
 const ROTULOS: Record<AcaoDeAuditoria, string> = {
@@ -24,6 +25,7 @@ const ROTULOS: Record<AcaoDeAuditoria, string> = {
   dados_do_titular_exportados: 'Dados do titular exportados',
   expurgo_automatico: 'Expurgo automático',
   restauracao: 'Restauração de dados',
+  backup_gerado: 'Backup gerado',
 }
 
 /** O rótulo curto da ação; ação que o conjunto não conhece volta como veio. */
@@ -179,6 +181,13 @@ export function descreverRegistro(r: RegistroParaDescrever): string {
     case 'restauracao': {
       const origem = texto(d.origem)
       return `Restaurou os dados a partir de um backup${origem ? ` (${origem})` : ''}.`
+    }
+    case 'backup_gerado': {
+      const origem = texto(d.origem)
+      const bytes = numero(d.bytes)
+      const arquivos = numero(d.arquivos)
+      const medidas = [bytes !== null && formatarBytes(bytes), arquivos !== null && plural(arquivos, 'arquivo', 'arquivos')].filter((m): m is string => m !== false)
+      return `Gerou um backup do banco e dos arquivos${origem ? ` pela ${origem}` : ''}${medidas.length > 0 ? ` (${medidas.join(' e ')})` : ''}.`
     }
     default:
       return `Ação registrada: ${r.acao}.`

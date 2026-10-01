@@ -95,6 +95,19 @@ describe('descreverRegistro (funcional: frases em português sem dado sensível)
     expect(descreverRegistro(reg('restauracao', { origem: 'arquivo de backup' }))).toBe('Restaurou os dados a partir de um backup (arquivo de backup).')
   })
 
+  it('backup gerado: frase com a origem, o tamanho e os arquivos, e sem detalhe não quebra (FT-11)', () => {
+    expect(descreverRegistro(reg('backup_gerado', { origem: 'tela', bytes: 3 * 1024 * 1024, arquivos: 12 }))).toBe(
+      'Gerou um backup do banco e dos arquivos pela tela (3,0 MB e 12 arquivos).',
+    )
+    expect(descreverRegistro(reg('backup_gerado', { origem: 'linha de comando', bytes: 1024, arquivos: 1 }))).toBe(
+      'Gerou um backup do banco e dos arquivos pela linha de comando (1,0 KB e 1 arquivo).',
+    )
+    expect(descreverRegistro(reg('backup_gerado', {}))).toBe('Gerou um backup do banco e dos arquivos.')
+    expect(rotuloDaAcao('backup_gerado')).toBe('Backup gerado')
+    expect(OPCOES_DE_ACAO.map((o) => o.valor)).toContain('backup_gerado')
+    expect(OPCOES_DE_ACAO).toHaveLength(20)
+  })
+
   it('detalhe ausente ou fora do formato não quebra a frase', () => {
     expect(descreverRegistro(reg('agente_excluido', { nome: 42 as unknown as string }))).toBe('Excluiu um agente.')
     expect(descreverRegistro(reg('retencao_alterada', {}))).toBe('Alterou a retenção das conversas.')

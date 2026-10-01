@@ -41,7 +41,7 @@ tasks:
   - id: T-05.03
     titulo: "Acao de auditoria backup_gerado"
     fase: F-05.2
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar backup_gerado ao conjunto fechado de acoes com as chaves origem, bytes e arquivos e a frase na tela de Auditoria."
     arquivos:
       cria: []
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/auditoria-acoes.test.ts, tests/auditoria-logica.test.ts e tests/auditoria.test.ts passam."
     depende_de: ["T-05.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
   - id: T-05.04
     titulo: "Servico de backup: gerar, listar e localizar"
     fase: F-05.2
@@ -165,7 +165,7 @@ teste_funcional: "descreverRegistro de backup_gerado com origem tela devolve a f
 criterio_aceite: "tests/auditoria-acoes.test.ts, tests/auditoria-logica.test.ts e tests/auditoria.test.ts passam."
 depende_de: ["T-05.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2714 passed, 0 failed (229 arquivos); build antes
 ```
 
 ---

@@ -17,7 +17,7 @@ fases:
     tasks: ["T-05.01", "T-05.02"]
   - id: F-05.2
     titulo: "Servico, auditoria e comando"
-    status: nao_iniciado
+    status: em_andamento
     criterio_saida: "O servico exige admin, audita e o comando npm run backup funciona fora do servidor"
     paralelizavel: false
     paralela_com: []
@@ -66,7 +66,7 @@ flowchart LR
 
   class T_05_01 concluida
   class T_05_02 concluida
-  class T_05_03 pendente
+  class T_05_03 concluida
   class T_05_04 pendente
   class T_05_05 pendente
   class T_05_06 pendente

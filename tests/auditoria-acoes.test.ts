@@ -4,8 +4,8 @@ import { describe, it, expect } from 'vitest'
 import { ACOES, TIPOS_DE_ALVO, LIMITE_DOS_DETALHES, validarDetalhes, validarAcao } from '@/servicos/auditoria-acoes'
 
 describe('conjunto fechado de ações (funcional)', () => {
-  it('tem as 18 ações do plano, incluindo restauracao para a FT-11', () => {
-    expect(ACOES).toHaveLength(18)
+  it('tem as 19 ações: as 18 da FT-10 (com restauracao) e backup_gerado da FT-11', () => {
+    expect(ACOES).toHaveLength(19)
     expect(ACOES).toEqual(
       expect.arrayContaining([
         'chave_openrouter_alterada',
@@ -26,6 +26,7 @@ describe('conjunto fechado de ações (funcional)', () => {
         'dados_do_titular_exportados',
         'expurgo_automatico',
         'restauracao',
+        'backup_gerado',
       ]),
     )
     expect(new Set(ACOES).size).toBe(ACOES.length)

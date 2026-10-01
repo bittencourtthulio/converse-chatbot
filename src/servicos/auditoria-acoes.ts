@@ -26,6 +26,7 @@ export const ACOES = [
   'dados_do_titular_exportados',
   'expurgo_automatico',
   'restauracao',
+  'backup_gerado',
 ] as const
 
 export type AcaoDeAuditoria = (typeof ACOES)[number]
@@ -59,6 +60,7 @@ export const CHAVES_DE_DETALHES: Record<AcaoDeAuditoria, readonly string[]> = {
   dados_do_titular_exportados: ['canal', 'conversas', 'mensagens', 'formato'],
   expurgo_automatico: ['conversas', 'mensagens', 'atualizacoesDoTelegram', 'registrosDeAuditoria', 'retencaoDias'],
   restauracao: ['origem', 'resultado'],
+  backup_gerado: ['origem', 'bytes', 'arquivos'],
 }
 
 export function validarAcao(acao: unknown): AcaoDeAuditoria {
