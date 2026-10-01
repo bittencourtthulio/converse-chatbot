@@ -11,7 +11,7 @@ tasks:
   - id: T-03.01
     titulo: "Servico excluirDefinitivamente"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Excluir usuario de forma definitiva, preservando agentes, conversas e fontes e invalidando a sessao."
     arquivos:
       cria: ["tests/usuarios-excluir.test.ts", "docs/privacidade-e-auditoria/sprint-03/sprint.md", "docs/privacidade-e-auditoria/sprint-03/fases.md", "docs/privacidade-e-auditoria/sprint-03/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/usuarios-excluir.test.ts passa e tests/usuarios.test.ts continua passando."
     depende_de: ["T-02.05"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-03.02
     titulo: "Tela: Excluir definitivamente em Usuarios"
     fase: F-03.1
@@ -86,7 +86,7 @@ teste_funcional: "Excluir a si mesmo ou o ultimo admin ativo da 409, quem nao e 
 criterio_aceite: "tests/usuarios-excluir.test.ts passa e tests/usuarios.test.ts continua passando."
 depende_de: ["T-02.05"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/usuarios-excluir.test.ts 8 passed, tests/usuarios.test.ts e tests/projeto.test.ts 165 passed; suite inteira no fim da sprint
 ```
 
 ---

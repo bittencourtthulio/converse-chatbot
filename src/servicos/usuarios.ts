@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
 import { hashDeSenha } from '@/lib/senha'
-import { conflito, entradaInvalida, naoEncontrado } from '@/lib/erros'
+import { conflito, entradaInvalida, naoAutorizado, naoEncontrado } from '@/lib/erros'
 import { exigirAdmin, type UsuarioAutenticado } from '@/servicos/autenticacao'
 import { registrar } from '@/servicos/auditoria'
 
@@ -166,13 +166,66 @@ export async function editar(
 }
 
 /**
- * Desativa em vez de apagar. Um usuário apagado levaria junto o rastro do
- * que ele fez; a exclusão de verdade, quando o projeto precisar dela, é a
- * feature de LGPD, com o cuidado que ela exige.
+ * Desativa: a alternativa reversível à exclusão. A exclusão de verdade é
+ * `excluirDefinitivamente`.
  */
 export async function desativar(
   autor: UsuarioAutenticado,
   id: string,
 ): Promise<UsuarioListado> {
   return editar(autor, id, { ativo: false })
+}
+
+/**
+ * Exclui o usuário de forma definitiva e irreversível (FT-10, PR-18, PR-88). Só um admin
+ * ativo (conferido no banco: o serviço recebe o id, não confia em quem chama). Recusa excluir
+ * a si mesmo e, por isso, o último admin ativo (409). O conteúdo da empresa permanece: os
+ * agentes que o usuário criou passam ao admin que excluiu (`Agente.criadoPorId` é obrigatório,
+ * com chave estrangeira restritiva), conversas e fontes ficam sem criador, e a conta some, o
+ * que derruba as sessões (`usuarioDaSessao` exige que a conta exista). Tudo numa transação,
+ * junto da auditoria, que guarda o rótulo de quem foi excluído.
+ */
+export async function excluirDefinitivamente(
+  id: string,
+  adminId: string,
+): Promise<{ agentesTransferidos: number }> {
+  return prisma.$transaction(async (tx) => {
+    const admin = await tx.usuario.findUnique({ where: { id: adminId } })
+    if (!admin || !admin.ativo || admin.papel !== 'admin') throw naoAutorizado()
+
+    const alvo = await tx.usuario.findUnique({ where: { id } })
+    if (!alvo) throw naoEncontrado('Usuário não encontrado.')
+
+    if (alvo.id === admin.id) {
+      const outrosAdmins = await tx.usuario.count({
+        where: { papel: 'admin', ativo: true, id: { not: alvo.id } },
+      })
+      throw conflito(
+        outrosAdmins === 0
+          ? 'Este é o último administrador ativo. Promova outro antes.'
+          : 'Você não pode excluir a própria conta.',
+      )
+    }
+
+    const { count: agentesTransferidos } = await tx.agente.updateMany({
+      where: { criadoPorId: id },
+      data: { criadoPorId: admin.id },
+    })
+    // Conversas e fontes têm `onDelete: SetNull`; o campo de quem gravou a configuração por
+    // último não tem chave estrangeira e é zerado aqui.
+    await tx.configuracaoDoWorkspace.updateMany({ where: { atualizadoPor: id }, data: { atualizadoPor: null } })
+
+    await registrar(
+      {
+        ator: { id: admin.id, nome: admin.nome, email: admin.email, papel: admin.papel },
+        acao: 'usuario_excluido',
+        alvoTipo: 'usuario',
+        alvoId: id,
+        detalhes: { rotulo: `${alvo.nome} <${alvo.email}>`, papel: alvo.papel, agentesTransferidos },
+      },
+      tx,
+    )
+    await tx.usuario.delete({ where: { id } })
+    return { agentesTransferidos }
+  })
 }
