@@ -8,7 +8,7 @@ feature_id: FT-07
 titulo: Canal Telegram
 tipo_trabalho: feature
 tipo_ocorrencia: null
-estagio: f4
+estagio: f6
 status: em_andamento
 criado_em: 2026-09-30
 atualizado_em: 2026-09-30
