@@ -26,7 +26,7 @@ tasks:
   - id: T-04.02
     titulo: "Modelo de transcricao efetivo"
     fase: F-04.1
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar a integracoes.ts o modelo efetivo (banco, depois ambiente, depois constante), salvar e restaurar o padrao so pelo admin e leitura do modelo em uso por qualquer usuario."
     arquivos:
       cria: ["tests/integracoes-transcricao.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/integracoes-transcricao.test.ts passa."
     depende_de: ["T-01.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-04.03
     titulo: "Transcricao de midia por parte"
     fase: F-04.1
@@ -120,7 +120,7 @@ teste_funcional: "Usuario comum nao salva o modelo (403), modelo com espaco ou a
 criterio_aceite: "tests/integracoes-transcricao.test.ts passa."
 depende_de: ["T-01.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/integracoes-transcricao.test.ts e tests/integracoes-conexao.test.ts, 12 passed
 ```
 
 ---

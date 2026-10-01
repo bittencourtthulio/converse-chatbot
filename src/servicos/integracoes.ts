@@ -3,8 +3,9 @@
 // texto cifrado: só a máscara. Só o admin lê o estado e mexe na chave (PR-12).
 import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
+import { ambiente } from '@/lib/ambiente'
 import { cifrar, decifrar, mascararSegredo } from '@/lib/cripto'
-import { ErroDeAplicacao, entradaInvalida } from '@/lib/erros'
+import { ErroDeAplicacao, entradaInvalida, naoAutenticado } from '@/lib/erros'
 import { verificarChave } from '@/lib/openrouter'
 import { exigirAdmin, type UsuarioAutenticado } from '@/servicos/autenticacao'
 
@@ -148,4 +149,63 @@ export async function testarConexaoDoOpenrouter(
   }
   const { saldoRestante } = await verificarChave(chave)
   return { ok: true, saldoRestante }
+}
+
+// Modelo de transcrição (FT-08, PR-73): o do banco, se o admin definiu um; senão
+// o de OPENROUTER_MODELO_TRANSCRICAO; senão a constante do ambiente.ts. O campo é
+// texto livre porque a lista de modelos do OpenRouter não diz quais aceitam áudio.
+
+export interface EstadoDoModeloDeTranscricao {
+  /** O modelo que a próxima transcrição vai usar. */
+  efetivo: string
+  /** O que o admin salvou, ou `null` se vale o padrão. */
+  salvo: string | null
+  /** O padrão do ambiente (variável ou constante). */
+  padrao: string
+}
+
+const entradaDoModelo = z.object({
+  modelo: z
+    .string({ message: 'Informe o modelo de transcrição.' })
+    .trim()
+    .max(100, 'O nome do modelo pode ter até 100 caracteres.')
+    .regex(/^[A-Za-z0-9._:/-]*$/, 'O nome do modelo só pode ter letras, números e . _ : / -'),
+})
+
+async function modeloSalvo(): Promise<string | null> {
+  const linha = await prisma.configuracaoDoWorkspace.findUnique({
+    where: { id: ID_DA_CONFIGURACAO },
+    select: { modeloDeTranscricao: true },
+  })
+  return linha?.modeloDeTranscricao?.trim() || null
+}
+
+/** O modelo que a fila usa para transcrever: banco, depois ambiente, depois constante. */
+export async function modeloDeTranscricaoEfetivo(): Promise<string> {
+  return (await modeloSalvo()) ?? ambiente.openrouterModeloTranscricao
+}
+
+/** O modelo em uso, para a tela avisar do consumo de créditos: vale para qualquer usuário. */
+export async function estadoDoModeloDeTranscricao(autor: UsuarioAutenticado): Promise<EstadoDoModeloDeTranscricao> {
+  if (!autor?.id) throw naoAutenticado()
+  const salvo = await modeloSalvo()
+  const padrao = ambiente.openrouterModeloTranscricao
+  return { efetivo: salvo ?? padrao, salvo, padrao }
+}
+
+/** Salva o modelo de transcrição (só admin). Vazio restaura o padrão. */
+export async function salvarModeloDeTranscricao(
+  autor: UsuarioAutenticado,
+  entrada: unknown,
+): Promise<EstadoDoModeloDeTranscricao> {
+  exigirAdmin(autor)
+  const dados = entradaDoModelo.safeParse(entrada)
+  if (!dados.success) throw entradaInvalida(dados.error.issues[0]?.message ?? 'Entrada inválida.')
+  const modelo = dados.data.modelo === '' ? null : dados.data.modelo
+  await prisma.configuracaoDoWorkspace.upsert({
+    where: { id: ID_DA_CONFIGURACAO },
+    create: { id: ID_DA_CONFIGURACAO, modeloDeTranscricao: modelo, atualizadoPor: autor.id },
+    update: { modeloDeTranscricao: modelo, atualizadoPor: autor.id },
+  })
+  return estadoDoModeloDeTranscricao(autor)
 }
