@@ -124,3 +124,12 @@ export function lerFiltros(entrada: unknown): FiltrosDoHistorico {
     ...(ate && { ate }),
   }
 }
+
+/**
+ * O instante como o SQLite o compara: o Prisma guarda `DateTime` como texto ISO em UTC
+ * (`2026-03-10T12:00:00.000+00:00`, provado em `tests/sqlite-formatos.test.ts`). O parâmetro
+ * vai sem o sufixo do fuso, para a comparação de texto valer também no instante exato.
+ */
+export function instanteParaSql(data: Date): string {
+  return data.toISOString().slice(0, 23)
+}

@@ -26,7 +26,7 @@ tasks:
   - id: T-02.02
     titulo: "listarConversas: pagina, filtros e sem N+1"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Implementar listarConversas com filtro por agente, canal e periodo, ordenacao por atividade e uma consulta agregada."
     arquivos:
       cria: ["src/servicos/historico.ts", "tests/historico-listar.test.ts", "tests/historico-consultas.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/historico-listar.test.ts e tests/historico-consultas.test.ts passam."
     depende_de: ["T-02.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-02.03
     titulo: "Filtro por texto com LIKE"
     fase: F-02.1
@@ -120,7 +120,7 @@ teste_funcional: "Com 30 conversas, tamanho 25 devolve 25 itens e total 30, a pa
 criterio_aceite: "tests/historico-listar.test.ts e tests/historico-consultas.test.ts passam."
 depende_de: ["T-02.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/historico-listar.test.ts e tests/historico-consultas.test.ts 11 passed
 ```
 
 ---
