@@ -18,7 +18,7 @@ import {
   type Sonda,
 } from '@/lib/midia'
 import { transcreverAudio, type PedidoDeTranscricao } from '@/lib/openrouter'
-import { juntarPartes } from '@/servicos/transcricao-marcadores'
+import { MARCADOR_SEM_FALA, ehSemFala, juntarPartes } from '@/servicos/transcricao-marcadores'
 import { log } from '@/lib/log'
 
 export interface Andamento {
@@ -59,7 +59,10 @@ export interface TextoDeMidia {
   duracaoSegundos: number
 }
 
-const TRANSITORIOS = new Set(['provedor_indisponivel', 'provedor_tempo_esgotado', 'provedor_limite', 'transcricao_vazia'])
+const TRANSITORIOS = new Set(['provedor_indisponivel', 'provedor_tempo_esgotado', 'provedor_limite'])
+
+/** O modelo devolveu vazio: uma repetição (pode ter sido acidente); a segunda vez é trecho sem fala (PR-105). */
+const REPETICOES_DO_VAZIO = 1
 
 const dependenciasReais: DependenciasDeMidia = {
   sondar: (caminho) => sondar(caminho),
@@ -76,7 +79,10 @@ export const erroDeFonteExcluida = () =>
 /**
  * Transcreve a mídia da fonte e devolve o texto com o marcador de tempo no
  * começo de cada parte. Falha de uma parte lança `Falha na parte N de M: ...`
- * e mantém os segmentos já gravados. O áudio extraído é sempre apagado ao fim.
+ * e mantém os segmentos já gravados. Parte que o modelo devolve vazia (duas
+ * vezes seguidas) é gravada como `[sem fala]` e a transcrição segue; só sem
+ * nenhuma fala em todas as partes lança `Não encontrei fala neste áudio.`
+ * (PR-105). O áudio extraído é sempre apagado ao fim.
  */
 export async function transcreverMidia(pedido: PedidoDeMidia): Promise<TextoDeMidia> {
   const d: DependenciasDeMidia = { ...dependenciasReais, ...pedido.dependencias }
@@ -122,6 +128,9 @@ export async function transcreverMidia(pedido: PedidoDeMidia): Promise<TextoDeMi
     for (let i = 0; i < total; i += 1) {
       lidas.push({ inicioSegundos: i * segundos, texto: (await armazenamento.lerSegmento(fonte.agenteId, fonte.id, i)) ?? '' })
     }
+    if (!lidas.some((l) => l.texto.trim() !== '' && !ehSemFala(l.texto))) {
+      throw new ErroDeAplicacao('Não encontrei fala neste áudio.', 422, 'transcricao_vazia')
+    }
     return { texto: juntarPartes(lidas), duracaoSegundos: Math.round(sonda.duracaoSegundos) }
   } finally {
     await armazenamento.apagarAudio(fonte.agenteId, fonte.id).catch(() => undefined)
@@ -139,6 +148,7 @@ async function transcreverParte(
   const espera = pedido.esperaEntreTentativasMs ?? 2000
   const bytes = await d.lerBytes(caminho)
   const audioBase64 = bytes.toString('base64')
+  let vazias = 0
   for (let tentativa = 1; ; tentativa += 1) {
     try {
       return await d.transcrever({
@@ -150,6 +160,12 @@ async function transcreverParte(
       })
     } catch (erro) {
       if (pedido.sinal?.aborted) throw erro
+      if (erro instanceof ErroDeAplicacao && erro.codigo === 'transcricao_vazia') {
+        vazias += 1
+        if (vazias > REPETICOES_DO_VAZIO || tentativa > repeticoes) return MARCADOR_SEM_FALA
+        await d.esperar(espera * tentativa)
+        continue
+      }
       const transitorio = erro instanceof ErroDeAplicacao && TRANSITORIOS.has(erro.codigo)
       if (transitorio && tentativa <= repeticoes) {
         await d.esperar(espera * tentativa)

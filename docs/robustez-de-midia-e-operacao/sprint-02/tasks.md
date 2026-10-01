@@ -26,7 +26,7 @@ tasks:
   - id: T-02.02
     titulo: "Transcrição grava segmento sem fala e falha só sem nenhuma fala"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Fazer transcreverMidia gravar [sem fala] para o trecho vazio depois de uma repetição e lançar Não encontrei fala neste áudio. quando nenhum trecho tem fala (PR-105)."
     arquivos:
       cria: []
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "Os testes passam (inclusive o de repetição existente, vazio e depois fala), e falham quando o vazio volta a derrubar a fonte (mutação registrada)."
     depende_de: ["T-02.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-02.03
     titulo: "Fila sem trecho de marcador e vídeo mudo ponta a ponta"
     fase: F-02.2
@@ -90,7 +90,7 @@ teste_funcional: "O transcritor vazio na parte 2 é chamado 2 vezes e as partes 
 criterio_aceite: "Os testes passam (inclusive o de repetição existente, vazio e depois fala), e falham quando o vazio volta a derrubar a fonte (mutação registrada)."
 depende_de: ["T-02.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — transcricao-de-midia, fontes-fila-video, video-modelo, fontes-video-fim-a-fim 31 passed e projeto 241 passed; mutações registradas
 ```
 
 ---

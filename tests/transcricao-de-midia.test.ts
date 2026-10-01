@@ -12,6 +12,7 @@ import path from 'node:path'
 import { criarArmazenamento, type Armazenamento } from '@/lib/armazenamento'
 import { ErroDeAplicacao } from '@/lib/erros'
 import { transcreverMidia, type DependenciasDeMidia, type Andamento } from '@/servicos/transcricao-de-midia'
+import { MARCADOR_SEM_FALA } from '@/servicos/transcricao-marcadores'
 
 let raiz: string
 let armazenamento: Armazenamento
@@ -206,5 +207,66 @@ describe('transcreverMidia', () => {
     const { p } = pedido({ dependencias: { ...midiaFalsa(), transcrever: transcritorPadrao() } })
     await transcreverMidia(p)
     expect(readdirSync(path.join(raiz, 'fontes/agente1/fonte1')).sort()).toEqual(['original', 'segmentos'])
+  })
+})
+
+describe('trecho sem fala (FT-13, PR-09, PR-105)', () => {
+  const vazio = () => new ErroDeAplicacao('O modelo não devolveu texto para este trecho do áudio.', 502, 'transcricao_vazia')
+  /** A parte 2 de 3 (conteúdo `conteudo-da-parte-1`) volta sempre vazia; as outras têm fala. */
+  const transcritorComParteMuda = () =>
+    vi.fn(async (p: { audioBase64: string }) => {
+      const nome = Buffer.from(p.audioBase64, 'base64').toString()
+      if (nome === 'conteudo-da-parte-1') throw vazio()
+      return `fala de ${nome.replace('conteudo-da-', '')}`
+    })
+
+  it('a parte vazia nas duas chamadas grava [sem fala] no segmento, o texto traz as três partes e a fonte não falha', async () => {
+    const transcrever = transcritorComParteMuda()
+    const esperar = vi.fn(async () => undefined)
+    const { p } = pedido({ dependencias: { ...midiaFalsa(), transcrever, esperar } })
+    const r = await transcreverMidia(p)
+
+    expect(r.texto).toBe('[00:00] fala de parte-0\n\n[10:00] [sem fala]\n\n[20:00] fala de parte-2')
+    expect(await armazenamento.lerSegmento(fonte.agenteId, fonte.id, 1)).toBe(MARCADOR_SEM_FALA)
+    expect(await armazenamento.listarSegmentos(fonte.agenteId, fonte.id)).toEqual([0, 1, 2])
+    // A parte muda é chamada duas vezes (uma repetição), nunca três.
+    expect(transcrever).toHaveBeenCalledTimes(4)
+    expect(esperar).toHaveBeenCalledTimes(1)
+  })
+
+  it('a retomada não chama o transcritor para os segmentos já gravados, inclusive o sem fala', async () => {
+    const primeira = transcritorComParteMuda()
+    const { p } = pedido({ dependencias: { ...midiaFalsa(), transcrever: primeira } })
+    await transcreverMidia(p)
+
+    const segunda = transcritorComParteMuda()
+    const midia = midiaFalsa()
+    const { p: p2 } = pedido({ dependencias: { ...midia, transcrever: segunda } })
+    const r = await transcreverMidia(p2)
+    expect(segunda).not.toHaveBeenCalled()
+    expect(midia.chamadas).toEqual(['sondar'])
+    expect(r.texto).toContain('[10:00] [sem fala]')
+  })
+
+  it('com todas as partes vazias lança Não encontrei fala neste áudio. (422, transcricao_vazia) e guarda os segmentos', async () => {
+    const transcrever = vi.fn().mockRejectedValue(vazio())
+    const { p } = pedido({ dependencias: { ...midiaFalsa({ partes: 2, duracao: 1200 }), transcrever } })
+    const erro = await transcreverMidia(p).catch((e) => e)
+    expect(erro).toBeInstanceOf(ErroDeAplicacao)
+    expect(erro.message).toBe('Não encontrei fala neste áudio.')
+    expect(erro.status).toBe(422)
+    expect(erro.codigo).toBe('transcricao_vazia')
+    expect(await armazenamento.listarSegmentos(fonte.agenteId, fonte.id)).toEqual([0, 1])
+  })
+
+  it('vazio seguido de fala devolve a fala (uma repetição basta) e outras falhas continuam derrubando a fonte', async () => {
+    const transcrever = vi.fn().mockRejectedValueOnce(vazio()).mockResolvedValue('fala')
+    const { p } = pedido({ dependencias: { ...midiaFalsa({ partes: 1, duracao: 300 }), transcrever } })
+    expect((await transcreverMidia(p)).texto).toBe('[00:00] fala')
+    expect(transcrever).toHaveBeenCalledTimes(2)
+
+    const semSaldo = vi.fn().mockRejectedValue(new ErroDeAplicacao('Saldo insuficiente', 402, 'provedor_sem_saldo'))
+    const { p: p2 } = pedido({ dependencias: { ...midiaFalsa({ partes: 2, duracao: 1200 }), transcrever: semSaldo } })
+    await expect(transcreverMidia(p2)).rejects.toMatchObject({ codigo: 'provedor_sem_saldo' })
   })
 })
