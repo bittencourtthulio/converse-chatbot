@@ -8,7 +8,7 @@ feature_id: FT-09
 sprint_id: sprint-06
 atualizado_em: 2026-10-01
 titulo: "Seed, verificacao, convencoes e fechamento"
-status: nao_iniciado
+status: concluido
 criterio_saida: "A suite relativa a sprint passa, tsc e lint sem erro e todas as tasks da sprint estao concluidas (T-06.01, T-06.02, T-06.03, T-06.04)."
 fases: ["F-06.1", "F-06.2"]
 riscos: ["tres canais, dois temas e 375 px so no navegador disponivel (VERIFICACAO-VISUAL.md registra o que nao foi visto)", "maquina compartilhada pode causar database is locked por carga alheia"]

@@ -56,7 +56,7 @@ tasks:
   - id: T-06.04
     titulo: "Fechamento no laco do buildx"
     fase: F-06.2
-    status: pendente
+    status: concluida
     objetivo: "Registrar a feature no mapa, nas premissas, na recursao e no projeto e conferir dependencias, ambiente e CI."
     arquivos:
       cria: ["docs/historico-de-conversas/ORQUESTRADOR.md", "docs/historico-de-conversas/00-AUDITORIA.md", "docs/historico-de-conversas/FECHAMENTO.md", "docs/historico-de-conversas/RELATORIO-FEATURE.md", "docs/historico-de-conversas/BRIEFING-BUILDX.md", "docs/historico-de-conversas/00-DECISOES.md", "docs/historico-de-conversas/00-BLOQUEIOS.md", "docs/historico-de-conversas/base/00-INDICE.md", "docs/historico-de-conversas/base/00-LACUNAS.md", "docs/historico-de-conversas/base/conversas-e-modelo.md", "docs/historico-de-conversas/base/canais-e-rotulos.md", "docs/historico-de-conversas/base/telas-menu-e-componentes.md", "docs/historico-de-conversas/base/seed-testes-e-ci.md", "docs/historico-de-conversas/base/painel-e-agregacao.md", "docs/entregas/historico-de-conversas/ENTREGA.md", "docs/entregas/historico-de-conversas/PR.md", "docs/entregas/historico-de-conversas/QA-PACOTE.md", "docs/entregas/historico-de-conversas/ATENCAO.md"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "grep de FT-09 no painel do MAPA.md devolve entregue, o total de premissas do frontmatter e 85 e tests/projeto.test.ts passa."
     depende_de: ["T-06.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
 ---
 
 # Tasks — Sprint 06
@@ -139,6 +139,6 @@ teste_funcional: "O MAPA.md mostra a FT-09 entregue com sprints, testes e PR loc
 criterio_aceite: "grep de FT-09 no painel do MAPA.md devolve entregue, o total de premissas do frontmatter e 85 e tests/projeto.test.ts passa."
 depende_de: ["T-06.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2251 passed, 0 failed (176 arquivos); tsc, lint, build e audit verdes
 ```
 

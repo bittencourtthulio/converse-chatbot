@@ -10,14 +10,14 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-06.1
     titulo: "Seed, verificacao e documentacao"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "A seed tem as conversas, a verificacao esta registrada e as convencoes estao atualizadas."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-06.01", "T-06.02", "T-06.03"]
   - id: F-06.2
     titulo: "Fechamento"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "MAPA, premissas, recursao e projeto atualizados e o portao pronto."
     paralelizavel: false
     paralela_com: []
@@ -52,7 +52,7 @@ flowchart LR
   class T_06_01 concluida
   class T_06_02 concluida
   class T_06_03 concluida
-  class T_06_04 pendente
+  class T_06_04 concluida
 ```
 
 ---

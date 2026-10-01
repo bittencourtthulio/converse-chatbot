@@ -256,7 +256,7 @@ entram no relatório final como o que o usuário precisa confirmar.
 **Origem:** catalogo_lacunas
 **Etapa:** b1
 **Provisória:** false
-**Realizada em:** FT-10
+**Realizada em:** FT-09 (apagar conversa), FT-10 (retenção, exclusão de usuário e aviso)
 
 ---
 
@@ -347,7 +347,7 @@ entram no relatório final como o que o usuário precisa confirmar.
 **Origem:** catalogo_lacunas
 **Etapa:** b1
 **Provisória:** false
-**Realizada em:** FT-01
+**Realizada em:** FT-01, FT-04, FT-06, FT-09
 
 ---
 
@@ -373,7 +373,7 @@ entram no relatório final como o que o usuário precisa confirmar.
 **Origem:** catalogo_lacunas
 **Etapa:** b1
 **Provisória:** false
-**Realizada em:** FT-01
+**Realizada em:** FT-01, FT-09
 
 ---
 
@@ -1069,7 +1069,7 @@ entram no relatório final como o que o usuário precisa confirmar.
 ### PR-81 — Painel inicial: números, gráfico e fuso do servidor
 
 **Assunto:** F2 da FT-09 — PR-27 (painel inicial) e PR-23 (acessibilidade)
-**Decisão:** o painel mostra agentes, fontes prontas e com erro, conversas e mensagens dos últimos 7 dias com quebra por canal, mensagens por dia nos últimos 14 dias e as 5 conversas mais recentes. A agregação é SQL parametrizado (`$queryRaw`) no serviço `src/servicos/painel.ts`; o dia é o do fuso do servidor (mesma convenção do teto diário, PR-57); dias sem mensagem entram com zero. O gráfico é SVG com `role="img"` e rótulo, mais tabela equivalente para leitor de tela, e distingue séries por texto e forma, nunca só por cor.
+**Decisão:** o painel mostra agentes, fontes prontas e com erro, conversas (com ao menos uma mensagem na janela) e mensagens dos últimos 7 dias, de hoje e dos 6 dias locais anteriores, com quebra por canal, mensagens por dia nos últimos 14 dias e as 5 conversas mais recentes. A agregação é SQL parametrizado (`$queryRaw`) no serviço `src/servicos/painel.ts`; o dia é o do fuso do servidor (mesma convenção do teto diário, PR-57); dias sem mensagem entram com zero. O gráfico é SVG com `role="img"` e rótulo, mais tabela equivalente para leitor de tela, e distingue séries por texto e forma, nunca só por cor.
 **Por quê:** o teto diário já usa a meia-noite do servidor; manter um só fuso evita números que não batem entre telas.
 **O que invalida:** se a empresa atender em fuso diferente do servidor ou quiser períodos escolhidos pelo usuário.
 **Origem:** f2_autonoma
