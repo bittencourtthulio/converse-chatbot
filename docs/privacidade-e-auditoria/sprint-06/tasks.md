@@ -41,18 +41,18 @@ tasks:
   - id: T-06.03
     titulo: "Pagina de auditoria"
     fase: F-06.2
-    status: pendente
+    status: concluida
     objetivo: "Criar a pagina Auditoria com filtros, tabela que vira cartoes, paginacao e estados vazio, carregando e erro."
     arquivos:
       cria: ["src/app/(sistema)/configuracoes/auditoria/page.tsx", "src/componentes/FiltrosDeAuditoria.tsx", "src/componentes/ListaDeAuditoria.tsx", "tests/auditoria-ui.test.tsx", "tests/privacidade-estilos.test.ts"]
-      altera: ["src/estilos/global.css"]
+      altera: ["src/estilos/global.css", "src/servicos/auditoria.ts", "src/componentes/auditoria-logica.ts", "tests/auditoria-logica.test.ts"]
     teste_integracao: "A pagina renderizada com registros do banco de teste mostra quando, quem, acao e detalhe em portugues, os filtros por searchParams, a paginacao de 25 e o estado vazio, e filtro invalido mostra o erro na tela."
     teste_funcional: "A tabela abaixo de 768 px vira cartoes por CSS com data-rotulo em cada celula, a lista nao tem rolagem lateral a 375 px por regra de CSS e os controles tem alvo de 44 px."
     criterio_aceite: "tests/auditoria-ui.test.tsx e tests/privacidade-estilos.test.ts passam."
     depende_de: ["T-06.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-06.04
     titulo: "Pagina de privacidade: retencao, aviso e dados tratados"
     fase: F-06.3
@@ -129,13 +129,13 @@ titulo: "Pagina de auditoria"
 objetivo: "Criar a pagina Auditoria com filtros, tabela que vira cartoes, paginacao e estados vazio, carregando e erro."
 arquivos:
   cria: ["src/app/(sistema)/configuracoes/auditoria/page.tsx", "src/componentes/FiltrosDeAuditoria.tsx", "src/componentes/ListaDeAuditoria.tsx", "tests/auditoria-ui.test.tsx", "tests/privacidade-estilos.test.ts"]
-  altera: ["src/estilos/global.css"]
+  altera: ["src/estilos/global.css", "src/servicos/auditoria.ts", "src/componentes/auditoria-logica.ts", "tests/auditoria-logica.test.ts"]
 teste_integracao: "A pagina renderizada com registros do banco de teste mostra quando, quem, acao e detalhe em portugues, os filtros por searchParams, a paginacao de 25 e o estado vazio, e filtro invalido mostra o erro na tela."
 teste_funcional: "A tabela abaixo de 768 px vira cartoes por CSS com data-rotulo em cada celula, a lista nao tem rolagem lateral a 375 px por regra de CSS e os controles tem alvo de 44 px."
 criterio_aceite: "tests/auditoria-ui.test.tsx e tests/privacidade-estilos.test.ts passam."
 depende_de: ["T-06.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/auditoria-ui.test.tsx 14 passed contra next start (build antes), auditoria-logica 17, privacidade-estilos 4, auditoria 11, somente-acrescimo 7, projeto e tokens; suite inteira no fim da sprint
 ```
 
 ---

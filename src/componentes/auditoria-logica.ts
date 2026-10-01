@@ -203,3 +203,33 @@ export function montarQueryDaAuditoria(filtros: FiltrosDaTela, pagina: number): 
   const texto = p.toString()
   return texto === '' ? '' : `?${texto}`
 }
+
+/** O intervalo mostrado: `26 a 50 de 60 registros`. */
+export function descricaoDaPaginaDeAuditoria(p: { pagina: number; tamanho: number; total: number }): string {
+  if (p.total === 0) return 'Nenhum registro'
+  const de = (p.pagina - 1) * p.tamanho + 1
+  const ate = Math.min(p.total, p.pagina * p.tamanho)
+  return `${de} a ${ate} de ${p.total} ${p.total === 1 ? 'registro' : 'registros'}`
+}
+
+export const CAMINHO_DA_AUDITORIA = '/configuracoes/auditoria'
+
+/** O link de uma página da lista, mantendo os filtros. */
+export function hrefDaPaginaDeAuditoria(filtros: FiltrosDaTela, pagina: number): string {
+  return `${CAMINHO_DA_AUDITORIA}${montarQueryDaAuditoria(filtros, pagina)}`
+}
+
+type ParametrosDaUrl = Record<string, string | string[] | undefined>
+const primeiro = (v: string | string[] | undefined): string | undefined => (Array.isArray(v) ? v[0] : v)
+
+/** Os filtros e a página como vêm da URL (`acao`, `usuario`, `de`, `ate`, `pagina`); a validação é do serviço. */
+export function entradaDosFiltrosDaAuditoria(p: ParametrosDaUrl): FiltrosDaTela & { pagina?: string } {
+  const limpa = (v: string | undefined) => (v === undefined || v.trim() === '' ? undefined : v.trim())
+  return {
+    acao: limpa(primeiro(p.acao)),
+    usuarioId: limpa(primeiro(p.usuario)),
+    de: limpa(primeiro(p.de)),
+    ate: limpa(primeiro(p.ate)),
+    pagina: limpa(primeiro(p.pagina)),
+  }
+}

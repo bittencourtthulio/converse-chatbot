@@ -1645,3 +1645,58 @@ textarea { min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: verti
 }
 
 /* ---------- fim do painel inicial (FT-09) ---------- */
+
+/* ---------- privacidade e auditoria (FT-10) ---------- */
+
+.filtros-de-auditoria {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  padding: 16px 20px;
+  align-items: end;
+}
+.filtros-de-auditoria input[type='date'] {
+  width: 100%;
+  min-height: var(--altura-controle);
+  padding: 0 12px;
+  background: var(--bg-surface);
+  color: var(--fg-default);
+  border: 1px solid var(--border-input);
+  border-radius: var(--raio-controle);
+  font: inherit;
+}
+
+.tabela-de-auditoria td, .tabela-de-auditoria th { vertical-align: top; }
+.tabela-de-auditoria .celula-quando { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.tabela-de-auditoria .celula-quem { overflow-wrap: anywhere; }
+.tabela-de-auditoria .celula-detalhe { max-width: 56ch; overflow-wrap: anywhere; }
+
+@media (max-width: 768px) {
+  .filtros-de-auditoria { grid-template-columns: minmax(0, 1fr); }
+  .filtros-de-auditoria input, .filtros-de-auditoria select, .filtros-de-auditoria .botao { min-height: var(--alvo-toque); }
+  .filtros-de-auditoria .botao { flex: 1 1 140px; }
+
+  .tabela-de-auditoria, .tabela-de-auditoria tbody { display: block; }
+  .tabela-de-auditoria thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .tabela-de-auditoria tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tabela-de-auditoria tbody tr:last-child { border-bottom: 0; }
+  .tabela-de-auditoria td { display: flex; gap: 8px; padding: 0; border: 0; align-items: baseline; min-width: 0; }
+  .tabela-de-auditoria td::before {
+    content: attr(data-rotulo);
+    flex: none;
+    min-width: 5.5rem;
+    color: var(--fg-muted);
+    font-size: var(--texto-pequeno);
+    font-weight: 600;
+  }
+  .tabela-de-auditoria .celula-quando { white-space: normal; }
+  .tabela-de-auditoria .celula-detalhe { max-width: none; }
+}
+
+/* ---------- fim da privacidade e auditoria ---------- */

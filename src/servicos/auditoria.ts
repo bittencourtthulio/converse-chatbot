@@ -51,6 +51,8 @@ export interface RegistroListado {
   acao: string
   alvoTipo: string
   alvoId: string | null
+  /** O nome atual do alvo, para a tela: só o usuário; nulo se não se aplica ou se já não existe. */
+  alvoNome: string | null
   detalhes: Record<string, unknown>
 }
 
@@ -89,7 +91,7 @@ function paraListado(linha: {
   alvoId: string | null
   detalhes: string
 }): RegistroListado {
-  return { ...linha, detalhes: lerDetalhes(linha.detalhes) }
+  return { ...linha, alvoNome: null, detalhes: lerDetalhes(linha.detalhes) }
 }
 
 /**
@@ -221,8 +223,18 @@ export async function listar(entrada: FiltrosDaAuditoria = {}): Promise<PaginaDa
       take: f.tamanho,
     }),
   ])
+  // O nome atual dos usuários alvo, numa consulta só (a tela diz "Alterou o papel de Maria").
+  const idsDeUsuario = [...new Set(linhas.filter((l) => l.alvoTipo === 'usuario' && l.alvoId).map((l) => l.alvoId as string))]
+  const nomes = new Map(
+    idsDeUsuario.length === 0
+      ? []
+      : (await prisma.usuario.findMany({ where: { id: { in: idsDeUsuario } }, select: { id: true, nome: true } })).map((u) => [u.id, u.nome] as const),
+  )
   return {
-    itens: linhas.map(paraListado),
+    itens: linhas.map((l) => ({
+      ...paraListado(l),
+      alvoNome: l.alvoTipo === 'usuario' && l.alvoId ? (nomes.get(l.alvoId) ?? null) : null,
+    })),
     total,
     pagina: f.pagina,
     tamanho: f.tamanho,

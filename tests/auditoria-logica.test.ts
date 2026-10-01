@@ -5,6 +5,9 @@ import { ACOES } from '@/servicos/auditoria-acoes'
 import {
   OPCOES_DE_ACAO,
   descreverRegistro,
+  descricaoDaPaginaDeAuditoria,
+  entradaDosFiltrosDaAuditoria,
+  hrefDaPaginaDeAuditoria,
   montarQueryDaAuditoria,
   rotuloDaAcao,
 } from '@/componentes/auditoria-logica'
@@ -109,5 +112,30 @@ describe('montarQueryDaAuditoria (funcional)', () => {
 
   it('codifica valores com caracteres especiais', () => {
     expect(montarQueryDaAuditoria({ usuarioId: 'a b&c' }, 1)).toBe('?usuario=a+b%26c')
+  })
+})
+
+describe('paginação e filtros da URL (funcional)', () => {
+  it('descreve o intervalo, no singular e no plural', () => {
+    expect(descricaoDaPaginaDeAuditoria({ pagina: 1, tamanho: 25, total: 0 })).toBe('Nenhum registro')
+    expect(descricaoDaPaginaDeAuditoria({ pagina: 1, tamanho: 25, total: 1 })).toBe('1 a 1 de 1 registro')
+    expect(descricaoDaPaginaDeAuditoria({ pagina: 2, tamanho: 25, total: 60 })).toBe('26 a 50 de 60 registros')
+    expect(descricaoDaPaginaDeAuditoria({ pagina: 3, tamanho: 25, total: 60 })).toBe('51 a 60 de 60 registros')
+  })
+
+  it('o link da página mantém os filtros e omite a página 1', () => {
+    expect(hrefDaPaginaDeAuditoria({}, 1)).toBe('/configuracoes/auditoria')
+    expect(hrefDaPaginaDeAuditoria({ acao: 'usuario_criado' }, 2)).toBe('/configuracoes/auditoria?acao=usuario_criado&pagina=2')
+  })
+
+  it('lê os parâmetros da URL: o primeiro valor, sem vazios, com o usuário em "usuario"', () => {
+    expect(entradaDosFiltrosDaAuditoria({ acao: ['usuario_criado', 'x'], usuario: 'u1', de: '', ate: ' 2026-01-02 ', pagina: '3', outro: 'z' })).toEqual({
+      acao: 'usuario_criado',
+      usuarioId: 'u1',
+      de: undefined,
+      ate: '2026-01-02',
+      pagina: '3',
+    })
+    expect(entradaDosFiltrosDaAuditoria({})).toEqual({ acao: undefined, usuarioId: undefined, de: undefined, ate: undefined, pagina: undefined })
   })
 })
