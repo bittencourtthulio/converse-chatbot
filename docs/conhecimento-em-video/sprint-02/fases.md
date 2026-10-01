@@ -10,14 +10,14 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-02.1
     titulo: "Midia com ffmpeg"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Sonda, extracao e divisao de audio testadas, inclusive binario ausente."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-02.01", "T-02.02"]
   - id: F-02.2
     titulo: "Formatos e transcricao"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Assinaturas de midia e transcreverAudio testados."
     paralelizavel: false
     paralela_com: []

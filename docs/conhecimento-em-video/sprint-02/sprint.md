@@ -8,7 +8,7 @@ feature_id: FT-08
 sprint_id: sprint-02
 atualizado_em: 2026-09-30
 titulo: "Pipeline de audio e transcricao pelo OpenRouter"
-status: nao_iniciado
+status: concluido
 criterio_saida: "A suite inteira esta verde com midia.ts sondando, extraindo e dividindo audio, as assinaturas de midia conferidas e transcreverAudio testado contra o simulado."
 fases: ["F-02.1", "F-02.2"]
 riscos: ["ffmpeg ausente no ambiente de quem roda o teste (os testes usam skipIf, o CI exige) (base/midia-ffmpeg.md)", "prazo da transcricao maior que o da conversa (base/openrouter-audio.md)"]
