@@ -4,6 +4,7 @@
 import { createHash, timingSafeEqual } from 'node:crypto'
 import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
+import { atenderUpdate } from '@/servicos/telegram-atendimento'
 
 export interface CanalAutenticado {
   id: string
@@ -119,4 +120,71 @@ export async function purgarAtualizacoesSeNecessario(agora: Date = new Date()): 
   if (agora.getTime() - ultimaPurga < INTERVALO_DA_PURGA_MS) return 0
   ultimaPurga = agora.getTime()
   return purgarAtualizacoes(agora)
+}
+
+/** O Telegram manda updates de poucos KB; 64 KB sobram (PR-66). */
+export const TAMANHO_MAXIMO_DO_CORPO = 64 * 1024
+
+export interface EntradaDoWebhook {
+  agenteId: string
+  /** O cabeçalho `X-Telegram-Bot-Api-Secret-Token`, se veio. */
+  segredo: string | null
+  /** `Content-Length` declarado, se veio: o corpo grande é recusado sem ser lido. */
+  tamanhoDeclarado?: number
+  /** Lê o corpo; só é chamado depois da autenticação. */
+  lerCorpo: () => Promise<string>
+}
+
+export interface ResultadoDoWebhook {
+  status: 200 | 401 | 413
+  /** O atendimento, para rodar depois da resposta (`after`). Nunca lança. */
+  depois?: () => Promise<void>
+}
+
+/** Uma linha JSON, sem token, segredo nem texto da conversa (PR-42). */
+function registrar(evento: string, agenteId: string, extra: Record<string, unknown> = {}): void {
+  console.info(JSON.stringify({ evento, agenteId, ...extra }))
+}
+
+/**
+ * O que o webhook faz com uma entrega do Telegram (PR-66): autentica pelo
+ * segredo (401 igual para ausente, errado e canal inexistente), recusa corpo
+ * grande, ignora em silêncio canal pausado e update ilegível (200, para o
+ * Telegram não reenviar), deduplica pelo `update_id` e devolve o atendimento
+ * para rodar depois do 200. O handler HTTP só traduz este resultado.
+ */
+export async function tratarWebhook(entrada: EntradaDoWebhook): Promise<ResultadoDoWebhook> {
+  const canal = await autenticarWebhook(entrada.agenteId, entrada.segredo)
+  if (!canal) return { status: 401 }
+  if (entrada.tamanhoDeclarado !== undefined && entrada.tamanhoDeclarado > TAMANHO_MAXIMO_DO_CORPO) return { status: 413 }
+  const texto = await entrada.lerCorpo()
+  if (Buffer.byteLength(texto, 'utf8') > TAMANHO_MAXIMO_DO_CORPO) return { status: 413 }
+  if (!canal.ativo) return { status: 200 }
+
+  let corpo: unknown
+  try {
+    corpo = JSON.parse(texto)
+  } catch {
+    registrar('telegram_update_ilegivel', canal.agenteId, { motivo: 'json' })
+    return { status: 200 }
+  }
+  const update = lerUpdate(corpo)
+  if (!update) {
+    registrar('telegram_update_ilegivel', canal.agenteId, { motivo: 'formato' })
+    return { status: 200 }
+  }
+  if (!(await registrarAtualizacao(canal.id, update.updateId))) return { status: 200 }
+
+  return {
+    status: 200,
+    depois: async () => {
+      try {
+        await purgarAtualizacoesSeNecessario()
+        await atenderUpdate(canal, update)
+      } catch {
+        // Nada do erro vai ao log: pode carregar texto da conversa ou o token.
+        console.error(JSON.stringify({ evento: 'telegram_atendimento_falhou', agenteId: canal.agenteId }))
+      }
+    },
+  }
 }

@@ -11,18 +11,18 @@ tasks:
   - id: T-05.01
     titulo: "Handler do webhook com resposta rapida"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Criar POST /api/telegram/[agenteId]/webhook fino (tratarWebhook no servico, 200 imediato e after com captura de erro)."
     arquivos:
       cria: ["src/app/api/telegram/[agenteId]/webhook/route.ts", "tests/telegram-webhook-rota.test.ts", "docs/canal-telegram/sprint-05/sprint.md", "docs/canal-telegram/sprint-05/fases.md", "docs/canal-telegram/sprint-05/tasks.md"]
-      altera: ["src/servicos/telegram-webhook.ts"]
+      altera: ["src/servicos/telegram-webhook.ts", "tests/apoio/servidor.ts"]
     teste_integracao: "Contra o servidor de producao com OpenRouter e Telegram falsos, um update valido com o segredo certo recebe 200 vazio antes da resposta e a sendMessage chega ao simulado depois."
     teste_funcional: "Segredo ausente ou errado e agente sem canal dao 401 sem corpo informativo, o reenvio do mesmo update_id nao gera segunda resposta, canal pausado da 200 sem enviar nada e corpo acima de 64 KB da 413."
     criterio_aceite: "tests/telegram-webhook-rota.test.ts passa depois de npm run build e o log do servidor de teste nao contem o token."
     depende_de: ["T-04.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-05.02
     titulo: "Acoes de servidor do canal"
     fase: F-05.2
@@ -52,13 +52,13 @@ titulo: "Handler do webhook com resposta rapida"
 objetivo: "Criar POST /api/telegram/[agenteId]/webhook fino (tratarWebhook no servico, 200 imediato e after com captura de erro)."
 arquivos:
   cria: ["src/app/api/telegram/[agenteId]/webhook/route.ts", "tests/telegram-webhook-rota.test.ts", "docs/canal-telegram/sprint-05/sprint.md", "docs/canal-telegram/sprint-05/fases.md", "docs/canal-telegram/sprint-05/tasks.md"]
-  altera: ["src/servicos/telegram-webhook.ts"]
+  altera: ["src/servicos/telegram-webhook.ts", "tests/apoio/servidor.ts"]
 teste_integracao: "Contra o servidor de producao com OpenRouter e Telegram falsos, um update valido com o segredo certo recebe 200 vazio antes da resposta e a sendMessage chega ao simulado depois."
 teste_funcional: "Segredo ausente ou errado e agente sem canal dao 401 sem corpo informativo, o reenvio do mesmo update_id nao gera segunda resposta, canal pausado da 200 sem enviar nada e corpo acima de 64 KB da 413."
 criterio_aceite: "tests/telegram-webhook-rota.test.ts passa depois de npm run build e o log do servidor de teste nao contem o token."
 depende_de: ["T-04.04"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/telegram-webhook-rota.test.ts, 9 passed depois de npm run build; tsc e eslint limpos
 ```
 
 ---

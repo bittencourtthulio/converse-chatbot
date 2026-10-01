@@ -8,18 +8,27 @@ import { COOKIE_SESSAO } from '../../src/lib/sessao.js'
 export interface Servidor {
   base: string
   parar(): void
+  /** Tudo que o servidor escreveu em stdout e stderr; vazio sem `capturarLogs`. */
+  logs(): string
 }
 
-export async function subirServidor(porta: number, env: Record<string, string> = {}): Promise<Servidor> {
+export async function subirServidor(
+  porta: number,
+  env: Record<string, string> = {},
+  opcoes: { capturarLogs?: boolean } = {},
+): Promise<Servidor> {
   const base = `http://localhost:${porta}`
   const processo: ChildProcess = spawn('npx', ['next', 'start', '-p', String(porta)], {
     env: { ...process.env, NODE_ENV: 'production', ...env },
-    stdio: 'ignore',
+    stdio: opcoes.capturarLogs ? ['ignore', 'pipe', 'pipe'] : 'ignore',
   })
+  let saida = ''
+  processo.stdout?.on('data', (parte: Buffer) => void (saida += parte.toString('utf8')))
+  processo.stderr?.on('data', (parte: Buffer) => void (saida += parte.toString('utf8')))
   for (let tentativa = 0; tentativa < 80; tentativa += 1) {
     try {
       await fetch(`${base}/entrar`)
-      return { base, parar: () => processo.kill() }
+      return { base, parar: () => processo.kill(), logs: () => saida }
     } catch {
       await new Promise((r) => setTimeout(r, 500))
     }
