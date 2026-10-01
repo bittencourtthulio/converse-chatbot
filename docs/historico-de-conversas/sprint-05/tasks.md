@@ -41,7 +41,7 @@ tasks:
   - id: T-05.03
     titulo: "Grafico de mensagens por dia acessivel"
     fase: F-05.2
-    status: pendente
+    status: concluida
     objetivo: "Criar o grafico SVG com role img, rotulo e tabela equivalente, com a logica de escala em modulo puro."
     arquivos:
       cria: ["src/componentes/GraficoDeMensagens.tsx", "src/componentes/painel-logica.ts", "tests/painel-logica.test.ts", "tests/grafico-de-mensagens.test.tsx"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/painel-logica.test.ts e tests/grafico-de-mensagens.test.tsx passam."
     depende_de: ["T-05.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-05.04
     titulo: "Pagina do painel com cartoes, listas e estados"
     fase: F-05.2
@@ -122,7 +122,7 @@ teste_funcional: "A escala da logica pura devolve altura zero para zero, a maior
 criterio_aceite: "tests/painel-logica.test.ts e tests/grafico-de-mensagens.test.tsx passam."
 depende_de: ["T-05.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/painel-logica, grafico-de-mensagens e tokens 62 passed
 ```
 
 ---
