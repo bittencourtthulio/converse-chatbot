@@ -17,6 +17,9 @@ function classesUsadas(): string[] {
     'AdicionarFontes.tsx',
     'ZonaDeArquivos.tsx',
     'FormularioDeTexto.tsx',
+    'PainelDeVideo.tsx',
+    'ZonaDeVideo.tsx',
+    'FormularioDoYoutube.tsx',
   ]
   const classes = new Set<string>()
   for (const nome of arquivos) {

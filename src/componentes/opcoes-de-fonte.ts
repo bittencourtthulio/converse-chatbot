@@ -23,4 +23,10 @@ export const OPCOES_DE_FONTE: OpcaoDeFonte[] = [
     descricao: 'Cole um texto direto, com um título para reconhecê-lo depois.',
     icone: 'texto',
   },
+  {
+    id: 'video',
+    rotulo: 'Vídeo',
+    descricao: 'Envie um vídeo ou áudio, ou cole um link do YouTube: a fala vira texto para o agente usar.',
+    icone: 'video',
+  },
 ]

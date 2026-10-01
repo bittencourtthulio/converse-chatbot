@@ -7,11 +7,12 @@ import { interpretarRespostaDoEnvio } from '@/componentes/enviar-arquivo'
 import { OPCOES_DE_FONTE } from '@/componentes/opcoes-de-fonte'
 
 const LIMITE = 25 * 1024 * 1024
+const VIDEO = { limiteDeVideoBytes: 500 * 1024 * 1024, limiteDeVideoMinutos: 180, modeloDeTranscricao: 'google/gemini-2.5-flash' }
 
 describe('AdicionarFontes', () => {
-  const html = renderToStaticMarkup(<AdicionarFontes agenteId="a1" limiteDeUploadBytes={LIMITE} aoAlterar={() => undefined} />)
+  const html = renderToStaticMarkup(<AdicionarFontes agenteId="a1" limiteDeUploadBytes={LIMITE} {...VIDEO} aoAlterar={() => undefined} />)
 
-  it('mostra as duas opções vindas de opcoes-de-fonte como abas, com Arquivos selecionada', () => {
+  it('mostra as opções vindas de opcoes-de-fonte como abas, com Arquivos selecionada', () => {
     expect(html).toContain('role="tablist"')
     const abas = html.match(/role="tab"[^>]*>/g) ?? []
     expect(abas).toHaveLength(OPCOES_DE_FONTE.length)

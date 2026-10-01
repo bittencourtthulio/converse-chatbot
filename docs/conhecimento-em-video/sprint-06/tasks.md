@@ -26,18 +26,18 @@ tasks:
   - id: T-06.02
     titulo: "Painel de video com duas abas"
     fase: F-06.1
-    status: pendente
+    status: concluida
     objetivo: "Criar o painel Video com as abas Enviar arquivo (zona de soltar, barra de progresso, aviso de creditos) e Link do YouTube, ligar em AdicionarFontes e passar os limites e o modelo pela pagina."
     arquivos:
       cria: ["src/componentes/PainelDeVideo.tsx", "src/componentes/ZonaDeVideo.tsx", "src/componentes/FormularioDoYoutube.tsx", "tests/painel-de-video.test.tsx"]
-      altera: ["src/componentes/AdicionarFontes.tsx", "src/componentes/PainelDeConhecimento.tsx", "src/app/(sistema)/agentes/[id]/conhecimento/page.tsx", "src/estilos/global.css"]
+      altera: ["src/componentes/AdicionarFontes.tsx", "src/componentes/PainelDeConhecimento.tsx", "src/app/(sistema)/agentes/[id]/conhecimento/page.tsx", "src/estilos/global.css", "tests/adicionar-fontes.test.tsx", "tests/painel-de-conhecimento.test.tsx", "tests/conhecimento-estilos.test.ts"]
     teste_integracao: "A renderizacao do painel mostra as duas abas acessiveis, os tipos aceitos, o limite em MB e minutos, o aviso de creditos com o nome do modelo e a barra de progresso com valor."
     teste_funcional: "A aba Link do YouTube mostra a nota de legendas e o erro de URL invalida, a aba de arquivo lista o arquivo recusado com motivo e nenhum valor de cor literal entra no CSS novo."
     criterio_aceite: "tests/painel-de-video.test.tsx, tests/tokens.test.ts e tests/componentes.test.tsx passam."
     depende_de: ["T-06.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-06.03
     titulo: "Lista e Ver conteudo do video"
     fase: F-06.2
@@ -99,13 +99,13 @@ titulo: "Painel de video com duas abas"
 objetivo: "Criar o painel Video com as abas Enviar arquivo (zona de soltar, barra de progresso, aviso de creditos) e Link do YouTube, ligar em AdicionarFontes e passar os limites e o modelo pela pagina."
 arquivos:
   cria: ["src/componentes/PainelDeVideo.tsx", "src/componentes/ZonaDeVideo.tsx", "src/componentes/FormularioDoYoutube.tsx", "tests/painel-de-video.test.tsx"]
-  altera: ["src/componentes/AdicionarFontes.tsx", "src/componentes/PainelDeConhecimento.tsx", "src/app/(sistema)/agentes/[id]/conhecimento/page.tsx", "src/estilos/global.css"]
+  altera: ["src/componentes/AdicionarFontes.tsx", "src/componentes/PainelDeConhecimento.tsx", "src/app/(sistema)/agentes/[id]/conhecimento/page.tsx", "src/estilos/global.css", "tests/adicionar-fontes.test.tsx", "tests/painel-de-conhecimento.test.tsx", "tests/conhecimento-estilos.test.ts"]
 teste_integracao: "A renderizacao do painel mostra as duas abas acessiveis, os tipos aceitos, o limite em MB e minutos, o aviso de creditos com o nome do modelo e a barra de progresso com valor."
 teste_funcional: "A aba Link do YouTube mostra a nota de legendas e o erro de URL invalida, a aba de arquivo lista o arquivo recusado com motivo e nenhum valor de cor literal entra no CSS novo."
 criterio_aceite: "tests/painel-de-video.test.tsx, tests/tokens.test.ts e tests/componentes.test.tsx passam."
 depende_de: ["T-06.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/painel-de-video.test.tsx, tests/adicionar-fontes.test.tsx, tests/painel-de-conhecimento.test.tsx, tests/conhecimento-estilos.test.ts, tests/tokens.test.ts, tests/componentes.test.tsx e tests/conhecimento-paginas.test.tsx, 105 passed
 ```
 
 ---

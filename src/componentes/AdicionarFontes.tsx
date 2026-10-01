@@ -3,20 +3,33 @@
 import { useState, type KeyboardEvent, type ReactNode } from 'react'
 import { Icone } from '@/componentes/Icones'
 import { FormularioDeTexto } from '@/componentes/FormularioDeTexto'
+import { PainelDeVideo } from '@/componentes/PainelDeVideo'
 import { ZonaDeArquivos } from '@/componentes/ZonaDeArquivos'
 import { OPCOES_DE_FONTE } from '@/componentes/opcoes-de-fonte'
 
 interface PropsDoPainel {
   agenteId: string
   limiteDeUploadBytes: number
+  /** Vídeo e áudio (FT-08): limites e o modelo que transcreve, para a tela avisar do custo. */
+  limiteDeVideoBytes: number
+  limiteDeVideoMinutos: number
+  modeloDeTranscricao: string
   aoAlterar: () => void
 }
 
-// O painel de cada opção de `opcoes-de-fonte.ts`, pelo id. A FT-08 acrescenta o
-// de vídeo aqui e a opção na lista; o resto desta tela não muda.
+// O painel de cada opção de `opcoes-de-fonte.ts`, pelo id.
 const PAINEIS: Record<string, (p: PropsDoPainel) => ReactNode> = {
-  arquivos: (p) => <ZonaDeArquivos {...p} />,
+  arquivos: (p) => <ZonaDeArquivos agenteId={p.agenteId} limiteDeUploadBytes={p.limiteDeUploadBytes} aoAlterar={p.aoAlterar} />,
   texto: (p) => <FormularioDeTexto agenteId={p.agenteId} aoAlterar={p.aoAlterar} />,
+  video: (p) => (
+    <PainelDeVideo
+      agenteId={p.agenteId}
+      limiteDeVideoBytes={p.limiteDeVideoBytes}
+      limiteDeVideoMinutos={p.limiteDeVideoMinutos}
+      modeloDeTranscricao={p.modeloDeTranscricao}
+      aoAlterar={p.aoAlterar}
+    />
+  ),
 }
 
 /** A seção "Adicionar": uma aba por opção de fonte, arquivos primeiro. */

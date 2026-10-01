@@ -919,6 +919,9 @@ textarea { min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: verti
 .envio-tamanho { flex: none; color: var(--fg-muted); font-size: var(--texto-pequeno); }
 .envio-progresso { width: 100%; height: 8px; accent-color: var(--accent); }
 .envio-situacao { color: var(--fg-muted); font-size: var(--texto-pequeno); }
+.envio-barra { display: flex; align-items: center; gap: 10px; }
+.envio-barra .envio-progresso { flex: 1; min-width: 0; }
+.envio-percentual { flex: none; min-width: 3.5ch; text-align: right; color: var(--fg-muted); font-size: var(--texto-pequeno); font-variant-numeric: tabular-nums; }
 .envio-ok { color: var(--success-fg); }
 .envio-aguardando .envio-nome,
 .envio-enviando .envio-nome { color: var(--fg-default); }

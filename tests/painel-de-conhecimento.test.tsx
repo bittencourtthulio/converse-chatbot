@@ -32,7 +32,7 @@ const RESUMO = { total: 4, prontas: 1, emProcessamento: 2, comErro: 1, caractere
 
 const painel = (fontes: FonteDaTela[], resumo = RESUMO) =>
   renderToStaticMarkup(
-    <PainelDeConhecimento agenteId="a1" fontesIniciais={fontes} resumoInicial={resumo} limiteDeUploadBytes={25 * 1024 * 1024} />,
+    <PainelDeConhecimento agenteId="a1" fontesIniciais={fontes} resumoInicial={resumo} limiteDeUploadBytes={25 * 1024 * 1024} limiteDeVideoBytes={500 * 1024 * 1024} limiteDeVideoMinutos={180} modeloDeTranscricao="google/gemini-2.5-flash" />,
   )
 
 describe('serializarFonte', () => {

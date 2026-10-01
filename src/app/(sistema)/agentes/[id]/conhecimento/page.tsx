@@ -4,6 +4,7 @@ import { PainelDeConhecimento } from '@/componentes/PainelDeConhecimento'
 import { serializarFonte } from '@/componentes/fonte-da-tela'
 import { ambiente } from '@/lib/ambiente'
 import { listar, resumo } from '@/servicos/fontes'
+import { estadoDoModeloDeTranscricao } from '@/servicos/integracoes'
 
 /**
  * Aba Conhecimento do agente (FT-04): resumo, adicionar e lista de fontes. A
@@ -14,7 +15,11 @@ export default async function ConhecimentoDoAgente({ params }: { params: Promise
   const usuario = await exigirUsuario()
   const { id } = await params
   const agente = await carregarAgente(usuario, id)
-  const [fontes, resumoDaBase] = await Promise.all([listar(usuario, agente.id), resumo(usuario, agente.id)])
+  const [fontes, resumoDaBase, modelo] = await Promise.all([
+    listar(usuario, agente.id),
+    resumo(usuario, agente.id),
+    estadoDoModeloDeTranscricao(usuario),
+  ])
 
   return (
     <PainelDeConhecimento
@@ -22,6 +27,9 @@ export default async function ConhecimentoDoAgente({ params }: { params: Promise
       fontesIniciais={fontes.map(serializarFonte)}
       resumoInicial={resumoDaBase}
       limiteDeUploadBytes={ambiente.maxUploadBytes}
+      limiteDeVideoBytes={ambiente.maxVideoBytes}
+      limiteDeVideoMinutos={ambiente.maxVideoMinutos}
+      modeloDeTranscricao={modelo.efetivo}
     />
   )
 }

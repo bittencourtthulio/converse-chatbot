@@ -20,12 +20,19 @@ export function PainelDeConhecimento({
   fontesIniciais,
   resumoInicial,
   limiteDeUploadBytes,
+  limiteDeVideoBytes,
+  limiteDeVideoMinutos,
+  modeloDeTranscricao,
 }: {
   agenteId: string
   fontesIniciais: FonteDaTela[]
   resumoInicial: ResumoDaTela
   /** Limite de tamanho por arquivo, em bytes, para a área de adicionar. */
   limiteDeUploadBytes: number
+  /** Vídeo e áudio (FT-08): limites de tamanho e duração, e o modelo que transcreve. */
+  limiteDeVideoBytes: number
+  limiteDeVideoMinutos: number
+  modeloDeTranscricao: string
 }) {
   const [fontes, setFontes] = useState<FonteDaTela[]>(fontesIniciais)
   const [resumo, setResumo] = useState<ResumoDaTela>(resumoInicial)
@@ -75,7 +82,14 @@ export function PainelDeConhecimento({
     <div className="pilha">
       <CartoesDeResumo resumo={resumo} />
 
-      <AdicionarFontes agenteId={agenteId} limiteDeUploadBytes={limiteDeUploadBytes} aoAlterar={() => void atualizar()} />
+      <AdicionarFontes
+        agenteId={agenteId}
+        limiteDeUploadBytes={limiteDeUploadBytes}
+        limiteDeVideoBytes={limiteDeVideoBytes}
+        limiteDeVideoMinutos={limiteDeVideoMinutos}
+        modeloDeTranscricao={modeloDeTranscricao}
+        aoAlterar={() => void atualizar()}
+      />
 
       <TestarBusca agenteId={agenteId} />
 
