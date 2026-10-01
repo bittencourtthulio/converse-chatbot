@@ -101,7 +101,7 @@ tasks:
   - id: T-02.07
     titulo: "Renovacao deslizante com limite absoluto"
     fase: F-02.3
-    status: pendente
+    status: concluida
     objetivo: "Criar renovarSessaoSePreciso, que reemite o token com o mesmo jti depois da metade da vida e nunca alem do limite absoluto."
     arquivos:
       cria: ["tests/sessao-renovacao.test.ts"]
@@ -111,8 +111,8 @@ tasks:
     criterio_aceite: "tests/sessao-renovacao.test.ts passa e falha quando o teto do limite absoluto e removido (mutacao registrada) e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
     depende_de: ["T-02.06"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
   - id: T-02.08
     titulo: "Expurgo das revogacoes vencidas"
     fase: F-02.3
@@ -250,7 +250,7 @@ teste_funcional: "Quem usa a cada 8 minutos continua logado alem de 15 minutos e
 criterio_aceite: "tests/sessao-renovacao.test.ts passa e falha quando o teto do limite absoluto e removido (mutacao registrada) e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
 depende_de: ["T-02.06"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 251 arquivos, 2917 passed, 9 skipped, 0 failed
 ```
 
 ---

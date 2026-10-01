@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { ambiente } from '@/lib/ambiente'
 import { prisma } from '@/lib/prisma'
 import { senhaConfere } from '@/lib/senha'
 import { agoraEmSegundos, assinarSessao, lerSessao, limiteAbsolutoDaSessao, type Sessao } from '@/lib/sessao'
@@ -144,4 +145,34 @@ export async function revogarSessao(token: string, opcoes: { agora?: number } = 
     create: { jti: sessao.jti, usuarioId: sessao.usuarioId, expiraEm: new Date(limiteAbsolutoDaSessao(sessao.inicio) * 1000) },
     update: {},
   })
+}
+
+/**
+ * Renovação deslizante (PR-102): devolve o token novo e o `Max-Age` do cookie quando a sessão está na segunda
+ * metade da vida do token e ainda há folga até o limite absoluto; senão `null`. O token novo mantém o `jti`, a
+ * versão e o início (a sessão é a mesma, então revogar uma vez cobre todos os tokens dela) e muda só `iat` e `exp`,
+ * este nunca além de início mais `SESSAO_MAXIMA_HORAS`. Quem não passa na validação do acesso (assinatura,
+ * expiração, limite absoluto, revogação, conta e versão) recebe o 401 dela e não renova.
+ */
+export async function renovarSessaoSePreciso(
+  token: string,
+  opcoes: { agora?: number } = {},
+): Promise<{ token: string; maxAge: number } | null> {
+  const agora = opcoes.agora ?? agoraEmSegundos()
+  const usuario = await usuarioDaSessao(token, { agora })
+  const sessao = await lerSessao(token, { agora })
+
+  // Renovar a cada requisição seria gravar cookie à toa: só depois da metade da vida do token.
+  if (agora - sessao.emitidoEm < ambiente.jwtTtlSegundos / 2) return null
+  const expiraEm = Math.min(agora + ambiente.jwtTtlSegundos, limiteAbsolutoDaSessao(sessao.inicio))
+  // O token já termina no limite absoluto (ou adiante): não há o que estender.
+  if (expiraEm <= sessao.expiraEm) return null
+
+  const novo = await assinarSessao(sessao.usuarioId, usuario.papel, {
+    jti: sessao.jti,
+    versao: sessao.versao,
+    inicio: sessao.inicio,
+    agora,
+  })
+  return { token: novo, maxAge: expiraEm - agora }
 }
