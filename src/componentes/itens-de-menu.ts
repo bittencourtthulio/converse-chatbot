@@ -49,6 +49,7 @@ export const GRUPOS_DE_MENU: GrupoDeMenu[] = [
     itens: [
       { rotulo: 'Painel', href: '/', icone: 'painel' },
       { rotulo: 'Agentes', href: '/agentes', icone: 'agentes' },
+      { rotulo: 'Conversas', href: '/conversas', icone: 'conversa' },
     ],
   },
   {

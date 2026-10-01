@@ -41,7 +41,7 @@ tasks:
   - id: T-03.03
     titulo: "Item de menu Conversas"
     fase: F-03.2
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar Conversas ao grupo sem titulo, logo abaixo de Agentes, com migalhas para o detalhe."
     arquivos:
       cria: []
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/menu.test.ts passa."
     depende_de: ["T-03.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
 ---
 
 # Tasks — Sprint 03
@@ -107,6 +107,6 @@ teste_funcional: "migalhasDaRota de /conversas e de /conversas/abc devolve Conve
 criterio_aceite: "tests/menu.test.ts passa."
 depende_de: ["T-03.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/menu.test.ts 15 passed
 ```
 

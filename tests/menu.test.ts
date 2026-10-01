@@ -28,14 +28,28 @@ describe('itens de menu', () => {
     expect(item?.somenteAdmin).toBe(true)
   })
 
-  it('Painel vem primeiro e Agentes logo abaixo, para todos os papéis', () => {
+  it('Painel vem primeiro, Agentes logo abaixo e Conversas depois, para todos os papéis', () => {
     for (const admin of [true, false]) {
       const semTitulo = gruposVisiveis(admin).find((g) => g.titulo === null)!
       expect(semTitulo.itens.map((i) => [i.rotulo, i.href])).toEqual([
         ['Painel', '/'],
         ['Agentes', '/agentes'],
+        ['Conversas', '/conversas'],
       ])
     }
+  })
+
+  it('Conversas não é só do admin e usa o ícone de conversa', () => {
+    const item = GRUPOS_DE_MENU.flatMap((g) => g.itens).find((i) => i.href === '/conversas')
+    expect(item?.somenteAdmin).toBeUndefined()
+    expect(item?.icone).toBe('conversa')
+  })
+
+  it('o título do cabeçalho de /conversas e do detalhe é Conversas, e o item fica ativo no detalhe', () => {
+    expect(migalhasDaRota('/conversas')).toEqual(['Conversas'])
+    expect(migalhasDaRota('/conversas/abc123')).toEqual(['Conversas'])
+    expect(rotaEstaAtiva('/conversas/abc123', '/conversas')).toBe(true)
+    expect(rotaEstaAtiva('/conversas', '/agentes')).toBe(false)
   })
 
   it('as rotas são únicas e começam com barra', () => {
