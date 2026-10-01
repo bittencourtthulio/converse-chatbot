@@ -42,6 +42,8 @@ export async function limparBanco(): Promise<void> {
   await prisma.mensagem.deleteMany()
   await prisma.conversa.deleteMany()
   await prisma.configuracaoDoChat.deleteMany()
+  await prisma.atualizacaoTelegram.deleteMany()
+  await prisma.canalTelegram.deleteMany()
   await prisma.agente.deleteMany()
   await prisma.configuracaoDoWorkspace.deleteMany()
   await prisma.usuario.deleteMany()

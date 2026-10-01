@@ -64,6 +64,7 @@ model Agente {
   fontes    Fonte[]
   trechos   Trecho[]
   chat      ConfiguracaoDoChat?
+  telegram  CanalTelegram?
 
   @@map("agentes")
 }
@@ -181,4 +182,45 @@ model ConfiguracaoDoChat {
   atualizadoEm          DateTime @updatedAt
 
   @@map("configuracao_do_chat")
+}
+
+// Canal Telegram (FT-07, PR-63): um bot por agente, ligado por webhook. O token
+// fica cifrado (PR-14) e o segredo do webhook só existe em hash SHA-256: o valor
+// em claro vai ao Telegram no momento da conexão e nunca é gravado. `botId` é
+// único para dois agentes não disputarem o mesmo bot.
+model CanalTelegram {
+  id                   String    @id @default(cuid())
+  agenteId             String    @unique
+  agente               Agente    @relation(fields: [agenteId], references: [id], onDelete: Cascade)
+  tokenCifrado         String
+  botId                String    @unique
+  botUsername          String
+  botNome              String
+  segredoDoWebhookHash String
+  ativo                Boolean   @default(true)
+  webhookUrl           String
+  conectadoEm          DateTime  @default(now())
+  ultimoErro           String?
+  ultimoErroEm         DateTime?
+  ultimaMensagemEm     DateTime?
+  limiteDiario         Int       @default(500)
+
+  atualizacoes AtualizacaoTelegram[]
+
+  @@map("canais_telegram")
+}
+
+// Dedupe do webhook (PR-63): o Telegram reenvia o mesmo `update_id` em resposta
+// lenta. `updateId` é texto decimal (o teto do inteiro não é documentado).
+// Registros com mais de 7 dias são purgados.
+model AtualizacaoTelegram {
+  id       String        @id @default(cuid())
+  canalId  String
+  canal    CanalTelegram @relation(fields: [canalId], references: [id], onDelete: Cascade)
+  updateId String
+  criadoEm DateTime      @default(now())
+
+  @@unique([canalId, updateId])
+  @@index([criadoEm])
+  @@map("atualizacoes_telegram")
 }

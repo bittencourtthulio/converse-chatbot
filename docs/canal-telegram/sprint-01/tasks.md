@@ -11,7 +11,7 @@ tasks:
   - id: T-01.01
     titulo: "Migration e modelos do canal Telegram"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Criar as tabelas canais_telegram e atualizacoes_telegram por migration aditiva, os modelos Prisma e a limpeza no limparBanco."
     arquivos:
       cria: ["prisma/migrations/20260930220000_canal_telegram/migration.sql", "tests/canal-telegram-modelo.test.ts", "docs/canal-telegram/sprint-01/sprint.md", "docs/canal-telegram/sprint-01/fases.md", "docs/canal-telegram/sprint-01/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/canal-telegram-modelo.test.ts e tests/migracoes.test.ts passam e a migration nao contem DROP."
     depende_de: []
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-01.02
     titulo: "Variaveis de ambiente do Telegram"
     fase: F-01.1
@@ -73,7 +73,7 @@ teste_funcional: "Criar um canal devolve ativo true, limiteDiario 500 e ultimoEr
 criterio_aceite: "tests/canal-telegram-modelo.test.ts e tests/migracoes.test.ts passam e a migration nao contem DROP."
 depende_de: []
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/canal-telegram-modelo.test.ts e tests/migracoes.test.ts, 18 passed
 ```
 
 ---
