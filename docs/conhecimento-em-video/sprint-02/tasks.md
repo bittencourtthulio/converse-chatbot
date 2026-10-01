@@ -41,7 +41,7 @@ tasks:
   - id: T-02.03
     titulo: "Formatos e assinatura de midia"
     fase: F-02.2
-    status: pendente
+    status: concluida
     objetivo: "Criar src/lib/midia-formatos.ts puro com as extensoes aceitas, o formato por extensao e a conferencia da assinatura dos primeiros bytes."
     arquivos:
       cria: ["src/lib/midia-formatos.ts", "tests/midia-formatos.test.ts"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/midia-formatos.test.ts passa e o modulo nao importa node: nem next."
     depende_de: ["T-01.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-02.04
     titulo: "Transcricao pelo OpenRouter"
     fase: F-02.2
@@ -122,7 +122,7 @@ teste_funcional: "Um arquivo txt renomeado para mp4 e rejeitado, um mp4 com exte
 criterio_aceite: "tests/midia-formatos.test.ts passa e o modulo nao importa node: nem next."
 depende_de: ["T-01.04"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/midia-formatos.test.ts, 32 passed
 ```
 
 ---
