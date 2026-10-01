@@ -8,7 +8,7 @@ feature_id: FT-08
 sprint_id: sprint-04
 atualizado_em: 2026-09-30
 titulo: "Fila de video: transcricao por parte, andamento e retomada"
-status: nao_iniciado
+status: concluido
 criterio_saida: "A suite inteira esta verde e uma fonte de video vai de pendente a pronto na fila, com etapa e progresso, retomada por parte e texto com marcadores de tempo nos trechos."
 fases: ["F-04.1", "F-04.2"]
 riscos: ["a fila precisa de duas raias sem bloquear texto e arquivos (base/fila-fontes-e-armazenamento.md)", "retomada depois de reinicio nao pode pagar de novo as partes ja transcritas"]

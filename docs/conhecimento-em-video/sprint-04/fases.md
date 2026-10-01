@@ -10,14 +10,14 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-04.1
     titulo: "Montagem e transcricao"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Marcadores, modelo efetivo e transcreverMidia testados."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-04.01", "T-04.02", "T-04.03"]
   - id: F-04.2
     titulo: "Fila"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Raias, andamento e fim a fim com ffmpeg real e OpenRouter simulado."
     paralelizavel: false
     paralela_com: []
