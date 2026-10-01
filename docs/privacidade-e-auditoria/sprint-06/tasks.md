@@ -26,7 +26,7 @@ tasks:
   - id: T-06.02
     titulo: "Logica da tela de auditoria: rotulos e detalhes em portugues"
     fase: F-06.2
-    status: pendente
+    status: concluida
     objetivo: "Criar o modulo puro que descreve cada acao e seus detalhes em portugues e valida os filtros da tela."
     arquivos:
       cria: ["src/componentes/auditoria-logica.ts", "tests/auditoria-logica.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/auditoria-logica.test.ts passa e nenhuma acao do conjunto fica sem rotulo."
     depende_de: ["T-06.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-06.03
     titulo: "Pagina de auditoria"
     fase: F-06.2
@@ -118,7 +118,7 @@ teste_funcional: "descreverRegistro de usuario_editado com campos papel devolve 
 criterio_aceite: "tests/auditoria-logica.test.ts passa e nenhuma acao do conjunto fica sem rotulo."
 depende_de: ["T-06.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/auditoria-logica.test.ts 13 passed; so arquivos novos
 ```
 
 ---
