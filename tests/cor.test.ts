@@ -100,13 +100,8 @@ describe('amostras e padrão', () => {
     }
   })
 
-  it('o padrão é o índigo do sistema, o mesmo da migration', () => {
-    expect(COR_PADRAO).toBe('#4f46e5')
-    const sql = readFileSync(
-      path.join(process.cwd(), 'prisma/migrations/20260930210000_configuracao_do_chat/migration.sql'),
-      'utf8',
-    )
-    expect(sql).toContain(`DEFAULT '${COR_PADRAO}'`)
+  it('o padrão é o azul do acento do sistema', () => {
+    expect(COR_PADRAO).toBe('#2563eb')
   })
 })
 

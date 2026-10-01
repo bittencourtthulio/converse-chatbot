@@ -1,7 +1,9 @@
 /*
- * Tokens semânticos do design SaaS (PR-23). Regra: nenhum componente usa
- * valor de cor literal; toda cor vem daqui. Neutros frios (slate), destaque
- * índigo, raios de 8 a 12px, sombras sutis e fonte de sistema.
+ * Tokens semânticos (PR-23, acabamento da FT-14). Regra: nenhum componente usa
+ * valor de cor literal; toda cor vem daqui. Escala zinc, primário quase preto,
+ * azul só em link, foco e seleção, bordas finas como estrutura, raio base de
+ * 10px (8px em botões e campos, 14px em painéis grandes) e sombra apenas em
+ * camada flutuante.
  *
  * Tema claro é a base. O escuro entra pela escolha salva (data-theme) ou,
  * sem escolha, pela preferência do sistema; os dois blocos escuros são
@@ -11,36 +13,37 @@
 :root {
   color-scheme: light;
 
-  /* superfícies */
-  --bg-app: #f8fafc;
+  /* superfícies (escala zinc) */
+  --bg-app: #fafafa;
   --bg-surface: #ffffff;
-  --bg-subtle: #f1f5f9;
-  --bg-hover: #f1f5f9;
-  --bg-selected: #eef2ff;
-  --overlay: rgb(15 23 42 / 0.5);
+  --bg-subtle: #f4f4f5;
+  --bg-hover: #f4f4f5;
+  --bg-selected: #f4f4f5;
+  --overlay: rgb(9 9 11 / 0.5);
 
   /* texto */
-  --fg-default: #0f172a;
-  --fg-muted: #475569;
-  --fg-subtle: #566479;
+  --fg-default: #09090b;
+  --fg-muted: #52525b;
+  --fg-subtle: #63636d;
   --fg-on-danger: #ffffff;
   /* texto sobre a cor que o usuário escolhe para o chat (FT-06): igual nos dois temas */
   --fg-em-cor-clara: #000000;
   --fg-em-cor-escura: #ffffff;
 
-  /* bordas */
-  --border: #e2e8f0;
-  --border-strong: #cbd5e1;
-  --border-input: #7c8ba1;
-  --border-focus: #4f46e5;
+  /* bordas finas são a estrutura da interface */
+  --border: #e4e4e7;
+  --border-strong: #d4d4d8;
+  --border-input: #8b8b94;
+  --border-focus: #2563eb;
 
-  /* destaque (índigo) */
-  --accent: #4f46e5;
-  --accent-hover: #4338ca;
-  --accent-fg: #ffffff;
-  --accent-text: #4338ca;
-  --accent-soft: #eef2ff;
-  --accent-soft-fg: #3730a3;
+  /* primário quase preto; o azul fica para link, foco e seleção */
+  --accent: #09090b;
+  --accent-hover: #27272a;
+  --accent-fg: #fafafa;
+  --accent-text: #2563eb;
+  --accent-soft: #f4f4f5;
+  --accent-soft-fg: #18181b;
+  --selecao-bg: #dbeafe;
 
   /* ação perigosa */
   --danger: #dc2626;
@@ -61,26 +64,39 @@
   --info-border: #93c5fd;
 
   /* canais do histórico e série do gráfico (FT-09, PR-85) */
-  --canal-painel-bg: #eef2ff;
-  --canal-painel-fg: #3730a3;
-  --canal-painel-borda: #c7d2fe;
-  --canal-widget-bg: #f0fdfa;
-  --canal-widget-fg: #115e59;
-  --canal-widget-borda: #99f6e4;
+  --canal-painel-bg: #f4f4f5;
+  --canal-painel-fg: #27272a;
+  --canal-painel-borda: #d4d4d8;
+  --canal-widget-bg: #eff6ff;
+  --canal-widget-fg: #1d4ed8;
+  --canal-widget-borda: #bfdbfe;
   --canal-telegram-bg: #f0f9ff;
   --canal-telegram-fg: #075985;
   --canal-telegram-borda: #bae6fd;
-  --grafico-barra: #4f46e5;
-  --grafico-barra-fraca: #6b7a99;
-  --grafico-eixo: #475569;
+  --grafico-barra: #2563eb;
+  --grafico-barra-fraca: #71717a;
+  --grafico-eixo: #52525b;
 
-  /* sombras sutis */
-  --sombra-sm: 0 1px 2px rgb(15 23 42 / 0.06);
-  --sombra-md: 0 4px 12px -2px rgb(15 23 42 / 0.1), 0 2px 4px -2px rgb(15 23 42 / 0.06);
-  --sombra-lg: 0 16px 40px -8px rgb(15 23 42 / 0.2);
+  /* marca e landing pública (FT-14) */
+  --marca-painel: #3340d4;
+  --marca-painel-linha: rgb(255 255 255 / 0.16);
+  --marca-painel-fg: #ffffff;
+  --marca-cubo-topo: #93c5fd;
+  --marca-cubo-esq: #2563eb;
+  --marca-cubo-dir: #1e3a8a;
+  --grade-linha: #e4e4e7;
+  --grade-ponto: #a1a1aa;
 
-  /* tipografia: fonte de sistema; Inter só é usada se já estiver instalada */
-  --font-ui: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  /* sombra só em camada flutuante (menus, diálogos, cartão do hero) */
+  --sombra-sm: 0 1px 2px rgb(9 9 11 / 0.04);
+  --sombra-md: 0 4px 12px -2px rgb(9 9 11 / 0.1), 0 2px 4px -2px rgb(9 9 11 / 0.06);
+  --sombra-lg: 0 16px 40px -8px rgb(9 9 11 / 0.2);
+
+  /* tipografia: Geist na interface e nos títulos, Inter no texto corrido, ambas servidas
+     localmente (src/app/fontes.ts); a serifa itálica só existe no título do hero */
+  --font-ui: var(--fonte-geist, 'Geist'), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-texto: var(--fonte-inter, 'Inter'), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-editorial: var(--fonte-serifa, 'Instrument Serif'), Georgia, 'Times New Roman', serif;
   --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
   --texto-pequeno: 0.8125rem;
   --texto-base: 0.9375rem;
@@ -88,10 +104,11 @@
   --texto-titulo: 1.5rem;
   --texto-titulo-grande: 1.875rem;
 
-  /* geometria */
+  /* geometria: 8px em botões e campos, 10px base, 14px em painéis grandes */
   --raio-pequeno: 6px;
   --raio-controle: 8px;
-  --raio-cartao: 12px;
+  --raio-cartao: 10px;
+  --raio-painel: 14px;
   --altura-controle: 40px;
   --alvo-toque: 44px;
   --largura-barra-lateral: 264px;
@@ -103,29 +120,30 @@
 :root[data-theme='dark'] {
   color-scheme: dark;
 
-  --bg-app: #0b1120;
-  --bg-surface: #111a2e;
-  --bg-subtle: #18233b;
-  --bg-hover: #1a2540;
-  --bg-selected: #1e2a55;
-  --overlay: rgb(2 6 23 / 0.7);
+  --bg-app: #09090b;
+  --bg-surface: #18181b;
+  --bg-subtle: #1f1f23;
+  --bg-hover: #27272a;
+  --bg-selected: #27272a;
+  --overlay: rgb(0 0 0 / 0.7);
 
-  --fg-default: #e5eaf3;
-  --fg-muted: #a7b3c7;
-  --fg-subtle: #8d9bb3;
+  --fg-default: #fafafa;
+  --fg-muted: #a1a1aa;
+  --fg-subtle: #9a9aa4;
   --fg-on-danger: #ffffff;
 
-  --border: #24304a;
-  --border-strong: #34425f;
-  --border-input: #6a7b96;
-  --border-focus: #818cf8;
+  --border: rgb(255 255 255 / 0.1);
+  --border-strong: rgb(255 255 255 / 0.18);
+  --border-input: #71717a;
+  --border-focus: #60a5fa;
 
-  --accent: #4f46e5;
-  --accent-hover: #4338ca;
-  --accent-fg: #ffffff;
-  --accent-text: #a5b4fc;
-  --accent-soft: #1e2a55;
-  --accent-soft-fg: #c7d2fe;
+  --accent: #fafafa;
+  --accent-hover: #d4d4d8;
+  --accent-fg: #09090b;
+  --accent-text: #60a5fa;
+  --accent-soft: #27272a;
+  --accent-soft-fg: #fafafa;
+  --selecao-bg: #1e3a8a;
 
   --danger: #dc2626;
   --danger-hover: #b91c1c;
@@ -143,18 +161,27 @@
   --info-fg: #93c5fd;
   --info-border: #1e3a8a;
 
-  --canal-painel-bg: #1e2a55;
-  --canal-painel-fg: #c7d2fe;
-  --canal-painel-borda: #3a4a8a;
-  --canal-widget-bg: #0f2a2a;
-  --canal-widget-fg: #5eead4;
-  --canal-widget-borda: #134e4a;
+  --canal-painel-bg: #27272a;
+  --canal-painel-fg: #e4e4e7;
+  --canal-painel-borda: #3f3f46;
+  --canal-widget-bg: #10203d;
+  --canal-widget-fg: #93c5fd;
+  --canal-widget-borda: #1e3a8a;
   --canal-telegram-bg: #0c2236;
   --canal-telegram-fg: #7dd3fc;
   --canal-telegram-borda: #0c4a6e;
-  --grafico-barra: #818cf8;
-  --grafico-barra-fraca: #8d9bb3;
-  --grafico-eixo: #a7b3c7;
+  --grafico-barra: #60a5fa;
+  --grafico-barra-fraca: #a1a1aa;
+  --grafico-eixo: #a1a1aa;
+
+  --marca-painel: #2530a8;
+  --marca-painel-linha: rgb(255 255 255 / 0.14);
+  --marca-painel-fg: #ffffff;
+  --marca-cubo-topo: #bfdbfe;
+  --marca-cubo-esq: #60a5fa;
+  --marca-cubo-dir: #2563eb;
+  --grade-linha: rgb(255 255 255 / 0.1);
+  --grade-ponto: #71717a;
 
   --sombra-sm: 0 1px 2px rgb(0 0 0 / 0.4);
   --sombra-md: 0 4px 12px -2px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.4);
@@ -165,29 +192,30 @@
   :root:not([data-theme='light']) {
   color-scheme: dark;
 
-  --bg-app: #0b1120;
-  --bg-surface: #111a2e;
-  --bg-subtle: #18233b;
-  --bg-hover: #1a2540;
-  --bg-selected: #1e2a55;
-  --overlay: rgb(2 6 23 / 0.7);
+  --bg-app: #09090b;
+  --bg-surface: #18181b;
+  --bg-subtle: #1f1f23;
+  --bg-hover: #27272a;
+  --bg-selected: #27272a;
+  --overlay: rgb(0 0 0 / 0.7);
 
-  --fg-default: #e5eaf3;
-  --fg-muted: #a7b3c7;
-  --fg-subtle: #8d9bb3;
+  --fg-default: #fafafa;
+  --fg-muted: #a1a1aa;
+  --fg-subtle: #9a9aa4;
   --fg-on-danger: #ffffff;
 
-  --border: #24304a;
-  --border-strong: #34425f;
-  --border-input: #6a7b96;
-  --border-focus: #818cf8;
+  --border: rgb(255 255 255 / 0.1);
+  --border-strong: rgb(255 255 255 / 0.18);
+  --border-input: #71717a;
+  --border-focus: #60a5fa;
 
-  --accent: #4f46e5;
-  --accent-hover: #4338ca;
-  --accent-fg: #ffffff;
-  --accent-text: #a5b4fc;
-  --accent-soft: #1e2a55;
-  --accent-soft-fg: #c7d2fe;
+  --accent: #fafafa;
+  --accent-hover: #d4d4d8;
+  --accent-fg: #09090b;
+  --accent-text: #60a5fa;
+  --accent-soft: #27272a;
+  --accent-soft-fg: #fafafa;
+  --selecao-bg: #1e3a8a;
 
   --danger: #dc2626;
   --danger-hover: #b91c1c;
@@ -205,18 +233,27 @@
   --info-fg: #93c5fd;
   --info-border: #1e3a8a;
 
-  --canal-painel-bg: #1e2a55;
-  --canal-painel-fg: #c7d2fe;
-  --canal-painel-borda: #3a4a8a;
-  --canal-widget-bg: #0f2a2a;
-  --canal-widget-fg: #5eead4;
-  --canal-widget-borda: #134e4a;
+  --canal-painel-bg: #27272a;
+  --canal-painel-fg: #e4e4e7;
+  --canal-painel-borda: #3f3f46;
+  --canal-widget-bg: #10203d;
+  --canal-widget-fg: #93c5fd;
+  --canal-widget-borda: #1e3a8a;
   --canal-telegram-bg: #0c2236;
   --canal-telegram-fg: #7dd3fc;
   --canal-telegram-borda: #0c4a6e;
-  --grafico-barra: #818cf8;
-  --grafico-barra-fraca: #8d9bb3;
-  --grafico-eixo: #a7b3c7;
+  --grafico-barra: #60a5fa;
+  --grafico-barra-fraca: #a1a1aa;
+  --grafico-eixo: #a1a1aa;
+
+  --marca-painel: #2530a8;
+  --marca-painel-linha: rgb(255 255 255 / 0.14);
+  --marca-painel-fg: #ffffff;
+  --marca-cubo-topo: #bfdbfe;
+  --marca-cubo-esq: #60a5fa;
+  --marca-cubo-dir: #2563eb;
+  --grade-linha: rgb(255 255 255 / 0.1);
+  --grade-ponto: #71717a;
 
   --sombra-sm: 0 1px 2px rgb(0 0 0 / 0.4);
   --sombra-md: 0 4px 12px -2px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.4);

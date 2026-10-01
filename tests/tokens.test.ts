@@ -76,6 +76,10 @@ const PARES: Array<[string, string]> = [
   ['--warning-fg', '--warning-bg'],
   ['--info-fg', '--info-bg'],
   ['--fg-default', '--bg-hover'],
+  ['--fg-default', '--bg-selected'],
+  ['--accent-text', '--bg-subtle'],
+  ['--accent-fg', '--accent'],
+  ['--marca-painel-fg', '--marca-painel'],
 ]
 
 describe('tokens: temas', () => {
@@ -86,17 +90,33 @@ describe('tokens: temas', () => {
     expect(escuroPorPreferencia).toEqual(escuroExplicito)
   })
 
-  it('declara a fonte de sistema com Inter na frente, sem carregar fonte de rede', () => {
-    expect(claro['--font-ui']).toMatch(/^['"]?Inter/)
+  it('declara Geist na interface e Inter no texto, locais, com reserva de sistema e sem fonte de rede', () => {
+    expect(claro['--font-ui']).toContain('Geist')
     expect(claro['--font-ui']).toContain('system-ui')
+    expect(claro['--font-texto']).toContain('Inter')
+    expect(claro['--font-editorial']).toContain('Instrument Serif')
     expect(tokens).not.toMatch(/@import\s+url|https?:\/\//)
   })
 
-  it('usa raios de 8 a 12px nos cartões e controles', () => {
-    for (const nome of ['--raio-controle', '--raio-cartao']) {
-      const px = Number.parseInt(claro[nome] ?? '', 10)
-      expect(px, nome).toBeGreaterThanOrEqual(8)
-      expect(px, nome).toBeLessThanOrEqual(12)
+  it('usa a geometria da nova direção: 8px em controles, 10px base, 14px em painéis grandes', () => {
+    expect(claro['--raio-controle']).toBe('8px')
+    expect(claro['--raio-cartao']).toBe('10px')
+    expect(claro['--raio-painel']).toBe('14px')
+  })
+
+  it('o primário é quase preto no claro e quase branco no escuro, e o azul fica no acento', () => {
+    expect(claro['--accent']).toBe('#09090b')
+    expect(escuro['--accent']).toBe('#fafafa')
+    expect(claro['--accent-text']).toBe('#2563eb')
+    expect(escuro['--accent-text']).toBe('#60a5fa')
+    expect(claro['--border']).toBe('#e4e4e7')
+    expect(escuro['--border']).toMatch(/^rgb\(255 255 255 \/ 0?\.1\)$/)
+  })
+
+  it('tem os tokens da landing nos dois temas', () => {
+    for (const nome of ['--marca-painel', '--marca-painel-linha', '--grade-linha', '--grade-ponto', '--marca-cubo-topo', '--marca-cubo-esq', '--marca-cubo-dir']) {
+      expect(claro[nome], nome).toBeDefined()
+      expect(escuro[nome], nome).toBeDefined()
     }
   })
 })
@@ -111,6 +131,10 @@ describe.each([
     expect(t, `token ausente: ${texto}`).toBeDefined()
     expect(f, `token ausente: ${fundo}`).toBeDefined()
     expect(razao(t as string, f as string), `${texto} ${t} sobre ${fundo} ${f}`).toBeGreaterThanOrEqual(4.5)
+  })
+
+  it('o primário e o painel da marca contrastam com o que fica sobre eles', () => {
+    expect(razao(tema['--accent'] as string, tema['--bg-app'] as string)).toBeGreaterThanOrEqual(10)
   })
 
   it('o anel de foco tem 3:1 contra o fundo e a superfície', () => {

@@ -132,7 +132,7 @@
   // ---- montagem --------------------------------------------------------------
 
   function montar(config) {
-    var cor = normalizarCor(script.getAttribute('data-color')) || normalizarCor(config.cor) || '#4f46e5';
+    var cor = normalizarCor(script.getAttribute('data-color')) || normalizarCor(config.cor) || '#2563eb';
     var posAttr = script.getAttribute('data-position');
     var posicao = posAttr === 'esquerda' || posAttr === 'direita' ? posAttr : config.posicao === 'esquerda' ? 'esquerda' : 'direita';
     var titulo = typeof config.titulo === 'string' && config.titulo ? config.titulo : 'Chat';

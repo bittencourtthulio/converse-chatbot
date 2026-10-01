@@ -1,4 +1,5 @@
 @import './tokens.css';
+@import './landing.css';
 
 * { box-sizing: border-box; }
 
@@ -20,6 +21,11 @@ body {
 }
 
 h1, h2, h3, p { margin: 0; }
+
+h1, h2, h3 { font-weight: 600; letter-spacing: -0.02em; }
+p, li, dd { font-family: var(--font-texto); }
+
+::selection { background: var(--selecao-bg); color: inherit; }
 
 a { color: var(--accent-text); }
 
@@ -100,10 +106,9 @@ a { color: var(--accent-text); }
   place-items: center;
   width: 32px;
   height: 32px;
-  border-radius: 9px;
+  border-radius: var(--raio-controle);
   background: var(--accent);
   color: var(--accent-fg);
-  box-shadow: var(--sombra-sm);
 }
 .logotipo-nome {
   overflow: hidden;
@@ -137,7 +142,7 @@ a { color: var(--accent-text); }
 .navegacao-item:hover { background: var(--bg-hover); color: var(--fg-default); }
 .navegacao-item[aria-current='page'] {
   background: var(--bg-selected);
-  color: var(--accent-text);
+  color: var(--fg-default);
   font-weight: 600;
 }
 .navegacao-item svg { flex: none; }
@@ -312,7 +317,6 @@ a { color: var(--accent-text); }
   background: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: var(--raio-cartao);
-  box-shadow: var(--sombra-sm);
 }
 .cartao-corpo { padding: 24px; }
 .cartao-estreito { max-width: 520px; }
@@ -333,7 +337,7 @@ button.perigo {
   border: 1px solid transparent;
   border-radius: var(--raio-controle);
   font: inherit;
-  font-weight: 600;
+  font-weight: 500;
   text-decoration: none;
   cursor: pointer;
   transition: background var(--transicao), border-color var(--transicao), color var(--transicao);
@@ -347,6 +351,7 @@ button.secundario {
   background: var(--bg-surface);
   color: var(--fg-default);
   border-color: var(--border-strong);
+  box-shadow: var(--sombra-sm);
 }
 .secundario:hover { background: var(--bg-hover); }
 
@@ -497,19 +502,34 @@ tbody tr:hover { background: var(--bg-hover); }
 /* ---------- login ---------- */
 
 .login {
+  position: relative;
   display: grid;
   place-items: center;
   min-height: 100dvh;
   padding: 24px 16px;
 }
+/* motivo de grade com bordas finas, que some nas bordas da tela */
+.login::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--grade-linha) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grade-linha) 1px, transparent 1px);
+  background-size: 56px 56px;
+  background-position: center;
+  -webkit-mask-image: radial-gradient(ellipse at center, var(--fg-default) 25%, transparent 80%);
+  mask-image: radial-gradient(ellipse at center, var(--fg-default) 25%, transparent 80%);
+  pointer-events: none;
+}
 .login-cartao {
+  position: relative;
   width: 100%;
   max-width: 400px;
   padding: 32px;
   background: var(--bg-surface);
   border: 1px solid var(--border);
-  border-radius: var(--raio-cartao);
-  box-shadow: var(--sombra-md);
+  border-radius: var(--raio-painel);
 }
 .login-marca { display: flex; justify-content: center; margin-bottom: 24px; }
 .login-titulo { font-size: var(--texto-titulo); font-weight: 650; letter-spacing: -0.015em; text-align: center; }
@@ -674,12 +694,11 @@ textarea { min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: verti
   background: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: var(--raio-cartao);
-  box-shadow: var(--sombra-sm);
   color: inherit;
   text-decoration: none;
-  transition: border-color var(--transicao), box-shadow var(--transicao);
+  transition: border-color var(--transicao), background var(--transicao);
 }
-.cartao-de-agente:hover { border-color: var(--accent); box-shadow: var(--sombra-md); }
+.cartao-de-agente:hover { border-color: var(--border-input); background: var(--bg-hover); }
 .cartao-de-agente:focus-visible { outline: 2px solid var(--border-focus); outline-offset: 2px; }
 .avatar-do-agente {
   display: inline-grid;
@@ -739,7 +758,6 @@ textarea { min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: verti
   color: var(--fg-default);
   border: 1px solid var(--border);
   border-bottom-left-radius: var(--raio-pequeno);
-  box-shadow: var(--sombra-sm);
 }
 .bolha-texto-simples { margin: 0; white-space: pre-wrap; }
 .bolha-nota { display: block; margin-top: 6px; color: var(--fg-muted); font-size: var(--texto-pequeno); }
@@ -791,7 +809,6 @@ textarea { min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: verti
   background: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: var(--raio-cartao);
-  box-shadow: var(--sombra-sm);
 }
 .chat-campo textarea { min-height: 64px; max-height: 200px; border: 0; padding: 4px; resize: none; background: transparent; }
 .chat-campo textarea:focus-visible { outline: 2px solid var(--border-focus); outline-offset: 2px; border-radius: var(--raio-pequeno); }

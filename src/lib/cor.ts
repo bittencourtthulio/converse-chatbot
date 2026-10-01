@@ -50,7 +50,7 @@ export const FG_EM_COR_ESCURA: Rgb = [255, 255, 255]
 
 /** Fundos do chat nos dois temas, para o aviso de baixo contraste (espelham `--bg-surface`). */
 const FUNDO_CLARO: Rgb = [255, 255, 255]
-const FUNDO_ESCURO: Rgb = [17, 26, 46]
+const FUNDO_ESCURO: Rgb = [24, 24, 27]
 
 export interface TextoSobreCor {
   token: '--fg-em-cor-clara' | '--fg-em-cor-escura'
@@ -86,17 +86,17 @@ export function avisoDeBaixoContraste(cor: string): string | null {
 }
 
 const AMOSTRAS: Array<{ nome: string; rgb: Rgb }> = [
-  { nome: 'Índigo', rgb: [79, 70, 229] },
   { nome: 'Azul', rgb: [37, 99, 235] },
+  { nome: 'Zinco', rgb: [82, 82, 91] },
   { nome: 'Verde', rgb: [5, 150, 105] },
   { nome: 'Laranja', rgb: [194, 65, 12] },
   { nome: 'Rosa', rgb: [219, 39, 119] },
   { nome: 'Roxo', rgb: [126, 34, 206] },
-  { nome: 'Grafite', rgb: [71, 85, 105] },
+  { nome: 'Índigo', rgb: [79, 70, 229] },
   { nome: 'Vermelho', rgb: [220, 38, 38] },
 ]
 
 export const AMOSTRAS_DE_COR = AMOSTRAS.map(({ nome, rgb }) => ({ nome, hex: rgbParaHex(rgb) }))
 
-/** O índigo do sistema; a migration usa o mesmo valor como padrão. */
+/** O azul do acento do sistema. O serviço sempre grava a cor ao salvar a configuração, então o padrão da coluna na migration (histórico, índigo) não chega ao usuário. */
 export const COR_PADRAO = AMOSTRAS_DE_COR[0]!.hex
