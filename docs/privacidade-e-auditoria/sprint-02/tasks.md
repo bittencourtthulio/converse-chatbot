@@ -71,7 +71,7 @@ tasks:
   - id: T-02.05
     titulo: "Auditoria de criar e editar usuario"
     fase: F-02.2
-    status: pendente
+    status: concluida
     objetivo: "Gravar usuario_criado e usuario_editado na mesma transacao, com so os nomes dos campos alterados."
     arquivos:
       cria: ["tests/auditoria-usuarios.test.ts"]
@@ -81,8 +81,8 @@ tasks:
     criterio_aceite: "tests/auditoria-usuarios.test.ts passa e tests/usuarios.test.ts continua passando."
     depende_de: ["T-02.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-02.06
     titulo: "Auditoria da exclusao de agente"
     fase: F-02.2
@@ -184,7 +184,7 @@ teste_funcional: "Editar so o papel de usuario para admin grava campos papel com
 criterio_aceite: "tests/auditoria-usuarios.test.ts passa e tests/usuarios.test.ts continua passando."
 depende_de: ["T-02.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/auditoria-usuarios.test.ts 7 passed, tests/usuarios.test.ts 27 passed; suite inteira no fim da sprint
 ```
 
 ---

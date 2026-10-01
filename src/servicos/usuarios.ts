@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { hashDeSenha } from '@/lib/senha'
 import { conflito, entradaInvalida, naoEncontrado } from '@/lib/erros'
 import { exigirAdmin, type UsuarioAutenticado } from '@/servicos/autenticacao'
+import { registrar } from '@/servicos/auditoria'
 
 // Sem regra de complexidade teatral (L3): tamanho mínimo e nada mais.
 const senhaValida = z.string().min(8, 'A senha precisa de ao menos 8 caracteres.')
@@ -73,14 +74,18 @@ export async function criar(
     throw conflito('Já existe um usuário com este e-mail.')
   }
 
-  return prisma.usuario.create({
-    data: {
-      nome: dados.data.nome,
-      email,
-      papel: dados.data.papel,
-      senhaHash: await hashDeSenha(dados.data.senha),
-    },
-    select: camposListados,
+  const senhaHash = await hashDeSenha(dados.data.senha)
+  // A auditoria entra na mesma transação (PR-87): sem registro, o usuário não é criado.
+  return prisma.$transaction(async (tx) => {
+    const criado = await tx.usuario.create({
+      data: { nome: dados.data.nome, email, papel: dados.data.papel, senhaHash },
+      select: camposListados,
+    })
+    await registrar(
+      { ator: autor, acao: 'usuario_criado', alvoTipo: 'usuario', alvoId: criado.id, detalhes: { papel: criado.papel } },
+      tx,
+    )
+    return criado
   })
 }
 
@@ -121,15 +126,42 @@ export async function editar(
     }
   }
 
-  return prisma.usuario.update({
-    where: { id },
-    data: {
-      ...(dados.data.nome !== undefined && { nome: dados.data.nome }),
-      ...(dados.data.email !== undefined && { email: dados.data.email }),
-      ...(dados.data.papel !== undefined && { papel: dados.data.papel }),
-      ...(dados.data.ativo !== undefined && { ativo: dados.data.ativo }),
-    },
-    select: camposListados,
+  // Só os nomes dos campos que mudaram de verdade vão à auditoria (PR-86): nunca nome, e-mail
+  // nem senha. Papel e situação levam o valor porque não são dado pessoal.
+  const campos: string[] = []
+  if (dados.data.nome !== undefined && dados.data.nome !== alvo.nome) campos.push('nome')
+  if (dados.data.email !== undefined && dados.data.email !== alvo.email) campos.push('email')
+  if (dados.data.papel !== undefined && dados.data.papel !== alvo.papel) campos.push('papel')
+  if (dados.data.ativo !== undefined && dados.data.ativo !== alvo.ativo) campos.push('ativo')
+
+  return prisma.$transaction(async (tx) => {
+    const atualizado = await tx.usuario.update({
+      where: { id },
+      data: {
+        ...(dados.data.nome !== undefined && { nome: dados.data.nome }),
+        ...(dados.data.email !== undefined && { email: dados.data.email }),
+        ...(dados.data.papel !== undefined && { papel: dados.data.papel }),
+        ...(dados.data.ativo !== undefined && { ativo: dados.data.ativo }),
+      },
+      select: camposListados,
+    })
+    if (campos.length > 0) {
+      await registrar(
+        {
+          ator: autor,
+          acao: 'usuario_editado',
+          alvoTipo: 'usuario',
+          alvoId: id,
+          detalhes: {
+            campos,
+            ...(campos.includes('papel') && { papelAnterior: alvo.papel, papelNovo: dados.data.papel }),
+            ...(campos.includes('ativo') && { ativo: dados.data.ativo }),
+          },
+        },
+        tx,
+      )
+    }
+    return atualizado
   })
 }
 
