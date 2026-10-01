@@ -11,7 +11,7 @@ tasks:
   - id: T-07.01
     titulo: "Verificacao ponta a ponta no navegador"
     fase: F-07.1
-    status: pendente
+    status: concluida
     objetivo: "Subir o app de producao, o OpenRouter falso e o Telegram falso, conectar um bot pela tela, disparar updates por curl e registrar o resultado."
     arquivos:
       cria: ["tests/apoio/servir-telegram-falso.ts", "docs/canal-telegram/VERIFICACAO-VISUAL.md", "docs/canal-telegram/sprint-07/sprint.md", "docs/canal-telegram/sprint-07/fases.md", "docs/canal-telegram/sprint-07/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "docs/canal-telegram/VERIFICACAO-VISUAL.md lista o que foi visto e o que nao pode ser visto e o grep do token nos logs devolve zero linhas."
     depende_de: ["T-06.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-07.02
     titulo: "Convencoes, lacunas e README"
     fase: F-07.1
@@ -73,7 +73,7 @@ teste_funcional: "A tela conecta o bot falso e mostra nome, usuario e selo, e a 
 criterio_aceite: "docs/canal-telegram/VERIFICACAO-VISUAL.md lista o que foi visto e o que nao pode ser visto e o grep do token nos logs devolve zero linhas."
 depende_de: ["T-06.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/canais-ui.test.tsx, 22 passed; verificação manual no navegador registrada
 ```
 
 ---

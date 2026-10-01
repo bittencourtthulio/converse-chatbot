@@ -269,6 +269,7 @@ export function CartaoTelegram({
             <div className="canal-acoes">
               <FormularioDeAcao agenteId={agenteId} acao={acoes.verificar} rotulo="Verificar" ocupado="Verificando…" />
               <FormularioDeAcao
+                key={canal.ativo ? 'pausar' : 'retomar'}
                 agenteId={agenteId}
                 acao={canal.ativo ? acoes.pausar : acoes.retomar}
                 rotulo={visao.rotuloDaPausa}
