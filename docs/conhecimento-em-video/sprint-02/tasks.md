@@ -26,7 +26,7 @@ tasks:
   - id: T-02.02
     titulo: "Midia: extrair e dividir audio"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar extrairAudio (MP3 mono 16 kHz 32 kbps) e dividirEmSegmentos (partes de 10 minutos sem reencodar) a midia.ts, com limpeza e prazo por processo."
     arquivos:
       cria: ["tests/midia-extracao.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/midia-extracao.test.ts passa."
     depende_de: ["T-02.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-02.03
     titulo: "Formatos e assinatura de midia"
     fase: F-02.2
@@ -105,7 +105,7 @@ teste_funcional: "Um arquivo corrompido lanca erro claro sem repassar a saida do
 criterio_aceite: "tests/midia-extracao.test.ts passa."
 depende_de: ["T-02.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/midia-extracao.test.ts e tests/midia-sonda.test.ts, 13 passed
 ```
 
 ---

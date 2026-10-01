@@ -5,6 +5,7 @@
 // teto e nunca chega ao usuário; binário ausente tem mensagem própria. Os
 // caminhos dos binários vêm de `FFMPEG_PATH` e `FFPROBE_PATH` (`ambiente.ts`).
 import { spawn } from 'node:child_process'
+import { mkdir, readdir, rm } from 'node:fs/promises'
 import path from 'node:path'
 import { ambiente } from '@/lib/ambiente'
 import { ErroDeAplicacao } from '@/lib/erros'
@@ -167,5 +168,63 @@ export async function sondar(caminho: string, opcoes: OpcoesDaSonda = {}): Promi
 export function exigirAudio(sonda: Sonda): void {
   if (!sonda.temAudio) {
     throw new ErroDeAplicacao('Este arquivo não tem faixa de áudio para transcrever.', 422, 'sem_audio')
+  }
+}
+
+/** Uma parte do áudio tem 10 minutos (PR-72). */
+export const SEGUNDOS_POR_PARTE = 600
+export const PRAZO_DA_EXTRACAO_MS = 30 * 60_000
+export const PRAZO_DA_DIVISAO_MS = 5 * 60_000
+
+/**
+ * Extrai o áudio de um vídeo (ou reencoda um áudio) para MP3 mono, 16 kHz,
+ * 32 kbps. Em qualquer falha a saída parcial é apagada.
+ */
+export async function extrairAudio(entrada: string, saida: string, opcoes: { prazoMs?: number } = {}): Promise<void> {
+  exigirCaminhoInterno(entrada)
+  exigirCaminhoInterno(saida)
+  try {
+    await mkdir(path.dirname(saida), { recursive: true, mode: 0o700 })
+    await executar(
+      ambiente.ffmpegPath,
+      ['-v', 'error', '-nostdin', '-y', '-i', entrada, '-vn', '-ac', '1', '-ar', '16000', '-c:a', 'libmp3lame', '-b:a', '32k', saida],
+      { prazoMs: opcoes.prazoMs ?? PRAZO_DA_EXTRACAO_MS },
+    )
+  } catch (erro) {
+    await rm(saida, { force: true })
+    throw erro
+  }
+}
+
+/**
+ * Corta um MP3 em partes de `segundosPorParte` (padrão 600) sem reencodar, em
+ * `<diretorio>/000.mp3`, `001.mp3`... e devolve os caminhos em ordem. Em falha
+ * apaga o que gravou.
+ */
+export async function dividirEmSegmentos(
+  audio: string,
+  diretorio: string,
+  opcoes: { segundosPorParte?: number; prazoMs?: number } = {},
+): Promise<string[]> {
+  exigirCaminhoInterno(audio)
+  exigirCaminhoInterno(diretorio)
+  const segundos = opcoes.segundosPorParte ?? SEGUNDOS_POR_PARTE
+  try {
+    await mkdir(diretorio, { recursive: true, mode: 0o700 })
+    await executar(
+      ambiente.ffmpegPath,
+      [
+        '-v', 'error', '-nostdin', '-y', '-i', audio, '-f', 'segment', '-segment_time', String(segundos),
+        '-c', 'copy', '-reset_timestamps', '1', path.join(diretorio, '%03d.mp3'),
+      ],
+      { prazoMs: opcoes.prazoMs ?? PRAZO_DA_DIVISAO_MS },
+    )
+    const partes = (await readdir(diretorio)).filter((n) => /^\d{3}\.mp3$/.test(n)).sort()
+    if (partes.length === 0) throw erroDeMidiaInvalida()
+    return partes.map((n) => path.join(diretorio, n))
+  } catch (erro) {
+    const feitos = await readdir(diretorio).catch(() => [] as string[])
+    await Promise.all(feitos.filter((n) => /^\d{3}\.mp3$/.test(n)).map((n) => rm(path.join(diretorio, n), { force: true })))
+    throw erro
   }
 }
