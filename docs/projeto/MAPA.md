@@ -5,8 +5,8 @@ kind: mapa
 projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-10-01
 total_features: 13
-pendentes: 1
-em_andamento: 0
+pendentes: 0
+em_andamento: 1
 entregues: 12
 bloqueadas: 0
 ---
@@ -36,7 +36,7 @@ da feature de que depende (PRs empilhados).
 | FT-10 | Privacidade e auditoria | entregue | local (branch feat/privacidade-e-auditoria) |
 | FT-11 | Operação e backup | entregue | local (branch feat/operacao-e-backup) |
 | FT-12 | Sessão e acesso endurecidos | entregue | local (branch feat/sessao-e-acesso-endurecidos) |
-| FT-13 | Robustez de mídia, upload e operação | pendente | — |
+| FT-13 | Robustez de mídia, upload e operação | em_andamento | local (branch feat/robustez-de-midia-e-operacao) |
 
 ---
 
@@ -258,7 +258,7 @@ Vem do B6 (ciclo 2): `docs/projeto/validacao/premissas-01-34.md` (A-01, A-02, A-
 **Premissas que realiza:** [PR-09, PR-19, PR-23, PR-26, PR-44, PR-45, PR-85, PR-93, PR-98]
 **Módulo disponível:** -
 **Fatias candidatas:** -
-**Status:** pendente
+**Status:** em_andamento
 
 Vem do B6 (ciclo 2): `premissas-71-100.md` (PR-93, PR-85, PR-98), `premissas-35-70.md` (PR-44, PR-45), `premissas-01-34.md` (A-03, R-03), `pedido-aceite-entregas.md` (A-03) e a lacuna 13 de `docs/stack/LACUNAS.md`.
 

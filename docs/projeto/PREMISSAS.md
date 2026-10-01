@@ -4,13 +4,13 @@ expx_tool: buildx
 kind: premissas
 projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-10-01
-total: 104
+total: 112
 por_origem:
   catalogo_lacunas: 27
   briefing: 0
   decisao_de_stack: 7
   f2_autonoma: 66
-  recursao: 4
+  recursao: 12
 ---
 
 # Plataforma de chatbot com IA e base de conhecimento — Premissas
@@ -1375,6 +1375,110 @@ entram no relatório final como o que o usuário precisa confirmar.
 **Etapa:** b5
 **Provisória:** false
 **Realizada em:** FT-12
+
+---
+
+### PR-105 — Trecho de vídeo sem fala vira o marcador `[sem fala]`
+
+**Assunto:** F2 da FT-13 — PR-09, lacuna 13, PEND-18
+**Decisão:** um trecho de 10 minutos que o modelo devolve vazio (depois de uma única repetição) é gravado como o segmento `[sem fala]` e a transcrição segue; no texto final ele aparece como `[MM:SS] [sem fala]`. A fonte só falha, com `Não encontrei fala neste áudio.` (422, `transcricao_vazia`), se nenhum segmento tiver fala. Segmentos já gravados (inclusive `[sem fala]`) são reaproveitados na retomada e não são pagos de novo. O trecho do índice de busca (FTS5) feito só de marcadores de tempo e de `[sem fala]` não é indexado; o trecho que mistura fala e marcador é indexado como está, o que é inofensivo.
+**Por quê:** o OpenRouter e os modelos de áudio podem devolver vazio para música e silêncio; derrubar uma aula de duas horas por 10 minutos de silêncio gasta crédito e deixa o usuário sem saída; uma repetição cobre o vazio acidental sem pagar três chamadas por trecho mudo.
+**O que invalida:** um trecho sem fala deve ser decidido pela pessoa (parar e perguntar), ou o texto do marcador deve ser outro idioma ou formato; ou um modelo real devolver texto como "[música]" para o silêncio (isso passa como fala, e só o vazio é tratado).
+**Origem:** recursao
+**Etapa:** b5
+**Provisória:** false
+**Realizada em:** FT-13
+
+---
+
+### PR-106 — Corpo do upload de documento lido em stream com contagem de bytes
+
+**Assunto:** F2 da FT-13 — PR-45, PEND-19
+**Decisão:** a rota de envio de documentos lê o corpo em stream, conta os bytes e cancela a leitura ao passar do teto (`MAX_UPLOAD_MB` x 10 arquivos mais 1 MB de folga do multipart, o mesmo teto de PR-45), devolvendo 413 mesmo para corpo `chunked` sem `Content-Length`; só então o multipart é lido a partir do buffer já limitado. O `Content-Length` declarado continua recusando antes de ler.
+**Por quê:** só o parse integral do corpo (`request.formData()`) fazia o servidor guardar quanto o cliente mandasse antes de conferir; a contagem de bytes limita a memória ao teto declarado, e o buffer limitado preserva o parser de multipart do runtime.
+**O que invalida:** o teto de memória por envio de documento precisar ser menor que 10 arquivos do tamanho máximo (o piso real de memória é o próprio teto, 251 MB no padrão); ou o envio precisar ir para o disco em stream como o vídeo (feature nova).
+**Origem:** recursao
+**Etapa:** b5
+**Provisória:** false
+**Realizada em:** FT-13
+
+---
+
+### PR-107 — Extração pesada em processo filho encerrável
+
+**Assunto:** F2 da FT-13 — PR-45, PEND-27
+**Decisão:** a extração de PDF, DOCX e HTML da fila roda num processo filho (`node --import tsx`, arquivo `src/lib/extracao/trabalhador.ts`, bytes por entrada padrão e texto por saída padrão) que é encerrado com SIGKILL ao estourar o prazo de 120 s (`extracao_demorou`, a fonte vira `erro` com mensagem clara), com memória limitada. O limite de 500 páginas é conferido pelo filho ao abrir o documento, antes de extrair o texto; o PDF acima do limite é recusado sem a extração. Formatos leves (texto, CSV, JSON, legendas) seguem no processo do servidor. Se o processo filho não puder ser iniciado, a fonte falha com `extracao_falhou`: não há volta silenciosa para o processo do servidor.
+**Por quê:** `Promise.race` não interrompe CPU; só um processo separado pode ser morto de fora, e `worker_threads` dependeria de o Turbopack empacotar o arquivo do worker. O `tsx` já roda os scripts do projeto na imagem.
+**O que invalida:** a imagem de produção sem o `tsx` (hoje está em `dependencies`) ou sem `src/`; o custo de partida do filho (centenas de milissegundos por documento) pesar; ou um PDF malicioso que trave a abertura antes de o filho conferir as páginas (o filho é encerrado no prazo, então o dano é o tempo do prazo).
+**Origem:** recursao
+**Etapa:** b5
+**Provisória:** false
+**Realizada em:** FT-13
+
+---
+
+### PR-108 — Trava com batimento do servidor, lida pela restauração
+
+**Assunto:** F2 da FT-13 — PR-98, PEND-20
+**Decisão:** o servidor grava `.servidor.lock` (`{pid, host, iniciadoEm, batimentoEm}`) no diretório do banco ao subir, regrava o `batimentoEm` a cada 10 s e o remove no desligamento limpo e ao sair do processo. `npm run restore` recusa quando o batimento é mais novo que 30 s, mesmo vindo de outro contêiner ou máquina que compartilhe o volume, salvo com `--forcar`; trava mais velha que 30 s é ignorada com aviso. Relógio e diretório são injetáveis. A trava não entra no backup.
+**Por quê:** a recusa por `/api/saude` em 127.0.0.1 só enxergava o próprio contêiner; o diretório do banco é o único ponto que dois contêineres do mesmo volume compartilham, e gravar o horário no conteúdo evita depender do relógio de escrita do disco.
+**O que invalida:** o servidor e o comando de restauração não compartilharem o mesmo diretório de dados (volumes separados), ou relógios de máquinas diferentes com mais de 30 s de diferença; ou o operador querer restaurar com o servidor de pé (continua exigindo `--forcar`).
+**Origem:** recursao
+**Etapa:** b5
+**Provisória:** false
+**Realizada em:** FT-13
+
+---
+
+### PR-109 — Rotas de upload devolvem `X-Correlacao` por conta própria
+
+**Assunto:** F2 da FT-13 — PR-93, PEND-21
+**Decisão:** as rotas `api/agentes/[id]/fontes...` seguem fora do `matcher` do `src/proxy.ts` (o proxy copiaria o corpo do upload em memória), e os próprios handlers devolvem o `X-Correlacao` em toda resposta (sucesso, erro, 401, 413, 415) pelo mesmo cabeçalho e formato de 8 hexadecimais do proxy, com a correlação da requisição dentro do tratamento de erro igual à do cabeçalho.
+**Por quê:** o proxy gera o código para todas as outras rotas; as de upload ficavam sem código no sucesso, o que contrariava a premissa PR-93.
+**O que invalida:** o Next permitir proxy sem copiar o corpo de upload (então voltam ao proxy); ou o usuário precisar de um código que valha também para o log de sucesso (hoje só o erro é logado).
+**Origem:** recursao
+**Etapa:** b5
+**Provisória:** false
+**Realizada em:** FT-13
+
+---
+
+### PR-110 — Canal distinguido por padrão além da cor
+
+**Assunto:** F2 da FT-13 — PR-85, PEND-22
+**Decisão:** a badge de canal ganha um padrão de fundo por canal, sem cor literal (só listras ou pontos feitos com os tokens `--canal-*-borda`): painel em diagonal, widget em pontos, Telegram em linhas horizontais; o mapeamento canal para padrão é uma função pura testada e o texto do rótulo continua. O gráfico do painel mostra uma série só (mensagens por dia), então não há o que distinguir nele hoje; quando separar canais, deve usar o mesmo mapeamento.
+**Por quê:** PR-85 prometia rótulo e hachura; só o rótulo existia; o padrão torna o canal distinguível para quem não separa cores sem depender de nova cor.
+**O que invalida:** a marca (PEND-02) trocar a paleta para algo em que o padrão atrapalhe o contraste do texto, ou o gráfico passar a separar canais sem usar o mapeamento.
+**Origem:** recursao
+**Etapa:** b5
+**Provisória:** false
+**Realizada em:** FT-13
+
+---
+
+### PR-111 — Auditoria desligada derruba o start em produção
+
+**Assunto:** F2 da FT-13 — PR-19, PEND-26
+**Decisão:** em produção, se `ligarAuditoria()` falhar a subida do servidor falha, com mensagem clara e sem dado sensível (só o nome do erro vai ao log); fora de produção o servidor sobe, o item `auditoria` da saúde fica `degradado` em `/api/saude` e a tela Configurações > Sistema mostra "Trilha de auditoria: inativa" ("ativa" quando ligada).
+**Por quê:** falhar fechado em produção evita um servidor que altera chave, usuários e canais sem rastro e sem ninguém ver; fora de produção a falha visível na saúde basta e não impede o desenvolvimento.
+**O que invalida:** o operador preferir subir sem trilha em produção (seria uma variável nova de opt-out) ou a auditoria deixar de ser exigida pela PR-19.
+**Origem:** recursao
+**Etapa:** b5
+**Provisória:** false
+**Realizada em:** FT-13
+
+---
+
+### PR-112 — Testes nunca abrem conexão com host que não seja loopback
+
+**Assunto:** F2 da FT-13 — PR-26, PEND-25
+**Decisão:** `tests/setup.ts` instala uma trava que bloqueia a conexão de saída (`fetch`, `http`/`https` e `net.connect`) para qualquer host que não seja loopback (`localhost`, `127.0.0.0/8`, `::1`), com mensagem clara; a lista de permissões é vazia por padrão e comentada. Servidores de teste em loopback continuam funcionando. A trava vale para o processo do vitest; o servidor `next start` dos testes é outro processo e só fala com os simulados locais.
+**Por quê:** PR-26 diz que nenhum teste chama a rede real, mas só a disciplina garantia isso; a trava transforma a regra em falha de teste.
+**O que invalida:** algum teste precisar de um serviço externo real (então entra na lista de permissões com justificativa), ou a trava atrapalhar a ferramenta de teste.
+**Origem:** recursao
+**Etapa:** b5
+**Provisória:** false
+**Realizada em:** FT-13
 
 ---
 
