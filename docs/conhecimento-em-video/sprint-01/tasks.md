@@ -26,7 +26,7 @@ tasks:
   - id: T-01.02
     titulo: "Variaveis de ambiente do video"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar em ambiente.ts maxVideoBytes, maxVideoMinutos, ffmpegPath, ffprobePath, openrouterModeloTranscricao e youtubeBase, a constante MODELO_DE_TRANSCRICAO_PADRAO e documentar no .env.example."
     arquivos:
       cria: []
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/ambiente.test.ts e tests/projeto.test.ts passam."
     depende_de: ["T-01.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-01.03
     titulo: "Simulado do OpenRouter com audio"
     fase: F-01.2
@@ -120,7 +120,7 @@ teste_funcional: "Sem variavel os padroes sao 500 MB, 180 minutos, ffmpeg, ffpro
 criterio_aceite: "tests/ambiente.test.ts e tests/projeto.test.ts passam."
 depende_de: ["T-01.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/ambiente.test.ts e tests/projeto.test.ts, 107 passed
 ```
 
 ---

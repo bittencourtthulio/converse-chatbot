@@ -111,4 +111,47 @@ export const ambiente = {
   get ehProducao(): boolean {
     return process.env.NODE_ENV === 'production'
   },
+  /** Tamanho máximo de um vídeo ou áudio enviado, em bytes (PR-10, PR-71). Padrão 500 MB, no máximo 2000. */
+  get maxVideoBytes(): number {
+    const mb = inteiroComPadrao('MAX_VIDEO_MB', 500)
+    if (mb > MAXIMO_DE_VIDEO_MB) {
+      throw new Error(`Variável MAX_VIDEO_MB precisa ser um inteiro entre 1 e ${MAXIMO_DE_VIDEO_MB}.`)
+    }
+    return mb * 1024 * 1024
+  },
+  /** Duração máxima de um vídeo ou áudio, em minutos (PR-72). Padrão 180. */
+  get maxVideoMinutos(): number {
+    return inteiroComPadrao('MAX_VIDEO_MINUTOS', 180)
+  },
+  /** Caminho do ffmpeg (PR-72): o padrão procura `ffmpeg` no `PATH`. */
+  get ffmpegPath(): string {
+    return textoComPadrao('FFMPEG_PATH', 'ffmpeg')
+  },
+  /** Caminho do ffprobe (PR-72): o padrão procura `ffprobe` no `PATH`. */
+  get ffprobePath(): string {
+    return textoComPadrao('FFPROBE_PATH', 'ffprobe')
+  },
+  /** Modelo de transcrição padrão do ambiente; o do banco, se houver, vale mais (PR-73). */
+  get openrouterModeloTranscricao(): string {
+    return textoComPadrao('OPENROUTER_MODELO_TRANSCRICAO', MODELO_DE_TRANSCRICAO_PADRAO)
+  },
+  /** Endereço do YouTube; só o simulado de teste muda o padrão (PR-75, PR-77). */
+  get youtubeBase(): string {
+    return textoComPadrao('YOUTUBE_BASE', 'https://www.youtube.com').replace(/\/+$/, '')
+  },
+}
+
+/**
+ * Modelo do OpenRouter que transcreve áudio, quando nem o banco nem
+ * `OPENROUTER_MODELO_TRANSCRICAO` definem outro (FT-08, PR-73). É o modelo do
+ * exemplo da documentação de entrada de áudio do OpenRouter.
+ */
+export const MODELO_DE_TRANSCRICAO_PADRAO = 'google/gemini-2.5-flash'
+
+/** Teto de `MAX_VIDEO_MB`: `Fonte.tamanhoBytes` é inteiro de 32 bits (PR-71). */
+const MAXIMO_DE_VIDEO_MB = 2000
+
+function textoComPadrao(nome: string, padrao: string): string {
+  const valor = process.env[nome]?.trim()
+  return valor ? valor : padrao
 }

@@ -68,6 +68,16 @@ describe('exemplo de ambiente', () => {
     expect(valorDe('MAX_UPLOAD_MB')).toBe('25')
   })
 
+  it('documenta as seis variáveis do vídeo e do YouTube (FT-08)', () => {
+    expect(valorDe('MAX_VIDEO_MB')).toBe('500')
+    expect(valorDe('MAX_VIDEO_MINUTOS')).toBe('180')
+    expect(valorDe('FFMPEG_PATH')).toBe('ffmpeg')
+    expect(valorDe('FFPROBE_PATH')).toBe('ffprobe')
+    expect(exemplo).toContain('OPENROUTER_MODELO_TRANSCRICAO')
+    expect(valorDe('YOUTUBE_BASE')).toBe('https://www.youtube.com')
+    expect(exemplo).toMatch(/ffmpeg/i)
+  })
+
   it('documenta a chave de criptografia e como gerá-la', () => {
     expect(exemplo).toContain('ENCRYPTION_KEY')
     expect(exemplo).toMatch(/randomBytes\(32\)/)

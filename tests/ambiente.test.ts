@@ -1,11 +1,11 @@
 import { describe, it, expect, afterEach } from 'vitest'
 import { existsSync } from 'node:fs'
 import path from 'node:path'
-import { ambiente } from '@/lib/ambiente'
+import { ambiente, MODELO_DE_TRANSCRICAO_PADRAO } from '@/lib/ambiente'
 
 const original = { ...process.env }
 afterEach(() => {
-  for (const chave of ['APP_NAME', 'TRUST_PROXY', 'MAX_TOKENS_RESPOSTA', 'MAX_UPLOAD_MB', 'TELEGRAM_API_BASE', 'TELEGRAM_PERMITIR_URL_NAO_HTTPS', 'NODE_ENV']) {
+  for (const chave of ['APP_NAME', 'TRUST_PROXY', 'MAX_TOKENS_RESPOSTA', 'MAX_UPLOAD_MB', 'TELEGRAM_API_BASE', 'TELEGRAM_PERMITIR_URL_NAO_HTTPS', 'MAX_VIDEO_MB', 'MAX_VIDEO_MINUTOS', 'FFMPEG_PATH', 'FFPROBE_PATH', 'OPENROUTER_MODELO_TRANSCRICAO', 'YOUTUBE_BASE', 'NODE_ENV']) {
     if (original[chave] === undefined) delete process.env[chave]
     else process.env[chave] = original[chave]
   }
@@ -193,5 +193,47 @@ describe('Telegram (FT-07, PR-70)', () => {
     expect(ambiente.telegramPermitirUrlNaoHttps).toBe(true)
     Object.assign(process.env, { NODE_ENV: 'production' })
     expect(ambiente.telegramPermitirUrlNaoHttps).toBe(false)
+  })
+})
+
+describe('vídeo, ffmpeg e YouTube (FT-08, PR-77)', () => {
+  it('sem variáveis, os padrões são 500 MB, 180 minutos, ffmpeg, ffprobe, o modelo padrão e o YouTube oficial', () => {
+    for (const v of ['MAX_VIDEO_MB', 'MAX_VIDEO_MINUTOS', 'FFMPEG_PATH', 'FFPROBE_PATH', 'OPENROUTER_MODELO_TRANSCRICAO', 'YOUTUBE_BASE']) delete process.env[v]
+    expect(ambiente.maxVideoBytes).toBe(500 * 1024 * 1024)
+    expect(ambiente.maxVideoMinutos).toBe(180)
+    expect(ambiente.ffmpegPath).toBe('ffmpeg')
+    expect(ambiente.ffprobePath).toBe('ffprobe')
+    expect(MODELO_DE_TRANSCRICAO_PADRAO).toBe('google/gemini-2.5-flash')
+    expect(ambiente.openrouterModeloTranscricao).toBe('google/gemini-2.5-flash')
+    expect(ambiente.youtubeBase).toBe('https://www.youtube.com')
+  })
+
+  it('as variáveis definidas valem, com espaços aparados e sem barra final na base', () => {
+    process.env.MAX_VIDEO_MB = '3'
+    process.env.MAX_VIDEO_MINUTOS = '7'
+    process.env.FFMPEG_PATH = ' /opt/ffmpeg '
+    process.env.FFPROBE_PATH = '/opt/ffprobe'
+    process.env.OPENROUTER_MODELO_TRANSCRICAO = ' openai/gpt-4o-audio-preview '
+    process.env.YOUTUBE_BASE = ' http://127.0.0.1:5556/// '
+    expect(ambiente.maxVideoBytes).toBe(3 * 1024 * 1024)
+    expect(ambiente.maxVideoMinutos).toBe(7)
+    expect(ambiente.ffmpegPath).toBe('/opt/ffmpeg')
+    expect(ambiente.ffprobePath).toBe('/opt/ffprobe')
+    expect(ambiente.openrouterModeloTranscricao).toBe('openai/gpt-4o-audio-preview')
+    expect(ambiente.youtubeBase).toBe('http://127.0.0.1:5556')
+  })
+
+  it('MAX_VIDEO_MB zero, inválido ou acima de 2000 lança erro claro', () => {
+    for (const ruim of ['0', 'abc', '2001']) {
+      process.env.MAX_VIDEO_MB = ruim
+      expect(() => ambiente.maxVideoBytes, ruim).toThrow(/MAX_VIDEO_MB/)
+    }
+    process.env.MAX_VIDEO_MB = '2000'
+    expect(ambiente.maxVideoBytes).toBe(2000 * 1024 * 1024)
+  })
+
+  it('MAX_VIDEO_MINUTOS inválido lança erro claro', () => {
+    process.env.MAX_VIDEO_MINUTOS = '0'
+    expect(() => ambiente.maxVideoMinutos).toThrow(/MAX_VIDEO_MINUTOS/)
   })
 })
