@@ -26,7 +26,7 @@ tasks:
   - id: T-03.02
     titulo: "Start de producao derrubado por configuracao ausente"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Chamar validarAmbiente no inicio de register(), logar os avisos e provar contra next start que a producao sem as variaveis nao sobe."
     arquivos:
       cria: ["tests/ambiente-start.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/instrumentacao.test.ts e tests/ambiente-start.test.ts passam."
     depende_de: ["T-03.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
   - id: T-03.03
     titulo: "Servico de saude e GET /api/saude"
     fase: F-03.2
@@ -103,7 +103,7 @@ teste_funcional: "next start com NODE_ENV production sem JWT_SECRET, DATABASE_UR
 criterio_aceite: "tests/instrumentacao.test.ts e tests/ambiente-start.test.ts passam."
 depende_de: ["T-03.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2645 passed, 0 failed (219 arquivos); build antes
 ```
 
 ---

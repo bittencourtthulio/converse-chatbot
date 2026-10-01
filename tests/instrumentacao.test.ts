@@ -192,3 +192,60 @@ describe('register (src/instrumentation.ts)', () => {
     expect(fonte).toMatch(/await import\('@\/servicos\/expurgo'\)/)
   })
 })
+
+describe('register e a configuração de produção (FT-11, PR-94)', () => {
+  const NOMES = ['NODE_ENV', 'JWT_SECRET', 'DATABASE_URL', 'ENCRYPTION_KEY', 'APP_URL']
+  const guardadas = NOMES.map((n) => [n, process.env[n]] as const)
+  const FILTRO = Symbol.for('converse.filtroDoConsoleDoNext')
+  const atribuir = (nome: string, valor: string | undefined) => {
+    if (valor === undefined) delete process.env[nome]
+    else Object.assign(process.env, { [nome]: valor })
+  }
+  afterEach(() => {
+    for (const [n, v] of guardadas) atribuir(n, v)
+    delete (globalThis as unknown as Record<symbol, unknown>)[FILTRO]
+  })
+
+  it('em produção sem as variáveis obrigatórias lança antes de ligar a fila, o expurgo e a auditoria, e loga só os nomes', async () => {
+    process.env.NEXT_RUNTIME = 'nodejs'
+    const iniciar = vi.fn()
+    global_[CHAVE] = { retomar: vi.fn(), iniciar } as unknown as Fila
+    atribuir('NODE_ENV', 'production')
+    for (const n of ['JWT_SECRET', 'DATABASE_URL', 'ENCRYPTION_KEY']) delete process.env[n]
+    const log = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+
+    await expect(register()).rejects.toThrow(/JWT_SECRET.*DATABASE_URL.*ENCRYPTION_KEY/)
+
+    expect(iniciar).not.toHaveBeenCalled()
+    expect(globalAgendador[CHAVE_DO_AGENDADOR]).toBeUndefined()
+    const linha = log.mock.calls.map((c) => String(c[0])).find((l) => l.includes('configuracao_invalida'))!
+    expect(JSON.parse(linha)).toMatchObject({ nivel: 'erro', msg: 'configuracao_invalida' })
+    expect(linha).toContain('JWT_SECRET')
+  })
+
+  it('em produção com tudo definido e APP_URL sem HTTPS segue e grava só o aviso', async () => {
+    process.env.NEXT_RUNTIME = 'nodejs'
+    atribuir('NODE_ENV', 'production')
+    atribuir('JWT_SECRET', 'x'.repeat(40))
+    atribuir('DATABASE_URL', 'file:./prisma/test.db')
+    atribuir('ENCRYPTION_KEY', '00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff')
+    atribuir('APP_URL', 'http://converse.exemplo.com.br')
+    global_[CHAVE] = criarFila({ armazenamento: armazenamentoDeTeste() })
+    const aviso = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+
+    await expect(register()).resolves.toBeUndefined()
+
+    const linhas = aviso.mock.calls.map((c) => JSON.parse(String(c[0])) as Record<string, unknown>)
+    expect(linhas).toHaveLength(1)
+    expect(linhas[0]).toMatchObject({ nivel: 'aviso', msg: 'configuracao_aviso' })
+    expect(String(linhas[0]!.aviso)).toContain('HTTPS')
+  })
+
+  it('fora de produção não valida nada e não lança sem as variáveis', async () => {
+    process.env.NEXT_RUNTIME = 'nodejs'
+    atribuir('NODE_ENV', 'test')
+    for (const n of ['JWT_SECRET', 'ENCRYPTION_KEY']) delete process.env[n]
+    global_[CHAVE] = criarFila({ armazenamento: armazenamentoDeTeste() })
+    await expect(register()).resolves.toBeUndefined()
+  })
+})

@@ -11,6 +11,16 @@ export async function register(): Promise<void> {
   const { camposDoErro, filtrarConsoleDoNext, log } = await import('@/lib/log')
   // Em produção o erro que o Next imprime sozinho (mensagem e pilha) vira uma linha estruturada.
   if (process.env.NODE_ENV === 'production') filtrarConsoleDoNext()
+  // Configuração validada antes de qualquer tarefa (L20, PR-94): em produção, variável obrigatória ausente
+  // derruba o start com os nomes (nunca os valores) e `APP_URL` ausente ou sem HTTPS é só aviso.
+  const { ErroDeConfiguracao, validarAmbiente } = await import('@/lib/ambiente')
+  try {
+    for (const aviso of validarAmbiente().avisos) log.aviso('configuracao_aviso', { aviso })
+  } catch (erro) {
+    // A falha sobe de propósito: sem as variáveis o servidor não pode servir e o processo termina.
+    if (erro instanceof ErroDeConfiguracao) log.erro('configuracao_invalida', { variaveis: erro.erros })
+    throw erro
+  }
   try {
     const { ligarAuditoria } = await import('@/servicos/auditoria-ouvintes')
     ligarAuditoria()
