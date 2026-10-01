@@ -86,18 +86,18 @@ tasks:
   - id: T-05.06
     titulo: "Fila: fonte YouTube"
     fase: F-05.2
-    status: pendente
+    status: concluida
     objetivo: "Tratar o tipo youtube em fontes-fila.ts: buscar as legendas, trocar o titulo provisorio pelo do video, gravar duracao e tamanho e montar o texto com marcadores."
     arquivos:
       cria: ["tests/fontes-fila-youtube.test.ts"]
-      altera: ["src/servicos/fontes-fila.ts"]
+      altera: ["src/servicos/fontes-fila.ts", "src/lib/youtube.ts", "src/servicos/fontes.ts"]
     teste_integracao: "Contra o simulado do YouTube uma fonte youtube pendente vai a pronta com trechos que comecam com [00:00], titulo do video e duracaoSegundos preenchidos."
     teste_funcional: "Sem legendas a fonte fica em erro com a frase do briefing, um titulo dado pelo usuario nao e trocado, uma pagina quebrada da erro de leitura sem vazar detalhe e Reprocessar volta a buscar."
     criterio_aceite: "tests/fontes-fila-youtube.test.ts passa."
     depende_de: ["T-05.03", "T-05.04", "T-04.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
 ---
 
 # Tasks — Sprint 05
@@ -197,13 +197,13 @@ titulo: "Fila: fonte YouTube"
 objetivo: "Tratar o tipo youtube em fontes-fila.ts: buscar as legendas, trocar o titulo provisorio pelo do video, gravar duracao e tamanho e montar o texto com marcadores."
 arquivos:
   cria: ["tests/fontes-fila-youtube.test.ts"]
-  altera: ["src/servicos/fontes-fila.ts"]
+  altera: ["src/servicos/fontes-fila.ts", "src/lib/youtube.ts", "src/servicos/fontes.ts"]
 teste_integracao: "Contra o simulado do YouTube uma fonte youtube pendente vai a pronta com trechos que comecam com [00:00], titulo do video e duracaoSegundos preenchidos."
 teste_funcional: "Sem legendas a fonte fica em erro com a frase do briefing, um titulo dado pelo usuario nao e trocado, uma pagina quebrada da erro de leitura sem vazar detalhe e Reprocessar volta a buscar."
 criterio_aceite: "tests/fontes-fila-youtube.test.ts passa."
 depende_de: ["T-05.03", "T-05.04", "T-04.04"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/fontes-fila-youtube.test.ts, tests/fontes-fila-video.test.ts, tests/fontes-fila.test.ts e tests/fontes-youtube.test.ts, 29 passed
 ```
 
 ---

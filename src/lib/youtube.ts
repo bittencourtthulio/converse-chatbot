@@ -44,6 +44,9 @@ export function extrairIdDoYoutube(entrada: unknown): string {
   return candidato
 }
 
+/** O título provisório de uma fonte do YouTube até a fila ler o título do vídeo. */
+export const tituloProvisorioDoYoutube = (id: string) => `YouTube: ${id}`
+
 /** A URL da página do vídeo na base configurada: única origem das requisições. */
 export function urlDoVideo(id: string): string {
   return `${ambiente.youtubeBase}/watch?v=${encodeURIComponent(id)}`

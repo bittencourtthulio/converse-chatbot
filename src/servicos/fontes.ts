@@ -23,7 +23,7 @@ import {
   formatoDeMidia,
   mimeDeMidia,
 } from '@/lib/midia-formatos'
-import { extrairIdDoYoutube, urlDeOrigem } from '@/lib/youtube'
+import { extrairIdDoYoutube, tituloProvisorioDoYoutube, urlDeOrigem } from '@/lib/youtube'
 import { obterFila } from '@/servicos/fontes-fila'
 import type { UsuarioAutenticado } from '@/servicos/autenticacao'
 
@@ -437,9 +437,6 @@ export async function adicionarVideo(
     throw erro
   }
 }
-
-/** O título provisório de uma fonte do YouTube até a fila ler o título do vídeo. */
-export const tituloProvisorioDoYoutube = (id: string) => `YouTube: ${id}`
 
 /**
  * Link do YouTube para a base (FT-08, PR-75): valida a URL (host do YouTube e

@@ -9,10 +9,13 @@ import { ambiente } from '@/lib/ambiente'
 import { ErroDeAplicacao } from '@/lib/erros'
 import { criarArmazenamento, type Armazenamento } from '@/lib/armazenamento'
 import { extrairTexto } from '@/lib/extracao'
+import { LIMITES } from '@/lib/extracao/limites'
+import { extrairIdDoYoutube, obterLegendas, tituloProvisorioDoYoutube } from '@/lib/youtube'
 import { formatoDoNome, type Formato } from '@/lib/extracao/formatos'
 import { erroSemChave } from '@/servicos/chat-erros'
 import { modeloDeTranscricaoEfetivo, obterChaveDoOpenrouter } from '@/servicos/integracoes'
 import { transcreverMidia, type PedidoDeMidia, type TextoDeMidia } from '@/servicos/transcricao-de-midia'
+import { montarTextoDeLegenda } from '@/servicos/transcricao-marcadores'
 import { dividirEmTrechos, normalizarTexto } from '@/servicos/trechos'
 
 export interface OpcoesDaFila {
@@ -28,6 +31,8 @@ export interface OpcoesDaFila {
   extrair?: typeof extrairTexto
   /** Só para teste: partes menores que os 10 minutos de produção. */
   segundosPorParte?: number
+  /** Só para teste: troca a leitura das legendas do YouTube. */
+  legendas?: typeof obterLegendas
   /** Só para teste: troca a transcrição de vídeo (sem ffmpeg e sem rede). */
   transcreverMidia?: (pedido: PedidoDeMidia) => Promise<TextoDeMidia>
 }
@@ -66,6 +71,7 @@ export function criarFila(opcoes: OpcoesDaFila = {}): Fila {
   const relogio = opcoes.relogio ?? (() => new Date())
   const extrair = opcoes.extrair ?? extrairTexto
   const transcrever = opcoes.transcreverMidia ?? transcreverMidia
+  const lerLegendas = opcoes.legendas ?? obterLegendas
   const armazenamento = () => opcoes.armazenamento ?? criarArmazenamento(ambiente.storageDir)
 
   async function gravarErro(fonteId: string, mensagem: string): Promise<void> {
@@ -93,7 +99,7 @@ export function criarFila(opcoes: OpcoesDaFila = {}): Fila {
     agenteId: string,
     trechos: string[],
     caracteres: number,
-    extra: { duracaoSegundos?: number } = {},
+    extra: { duracaoSegundos?: number; titulo?: string; tamanhoBytes?: number } = {},
   ) {
     await prisma.$transaction(
       async (tx) => {
@@ -122,6 +128,8 @@ export function criarFila(opcoes: OpcoesDaFila = {}): Fila {
             etapa: null,
             progresso: null,
             ...(extra.duracaoSegundos !== undefined && { duracaoSegundos: extra.duracaoSegundos }),
+            ...(extra.titulo !== undefined && { titulo: extra.titulo }),
+            ...(extra.tamanhoBytes !== undefined && { tamanhoBytes: extra.tamanhoBytes }),
           },
         })
       },
@@ -155,16 +163,44 @@ export function criarFila(opcoes: OpcoesDaFila = {}): Fila {
     await armazenamento().apagarTrabalho(fonte.agenteId, fonte.id).catch(() => undefined)
   }
 
+  /** Link do YouTube: lê as legendas (sem baixar o vídeo e sem gastar crédito) e segue o caminho comum (PR-75). */
+  async function processarYoutube(fonte: { id: string; agenteId: string; titulo: string; urlOrigem: string | null }): Promise<void> {
+    if (!fonte.urlOrigem) throw new ErroDeAplicacao('Esta fonte não tem o link do vídeo.', 422, 'url_invalida')
+    await gravarAndamento(fonte.id, { etapa: 'Lendo as legendas do vídeo', progresso: 10 })
+    const legendas = await lerLegendas(fonte.urlOrigem)
+    const texto = normalizarTexto(montarTextoDeLegenda(legendas.falas))
+    if (texto === '') {
+      throw new ErroDeAplicacao(
+        'Este vídeo não tem legendas disponíveis. Baixe o vídeo e envie o arquivo para transcrever.',
+        422,
+        'sem_legendas',
+      )
+    }
+    // O título do vídeo só substitui o provisório: o que o usuário digitou fica.
+    const provisorio = fonte.titulo === tituloProvisorioDoYoutube(extrairIdDoYoutube(fonte.urlOrigem))
+    await gravarResultado(fonte.id, fonte.agenteId, dividirEmTrechos(texto), texto.length, {
+      ...(legendas.duracaoSegundos !== null && { duracaoSegundos: legendas.duracaoSegundos }),
+      ...(provisorio && { titulo: legendas.titulo.slice(0, LIMITES.tituloDoTexto) }),
+      tamanhoBytes: Buffer.byteLength(texto),
+    })
+  }
+
   async function processar(fonte: {
     id: string
     agenteId: string
     tipo: string
+    titulo: string
+    urlOrigem: string | null
     nomeOriginal: string | null
     caminhoArquivo: string | null
   }): Promise<void> {
     try {
       if (fonte.tipo === 'video') {
         await processarVideo(fonte)
+        return
+      }
+      if (fonte.tipo === 'youtube') {
+        await processarYoutube(fonte)
         return
       }
       const formato = formatoDaFonte(fonte)
