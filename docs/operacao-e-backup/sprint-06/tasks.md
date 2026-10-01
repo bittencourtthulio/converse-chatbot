@@ -56,7 +56,7 @@ tasks:
   - id: T-06.04
     titulo: "Teste fim a fim da restauracao numa instalacao limpa (PR-20)"
     fase: F-06.2
-    status: pendente
+    status: concluida
     objetivo: "Provar que backup e restauracao devolvem os dados: monta a instalacao, gera o backup, destroi, restaura em diretorios limpos pelo comando e confere linha a linha."
     arquivos:
       cria: ["tests/restauracao-fim-a-fim.test.ts"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "tests/restauracao-fim-a-fim.test.ts passa sem tocar em prisma/dev.db nem em ./storage."
     depende_de: ["T-06.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-06.05
     titulo: "Casos de recusa da restauracao pelo comando"
     fase: F-06.2
@@ -152,7 +152,7 @@ teste_funcional: "Os temporarios audio, segmentos e original.parcial ficaram de 
 criterio_aceite: "tests/restauracao-fim-a-fim.test.ts passa sem tocar em prisma/dev.db nem em ./storage."
 depende_de: ["T-06.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/restauracao-fim-a-fim.test.ts 2 passed; mutação (temporários incluídos no backup) provou que o teste falha com implementação errada
 ```
 
 ---
