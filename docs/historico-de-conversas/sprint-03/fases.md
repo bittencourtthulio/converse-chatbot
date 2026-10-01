@@ -10,14 +10,14 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-03.1
     titulo: "Handlers"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Os tres handlers passam contra o servidor de producao."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-03.01", "T-03.02"]
   - id: F-03.2
     titulo: "Menu"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Conversas aparece no menu abaixo de Agentes e herda o titulo no detalhe."
     paralelizavel: false
     paralela_com: []

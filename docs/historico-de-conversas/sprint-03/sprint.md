@@ -8,7 +8,7 @@ feature_id: FT-09
 sprint_id: sprint-03
 atualizado_em: 2026-10-01
 titulo: "Rotas HTTP e menu"
-status: nao_iniciado
+status: concluido
 criterio_saida: "A suite relativa a sprint passa, tsc e lint sem erro e todas as tasks da sprint estao concluidas (T-03.01, T-03.02, T-03.03)."
 fases: ["F-03.1", "F-03.2"]
 riscos: ["Content-Disposition e nome de arquivo sem dado pessoal (PR-83)", "testes de rota exigem npm run build antes"]
