@@ -10,14 +10,14 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-03.1
     titulo: "Armazenamento"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Gravacao em stream e pastas de trabalho testadas."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-03.01", "T-03.02"]
   - id: F-03.2
     titulo: "Servico e rota"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Servico adicionarVideo e handler testados, inclusive contra next start."
     paralelizavel: false
     paralela_com: []

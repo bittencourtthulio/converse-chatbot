@@ -8,7 +8,7 @@ feature_id: FT-08
 sprint_id: sprint-03
 atualizado_em: 2026-09-30
 titulo: "Upload de video em streaming"
-status: nao_iniciado
+status: concluido
 criterio_saida: "A suite inteira esta verde e o handler de video grava em disco por stream, recusa por tamanho, tipo e assinatura e foi provado contra o servidor de producao."
 fases: ["F-03.1", "F-03.2"]
 riscos: ["corpo em stream grande em next start e NAO DOCUMENTADO (base/upload-testes-e-ci.md, lacuna 6)", "falha no meio do envio pode deixar temporario em disco"]
