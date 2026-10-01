@@ -10,14 +10,14 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-06.1
     titulo: "Aba e logica de estado"
-    status: pendente
+    status: concluido
     criterio_saida: "Aba, pagina, carregando e modulo puro do estado do cartao."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-06.01"]
   - id: F-06.2
     titulo: "Cartao do Telegram"
-    status: pendente
+    status: concluido
     criterio_saida: "Componente do cartao, estilos e testes de interface."
     paralelizavel: false
     paralela_com: []
@@ -46,7 +46,7 @@ flowchart LR
   classDef critico   stroke-width:3px
 
   class T_06_01 concluida
-  class T_06_02 pendente
+  class T_06_02 concluida
   class T_06_01,T_06_02 critico
 ```
 

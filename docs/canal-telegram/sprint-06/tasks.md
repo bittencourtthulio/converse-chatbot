@@ -15,7 +15,7 @@ tasks:
     objetivo: "Acrescentar a aba Canais, a pagina servidora com carregando, a lista de canais extensivel e o modulo puro que transforma o estado em visao do cartao."
     arquivos:
       cria: ["src/app/(sistema)/agentes/[id]/canais/page.tsx", "src/app/(sistema)/agentes/[id]/canais/loading.tsx", "src/componentes/canais-logica.ts", "src/componentes/canais.ts", "tests/canais-logica.test.ts", "docs/canal-telegram/sprint-06/sprint.md", "docs/canal-telegram/sprint-06/fases.md", "docs/canal-telegram/sprint-06/tasks.md"]
-      altera: ["src/componentes/abas-do-agente.ts", "tests/abas-do-agente.test.tsx", "tests/rotas.test.ts"]
+      altera: ["src/componentes/abas-do-agente.ts", "tests/abas-do-agente.test.tsx", "tests/rotas.test.ts", "tests/publicar-rota.test.ts"]
     teste_integracao: "tests/abas-do-agente.test.tsx e tests/rotas.test.ts conferem a aba Canais e a pagina exige sessao."
     teste_funcional: "visaoDoCartao devolve estado conectado, pausado ou com erro conforme o canal, habilita Conectar so com APP_URL https ou com a excecao de desenvolvimento e monta o link https://t.me/usuario."
     criterio_aceite: "tests/canais-logica.test.ts, tests/abas-do-agente.test.tsx e tests/rotas.test.ts passam."
@@ -26,7 +26,7 @@ tasks:
   - id: T-06.02
     titulo: "Cartao do Telegram"
     fase: F-06.2
-    status: pendente
+    status: concluida
     objetivo: "Criar o componente do cartao com passo a passo, campo de token em senha nunca preenchido, estados, confirmacao de desconectar, limite diario, aviso de APP_URL e estilos sobre tokens."
     arquivos:
       cria: ["src/componentes/CartaoTelegram.tsx", "tests/canais-ui.test.tsx"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/canais-ui.test.tsx e tests/tokens.test.ts passam e o alvo de toque dos botoes tem 44px no CSS."
     depende_de: ["T-06.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
 ---
 
 # Tasks — Sprint 06
@@ -52,7 +52,7 @@ titulo: "Aba Canais, pagina e logica do cartao"
 objetivo: "Acrescentar a aba Canais, a pagina servidora com carregando, a lista de canais extensivel e o modulo puro que transforma o estado em visao do cartao."
 arquivos:
   cria: ["src/app/(sistema)/agentes/[id]/canais/page.tsx", "src/app/(sistema)/agentes/[id]/canais/loading.tsx", "src/componentes/canais-logica.ts", "src/componentes/canais.ts", "tests/canais-logica.test.ts", "docs/canal-telegram/sprint-06/sprint.md", "docs/canal-telegram/sprint-06/fases.md", "docs/canal-telegram/sprint-06/tasks.md"]
-  altera: ["src/componentes/abas-do-agente.ts", "tests/abas-do-agente.test.tsx", "tests/rotas.test.ts"]
+  altera: ["src/componentes/abas-do-agente.ts", "tests/abas-do-agente.test.tsx", "tests/rotas.test.ts", "tests/publicar-rota.test.ts"]
 teste_integracao: "tests/abas-do-agente.test.tsx e tests/rotas.test.ts conferem a aba Canais e a pagina exige sessao."
 teste_funcional: "visaoDoCartao devolve estado conectado, pausado ou com erro conforme o canal, habilita Conectar so com APP_URL https ou com a excecao de desenvolvimento e monta o link https://t.me/usuario."
 criterio_aceite: "tests/canais-logica.test.ts, tests/abas-do-agente.test.tsx e tests/rotas.test.ts passam."
@@ -75,5 +75,5 @@ teste_funcional: "Conectado, o cartao mostra o nome do bot com link para https:/
 criterio_aceite: "tests/canais-ui.test.tsx e tests/tokens.test.ts passam e o alvo de toque dos botoes tem 44px no CSS."
 depende_de: ["T-06.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/canais-ui.test.tsx, tests/tokens.test.ts e tests/rotas.test.ts, 65 passed depois de npm run build; tsc e eslint limpos
 ```

@@ -481,6 +481,11 @@ describe('Aba Canais do agente (FT-07)', () => {
     expect(marcada[0]).toContain(`href="/agentes/${agente.id}/canais"`)
     expect(html).toContain('Telegram')
     expect(html).toContain('Não conectado')
+    expect(html).toContain('@BotFather')
+    expect(html).toMatch(/<input[^>]*type="password"[^>]*name="token"|<input[^>]*name="token"[^>]*type="password"/)
+    // O servidor deste teste não tem APP_URL: o aviso aparece e Conectar fica desabilitado.
+    expect(html).toContain('APP_URL')
+    expect(html).toMatch(/<button[^>]*disabled[^>]*>Conectar<\/button>/)
     expect(html).not.toContain('style="')
   })
 })

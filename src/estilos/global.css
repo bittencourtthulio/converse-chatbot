@@ -1381,3 +1381,37 @@ textarea { min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: verti
   .previa-do-chat iframe { height: 480px; }
   .campo-radios { gap: 6px; }
 }
+
+/* ---------- canais (aba Canais do agente, FT-07) ---------- */
+
+.canal-passos { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; color: var(--fg-default); }
+.canal-passos li { padding-left: 4px; }
+.canal-passos code, .canal-detalhes code {
+  font-family: var(--font-mono);
+  font-size: var(--texto-pequeno);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--raio-pequeno);
+  padding: 1px 6px;
+  overflow-wrap: anywhere;
+}
+.canal-detalhes { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 24px; }
+.canal-detalhes > div { min-width: 0; }
+.canal-detalhes dt { color: var(--fg-muted); font-size: var(--texto-pequeno); font-weight: 600; margin-bottom: 2px; }
+.canal-detalhes dd { margin: 0; overflow-wrap: anywhere; }
+.canal-acoes { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 12px; }
+.canal-acao { display: flex; flex-direction: column; gap: 8px; }
+.canal-retorno { max-width: 520px; }
+.canal-cartao .botao, .canal-cartao button { min-height: var(--alvo-toque); }
+.canal-cartao summary { cursor: pointer; font-weight: 600; min-height: var(--alvo-toque); display: flex; align-items: center; }
+.canal-cartao summary:focus-visible { outline: 2px solid var(--border-focus); outline-offset: 2px; border-radius: var(--raio-controle); }
+.canal-trocar { border-top: 1px solid var(--border); padding-top: 8px; }
+.canal-trocar > p { margin: 0 0 12px; }
+.canal-limite { max-width: 520px; padding-top: 4px; }
+.canal-confirmacao { flex: 1 1 320px; }
+@media (max-width: 480px) {
+  .canal-detalhes { grid-template-columns: minmax(0, 1fr); }
+  .canal-acoes { flex-direction: column; align-items: stretch; }
+  .canal-acao > .botao, .canal-acoes > .botao { width: 100%; }
+  .canal-limite .botao { width: 100%; }
+}

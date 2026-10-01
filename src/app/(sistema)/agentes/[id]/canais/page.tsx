@@ -1,9 +1,26 @@
 import { exigirUsuario } from '@/app/sessao-servidor'
 import { carregarAgente } from '@/app/(sistema)/agentes/[id]/carregar-agente'
-import { Badge } from '@/componentes/Badge'
+import { CartaoTelegram } from '@/componentes/CartaoTelegram'
 import { CANAIS_DO_AGENTE } from '@/componentes/canais'
 import { dadosDoCanal, visaoDoCartaoTelegram } from '@/componentes/canais-logica'
+import {
+  conectarTelegram,
+  desconectarTelegram,
+  pausarTelegram,
+  retomarTelegram,
+  salvarLimiteTelegram,
+  verificarTelegram,
+} from '@/app/acoes'
 import { appUrlServeAoTelegram, estado } from '@/servicos/canal-telegram'
+
+const ACOES_DO_TELEGRAM = {
+  conectar: conectarTelegram,
+  desconectar: desconectarTelegram,
+  pausar: pausarTelegram,
+  retomar: retomarTelegram,
+  verificar: verificarTelegram,
+  salvarLimite: salvarLimiteTelegram,
+}
 
 /**
  * Aba Canais do agente (FT-07): lista de cartões, um por canal. Hoje só o
@@ -19,19 +36,23 @@ export default async function CanaisDoAgente({ params }: { params: Promise<{ id:
 
   return (
     <div className="pilha">
-      {CANAIS_DO_AGENTE.map((c) => (
-        <section className="cartao" key={c.id} aria-labelledby={`titulo-do-canal-${c.id}`}>
-          <div className="cartao-corpo pilha pilha-compacta">
-            <div className="linha linha-entre">
-              <h2 className="secao-titulo sem-margem" id={`titulo-do-canal-${c.id}`}>
-                {c.titulo}
-              </h2>
-              <Badge variante={visao.selo.variante}>{visao.selo.texto}</Badge>
-            </div>
-            <p className="texto-de-apoio">{c.resumo}</p>
-          </div>
-        </section>
-      ))}
+      {CANAIS_DO_AGENTE.map((c) => {
+        // Canal novo: uma entrada em `canais.ts` e o cartão dele aqui.
+        if (c.id === 'telegram') {
+          return (
+            <CartaoTelegram
+              key={c.id}
+              agenteId={agente.id}
+              titulo={c.titulo}
+              resumo={c.resumo}
+              canal={canal}
+              visao={visao}
+              acoes={ACOES_DO_TELEGRAM}
+            />
+          )
+        }
+        return null
+      })}
     </div>
   )
 }

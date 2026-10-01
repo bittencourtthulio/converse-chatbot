@@ -48,12 +48,12 @@ describe('aba Publicar', () => {
     expect((await pegar(comum.base, '/agentes/nao-existe-0123/publicar')).status).toBe(404)
   })
 
-  it('abre para qualquer usuário autenticado, com a aba Publicar marcada entre as quatro', async () => {
+  it('abre para qualquer usuário autenticado, com a aba Publicar marcada entre as cinco', async () => {
     const r = await pegar(comum.base, `/agentes/${agenteId}/publicar`)
     expect(r.status).toBe(200)
     const html = await r.text()
     const abas = html.match(/<nav class="abas"[\s\S]*?<\/nav>/)?.[0] ?? ''
-    expect((abas.match(/<a /g) ?? []).length).toBe(4)
+    expect((abas.match(/<a /g) ?? []).length).toBe(5)
     const marcada = abas.match(/<a [^>]*aria-current="page"[^>]*>/g) ?? []
     expect(marcada).toHaveLength(1)
     expect(marcada[0]).toContain(`href="/agentes/${agenteId}/publicar"`)
