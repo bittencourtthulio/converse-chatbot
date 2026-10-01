@@ -11,7 +11,7 @@ tasks:
   - id: T-01.01
     titulo: "Contador de consultas ao banco em teste"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Criar o apoio que conta as consultas que uma funcao faz ao banco de teste, para provar a ausencia de N+1."
     arquivos:
       cria: ["tests/apoio/contador-de-consultas.ts", "tests/contador-de-consultas.test.ts", "docs/historico-de-conversas/sprint-01/sprint.md", "docs/historico-de-conversas/sprint-01/fases.md", "docs/historico-de-conversas/sprint-01/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/contador-de-consultas.test.ts passa e o apoio exporta uma funcao que devolve o numero de consultas de uma funcao assincrona."
     depende_de: []
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-01.02
     titulo: "Fixtures de conversas dos tres canais"
     fase: F-01.1
@@ -88,7 +88,7 @@ teste_funcional: "Uma funcao que consulta uma vez por item de uma lista de tres 
 criterio_aceite: "tests/contador-de-consultas.test.ts passa e o apoio exporta uma funcao que devolve o numero de consultas de uma funcao assincrona."
 depende_de: []
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/contador-de-consultas.test.ts 3 passed
 ```
 
 ---
