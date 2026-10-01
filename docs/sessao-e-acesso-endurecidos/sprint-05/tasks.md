@@ -11,7 +11,7 @@ tasks:
   - id: T-05.01
     titulo: "Cookie do login real e login logo depois da troca de senha"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Provar contra next start o Set-Cookie do login real e o login imediato depois da troca de senha."
     arquivos:
       cria: ["docs/sessao-e-acesso-endurecidos/sprint-05/sprint.md", "docs/sessao-e-acesso-endurecidos/sprint-05/fases.md", "docs/sessao-e-acesso-endurecidos/sprint-05/tasks.md", "tests/sessao-fim-a-fim.test.ts"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "npm run build executado depois da ultima mudanca em src/, os dois casos passam e o teste falha quando secure ou httpOnly saem do cookie (mutacao registrada)."
     depende_de: ["T-02.06", "T-03.02", "T-01.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-05.02
     titulo: "Logout e reuso do cookie roubado"
     fase: F-05.1
@@ -88,7 +88,7 @@ teste_funcional: "O Set-Cookie traz HttpOnly, SameSite=Lax, Path=/, Secure e Max
 criterio_aceite: "npm run build executado depois da ultima mudanca em src/, os dois casos passam e o teste falha quando secure ou httpOnly saem do cookie (mutacao registrada)."
 depende_de: ["T-02.06", "T-03.02", "T-01.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/sessao-fim-a-fim.test.ts 2 passed contra next start na porta 3252 (TTL 8 s); build antes; só teste novo
 ```
 
 ---
