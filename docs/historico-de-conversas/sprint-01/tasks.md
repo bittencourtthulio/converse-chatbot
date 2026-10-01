@@ -26,7 +26,7 @@ tasks:
   - id: T-01.02
     titulo: "Fixtures de conversas dos tres canais"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Criar o apoio que grava conversas do painel, do widget e do Telegram com mensagens e fontes no banco de teste."
     arquivos:
       cria: ["tests/apoio/historico.ts", "tests/historico-apoio.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/historico-apoio.test.ts passa e a fixture aceita instante, agente, canal e mensagens por parametro."
     depende_de: ["T-01.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-01.03
     titulo: "Caracterizacao do SQLite: DateTime, dia local e LIKE"
     fase: F-01.1
@@ -105,7 +105,7 @@ teste_funcional: "Uma conversa de cada canal criada pela fixture tem o canal, o 
 criterio_aceite: "tests/historico-apoio.test.ts passa e a fixture aceita instante, agente, canal e mensagens por parametro."
 depende_de: ["T-01.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/historico-apoio.test.ts 4 passed
 ```
 
 ---
