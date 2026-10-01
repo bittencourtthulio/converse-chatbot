@@ -87,6 +87,12 @@ describe('exemplo de ambiente', () => {
 describe('pipeline de verificação', () => {
   const ci = ler('.github/workflows/ci.yml')
 
+  it('instala o ffmpeg e exige a presença dele nos testes de vídeo (FT-08)', () => {
+    expect(ci).toContain('sudo apt-get install -y ffmpeg')
+    expect(ci).toMatch(/EXIGIR_FFMPEG: '1'/)
+    expect(ci.indexOf('apt-get install -y ffmpeg')).toBeLessThan(ci.indexOf('npm test'))
+  })
+
   it('usa Node 22', () => {
     expect(ci).toMatch(/node-version:\s*['"]?22['"]?/)
   })

@@ -12,6 +12,8 @@ jobs:
       # Valores de CI, sem valor de produção. Os testes definem os próprios.
       DATABASE_URL: file:./prisma/ci.db
       JWT_SECRET: ci-segredo-apenas-para-verificacao-nao-usar-em-producao
+      # Os testes de vídeo (FT-08) rodam o ffmpeg de verdade: no CI a ausência dele é falha, não pulo.
+      EXIGIR_FFMPEG: '1'
     steps:
       - uses: actions/checkout@v4
 
@@ -19,6 +21,9 @@ jobs:
         with:
           node-version: 22
           cache: npm
+
+      - name: Instalar o ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
 
       - name: Instalar dependências
         run: npm ci

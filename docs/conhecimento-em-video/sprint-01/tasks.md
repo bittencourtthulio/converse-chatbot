@@ -56,7 +56,7 @@ tasks:
   - id: T-01.04
     titulo: "Apoio de ffmpeg e CI"
     fase: F-01.2
-    status: pendente
+    status: concluida
     objetivo: "Criar o apoio de teste que detecta o ffmpeg, gera midia pequena com lavfi e exige o ffmpeg quando EXIGIR_FFMPEG=1, e instalar o ffmpeg no CI."
     arquivos:
       cria: ["tests/apoio/ffmpeg.ts", "tests/apoio-ffmpeg.test.ts"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "tests/apoio-ffmpeg.test.ts e tests/projeto.test.ts passam e o ci.yml contem apt-get install -y ffmpeg e EXIGIR_FFMPEG."
     depende_de: ["T-01.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-01.05
     titulo: "Simulado do YouTube"
     fase: F-01.2
@@ -154,7 +154,7 @@ teste_funcional: "ffmpegDisponivel e verdadeiro quando o binario responde, e com
 criterio_aceite: "tests/apoio-ffmpeg.test.ts e tests/projeto.test.ts passam e o ci.yml contem apt-get install -y ffmpeg e EXIGIR_FFMPEG."
 depende_de: ["T-01.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/apoio-ffmpeg.test.ts e tests/projeto.test.ts, 84 passed
 ```
 
 ---
