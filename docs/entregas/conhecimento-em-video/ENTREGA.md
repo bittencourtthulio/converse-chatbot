@@ -13,7 +13,69 @@ estado: aberto
 versionado: true
 branch: feat/conhecimento-em-video
 branch_base: feat/canal-telegram
-commits: []
+commits:
+  - task: T-01.01
+    commit: 54e90f9
+  - task: T-01.02
+    commit: 17a90b1
+  - task: T-01.03
+    commit: 705b089
+  - task: T-01.04
+    commit: 3c6ddb9
+  - task: T-01.05
+    commit: 4f91ef1
+  - task: T-02.01
+    commit: cc3ac5a
+  - task: T-02.02
+    commit: ed4101c
+  - task: T-02.03
+    commit: c04d8a8
+  - task: T-02.04
+    commit: 685ad6b
+  - task: T-03.01
+    commit: e06d9b0
+  - task: T-03.02
+    commit: 38542e5
+  - task: T-03.03
+    commit: 57124f7
+  - task: T-03.04
+    commit: c2a1b5f
+  - task: T-04.01
+    commit: 88fa65b
+  - task: T-04.02
+    commit: 697ee5f
+  - task: T-04.03
+    commit: c6a6cee
+  - task: T-04.04
+    commit: ba23f1f
+  - task: T-04.05
+    commit: cb99daf
+  - task: T-05.01
+    commit: bb64baf
+  - task: T-05.02
+    commit: 0c0a2a5
+  - task: T-05.03
+    commit: 8c4986c
+  - task: T-05.04
+    commit: ebede37
+  - task: T-05.05
+    commit: 90e22c6
+  - task: T-05.06
+    commit: 51d1eac
+  - task: T-06.01
+    commit: 89be027
+  - task: T-06.02
+    commit: cd02ac3
+  - task: T-06.03
+    commit: 62462a0
+  - task: T-06.04
+    commit: 59f3b98
+  - task: T-07.01
+    commit: 40f4411
+  - task: T-07.02
+    commit: 4910ef5
+  - task: T-07.03
+    commit: 21f99bd
 modulo_afetado: []
 arquivos_alterados: []
 faixa_atencao: []
@@ -58,7 +120,7 @@ Branch `feat/conhecimento-em-video`, aberta em 2026-09-30 a partir de `feat/cana
 ## Avisos
 
 - Base `feat/canal-telegram` (ponta da pilha FT-01 a FT-07), embora a FT-08 dependa funcionalmente so da FT-04 (e da FT-02 para a chave do OpenRouter): empilha na ponta para nao haver conflito em arquivos compartilhados (`abas-do-agente`, `ambiente.ts`, `.env.example`, `fontes-fila.ts`, `AdicionarFontes.tsx`, CI).
-- `ORQUESTRADOR.md` ainda nao existe (F4 do sprintx); a linha da branch sera acrescentada quando ele for gerado.
+- O `ORQUESTRADOR.md` foi gerado na F4 e traz a linha da branch.
 
 ## Desvios
 
