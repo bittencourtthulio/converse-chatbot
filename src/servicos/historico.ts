@@ -317,3 +317,49 @@ export async function apagarConversas(ids: unknown, usuarioId: string): Promise<
 export async function apagarConversa(id: string, usuarioId: string): Promise<void> {
   if ((await apagarConversas([id], usuarioId)) === 0) throw naoEncontrado('Conversa não encontrada.')
 }
+
+export interface CriterioDeExclusao {
+  canal: string
+  identificadorExterno: string
+  /** Quando informado, só as conversas deste agente (o visitante apaga só o que é dele no agente). */
+  agenteId?: string
+}
+
+/**
+ * Apaga todas as conversas de um titular (`canal` mais `identificadorExterno`, e o agente se
+ * informado) numa transação, com as mensagens em cascata, e avisa `aoApagarConversa` por
+ * conversa com a origem (`titular` ou `visitante`, D-23). Devolve as contagens. Quem chama
+ * (o serviço do titular, a API pública do visitante) já validou quem pode pedir isto.
+ */
+export async function apagarConversasDe(
+  criterio: CriterioDeExclusao,
+  quem: { usuarioId: string | null; origem: 'titular' | 'visitante' },
+): Promise<{ conversas: number; mensagens: number }> {
+  const where = {
+    canal: criterio.canal,
+    identificadorExterno: criterio.identificadorExterno,
+    ...(criterio.agenteId !== undefined && { agenteId: criterio.agenteId }),
+  }
+  const apagadas = await prisma.$transaction(async (tx) => {
+    const existentes = await tx.conversa.findMany({
+      where,
+      select: { id: true, agenteId: true, canal: true, _count: { select: { mensagens: true } } },
+    })
+    if (existentes.length === 0) return []
+    await tx.conversa.deleteMany({ where })
+    return existentes
+  })
+  let mensagens = 0
+  for (const c of apagadas) {
+    mensagens += c._count.mensagens
+    avisarExclusao({
+      conversaId: c.id,
+      agenteId: c.agenteId,
+      canal: c.canal,
+      usuarioId: quem.usuarioId,
+      quantidadeDeMensagens: c._count.mensagens,
+      origem: quem.origem,
+    })
+  }
+  return { conversas: apagadas.length, mensagens }
+}

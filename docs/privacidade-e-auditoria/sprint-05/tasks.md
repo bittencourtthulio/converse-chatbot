@@ -11,7 +11,7 @@ tasks:
   - id: T-05.01
     titulo: "Servico do titular: buscar, exportar e apagar"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Criar o servico que resolve um titular por canal e identificador, exporta em JSON e TXT e apaga todas as conversas dele."
     arquivos:
       cria: ["src/servicos/titular.ts", "tests/titular.test.ts", "docs/privacidade-e-auditoria/sprint-05/sprint.md", "docs/privacidade-e-auditoria/sprint-05/fases.md", "docs/privacidade-e-auditoria/sprint-05/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/titular.test.ts passa."
     depende_de: ["T-02.03", "T-03.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-05.02
     titulo: "Rota de exportacao do titular"
     fase: F-05.1
@@ -86,7 +86,7 @@ teste_funcional: "O prefixo de 6 caracteres que casa dois visitantes devolve var
 criterio_aceite: "tests/titular.test.ts passa."
 depende_de: ["T-02.03", "T-03.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/titular.test.ts 19 passed, tests/historico-apagar.test.ts 6 passed, projeto 144; suite inteira no fim da sprint
 ```
 
 ---
