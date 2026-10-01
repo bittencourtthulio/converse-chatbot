@@ -26,7 +26,7 @@ tasks:
   - id: T-06.02
     titulo: "Verificacao no navegador"
     fase: F-06.2
-    status: pendente
+    status: concluida
     objetivo: "Verificar num Chrome proprio, com porta livre e alvo confirmado, login, renovacao, logout com cookie antigo, troca de senha e bloqueio de login, nos dois temas e a 375 px."
     arquivos:
       cria: ["docs/sessao-e-acesso-endurecidos/VERIFICACAO-VISUAL.md"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "VERIFICACAO-VISUAL.md existe, lista o que foi visto e o que nao foi, os defeitos de src/estilos/global.css estao corrigidos e o defeito em outro arquivo entra em arquivos.altera desta task e em desvios do ENTREGA.md e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
     depende_de: ["T-06.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-06.03
     titulo: "Fechamento no laco do buildx"
     fase: F-06.2
@@ -90,7 +90,7 @@ teste_funcional: "A mensagem de excesso de tentativas e a tela de login nao tem 
 criterio_aceite: "VERIFICACAO-VISUAL.md existe, lista o que foi visto e o que nao foi, os defeitos de src/estilos/global.css estao corrigidos e o defeito em outro arquivo entra em arquivos.altera desta task e em desvios do ENTREGA.md e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
 depende_de: ["T-06.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — verificação no Chrome próprio, servidor próprio, TTL 30 s; nenhum defeito; só documento
 ```
 
 ---
