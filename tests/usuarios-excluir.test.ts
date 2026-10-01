@@ -121,4 +121,14 @@ describe('excluirDefinitivamente (funcional: as recusas)', () => {
     await excluirDefinitivamente(b.id, a.id)
     expect(await prisma.usuario.count({ where: { papel: 'admin' } })).toBe(1)
   })
+
+  it('com a confirmação de e-mail informada, só exclui se ela confere com o e-mail do usuário', async () => {
+    const admin = await criarAdmin()
+    const alvo = await criarUsuario({ email: 'saindo@teste.local' })
+    await expect(excluirDefinitivamente(alvo.id, admin.id, 'outro@teste.local')).rejects.toMatchObject({ status: 422 })
+    await expect(excluirDefinitivamente(alvo.id, admin.id, '')).rejects.toMatchObject({ status: 422 })
+    expect(await prisma.usuario.findUnique({ where: { id: alvo.id } })).not.toBeNull()
+    await excluirDefinitivamente(alvo.id, admin.id, '  SAINDO@teste.local ')
+    expect(await prisma.usuario.findUnique({ where: { id: alvo.id } })).toBeNull()
+  })
 })

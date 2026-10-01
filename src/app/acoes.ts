@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { entrar, exigirLimiteDeLogin } from '@/servicos/autenticacao'
 import { ipDoCliente } from '@/lib/requisicao'
-import { criar, editar, desativar } from '@/servicos/usuarios'
+import { criar, editar, desativar, excluirDefinitivamente } from '@/servicos/usuarios'
 import { atualizarPerfil, trocarSenha } from '@/servicos/perfil'
 import { salvarConfiguracao as salvarConfiguracaoDoChat } from '@/servicos/chat-publico-config'
 import { criar as criarAgenteNoServico, editar as editarAgenteNoServico, excluir as excluirAgenteNoServico } from '@/servicos/agentes'
@@ -131,6 +131,29 @@ export async function desativarUsuario(
   }
   revalidatePath('/configuracoes/usuarios')
   return { sucesso: 'Usuário desativado.' }
+}
+
+/**
+ * Exclusão definitiva e irreversível de um usuário (FT-10, PR-88): só admin, e a confirmação
+ * de e-mail digitada na tela é conferida no servidor.
+ */
+export async function excluirUsuario(
+  _estado: EstadoDoFormulario,
+  form: FormData,
+): Promise<EstadoDoFormulario> {
+  try {
+    const autor = await exigirUsuarioAdmin()
+    const confirmacao = form.get('confirmacao')
+    await excluirDefinitivamente(
+      String(form.get('id')),
+      autor.id,
+      typeof confirmacao === 'string' ? confirmacao : '',
+    )
+  } catch (erro) {
+    return { erro: mensagemDe(erro) }
+  }
+  revalidatePath('/configuracoes/usuarios')
+  return { sucesso: 'Usuário excluído definitivamente.' }
 }
 
 export async function salvarPerfil(

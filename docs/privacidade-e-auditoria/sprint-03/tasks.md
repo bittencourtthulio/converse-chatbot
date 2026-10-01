@@ -26,18 +26,18 @@ tasks:
   - id: T-03.02
     titulo: "Tela: Excluir definitivamente em Usuarios"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar na lista de usuarios a acao Excluir definitivamente com confirmacao na tela que exige digitar o e-mail."
     arquivos:
-      cria: ["src/componentes/excluir-usuario-logica.ts", "tests/excluir-usuario-logica.test.ts", "tests/usuarios-excluir-ui.test.tsx"]
-      altera: ["src/app/(sistema)/configuracoes/usuarios/LinhaDeUsuario.tsx", "src/app/acoes.ts", "src/estilos/global.css"]
+      cria: ["src/componentes/excluir-usuario-logica.ts", "tests/excluir-usuario-logica.test.ts", "tests/usuarios-excluir-ui.test.tsx", "tests/usuarios-excluir-acao.test.ts"]
+      altera: ["src/app/(sistema)/configuracoes/usuarios/LinhaDeUsuario.tsx", "src/app/acoes.ts", "src/estilos/global.css", "src/servicos/usuarios.ts", "tests/usuarios-excluir.test.ts"]
     teste_integracao: "A acao de servidor excluirUsuario chama o servico com a sessao de admin e devolve a mensagem de erro de 409 e a de sucesso, e a linha renderizada mostra o botao, a confirmacao e o texto de irreversibilidade."
     teste_funcional: "O botao de confirmar fica desabilitado ate o e-mail digitado, sem diferenca de maiusculas e espacos nas pontas, ser igual ao do usuario, a propria linha nao oferece a acao e o texto cita desativar como alternativa."
     criterio_aceite: "tests/excluir-usuario-logica.test.ts e tests/usuarios-excluir-ui.test.tsx passam."
     depende_de: ["T-03.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-03.03
     titulo: "Servico de retencao e aviso padrao"
     fase: F-03.2
@@ -96,14 +96,14 @@ id: T-03.02
 titulo: "Tela: Excluir definitivamente em Usuarios"
 objetivo: "Acrescentar na lista de usuarios a acao Excluir definitivamente com confirmacao na tela que exige digitar o e-mail."
 arquivos:
-  cria: ["src/componentes/excluir-usuario-logica.ts", "tests/excluir-usuario-logica.test.ts", "tests/usuarios-excluir-ui.test.tsx"]
-  altera: ["src/app/(sistema)/configuracoes/usuarios/LinhaDeUsuario.tsx", "src/app/acoes.ts", "src/estilos/global.css"]
+  cria: ["src/componentes/excluir-usuario-logica.ts", "tests/excluir-usuario-logica.test.ts", "tests/usuarios-excluir-ui.test.tsx", "tests/usuarios-excluir-acao.test.ts"]
+  altera: ["src/app/(sistema)/configuracoes/usuarios/LinhaDeUsuario.tsx", "src/app/acoes.ts", "src/estilos/global.css", "src/servicos/usuarios.ts", "tests/usuarios-excluir.test.ts"]
 teste_integracao: "A acao de servidor excluirUsuario chama o servico com a sessao de admin e devolve a mensagem de erro de 409 e a de sucesso, e a linha renderizada mostra o botao, a confirmacao e o texto de irreversibilidade."
 teste_funcional: "O botao de confirmar fica desabilitado ate o e-mail digitado, sem diferenca de maiusculas e espacos nas pontas, ser igual ao do usuario, a propria linha nao oferece a acao e o texto cita desativar como alternativa."
 criterio_aceite: "tests/excluir-usuario-logica.test.ts e tests/usuarios-excluir-ui.test.tsx passam."
 depende_de: ["T-03.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — excluir-usuario-logica 5, usuarios-excluir-ui 6, usuarios-excluir-acao 4, usuarios-excluir 9; 230 passed com componentes, projeto e rotas; suite inteira no fim da sprint
 ```
 
 ---

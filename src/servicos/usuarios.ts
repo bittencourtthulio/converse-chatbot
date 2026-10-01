@@ -188,6 +188,12 @@ export async function desativar(
 export async function excluirDefinitivamente(
   id: string,
   adminId: string,
+  /**
+   * O e-mail que o admin digitou na confirmação da tela. Quando informado (a ação de servidor
+   * sempre o informa), precisa ser o e-mail do usuário, sem diferença de caixa nem de espaços
+   * nas pontas: a conferência é do servidor, não só do navegador.
+   */
+  confirmacaoDeEmail?: string,
 ): Promise<{ agentesTransferidos: number }> {
   return prisma.$transaction(async (tx) => {
     const admin = await tx.usuario.findUnique({ where: { id: adminId } })
@@ -195,6 +201,10 @@ export async function excluirDefinitivamente(
 
     const alvo = await tx.usuario.findUnique({ where: { id } })
     if (!alvo) throw naoEncontrado('Usuário não encontrado.')
+
+    if (confirmacaoDeEmail !== undefined && confirmacaoDeEmail.trim().toLowerCase() !== alvo.email.toLowerCase()) {
+      throw entradaInvalida('Digite o e-mail do usuário para confirmar a exclusão.')
+    }
 
     if (alvo.id === admin.id) {
       const outrosAdmins = await tx.usuario.count({
