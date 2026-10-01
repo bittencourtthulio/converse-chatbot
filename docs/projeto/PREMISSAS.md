@@ -4,12 +4,12 @@ expx_tool: buildx
 kind: premissas
 projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-10-01
-total: 91
+total: 100
 por_origem:
   catalogo_lacunas: 27
   briefing: 0
   decisao_de_stack: 7
-  f2_autonoma: 57
+  f2_autonoma: 66
   recursao: 0
 ---
 
@@ -1206,6 +1206,123 @@ entram no relatório final como o que o usuário precisa confirmar.
 **Etapa:** b4
 **Provisória:** true
 **Realizada em:** FT-10
+
+---
+
+### PR-92 — Log estruturado, níveis e redação central
+
+**Assunto:** F2 da FT-11 — PR-21
+**Decisão:** `src/lib/log.ts` é o único ponto de saída do log do servidor. Cada evento é uma linha JSON com `nivel` (`debug`, `info`, `aviso`, `erro`), `quando` (ISO em UTC), `msg` (nome curto do evento, em minúsculas com sublinhado), `correlacao` (quando há) e os campos do evento. O nível mínimo vem de `LOG_LEVEL` (padrão `info`). A redação é central e por chave: valor de chave que contém senha, token, chave, `authorization`, `cookie`, `secret`, conteúdo ou texto de mensagem de conversa vira `[oculto]`, e-mail vira `a***@dominio`, e valor com cara de segredo (chave `sk-`, texto cifrado `v1:`, token de bot, JWT, `Bearer`) é ocultado mesmo em chave inocente; um `Error` sai só com o nome e o código, nunca a mensagem nem a pilha. Nenhum `console.*` existe em `src/` fora de `log.ts` (teste de arquitetura e regra de lint; `prisma/seed.ts`, `scripts/` e `tests/` são exceções declaradas, porque são saída de comando de linha de comando). Os testes que liam `evento` passam a ler `msg`.
+**Por quê:** Evita que um segredo ou um texto de visitante chegue ao arquivo de log por descuido de quem escreve o evento: a proteção é do módulo, não da memória de cada autor.
+**O que invalida:** se a hospedagem exigir outro formato de log (campo `severity`, `timestamp` numérico), ou se o operador quiser o texto técnico das mensagens de erro no log (o log mostra só o nome do erro).
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-11
+
+---
+
+### PR-93 — Correlação por requisição e código de referência
+
+**Assunto:** F2 da FT-11 — PR-21 e PR-42
+**Decisão:** Toda resposta do servidor sai com `X-Correlacao` (8 caracteres hexadecimais gerados no `src/proxy.ts`, que passa a cobrir todas as rotas menos `/_next/` e arquivos estáticos; o valor que o cliente mandar é ignorado). O código vai ao handler pelo cabeçalho de requisição `x-correlacao` e aos trabalhos em segundo plano por `AsyncLocalStorage` (`comCorrelacao`). Erro inesperado de rota de API e de ação de servidor devolve a mensagem genérica com "Código de referência: <correlação>", nunca a pilha; erro de página mostra o `digest` que o Next gera, e o hook `onRequestError` grava a linha `erro_na_requisicao` com o `digest`, a correlação, a rota e o nome do erro, de modo que o código mostrado na tela se acha no log. `error.tsx`, `global-error.tsx` e `not-found.tsx` existem na raiz de `src/app`, em estilo SaaS, com o código de referência. `gerarCorrelacao` de `chat-erros` passa a delegar para `src/lib/log.ts` (PR-42 mantido).
+**Por quê:** O operador liga o que o usuário viu ao log sem expor pilha nem mensagem do erro (L17).
+**O que invalida:** se o usuário precisar de um código único que valha em página e em API (hoje a página usa o `digest` do Next e a API usa a correlação, ambos na mesma linha de log).
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-11
+
+---
+
+### PR-94 — Configuração validada no start; produção exige as três variáveis
+
+**Assunto:** F2 da FT-11 — PR-21, L20
+**Decisão:** `validarAmbiente()` (`src/lib/ambiente.ts`), chamada por `src/instrumentation.ts` antes de qualquer tarefa, só age com `NODE_ENV=production`: `JWT_SECRET` (32 caracteres ou mais), `DATABASE_URL` e `ENCRYPTION_KEY` (32 bytes em hexadecimal ou base64, a mesma regra de `cripto.ts`) são obrigatórias e, se ausentes ou inválidas, derrubam o start com uma mensagem que lista os nomes (nunca os valores); variável opcional com formato inválido (inteiro, `LOG_LEVEL`) entra na mesma lista. `APP_URL` ausente ou sem HTTPS em produção gera só um aviso no log, porque o chat embutido e o Telegram dependem dela mas o sistema funciona sem. Em desenvolvimento e teste o comportamento lazy da `ENCRYPTION_KEY` continua: isto especializa a decisão D-02 da FT-02 (chave exigida só ao cifrar) apenas para produção, onde um servidor sem chave só falharia quando o admin salvasse a chave do OpenRouter.
+**Por quê:** Uma instalação em produção sem `ENCRYPTION_KEY` deve falhar na subida, com mensagem clara, e não quando alguém usar o recurso.
+**O que invalida:** se o operador quiser subir produção sem `ENCRYPTION_KEY` para usar só o chat sem OpenRouter ou Telegram (hoje isso é impossível: precisa definir a chave).
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-11
+
+---
+
+### PR-95 — Saúde: endpoint mínimo e tela de detalhe; degradado não é falha
+
+**Assunto:** F2 da FT-11 — PR-21
+**Decisão:** `GET /api/saude` é público, sem sessão, `Cache-Control: no-store`, e devolve só `{status}` com `ok`, `degradado` ou `falha`. HTTP 200 para `ok` e `degradado`, 503 para `falha`. Confere o banco (`SELECT 1` com prazo de 3 segundos), o diretório de dados gravável (grava e apaga um arquivo de prova em `STORAGE_DIR`) e a tabela FTS5 `trechos_fts`; qualquer um deles falho é `falha`. `ffmpeg` ou `ffprobe` ausente é `degradado` (só o vídeo deixa de funcionar); o resultado da sonda de mídia é guardado por 60 segundos para o endpoint público não poder ser usado para disparar processos em série. O detalhe (versões, tamanhos, fila, agendador, configuração) só existe na tela Configurações > Sistema, para admin. Métrica e rastreamento distribuído ficam de fora (PROJETO.md).
+**Por quê:** O healthcheck do contêiner e do balanceador precisa de uma resposta barata e sem dado interno; o detalhe é do admin.
+**O que invalida:** se o operador quiser que o `degradado` derrube o healthcheck do contêiner (hoje ele só reinicia em `falha`), ou métricas no formato Prometheus.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-11
+
+---
+
+### PR-96 — Formato e consistência do backup
+
+**Assunto:** F2 da FT-11 — PR-20
+**Decisão:** O backup é um único arquivo `backup-AAAAMMDD-HHMMSS.tar.gz` (UTC), gravado com permissão 0600 em `BACKUP_DIR` (padrão `./backups`), com `manifest.json` (formato, data, versão do app, migrations aplicadas, contagens por tabela e SHA-256 de cada parte), o banco em `banco/app.db` e os arquivos em `storage/`, sem temporários (`audio/`, `segmentos/`, `*.parcial`). O banco é copiado pela API de backup online do `better-sqlite3`, que copia páginas e preserva o `rowid` (o `VACUUM INTO` renumera o `rowid` de `trechos` e desalinha o índice FTS5; a cópia crua do arquivo em uso pode sair inconsistente), e a cópia é conferida por `PRAGMA integrity_check` antes de entrar no arquivo. A compactação usa o pacote `tar` (versão fixa) em processo, sem shell. A retenção `BACKUP_MANTER` (padrão 7) remove só os arquivos cujo nome segue o padrão acima. Dois backups ao mesmo tempo no mesmo processo são recusados (409). O backup pode ser gerado pela tela Sistema ou por `npm run backup`, que agenda por cron do sistema (documentado), sem agendador interno.
+**Por quê:** O backup precisa ser restaurável: consistente, completo e verificável sem ser aberto.
+**O que invalida:** se a hospedagem já fizer snapshot do volume com restauração testada (PR-20), ou se o `storage/` for grande a ponto de pedir backup incremental (hoje é sempre completo).
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-11
+
+---
+
+### PR-97 — O backup não contém a ENCRYPTION_KEY
+
+**Assunto:** F2 da FT-11 — PR-14 e PR-20
+**Decisão:** O arquivo de backup leva os segredos cifrados (chave do OpenRouter, tokens do Telegram) mas nunca a `ENCRYPTION_KEY`, e leva dado pessoal (conversas, e-mails, hashes de senha). Quem restaura precisa da mesma `ENCRYPTION_KEY` para as chaves cifradas voltarem a funcionar; sem ela o resto dos dados volta e o operador cadastra de novo a chave do OpenRouter e reconecta o Telegram. O README e a tela Sistema dizem isso com destaque, e o operador guarda a chave num cofre separado do backup.
+**Por quê:** Guardar a chave junto do arquivo derrotaria a cifra em repouso (PR-14).
+**O que invalida:** se o operador preferir um backup autossuficiente (nesse caso, a cifra do próprio backup com senha seria uma feature nova).
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-11
+
+---
+
+### PR-98 — Restauração só por linha de comando, com validação antes de tocar
+
+**Assunto:** F2 da FT-11 — PR-20
+**Decisão:** `npm run restore -- <arquivo>` é o único caminho de restauração; não há restauração pela interface porque ela troca o banco sob um servidor de pé, derruba as sessões e exige parar a fila e o agendador, o que um clique de navegador não garante. O comando valida o `manifest.json` e os SHA-256 de todas as partes numa extração em diretório temporário, recusa esquema mais novo que o do app (migration desconhecida) e arquivo adulterado, truncado ou sem manifesto, tudo antes de tocar na instalação; recusa rodar se `/api/saude` responder na URL local (`PORT`, padrão 3000), salvo `--forcar`; guarda o estado atual em `BACKUP_DIR/pre-restauracao-<data>` (cópia consistente do banco e o `storage/` anterior movido); troca banco e `storage/` por renomeação no mesmo volume, com desfazer se algo falhar no meio; aplica `prisma migrate deploy` se o backup for de esquema mais antigo; reconstrói o índice FTS5; e grava a auditoria `restauracao` (ator Sistema) no banco já restaurado. O expurgo é por processo e não roda durante o comando; quem restaurar com o servidor de pé num desenho futuro deve chamar `obterAgendadorDoExpurgo().parar()` antes e `.iniciar()` depois.
+**Por quê:** Restaurar é a operação mais destrutiva do sistema: precisa de validação completa antes e de um caminho de volta depois.
+**O que invalida:** se o operador exigir restaurar pela interface (seria uma feature nova com parada controlada do servidor).
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-11
+
+---
+
+### PR-99 — Contêiner: imagem, usuário, volume, sinal e ferramentas de produção
+
+**Assunto:** F2 da FT-11 — PR-24
+**Decisão:** A imagem usa `node:22-bookworm-slim` (Node 22 como o CI e o README, Debian com `ffmpeg` em pacote), multi-estágio (instala e constrói com as dependências de desenvolvimento, depois poda), roda como usuário não-root, instala o `ffmpeg` (que traz o `ffprobe`), guarda tudo em `/data` (`DATABASE_URL=file:/data/app.db`, `STORAGE_DIR=/data/storage`, `BACKUP_DIR=/data/backups`) e tem `HEALTHCHECK` em `/api/saude`. O entrypoint aplica `prisma migrate deploy` e executa `next start` com `NEXT_MANUAL_SIG_HANDLE=1`; `register()` instala o desligamento limpo de `SIGTERM` (para o agendador do expurgo, deixa a fila terminar o passo corrente com prazo, espera as gravações de auditoria e sai). O `prisma` (CLI) e o `tsx` passam de `devDependencies` para `dependencies` porque a imagem de produção os executa (migrations, backup, restauração, criação do administrador). `TZ` é configurável e o padrão da imagem é `America/Sao_Paulo`. O HTTPS é do proxy reverso do operador (exemplo Caddy no README), com `TRUST_PROXY=1`.
+**Por quê:** O contêiner precisa subir numa máquina limpa, sobreviver a reinício com os dados no volume e parar sem perder gravações.
+**O que invalida:** se o dono quiser hospedar em plataforma serverless (PR-24) ou usar outra imagem base (Alpine exigiria recompilar `better-sqlite3` para musl).
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** true
+**Realizada em:** FT-11
+
+---
+
+### PR-100 — Primeiro administrador de uma instalação limpa
+
+**Assunto:** F2 da FT-11 — PR-12, PR-25 e PR-24
+**Decisão:** A seed de demonstração nunca roda em produção (PR-25), então uma instalação limpa em contêiner não teria como entrar. `npm run admin:criar -- <e-mail> <nome>` cria o primeiro administrador lendo a senha de `ADMIN_SENHA` (ambiente do comando, no mínimo 8 caracteres; nunca em argumento) ou da entrada padrão, recusa e-mail que já existe, nunca imprime a senha e grava a auditoria `usuario_criado` com ator Sistema. Só existe para esta lacuna operacional; os demais usuários continuam sendo criados pela tela Usuários.
+**Por quê:** Sem um primeiro administrador, o operador sobe o contêiner e não consegue entrar nem ver a tela Sistema.
+**O que invalida:** se o dono preferir criar o administrador por variável de ambiente no primeiro start ou por um assistente de instalação na interface.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-11
 
 ---
 
