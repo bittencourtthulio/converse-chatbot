@@ -2,8 +2,12 @@
 // ao reabrir o chat (PR-56). Sem sessão; o visitante vem no cabeçalho
 // `X-Visitante-Id` (nunca na URL, que vai para log de acesso). Devolve só as
 // últimas 50 mensagens da conversa mais recente dele.
-import { retomarConversaDoVisitante } from '@/servicos/chat-publico'
-import { erroPublico, semCache } from '../../../resposta'
+//
+// DELETE (FT-10, PR-90): o visitante apaga a própria conversa com este agente. Mesmo cabeçalho
+// do visitante, `Origin` da plataforma como no POST, agente ativo e limite de uso.
+import { ipDoCliente } from '@/lib/requisicao'
+import { apagarConversasDoVisitante, retomarConversaDoVisitante } from '@/servicos/chat-publico'
+import { erroPublico, origemEDaPlataforma, semCache } from '../../../resposta'
 
 export const dynamic = 'force-dynamic'
 
@@ -12,6 +16,27 @@ export async function GET(request: Request, contexto: { params: Promise<{ id: st
     const { id } = await contexto.params
     const resultado = await retomarConversaDoVisitante(id, request.headers.get('x-visitante-id'))
     return Response.json(resultado, { headers: semCache })
+  } catch (erro) {
+    return erroPublico(erro)
+  }
+}
+
+export async function DELETE(request: Request, contexto: { params: Promise<{ id: string }> }) {
+  try {
+    const origem = request.headers.get('origin')
+    if (origem !== null && !origemEDaPlataforma(origem, request)) {
+      return Response.json(
+        { codigo: 'origem_nao_permitida', mensagem: 'Esta origem não pode usar o chat.' },
+        { status: 403, headers: semCache },
+      )
+    }
+    const { id } = await contexto.params
+    const { conversas } = await apagarConversasDoVisitante({
+      agenteId: id,
+      visitanteId: request.headers.get('x-visitante-id'),
+      ip: await ipDoCliente(),
+    })
+    return Response.json({ apagadas: conversas }, { headers: semCache })
   } catch (erro) {
     return erroPublico(erro)
   }

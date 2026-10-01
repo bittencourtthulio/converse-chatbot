@@ -252,8 +252,8 @@ describe('convenções do chat embutido (FT-06)', () => {
   const CITACOES: Array<[string, RegExp]> = [
     ['src/app/api/publico/agentes/[id]/conversar/route.ts:35', /export async function POST/],
     ['src/app/api/publico/agentes/[id]/config/route.ts:12', /export async function GET/],
-    ['src/servicos/chat-publico.ts:115', /export async function\* conversarComoVisitante/],
-    ['src/servicos/chat-publico.ts:84', /export function erroParaVisitante/],
+    ['src/servicos/chat-publico.ts:116', /export async function\* conversarComoVisitante/],
+    ['src/servicos/chat-publico.ts:85', /export function erroParaVisitante/],
     ['src/servicos/chat-publico-limites.ts:32', /export function exigirLimiteDeIp/],
     ['src/servicos/chat-publico-limites.ts:75', /export async function exigirTetoDiario/],
     ['src/proxy.ts:12', /export async function proxy/],

@@ -41,18 +41,18 @@ tasks:
   - id: T-05.03
     titulo: "Visitante apaga a propria conversa: servico e API publica"
     fase: F-05.2
-    status: pendente
+    status: concluida
     objetivo: "Permitir DELETE publico que apaga so as conversas do visitante naquele agente."
     arquivos:
       cria: ["tests/publico-apagar.test.ts", "tests/publico-apagar-rota.test.ts"]
-      altera: ["src/servicos/chat-publico.ts", "src/servicos/historico.ts", "src/app/api/publico/agentes/[id]/conversa/route.ts"]
+      altera: ["src/servicos/chat-publico.ts", "src/servicos/historico.ts", "src/app/api/publico/agentes/[id]/conversa/route.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md"]
     teste_integracao: "apagarConversasDoVisitante e DELETE /api/publico/agentes/[id]/conversa com X-Visitante-Id apagam so as conversas widget dele no agente, exigem agente ativo, Origin da plataforma e o limite de uso, e gravam conversa_apagada sem usuario e sem identificador."
     teste_funcional: "Um visitante nao apaga a conversa de outro, a mesma chamada com o id do primeiro apaga, agente inativo da 404 igual ao inexistente, Origin de outro site da 403 e a 11a chamada no minuto da 429."
     criterio_aceite: "tests/publico-apagar.test.ts e tests/publico-apagar-rota.test.ts passam."
     depende_de: ["T-02.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-05.04
     titulo: "Botao Apagar minha conversa no chat embutido"
     fase: F-05.2
@@ -114,13 +114,13 @@ titulo: "Visitante apaga a propria conversa: servico e API publica"
 objetivo: "Permitir DELETE publico que apaga so as conversas do visitante naquele agente."
 arquivos:
   cria: ["tests/publico-apagar.test.ts", "tests/publico-apagar-rota.test.ts"]
-  altera: ["src/servicos/chat-publico.ts", "src/servicos/historico.ts", "src/app/api/publico/agentes/[id]/conversa/route.ts"]
+  altera: ["src/servicos/chat-publico.ts", "src/servicos/historico.ts", "src/app/api/publico/agentes/[id]/conversa/route.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md"]
 teste_integracao: "apagarConversasDoVisitante e DELETE /api/publico/agentes/[id]/conversa com X-Visitante-Id apagam so as conversas widget dele no agente, exigem agente ativo, Origin da plataforma e o limite de uso, e gravam conversa_apagada sem usuario e sem identificador."
 teste_funcional: "Um visitante nao apaga a conversa de outro, a mesma chamada com o id do primeiro apaga, agente inativo da 404 igual ao inexistente, Origin de outro site da 403 e a 11a chamada no minuto da 429."
 criterio_aceite: "tests/publico-apagar.test.ts e tests/publico-apagar-rota.test.ts passam."
 depende_de: ["T-02.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/publico-apagar.test.ts 9 passed, tests/publico-apagar-rota.test.ts 6 passed contra next start (build antes) e chat-publico, historico-apagar, projeto; suite inteira no fim da sprint
 ```
 
 ---

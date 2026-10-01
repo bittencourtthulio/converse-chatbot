@@ -15,6 +15,7 @@ import {
   obter as obterConversa,
 } from '@/servicos/conversas'
 import { responderMensagem, type EventoDoChat } from '@/servicos/chat'
+import { apagarConversasDe } from '@/servicos/historico'
 import { MENSAGEM_PARA_VISITANTE, mensagemParaVisitante } from '@/servicos/chat-erros'
 import { lerFontesGravadas, type FonteDaResposta } from '@/servicos/fontes-da-resposta'
 import {
@@ -186,6 +187,36 @@ export async function retomarConversaDoVisitante(
     }
   })
   return { conversa: { conversaId: conversa.id, mensagens, truncada } }
+}
+
+export interface EntradaDeApagarDoVisitante {
+  agenteId: string
+  visitanteId: unknown
+  /** O IP de quem chama (`ipDoCliente`). */
+  ip: string
+  /** Limitador de IP; o de teste recebe relógio injetado. */
+  limitador?: Limitador
+}
+
+/**
+ * O visitante apaga a PRÓPRIA conversa (FT-10, PR-18, PR-90): todas as conversas `widget` dele
+ * com este agente, com as mensagens. Só as dele (o `visitanteId` é a posse), só com o agente
+ * ativo (404 igual ao de inexistente) e sujeito ao mesmo limite de uso por IP e agente do chat.
+ * Visitante sem conversa recebe zero, sem erro. Erro sai sempre sanitizado para o visitante.
+ */
+export async function apagarConversasDoVisitante(entrada: EntradaDeApagarDoVisitante): Promise<{ conversas: number }> {
+  try {
+    const visitanteId = validarVisitanteId(entrada.visitanteId)
+    exigirLimiteDeIp({ ip: entrada.ip, agenteId: entrada.agenteId }, entrada.limitador)
+    await exigirAgenteAtivo(entrada.agenteId)
+    const { conversas } = await apagarConversasDe(
+      { canal: 'widget', identificadorExterno: visitanteId, agenteId: entrada.agenteId },
+      { usuarioId: null, origem: 'visitante' },
+    )
+    return { conversas }
+  } catch (erro) {
+    throw erroParaVisitante(erro)
+  }
 }
 
 export { MENSAGEM_PARA_VISITANTE }
