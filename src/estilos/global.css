@@ -1555,7 +1555,7 @@ textarea { min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: verti
 
 .grafico-de-mensagens { margin: 0; display: flex; flex-direction: column; gap: 8px; }
 .grafico-de-mensagens figcaption { margin-bottom: 0; }
-.grafico-de-mensagens svg { width: 100%; height: auto; max-width: 640px; overflow: visible; }
+.grafico-de-mensagens svg { width: 100%; height: auto; max-width: 480px; overflow: visible; }
 .grafico-barra { fill: var(--grafico-barra); }
 .grafico-eixo { stroke: var(--grafico-eixo); stroke-width: 1; }
 .grafico-valor, .grafico-rotulo-do-dia { fill: var(--grafico-eixo); font-size: 10px; font-family: var(--font-ui); }

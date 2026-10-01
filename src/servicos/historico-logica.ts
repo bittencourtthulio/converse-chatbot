@@ -36,9 +36,17 @@ export function rotuloDoInterlocutor(e: EntradaDeRotulo): string {
   return e.nomeDoUsuario && e.nomeDoUsuario.trim() !== '' ? e.nomeDoUsuario : 'Usuário removido'
 }
 
-/** Prévia de uma mensagem: espaços colapsados e no máximo 120 caracteres (com reticências). */
+/**
+ * Prévia de uma mensagem: sem a marcação de markdown (negrito, código, link, item de lista,
+ * título), espaços colapsados e no máximo 120 caracteres (com reticências).
+ */
 export function previaDaMensagem(texto: string | null | undefined): string {
-  const limpo = (texto ?? '').replace(/\s+/g, ' ').trim()
+  const limpo = (texto ?? '')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/^\s*(?:[-*+]|#{1,6}|\d+\.)\s+/gm, '')
+    .replace(/(\*\*|__|`+)/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
   const pontos = Array.from(limpo)
   if (pontos.length <= TAMANHO_DA_PREVIA) return limpo
   return `${pontos.slice(0, TAMANHO_DA_PREVIA - 1).join('').trimEnd()}…`

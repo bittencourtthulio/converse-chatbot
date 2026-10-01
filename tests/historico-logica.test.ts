@@ -34,6 +34,13 @@ describe('previaDaMensagem', () => {
   it('colapsa espaços e quebras de linha', () => {
     expect(previaDaMensagem('  olá \n\n  mundo  ')).toBe('olá mundo')
   })
+  it('tira a marcação de markdown: negrito, código, link, lista e título', () => {
+    expect(previaDaMensagem('# Olá\nClaro! **uma resposta** de `exemplo`:\n\n- primeiro item\n- segundo item\nVeja [a documentação](https://exemplo.com).')).toBe(
+      'Olá Claro! uma resposta de exemplo: primeiro item segundo item Veja a documentação.',
+    )
+    expect(previaDaMensagem('1. um\n2. dois')).toBe('um dois')
+    expect(previaDaMensagem('preço 2*3 e 50%')).toBe('preço 2*3 e 50%')
+  })
   it('corta em 120 caracteres, com reticências, sem passar do limite', () => {
     const longa = 'a'.repeat(300)
     const previa = previaDaMensagem(longa)

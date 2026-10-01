@@ -26,18 +26,18 @@ tasks:
   - id: T-06.02
     titulo: "Verificacao no navegador dos tres canais"
     fase: F-06.1
-    status: pendente
+    status: concluida
     objetivo: "Gerar conversas pelo painel, pelo widget e pelo Telegram falso e ver lista, filtros, detalhe, exportar, apagar e painel nos dois temas e a 375 px."
     arquivos:
       cria: ["docs/historico-de-conversas/VERIFICACAO-VISUAL.md"]
-      altera: ["src/estilos/global.css", "tests/apoio/servir-falso.ts", "tests/apoio/servir-telegram-falso.ts"]
+      altera: ["src/estilos/global.css", "tests/apoio/servir-falso.ts", "tests/apoio/servir-telegram-falso.ts", "src/servicos/historico-logica.ts", "tests/historico-logica.test.ts"]
     teste_integracao: "O roteiro roda contra o app de producao com o OpenRouter falso e o Telegram falso e as tres conversas aparecem na lista com os canais certos."
     teste_funcional: "A tela mostra os tres canais, os filtros por agente e canal reduzem a lista, o detalhe mostra as fontes, Exportar baixa o texto, apagar uma e apagar em lote removem e o painel mostra numeros e grafico."
     criterio_aceite: "docs/historico-de-conversas/VERIFICACAO-VISUAL.md lista o que foi visto e o que nao pode ser visto."
     depende_de: ["T-06.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-06.03
     titulo: "Convencoes, lacunas e README"
     fase: F-06.1
@@ -99,13 +99,13 @@ titulo: "Verificacao no navegador dos tres canais"
 objetivo: "Gerar conversas pelo painel, pelo widget e pelo Telegram falso e ver lista, filtros, detalhe, exportar, apagar e painel nos dois temas e a 375 px."
 arquivos:
   cria: ["docs/historico-de-conversas/VERIFICACAO-VISUAL.md"]
-  altera: ["src/estilos/global.css", "tests/apoio/servir-falso.ts", "tests/apoio/servir-telegram-falso.ts"]
+  altera: ["src/estilos/global.css", "tests/apoio/servir-falso.ts", "tests/apoio/servir-telegram-falso.ts", "src/servicos/historico-logica.ts", "tests/historico-logica.test.ts"]
 teste_integracao: "O roteiro roda contra o app de producao com o OpenRouter falso e o Telegram falso e as tres conversas aparecem na lista com os canais certos."
 teste_funcional: "A tela mostra os tres canais, os filtros por agente e canal reduzem a lista, o detalhe mostra as fontes, Exportar baixa o texto, apagar uma e apagar em lote removem e o painel mostra numeros e grafico."
 criterio_aceite: "docs/historico-de-conversas/VERIFICACAO-VISUAL.md lista o que foi visto e o que nao pode ser visto."
 depende_de: ["T-06.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/historico-logica e grafico 29 passed; verificacao manual registrada; desvio: previa sem markdown (historico-logica) e largura do grafico
 ```
 
 ---
