@@ -4,7 +4,7 @@
  * cada cerca de 60 segundos (PR-74, PR-75). Funções puras.
  */
 import { describe, it, expect } from 'vitest'
-import { formatarMarcador, juntarPartes, montarTextoDeLegenda } from '@/servicos/transcricao-marcadores'
+import { MARCADOR_SEM_FALA, ehSemFala, formatarMarcador, juntarPartes, montarTextoDeLegenda, trechoSoDeMarcadores } from '@/servicos/transcricao-marcadores'
 import { dividirEmTrechos, normalizarTexto } from '@/servicos/trechos'
 
 describe('formatarMarcador', () => {
@@ -84,5 +84,55 @@ describe('montarTextoDeLegenda', () => {
   it('texto vazio das falas é ignorado e sem falas o texto é vazio', () => {
     expect(montarTextoDeLegenda([{ inicio: 0, texto: '   ' }])).toBe('')
     expect(montarTextoDeLegenda([])).toBe('')
+  })
+})
+
+describe('trecho sem fala (FT-13, PR-105)', () => {
+  it('juntarPartes escreve o segmento sem fala com o marcador de tempo entre as falas e ignora o segmento vazio', () => {
+    const texto = juntarPartes([
+      { inicioSegundos: 0, texto: 'Olá' },
+      { inicioSegundos: 600, texto: MARCADOR_SEM_FALA },
+      { inicioSegundos: 1200, texto: 'Fim' },
+      { inicioSegundos: 1800, texto: '   ' },
+    ])
+    expect(texto).toBe('[00:00] Olá\n\n[10:00] [sem fala]\n\n[20:00] Fim')
+  })
+
+  it('o marcador é o texto [sem fala] e ehSemFala só o reconhece sozinho', () => {
+    expect(MARCADOR_SEM_FALA).toBe('[sem fala]')
+    expect(ehSemFala('[sem fala]')).toBe(true)
+    expect(ehSemFala('  [sem fala]\n')).toBe(true)
+    expect(ehSemFala('[sem fala] e depois alguém falou')).toBe(false)
+    expect(ehSemFala('')).toBe(false)
+  })
+
+  it('trechoSoDeMarcadores reconhece o trecho feito só de marcadores de tempo e [sem fala]', () => {
+    expect(trechoSoDeMarcadores('[10:00] [sem fala]')).toBe(true)
+    expect(trechoSoDeMarcadores('[10:00] [sem fala]\n\n[20:00] [sem fala]')).toBe(true)
+    expect(trechoSoDeMarcadores('[1:00:00] [sem fala]')).toBe(true)
+    expect(trechoSoDeMarcadores('[10:00] [sem fala] Oi')).toBe(false)
+    expect(trechoSoDeMarcadores('[10:00]')).toBe(true)
+    expect(trechoSoDeMarcadores('Texto qualquer')).toBe(false)
+    expect(trechoSoDeMarcadores('')).toBe(true)
+    // A sobreposição entre trechos corta marcador ao meio: fragmento no começo ou no fim não conta como palavra.
+    expect(trechoSoDeMarcadores('fala]\n\n[20:00] [sem fala]\n\n[30:00] [sem')).toBe(true)
+    expect(trechoSoDeMarcadores('sem fala]\n\n[20:00] [sem fala]')).toBe(true)
+    expect(trechoSoDeMarcadores('00:00]\n\n[10:00] [sem fala]')).toBe(true)
+    expect(trechoSoDeMarcadores('fala]\n\n[20:00] Olá')).toBe(false)
+  })
+
+  it('aplicado a dividirEmTrechos, descarta o trecho só de marcadores e mantém o que mistura fala', () => {
+    const fala = 'palavra '.repeat(30).trim()
+    const partes = [{ inicioSegundos: 0, texto: fala }]
+    for (let i = 1; i <= 12; i += 1) partes.push({ inicioSegundos: 600 * i, texto: MARCADOR_SEM_FALA })
+    const texto = normalizarTexto(juntarPartes(partes))
+    // Trechos pequenos para o último cair só em marcadores (com o alvo de 1000 caracteres seriam precisos uns 50 trechos mudos seguidos).
+    const trechos = dividirEmTrechos(texto, { alvo: 100, sobreposicao: 10 })
+    const mantidos = trechos.filter((t) => !trechoSoDeMarcadores(t))
+    expect(trechos.length).toBeGreaterThan(mantidos.length)
+    expect(mantidos.length).toBeGreaterThan(0)
+    expect(mantidos.join(' ')).toContain('palavra')
+    // O trecho que mistura fala e marcador continua: o marcador sozinho não o descarta.
+    expect(trechoSoDeMarcadores(`${fala.slice(0, 30)} [10:00] [sem fala]`)).toBe(false)
   })
 })

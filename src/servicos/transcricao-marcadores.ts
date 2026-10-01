@@ -5,6 +5,37 @@
 // `dividirEmTrechos` das outras fontes, então o marcador aparece no começo do
 // trecho que abre a parte. Funções puras, sem imports.
 
+/**
+ * O texto que marca um segmento de 10 minutos sem fala (música, silêncio): o modelo devolveu vazio (FT-13,
+ * PR-105). Entra em `segmentos/NN.txt` como qualquer transcrição, para a retomada não pagar de novo, e no
+ * texto final como `[MM:SS] [sem fala]`.
+ */
+export const MARCADOR_SEM_FALA = '[sem fala]'
+
+/** O texto do segmento é só o marcador de trecho sem fala? */
+export function ehSemFala(texto: string): boolean {
+  return texto.trim() === MARCADOR_SEM_FALA
+}
+
+const MARCADOR_DE_TEMPO = /\[\d{1,2}:\d{2}(?::\d{2})?\]/g
+
+/**
+ * O trecho é feito só de marcadores de tempo e de `[sem fala]`, sem palavra nenhuma? Esse trecho não vai ao
+ * índice de busca (PR-105): casaria com "sem fala" e "10:00" e não diz nada. O que mistura fala e marcador
+ * é indexado como está.
+ */
+export function trechoSoDeMarcadores(texto: string): boolean {
+  // A sobreposição entre trechos pode cortar um marcador ao meio: "fala]" no começo ou "[sem" no fim.
+  return (
+    texto
+      .replaceAll(MARCADOR_DE_TEMPO, '')
+      .replaceAll(MARCADOR_SEM_FALA, '')
+      .replace(/^\s*(?:(?:sem\s+)?fala|\d{1,2}(?::\d{2})*)\]/, '')
+      .replace(/\[(?:sem(?:\s+fala)?|\d{1,2}(?::\d{0,2})*)?\s*$/, '')
+      .trim() === ''
+  )
+}
+
 const doisDigitos = (n: number) => String(n).padStart(2, '0')
 
 /** `[00:00]`, `[10:00]`, `[1:00:00]`. Valor negativo ou inválido vira `[00:00]`. */

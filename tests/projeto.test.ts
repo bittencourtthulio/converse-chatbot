@@ -413,7 +413,7 @@ describe('convenções do vídeo (FT-08)', () => {
     ['src/servicos/fontes-fila.ts:354', /export function obterFila/],
     ['src/servicos/transcricao-de-midia.ts:31', /export interface DependenciasDeMidia/],
     ['src/servicos/transcricao-de-midia.ts:81', /export async function transcreverMidia/],
-    ['src/servicos/transcricao-marcadores.ts:11', /export function formatarMarcador/],
+    ['src/servicos/transcricao-marcadores.ts:42', /export function formatarMarcador/],
     ['src/lib/openrouter.ts:220', /export async function transcreverAudio/],
     ['src/servicos/integracoes.ts:71', /export async function estadoDoOpenrouter/],
     ['src/servicos/integracoes.ts:206', /export async function modeloDeTranscricaoEfetivo/],

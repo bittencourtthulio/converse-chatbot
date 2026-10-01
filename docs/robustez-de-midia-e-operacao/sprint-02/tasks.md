@@ -11,7 +11,7 @@ tasks:
   - id: T-02.01
     titulo: "Marcador sem fala e filtro de trechos"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Fixar por teste a junção de [sem fala] com o marcador de tempo (que já funciona hoje) e criar trechoSoDeMarcadores, que reconhece o trecho feito só de marcadores (PR-105)."
     arquivos:
       cria: ["docs/robustez-de-midia-e-operacao/sprint-02/sprint.md", "docs/robustez-de-midia-e-operacao/sprint-02/fases.md", "docs/robustez-de-midia-e-operacao/sprint-02/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "O teste passa; o vermelho inicial vem de trechoSoDeMarcadores (ainda inexistente) e a mutação registrada faz juntarPartes filtrar o marcador ou trechoSoDeMarcadores devolver sempre false."
     depende_de: []
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-02.02
     titulo: "Transcrição grava segmento sem fala e falha só sem nenhuma fala"
     fase: F-02.1
@@ -73,7 +73,7 @@ teste_funcional: "juntarPartes([{0,'Olá'},{600,'[sem fala]'},{1200,'Fim'}]) dev
 criterio_aceite: "O teste passa; o vermelho inicial vem de trechoSoDeMarcadores (ainda inexistente) e a mutação registrada faz juntarPartes filtrar o marcador ou trechoSoDeMarcadores devolver sempre false."
 depende_de: []
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/transcricao-marcadores 12 passed e tests/projeto 241 passed; mutação registrada
 ```
 
 ---
