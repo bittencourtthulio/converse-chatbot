@@ -41,7 +41,7 @@ tasks:
   - id: T-03.03
     titulo: "Renovacao do cookie no proxy"
     fase: F-03.2
-    status: pendente
+    status: concluida
     objetivo: "Criar a renovacao do cookie na resposta do proxy e chama-la de src/proxy.ts, pulando Server Action (POST a uma pagina, com ou sem o cabecalho next-action, o que cobre o formulario sem JavaScript), rotas publicas e o que nao tem cookie."
     arquivos:
       cria: ["src/app/renovar-sessao.ts", "tests/proxy-renovacao.test.ts"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/proxy-renovacao.test.ts e tests/correlacao.test.ts passam e o novo falha quando a chamada de renovacao sai do proxy (mutacao registrada) e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
     depende_de: ["T-02.07", "T-03.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
 ---
 
 # Tasks — Sprint 03
@@ -107,5 +107,5 @@ teste_funcional: "Antes da metade nao ha Set-Cookie, depois ha um com os atribut
 criterio_aceite: "tests/proxy-renovacao.test.ts e tests/correlacao.test.ts passam e o novo falha quando a chamada de renovacao sai do proxy (mutacao registrada) e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
 depende_de: ["T-02.07", "T-03.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 255 arquivos, 2941 passed, 9 skipped, 0 failed (portão da sprint 03)
 ```

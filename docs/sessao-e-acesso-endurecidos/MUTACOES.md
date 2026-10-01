@@ -30,3 +30,6 @@ Regra da feature: cada proteção tem um teste que **falha** quando ela é remov
 | T-02.08 | o expurgo apaga as revogações de sessão vencidas | a limpeza de `sessoes_revogadas` é removida de `executarExpurgo` | 2 casos de `tests/expurgo-sessoes.test.ts` |
 | T-03.01 | `sair` revoga a sessão de verdade | a chamada `revogarSessao(token)` sai da ação `sair` | 2 casos de `tests/acao-sair.test.ts` ("revoga o jti do cookie...", "falha ao gravar a revogação...") |
 | T-03.02 | `salvarSenha` mantém quem trocou a senha logado, com o cookie certo | a chamada `gravarCookieDeSessao(token)` sai de `salvarSenha` | `tests/acao-salvar-senha.test.ts` ("o cookie gravado tem os atributos de sempre...") |
+| T-03.03 | o proxy renova o cookie depois da metade da vida | a chamada `renovarCookieNaResposta` sai de `src/proxy.ts` | 3 casos de `tests/proxy-renovacao.test.ts` |
+| T-03.03 | o proxy não renova Server Action (com `next-action` ou POST a página) | removidas as duas condições de `requisicaoRenovaSessao` | 2 casos de `tests/proxy-renovacao.test.ts` |
+| T-03.03 | o proxy não renova rotas públicas (`/embed`, `/api/publico`, `/api/telegram`, `/api/saude`) | lista de prefixos esvaziada | 4 casos de `tests/proxy-renovacao.test.ts` |

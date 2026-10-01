@@ -10,14 +10,14 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-03.1
     titulo: "Acoes de servidor"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "as tasks T-03.01, T-03.02 concluidas com os dois testes passando"
     paralelizavel: false
     paralela_com: []
     tasks: ["T-03.01", "T-03.02"]
   - id: F-03.2
     titulo: "Renovacao no proxy"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "as tasks T-03.03 concluidas com os dois testes passando"
     paralelizavel: false
     paralela_com: []
@@ -49,7 +49,7 @@ flowchart LR
 
   class T_03_01 concluida
   class T_03_02 concluida
-  class T_03_03 pendente
+  class T_03_03 concluida
   class T_03_01,T_03_02,T_03_03 critico
 ```
 

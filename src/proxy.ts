@@ -1,4 +1,4 @@
-// Proxy do Next 16 (antigo middleware). Duas tarefas:
+// Proxy do Next 16 (antigo middleware). Três tarefas:
 //
 // 1. Correlação (FT-11, PR-93): toda requisição recebe um código novo, que vai ao handler no
 //    cabeçalho de requisição `x-correlacao` (o valor que o cliente mandar é ignorado: não se
@@ -9,10 +9,14 @@
 //    que o valor certo entra. Lista vazia libera qualquer site; com lista, a plataforma e os
 //    domínios dela; agente inexistente ou inativo e qualquer falha na consulta, só a própria
 //    plataforma (a pré-visualização da aba Publicar é da mesma origem).
+// 3. Renovação da sessão (FT-12, PR-102): em requisição autenticada que passou da metade da vida do token, o
+//    cookie é reemitido na resposta (`renovarCookieNaResposta`). Não nega nem redireciona: as guardas dos
+//    handlers continuam decidindo. O uso só por upload não renova, porque essas rotas ficam fora do `matcher`.
 // Roda no runtime Node, por isso consulta o banco pelo serviço.
 import { NextResponse, type NextRequest } from 'next/server'
 import { FRAME_ANCESTORS_SOMENTE_EU, cabecalhoFrameAncestors } from '@/lib/dominios-permitidos'
 import { novaCorrelacao } from '@/lib/log'
+import { renovarCookieNaResposta } from '@/app/renovar-sessao'
 import { dominiosDoEmbed } from '@/servicos/chat-publico-config'
 
 async function politicaDoEmbed(caminho: string): Promise<string> {
@@ -36,6 +40,7 @@ export async function proxy(request: NextRequest) {
   const resposta = NextResponse.next({ request: { headers: cabecalhos } })
   resposta.headers.set('X-Correlacao', correlacao)
   if (politica) resposta.headers.set('Content-Security-Policy', politica)
+  await renovarCookieNaResposta(request, resposta)
   return resposta
 }
 
