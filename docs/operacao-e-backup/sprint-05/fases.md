@@ -24,7 +24,7 @@ fases:
     tasks: ["T-05.03", "T-05.04", "T-05.05"]
   - id: F-05.3
     titulo: "Download e tela"
-    status: em_andamento
+    status: concluido
     criterio_saida: "A rota entrega o arquivo e a tela gera, lista e baixa"
     paralelizavel: false
     paralela_com: []
@@ -70,7 +70,7 @@ flowchart LR
   class T_05_04 concluida
   class T_05_05 concluida
   class T_05_06 concluida
-  class T_05_07 pendente
+  class T_05_07 concluida
   class T_05_07,T_05_06,T_05_05,T_05_04,T_05_03,T_05_02,T_05_01 critico
 ```
 

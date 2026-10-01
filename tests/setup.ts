@@ -22,6 +22,9 @@ Object.assign(process.env, { NODE_ENV: 'test' })
 // apagado ao fim. Nenhum teste grava no ./storage do projeto.
 const diretorioDeArquivos = mkdtempSync(path.join(os.tmpdir(), 'converse-storage-'))
 process.env.STORAGE_DIR = diretorioDeArquivos
+// Backups (FT-11): também um diretório temporário por arquivo de teste; nenhum teste lê ou grava no ./backups do projeto.
+const diretorioDeBackups = mkdtempSync(path.join(os.tmpdir(), 'converse-backups-'))
+process.env.BACKUP_DIR = diretorioDeBackups
 
 beforeAll(() => {
   for (const sufixo of ['', '-journal']) {
@@ -38,6 +41,7 @@ beforeAll(() => {
 
 afterAll(() => {
   rmSync(diretorioDeArquivos, { recursive: true, force: true })
+  rmSync(diretorioDeBackups, { recursive: true, force: true })
   for (const sufixo of ['', '-journal']) {
     if (existsSync(arquivo + sufixo)) rmSync(arquivo + sufixo)
   }

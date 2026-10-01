@@ -101,18 +101,18 @@ tasks:
   - id: T-05.07
     titulo: "Gerar, listar e baixar backup na tela Sistema"
     fase: F-05.3
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar ao cartao Backup o botao Gerar backup agora, a lista com nome, data e tamanho, o link de download e o aviso destacado sobre a ENCRYPTION_KEY, e o ultimo backup nos dados do sistema."
     arquivos:
       cria: ["src/componentes/GeradorDeBackup.tsx", "src/componentes/ListaDeBackups.tsx", "tests/backup-ui.test.tsx", "tests/backup-acao.test.ts"]
-      altera: ["src/app/acoes.ts", "src/servicos/sistema.ts", "src/componentes/PainelDoSistema.tsx", "src/componentes/sistema-logica.ts", "src/estilos/global.css", "tests/sistema.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md"]
+      altera: ["src/app/acoes.ts", "src/servicos/sistema.ts", "src/componentes/PainelDoSistema.tsx", "src/componentes/sistema-logica.ts", "src/estilos/global.css", "tests/sistema.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md", "src/app/(sistema)/configuracoes/sistema/page.tsx", "tests/setup.ts", "tests/painel-do-sistema.test.tsx", "tests/sistema-estilos.test.ts"]
     teste_integracao: "A acao de servidor gerarBackupAgoraAcao para um admin cria o backup e devolve o estado de sucesso com o nome, para usuario comum devolve erro sem criar arquivo, e obterSistema passa a trazer o ultimo backup."
     teste_funcional: "A lista renderizada mostra nome, data e tamanho com o link de download de cada backup, o estado vazio e o aviso de que a ENCRYPTION_KEY nao esta no backup aparecem no HTML e o botao tem alvo de 44 px."
     criterio_aceite: "tests/backup-ui.test.tsx, tests/backup-acao.test.ts e tests/sistema.test.ts passam."
     depende_de: ["T-05.06"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
 ---
 
 # Tasks — Sprint 05
@@ -227,12 +227,12 @@ titulo: "Gerar, listar e baixar backup na tela Sistema"
 objetivo: "Acrescentar ao cartao Backup o botao Gerar backup agora, a lista com nome, data e tamanho, o link de download e o aviso destacado sobre a ENCRYPTION_KEY, e o ultimo backup nos dados do sistema."
 arquivos:
   cria: ["src/componentes/GeradorDeBackup.tsx", "src/componentes/ListaDeBackups.tsx", "tests/backup-ui.test.tsx", "tests/backup-acao.test.ts"]
-  altera: ["src/app/acoes.ts", "src/servicos/sistema.ts", "src/componentes/PainelDoSistema.tsx", "src/componentes/sistema-logica.ts", "src/estilos/global.css", "tests/sistema.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md"]
+  altera: ["src/app/acoes.ts", "src/servicos/sistema.ts", "src/componentes/PainelDoSistema.tsx", "src/componentes/sistema-logica.ts", "src/estilos/global.css", "tests/sistema.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md", "src/app/(sistema)/configuracoes/sistema/page.tsx", "tests/setup.ts", "tests/painel-do-sistema.test.tsx", "tests/sistema-estilos.test.ts"]
 teste_integracao: "A acao de servidor gerarBackupAgoraAcao para um admin cria o backup e devolve o estado de sucesso com o nome, para usuario comum devolve erro sem criar arquivo, e obterSistema passa a trazer o ultimo backup."
 teste_funcional: "A lista renderizada mostra nome, data e tamanho com o link de download de cada backup, o estado vazio e o aviso de que a ENCRYPTION_KEY nao esta no backup aparecem no HTML e o botao tem alvo de 44 px."
 criterio_aceite: "tests/backup-ui.test.tsx, tests/backup-acao.test.ts e tests/sistema.test.ts passam."
 depende_de: ["T-05.06"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2747 passed, 0 failed (234 arquivos); build antes (portão da sprint 05)
 ```
 

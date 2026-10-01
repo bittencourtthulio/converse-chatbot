@@ -1,4 +1,8 @@
+import { Alerta } from '@/componentes/Alerta'
 import { Badge } from '@/componentes/Badge'
+import type { AcaoDeFormulario } from '@/componentes/Formulario'
+import { GeradorDeBackup } from '@/componentes/GeradorDeBackup'
+import { ListaDeBackups, type BackupDaLista } from '@/componentes/ListaDeBackups'
 import {
   descreverArquivos,
   descreverChaveDeCriptografia,
@@ -43,7 +47,17 @@ function Linhas({ itens }: { itens: Array<[string, React.ReactNode]> }) {
  * assunto. Só leitura. A configuração aparece como sim ou não, nunca o valor: o componente nem
  * recebe um valor de segredo.
  */
-export function PainelDoSistema({ sistema }: { sistema: DadosDoSistema }) {
+export function PainelDoSistema({
+  sistema,
+  backups = [],
+  acaoGerarBackup,
+}: {
+  sistema: DadosDoSistema
+  /** Os backups de BACKUP_DIR, do mais novo ao mais antigo. */
+  backups?: BackupDaLista[]
+  /** A ação do botão "Gerar backup agora"; sem ela o cartão é só de leitura. */
+  acaoGerarBackup?: AcaoDeFormulario
+}) {
   const estado = situacaoEmTexto(sistema.saude.status)
   const { aplicacao, esquema, dados, midia, fila, expurgo, configuracao, ultimoBackup } = sistema
   return (
@@ -119,17 +133,30 @@ export function PainelDoSistema({ sistema }: { sistema: DadosDoSistema }) {
       </Cartao>
 
       <Cartao id="sistema-backup" titulo="Backup">
-        {ultimoBackup ? (
-          <Linhas
-            itens={[
-              ['Último backup', ultimoBackup.nome],
-              ['Gerado em', formatarDataHora(ultimoBackup.criadoEm, '')],
-              ['Tamanho', formatarBytes(ultimoBackup.bytes)],
-            ]}
-          />
-        ) : (
-          <p className="texto-de-apoio">Nenhum backup ainda.</p>
-        )}
+        <div className="pilha pilha-compacta">
+          <Alerta variante="aviso">
+            <strong>O backup não contém a ENCRYPTION_KEY.</strong>
+            <p>
+              Ele leva dado pessoal e as chaves cifradas do OpenRouter e do Telegram, mas NÃO contém a ENCRYPTION_KEY: sem a mesma chave, elas não decifram
+              depois de restaurar. Guarde a ENCRYPTION_KEY em local separado do backup.
+            </p>
+          </Alerta>
+          {acaoGerarBackup && <GeradorDeBackup acao={acaoGerarBackup} />}
+          {ultimoBackup && backups.length === 0 && (
+            <Linhas
+              itens={[
+                ['Último backup', ultimoBackup.nome],
+                ['Gerado em', formatarDataHora(ultimoBackup.criadoEm, '')],
+                ['Tamanho', formatarBytes(ultimoBackup.bytes)],
+              ]}
+            />
+          )}
+          {(backups.length > 0 || !ultimoBackup) && <ListaDeBackups backups={backups} />}
+          <p className="texto-de-apoio">
+            A restauração é só por linha de comando (<code>npm run restore -- &lt;arquivo&gt;</code>), com o servidor parado: ela troca o banco e os
+            arquivos de uma vez e não é oferecida pelo navegador.
+          </p>
+        </div>
       </Cartao>
     </div>
   )

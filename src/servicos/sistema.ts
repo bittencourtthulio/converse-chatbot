@@ -7,6 +7,7 @@ import { ambiente } from '@/lib/ambiente'
 import { migracoesDoApp, versaoDoApp } from '@/lib/versao'
 import { prisma } from '@/lib/prisma'
 import { exigirAdmin, type UsuarioAutenticado } from '@/servicos/autenticacao'
+import { ultimoBackup as ultimoBackupDoDisco } from '@/servicos/backup'
 import { obterAgendadorDoExpurgo } from '@/servicos/expurgo'
 import { chaveDoOpenrouterConfigurada } from '@/servicos/integracoes'
 import { sondarMidia, verificarSaude, type OpcoesDaSaude, type Saude } from '@/servicos/saude'
@@ -118,7 +119,7 @@ export async function obterSistema(autor: UsuarioAutenticado, opcoes: OpcoesDoSi
     medirDiretorio(storageDir),
     contagemDaFila(),
     chaveDoOpenrouterConfigurada().catch(() => false),
-    (opcoes.ultimoBackup ?? (async () => null))(),
+    (opcoes.ultimoBackup ?? ultimoBackupDoDisco)().catch(() => null),
   ])
   const expurgo = opcoes.expurgo ?? obterAgendadorDoExpurgo()
   const url = process.env.APP_URL?.trim() ?? ''

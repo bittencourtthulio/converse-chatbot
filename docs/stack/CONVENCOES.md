@@ -196,7 +196,7 @@ mensagem para a tela; rastro de pilha nunca chega ao usuário (L17); erro inespe
 vira frase genérica e a tela de erro do sistema mostra só o código de correlação
 (`digest`). O identificador de correlação próprio (PR-21) ainda não existe.
 Falha do provedor de IA: `erroDoProvedor` (status 502, ou 504 no tempo esgotado; códigos `provedor_*`; mensagem em português sem o corpo do provedor). Ação que lida com segredo usa `mensagemSemSegredo`, que registra só o nome do erro inesperado.
-**Evidência:** `src/lib/erros.ts:4`, `src/lib/erros.ts:45`, `src/app/acoes.ts:30-33`, `src/app/acoes.ts:51`, `src/app/(sistema)/error.tsx`
+**Evidência:** `src/lib/erros.ts:4`, `src/lib/erros.ts:45`, `src/app/acoes.ts:30-33`, `src/app/acoes.ts:53`, `src/app/(sistema)/error.tsx`
 
 ### Consulta SQL com texto do usuário
 O texto do usuário nunca é concatenado em SQL (PR-13, PR-30). SQL cru só existe para FTS5 (migration e `prisma.$queryRaw` com template tagueado); a pergunta vira termos limpos (letras e dígitos) e só a expressão `MATCH` montada com eles e o `agenteId` vão como parâmetros. `$queryRawUnsafe` e `$executeRawUnsafe` não são usados no código de `src/` (um teste confere o módulo de recuperação, e a pergunta hostil é exercitada contra o FTS5 real).
@@ -210,7 +210,7 @@ e-mail para compor a chave do limite e não valida formato (a validação é de 
 
 ### Log
 `decidido_pelo_buildx` (PR-21), implementado na FT-11. Hoje existem o
-`console.error` do erro inesperado em `src/app/acoes.ts:51` e, no turno de conversa, uma linha JSON com `evento`, `correlacao`, `codigo`, `agenteId` e `conversaId` (PR-42), gravada só para falha do provedor e erro inesperado (`src/servicos/chat.ts`, função `registrarErro`; `tests/chat-falhas.test.ts`). Nunca vai para o log:
+`console.error` do erro inesperado em `src/app/acoes.ts:53` e, no turno de conversa, uma linha JSON com `evento`, `correlacao`, `codigo`, `agenteId` e `conversaId` (PR-42), gravada só para falha do provedor e erro inesperado (`src/servicos/chat.ts`, função `registrarErro`; `tests/chat-falhas.test.ts`). Nunca vai para o log:
 senha, token, chave de API, corpo de mensagem de visitante, e-mail completo.
 
 ### Configuração e segredo

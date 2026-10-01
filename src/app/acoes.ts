@@ -6,9 +6,11 @@ import { entrar, exigirLimiteDeLogin } from '@/servicos/autenticacao'
 import { ipDoCliente } from '@/lib/requisicao'
 import { criar, editar, desativar, excluirDefinitivamente } from '@/servicos/usuarios'
 import { atualizarPerfil, trocarSenha } from '@/servicos/perfil'
+import { gerarBackupAgora } from '@/servicos/backup'
 import { salvarAvisoPadrao, salvarRetencao } from '@/servicos/privacidade'
 import { apagarDoTitular, buscarTitular } from '@/servicos/titular'
 import { PALAVRA_DE_CONFIRMACAO, type EstadoDaBuscaDoTitular } from '@/componentes/privacidade-logica'
+import { formatarBytes } from '@/componentes/sistema-logica'
 import { salvarConfiguracao as salvarConfiguracaoDoChat } from '@/servicos/chat-publico-config'
 import { criar as criarAgenteNoServico, editar as editarAgenteNoServico, excluir as excluirAgenteNoServico } from '@/servicos/agentes'
 import {
@@ -526,4 +528,19 @@ export async function salvarLimiteTelegram(
   }
   revalidatePath(abaDeCanais(id))
   return { sucesso: 'Limite diário salvo.' }
+}
+
+/**
+ * Tela Sistema > Backup (FT-11, PR-96): gera um backup agora. Só admin (o serviço confere de novo);
+ * dois ao mesmo tempo dão erro claro. A auditoria `backup_gerado` é do serviço.
+ */
+export async function gerarBackupDaTela(_estado: EstadoDoFormulario, _form: FormData): Promise<EstadoDoFormulario> {
+  try {
+    const admin = await exigirUsuarioAdmin()
+    const r = await gerarBackupAgora(admin, 'tela')
+    revalidatePath('/configuracoes/sistema')
+    return { sucesso: `Backup gerado: ${r.nome} (${formatarBytes(r.bytes)}). Baixe-o abaixo e guarde-o em lugar seguro.` }
+  } catch (erro) {
+    return { erro: await mensagemDe(erro) }
+  }
 }

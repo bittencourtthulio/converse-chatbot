@@ -8,7 +8,7 @@ feature_id: FT-11
 sprint_id: sprint-05
 atualizado_em: 2026-10-01
 titulo: "Backup consistente em um arquivo"
-status: em_andamento
+status: concluido
 criterio_saida: "npm run backup e o botao Gerar backup agora criam um .tar.gz 0600 com manifest e SHA-256, a auditoria backup_gerado aparece, e o download so serve arquivos do BACKUP_DIR"
 fases: ["F-05.1", "F-05.2", "F-05.3"]
 riscos: ["a API de backup online precisa preservar o rowid (provado na T-01.01)", "arquivos do storage podem aparecer ou sumir durante o backup (so entram os listados no manifesto)", "download de arquivo grande por stream"]

@@ -38,9 +38,18 @@ describe('estilos da tela Sistema', () => {
   })
 
   it('todo nome de classe sistema-* que o painel usa tem regra no CSS', () => {
-    const fonte = readFileSync(path.join(process.cwd(), 'src/componentes/PainelDoSistema.tsx'), 'utf8')
+    const fonte = ['PainelDoSistema', 'GeradorDeBackup', 'ListaDeBackups']
+      .map((nome) => readFileSync(path.join(process.cwd(), `src/componentes/${nome}.tsx`), 'utf8'))
+      .join('\n')
     const usadas = new Set([...fonte.matchAll(/className="([^"]+)"/g)].flatMap((m) => m[1]!.split(/\s+/)).filter((c) => c.startsWith('sistema-')))
     expect(usadas.size).toBeGreaterThan(0)
     for (const classe of usadas) expect(secao, classe).toContain(`.${classe}`)
+  })
+
+  it('o backup tem alvos de toque de 44px (botão e link de download) e a lista quebra o nome longo', () => {
+    expect(secao).toMatch(/\.sistema-backup-gerador\s+\.botao\s*\{[^}]*min-height:\s*var\(--alvo-toque\)/)
+    expect(secao).toMatch(/\.sistema-backup-lista\s+\.botao\s*\{[^}]*min-height:\s*var\(--alvo-toque\)/)
+    expect(secao).toMatch(/\.sistema-backup-nome\s*\{[^}]*overflow-wrap:\s*anywhere/)
+    expect(secao).toMatch(/\.sistema-backup-lista\s+li\s*\{[^}]*flex-wrap:\s*wrap/)
   })
 })

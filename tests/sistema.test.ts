@@ -111,6 +111,22 @@ describe('obterSistema', () => {
     await expect(obterSistema(comum, { midia: MIDIA })).rejects.toMatchObject({ status: 403 })
   })
 
+  it('o último backup vem do BACKUP_DIR: o mais novo do padrão, com nome, data do nome e tamanho', async () => {
+    const admin = await criarAdmin()
+    const dir = process.env.BACKUP_DIR!
+    writeFileSync(path.join(dir, 'backup-20260101-000000.tar.gz'), 'a')
+    writeFileSync(path.join(dir, 'backup-20260301-120000.tar.gz'), 'bbbb')
+    writeFileSync(path.join(dir, 'notas.txt'), 'x')
+    try {
+      const s = await obterSistema(admin, { midia: MIDIA })
+      expect(s.ultimoBackup).toEqual({ nome: 'backup-20260301-120000.tar.gz', criadoEm: new Date('2026-03-01T12:00:00.000Z'), bytes: 4 })
+    } finally {
+      rmSync(path.join(dir, 'backup-20260101-000000.tar.gz'), { force: true })
+      rmSync(path.join(dir, 'backup-20260301-120000.tar.gz'), { force: true })
+      rmSync(path.join(dir, 'notas.txt'), { force: true })
+    }
+  })
+
   it('o agendador do expurgo aparece com ativo e última execução', async () => {
     const admin = await criarAdmin()
     const s = await obterSistema(admin, {

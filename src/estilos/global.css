@@ -1782,6 +1782,24 @@ textarea { min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: verti
 .sistema-item-rotulo { font-weight: 600; }
 .sistema-item-detalhe { grid-column: 1 / -1; }
 
+/* backup: gerar, listar e baixar */
+.sistema-backup-gerador { display: grid; gap: 8px; justify-items: start; }
+.sistema-backup-gerador .botao { min-height: var(--alvo-toque); }
+.sistema-backup-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.sistema-backup-lista li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.sistema-backup-lista li:last-child { border-bottom: 0; }
+.sistema-backup-dados { display: grid; gap: 2px; min-width: 0; flex: 1 1 14rem; }
+.sistema-backup-nome { font-family: var(--font-mono); font-size: var(--texto-pequeno); overflow-wrap: anywhere; }
+.sistema-backup-lista .botao { min-height: var(--alvo-toque); }
+
 @media (max-width: 480px) {
   .sistema-lista > div { grid-template-columns: minmax(0, 1fr); }
 }
