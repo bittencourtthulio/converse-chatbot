@@ -71,7 +71,7 @@ tasks:
   - id: T-06.05
     titulo: "Casos de recusa da restauracao pelo comando"
     fase: F-06.2
-    status: pendente
+    status: concluida
     objetivo: "Provar pelo comando que arquivo adulterado, sem manifest, de esquema mais novo, truncado e BACKUP_DIR sem permissao sao recusados sem alterar a instalacao."
     arquivos:
       cria: ["tests/restauracao-recusas.test.ts"]
@@ -81,8 +81,8 @@ tasks:
     criterio_aceite: "tests/restauracao-recusas.test.ts passa."
     depende_de: ["T-06.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
 ---
 
 # Tasks — Sprint 06
@@ -169,6 +169,6 @@ teste_funcional: "O caso de BACKUP_DIR sem permissao de escrita impede a copia p
 criterio_aceite: "tests/restauracao-recusas.test.ts passa."
 depende_de: ["T-06.04"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/restauracao-recusas.test.ts 5 passed (a instalação existente fica byte a byte igual); suíte inteira da sprint 06 no portão
 ```
 
