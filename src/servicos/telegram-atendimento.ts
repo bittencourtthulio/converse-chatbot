@@ -9,6 +9,9 @@ import { ErroDoTelegram, sendChatAction, sendMessage } from '@/lib/telegram'
 import { registrarErroDoCanal } from '@/servicos/canal-telegram'
 import { LIMITE_DA_MENSAGEM, mensagemParaOperador, mensagemParaVisitante, responderMensagem } from '@/servicos/chat'
 import type { FonteDaResposta } from '@/servicos/fontes-da-resposta'
+import { exclusaoMutuaPadrao, type ExclusaoMutua } from '@/lib/exclusao-mutua'
+import type { Limitador } from '@/lib/limite-de-uso'
+import { frasePorLimiteDoBanco, MENSAGENS_DE_LIMITE, permitirMensagemDoChat } from '@/servicos/telegram-limites'
 import { criar as criarConversa, listar as listarConversas, LIMITE_DO_TITULO } from '@/servicos/conversas'
 import type { CanalAutenticado, MensagemDoUpdate, UpdateLido } from '@/servicos/telegram-webhook'
 
@@ -22,6 +25,12 @@ export const INTERVALO_DO_DIGITANDO_MS = 4000
 
 export interface OpcoesDeAtendimento {
   intervaloDigitandoMs?: number
+  /** Limitador por chat; o teste injeta um com relógio próprio. */
+  limitador?: Limitador
+  /** "Agora" do teto diário, para o teste. */
+  agora?: Date
+  /** Exclusão mútua por chat; o teste injeta uma própria. */
+  exclusao?: ExclusaoMutua
 }
 
 export type Comando = 'start' | 'novo'
@@ -99,7 +108,24 @@ export async function atenderUpdate(
 ): Promise<void> {
   const mensagem = update.mensagem
   if (!mensagem || mensagem.tipoDoChat !== 'private') return
+  // Um chat é atendido em ordem (PR-68); chats diferentes não se esperam.
+  await (opcoes.exclusao ?? exclusaoMutuaPadrao).executar(`${canal.id}:${mensagem.chatId}`, () =>
+    atenderMensagem(canal, mensagem, opcoes),
+  )
+}
+
+async function atenderMensagem(
+  canal: CanalAutenticado,
+  mensagem: MensagemDoUpdate,
+  opcoes: OpcoesDeAtendimento,
+): Promise<void> {
   await marcarMensagemRecebida(canal.id)
+  // Limite por chat (PR-68): vale para tudo que o chat manda, comando inclusive,
+  // e vem antes de criar conversa ou chamar qualquer coisa.
+  if (!permitirMensagemDoChat({ canalId: canal.id, chatId: mensagem.chatId }, opcoes.limitador)) {
+    await enviarAoChat(canal, mensagem.chatId, MENSAGENS_DE_LIMITE.porChat)
+    return
+  }
 
   if (mensagem.texto === undefined) {
     await enviarAoChat(canal, mensagem.chatId, AVISO_SO_TEXTO)
@@ -122,7 +148,19 @@ export async function atenderUpdate(
     await enviarAoChat(canal, mensagem.chatId, AVISO_MENSAGEM_LONGA)
     return
   }
-  await responderAoChat(canal, mensagem, mensagem.texto, opcoes)
+  // Os limites do banco (PR-68): conversa cheia e teto diário do canal.
+  const conversa = await conversaDoChat(canal, mensagem)
+  const frase = await frasePorLimiteDoBanco({
+    agenteId: canal.agenteId,
+    conversaId: conversa.id,
+    limiteDiario: canal.limiteDiario,
+    agora: opcoes.agora,
+  })
+  if (frase !== null) {
+    await enviarAoChat(canal, mensagem.chatId, frase)
+    return
+  }
+  await responderAoChat(canal, mensagem, conversa.id, mensagem.texto, opcoes)
 }
 
 /** Mantém o "digitando…" até `parar()`. Falha do indicador nunca atrapalha a resposta. */
@@ -154,6 +192,7 @@ function linhaDeFontes(fontes: FonteDaResposta[]): string {
 async function responderAoChat(
   canal: CanalAutenticado,
   mensagem: MensagemDoUpdate,
+  conversaId: string,
   texto: string,
   opcoes: OpcoesDeAtendimento,
 ): Promise<void> {
@@ -164,10 +203,9 @@ async function responderAoChat(
   let concluiu = false
   let erro: unknown
   try {
-    const conversa = await conversaDoChat(canal, mensagem)
     for await (const evento of responderMensagem({
       agenteId: canal.agenteId,
-      conversaId: conversa.id,
+      conversaId,
       canal: 'telegram',
       identificadorExterno: String(mensagem.chatId),
       mensagem: texto,

@@ -8,7 +8,7 @@ feature_id: FT-07
 sprint_id: sprint-04
 atualizado_em: 2026-09-30
 titulo: "Atendimento das atualizacoes"
-status: pendente
+status: concluido
 criterio_saida: "Uma atualizacao do Telegram, autenticada e deduplicada, e atendida ponta a ponta no servico: comandos, resposta com fontes, falhas e limites."
 fases: ["F-04.1", "F-04.2"]
 riscos: ["responderMensagem grava a pergunta antes do provedor: sem dedupe haveria resposta duplicada", "a exclusao mutua e em memoria e vale por processo (PR-05)"]

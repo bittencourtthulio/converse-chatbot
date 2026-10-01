@@ -56,7 +56,7 @@ tasks:
   - id: T-04.04
     titulo: "Limites por chat, por conversa, teto diario e ordem"
     fase: F-04.2
-    status: pendente
+    status: concluida
     objetivo: "Aplicar 10 por minuto por chat, 60 por conversa, o teto diario do canal e a exclusao mutua por chat, sempre com resposta amigavel."
     arquivos:
       cria: ["src/lib/exclusao-mutua.ts", "src/servicos/telegram-limites.ts", "tests/telegram-limites.test.ts", "tests/exclusao-mutua.test.ts"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "tests/telegram-limites.test.ts e tests/exclusao-mutua.test.ts passam e o OpenRouter falso nao recebe chamada em nenhum caso de limite."
     depende_de: ["T-04.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
 ---
 
 # Tasks — Sprint 04
@@ -139,5 +139,5 @@ teste_funcional: "A 61a mensagem de uma conversa pede /novo, o teto diario do ca
 criterio_aceite: "tests/telegram-limites.test.ts e tests/exclusao-mutua.test.ts passam e o OpenRouter falso nao recebe chamada em nenhum caso de limite."
 depende_de: ["T-04.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/telegram-limites.test.ts, tests/exclusao-mutua.test.ts, tests/telegram-resposta.test.ts e tests/telegram-comandos.test.ts, 40 passed; tsc e eslint limpos
 ```
