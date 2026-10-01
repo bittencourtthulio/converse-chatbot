@@ -11,7 +11,7 @@ tasks:
   - id: T-04.01
     titulo: "Limite de login provado na acao"
     fase: F-04.1
-    status: pendente
+    status: concluida
     objetivo: "Provar o limite de tentativas de login pela acao autenticar, com cookies e cabecalhos simulados e o sessao-servidor real."
     arquivos:
       cria: ["docs/sessao-e-acesso-endurecidos/sprint-04/sprint.md", "docs/sessao-e-acesso-endurecidos/sprint-04/fases.md", "docs/sessao-e-acesso-endurecidos/sprint-04/tasks.md", "tests/acao-autenticar-limite.test.ts"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/acao-autenticar-limite.test.ts passa e falha quando a chamada exigirLimiteDeLogin sai de autenticar (mutacao registrada)."
     depende_de: ["T-01.01", "T-01.02", "T-02.05"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-04.02
     titulo: "Limite de uso na leitura publica da conversa"
     fase: F-04.1
@@ -103,7 +103,7 @@ teste_funcional: "Credencial certa dentro do limite redireciona para / com cooki
 criterio_aceite: "tests/acao-autenticar-limite.test.ts passa e falha quando a chamada exigirLimiteDeLogin sai de autenticar (mutacao registrada)."
 depende_de: ["T-01.01", "T-01.02", "T-02.05"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/acao-autenticar-limite.test.ts 6 passed; só teste novo, nenhum código alterado
 ```
 
 ---
