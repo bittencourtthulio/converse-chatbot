@@ -53,5 +53,3 @@ Branch `feat/conhecimento-em-video`, aberta em 2026-09-30 a partir de `feat/cana
 ## Desvios
 
 - T-03.03: src/lib/midia-formatos.ts (mimeDeMidia) alterado depois da T-02.03, e tests/conhecimento-paginas.test.tsx e tests/painel-de-conhecimento.test.tsx ganharam os quatro campos novos de FonteVisivel para o tsc passar
-
-Nenhum ate agora.
