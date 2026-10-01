@@ -1714,3 +1714,39 @@ textarea { min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: verti
 .dados-gerais dd { overflow-wrap: anywhere; }
 
 /* ---------- fim da privacidade e auditoria ---------- */
+
+/* ---------- páginas de erro e código de referência (FT-11, PR-93) ---------- */
+
+.pagina-de-erro { text-align: center; }
+.pagina-de-erro-icone {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 16px;
+  border-radius: 16px;
+  background: var(--danger-bg);
+  color: var(--danger-fg);
+}
+.pagina-de-erro .login-subtitulo { margin-bottom: 16px; }
+.pagina-de-erro-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+.pagina-de-erro-acoes .botao,
+.pagina-de-erro-acoes button.primario { width: auto; min-width: 160px; min-height: var(--alvo-toque); }
+.codigo-de-referencia { margin: 8px 0 0; color: var(--fg-muted); font-size: var(--texto-pequeno); }
+.codigo-de-referencia code {
+  display: inline-block;
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--raio-pequeno);
+  background: var(--bg-subtle);
+  color: var(--fg-default);
+  font-family: var(--font-mono);
+  user-select: all;
+  overflow-wrap: anywhere;
+}

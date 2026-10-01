@@ -86,18 +86,18 @@ tasks:
   - id: T-02.06
     titulo: "Paginas de erro e not-found com codigo de referencia"
     fase: F-02.2
-    status: pendente
+    status: concluida
     objetivo: "Criar error.tsx, global-error.tsx e not-found.tsx na raiz de src/app, ajustar o error.tsx do sistema e o onRequestError que grava erro_na_requisicao com digest e correlacao."
     arquivos:
-      cria: ["src/app/error.tsx", "src/app/global-error.tsx", "src/app/not-found.tsx", "src/componentes/CodigoDeReferencia.tsx", "tests/erro-paginas.test.tsx"]
+      cria: ["src/app/error.tsx", "src/app/global-error.tsx", "src/app/not-found.tsx", "src/componentes/CodigoDeReferencia.tsx", "tests/erro-paginas.test.tsx", "src/componentes/PaginaDeErro.tsx"]
       altera: ["src/app/(sistema)/error.tsx", "src/instrumentation.ts", "src/estilos/global.css", "tests/instrumentacao.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md"]
     teste_integracao: "Renderizar o error com digest mostra a frase Codigo de referencia seguida do digest e o botao Tentar de novo, e onRequestError grava a linha erro_na_requisicao com digest, correlacao do cabecalho, rota e nome do erro."
     teste_funcional: "A pagina de erro sem digest nao mostra codigo, o not-found mostra o codigo da correlacao e nenhum dos tres mostra a mensagem do erro."
     criterio_aceite: "tests/erro-paginas.test.tsx e tests/instrumentacao.test.ts passam e tests/tokens.test.ts continua passando sem cor literal."
     depende_de: ["T-02.05"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
   - id: T-02.07
     titulo: "A pilha nao vaza em rota de API nem em pagina"
     fase: F-02.2
@@ -209,14 +209,14 @@ id: T-02.06
 titulo: "Paginas de erro e not-found com codigo de referencia"
 objetivo: "Criar error.tsx, global-error.tsx e not-found.tsx na raiz de src/app, ajustar o error.tsx do sistema e o onRequestError que grava erro_na_requisicao com digest e correlacao."
 arquivos:
-  cria: ["src/app/error.tsx", "src/app/global-error.tsx", "src/app/not-found.tsx", "src/componentes/CodigoDeReferencia.tsx", "tests/erro-paginas.test.tsx"]
+  cria: ["src/app/error.tsx", "src/app/global-error.tsx", "src/app/not-found.tsx", "src/componentes/CodigoDeReferencia.tsx", "tests/erro-paginas.test.tsx", "src/componentes/PaginaDeErro.tsx"]
   altera: ["src/app/(sistema)/error.tsx", "src/instrumentation.ts", "src/estilos/global.css", "tests/instrumentacao.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md"]
 teste_integracao: "Renderizar o error com digest mostra a frase Codigo de referencia seguida do digest e o botao Tentar de novo, e onRequestError grava a linha erro_na_requisicao com digest, correlacao do cabecalho, rota e nome do erro."
 teste_funcional: "A pagina de erro sem digest nao mostra codigo, o not-found mostra o codigo da correlacao e nenhum dos tres mostra a mensagem do erro."
 criterio_aceite: "tests/erro-paginas.test.tsx e tests/instrumentacao.test.ts passam e tests/tokens.test.ts continua passando sem cor literal."
 depende_de: ["T-02.05"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2614 passed, 0 failed (216 arquivos); depois só o Link no lugar do a, com tests/erro-paginas.test.tsx e lint verdes
 ```
 
 ---
