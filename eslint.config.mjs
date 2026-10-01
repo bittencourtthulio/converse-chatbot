@@ -60,6 +60,13 @@ const camadas = [
       ],
     },
   },
+  // Log (FT-11, PR-92): src/lib/log.ts é o único ponto de saída de log do servidor. prisma/seed.ts,
+  // scripts/ e tests/ ficam fora do padrão `src/**`: são saída de comando de linha de comando.
+  {
+    files: ['src/**/*.{ts,tsx,js}'],
+    ignores: ['src/lib/log.ts', 'src/gerado/**'],
+    rules: { 'no-console': 'error' },
+  },
 ]
 
 const configuracao = [

@@ -10,7 +10,7 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-02.1
     titulo: "Correlacao e fim do console"
-    status: em_andamento
+    status: concluido
     criterio_saida: "O proxy marca toda resposta, nenhum console.* resta em src/ e a regra de arquitetura falha se um novo aparecer"
     paralelizavel: false
     paralela_com: []
@@ -59,7 +59,7 @@ flowchart LR
   class T_02_02 concluida
   class T_02_03 concluida
   class T_02_04 concluida
-  class T_02_05 pendente
+  class T_02_05 concluida
   class T_02_06 pendente
   class T_02_07 pendente
   class T_02_07,T_02_06,T_02_05,T_02_04,T_02_03,T_02_02,T_02_01 critico

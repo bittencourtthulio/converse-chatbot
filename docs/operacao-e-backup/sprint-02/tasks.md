@@ -71,7 +71,7 @@ tasks:
   - id: T-02.05
     titulo: "Regra que proibe console novo em src"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Impor por ESLint e por teste de arquitetura que nenhum console.* exista em src/ fora de src/lib/log.ts, com excecao declarada para prisma/seed.ts, scripts e tests."
     arquivos:
       cria: ["tests/log-arquitetura.test.ts"]
@@ -81,8 +81,8 @@ tasks:
     criterio_aceite: "tests/log-arquitetura.test.ts passa e npm run lint termina sem erro."
     depende_de: ["T-02.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-02.06
     titulo: "Paginas de erro e not-found com codigo de referencia"
     fase: F-02.2
@@ -199,7 +199,7 @@ teste_funcional: "A varredura de todos os arquivos de src/ por console. acha oco
 criterio_aceite: "tests/log-arquitetura.test.ts passa e npm run lint termina sem erro."
 depende_de: ["T-02.04"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/log-arquitetura.test.ts e tests/camadas.test.ts passam; npm run lint verde
 ```
 
 ---
