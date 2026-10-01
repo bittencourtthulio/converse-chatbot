@@ -4,12 +4,12 @@ expx_tool: buildx
 kind: premissas
 projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-09-30
-total: 62
+total: 70
 por_origem:
   catalogo_lacunas: 27
   briefing: 0
   decisao_de_stack: 7
-  f2_autonoma: 28
+  f2_autonoma: 36
   recursao: 0
 ---
 
@@ -829,6 +829,110 @@ entram no relatório final como o que o usuário precisa confirmar.
 **Etapa:** b4
 **Provisória:** false
 **Realizada em:** FT-06
+
+---
+
+### PR-63 — Modelo do canal Telegram, dedupe e purga
+
+**Assunto:** F2 da FT-07 — PR-07 e PR-14, contrato de dados
+**Decisão:** duas tabelas por migration que só acrescenta: `canais_telegram` (`CanalTelegram`: `agenteId` único com cascata, `tokenCifrado` AES-256-GCM, `botId` único entre canais, `botUsername`, `botNome`, `segredoDoWebhookHash` SHA-256 em hexadecimal, `ativo`, `webhookUrl`, `conectadoEm`, `ultimoErro`, `ultimoErroEm`, `ultimaMensagemEm`, `limiteDiario` padrão 500 de 1 a 100000) e `atualizacoes_telegram` (`AtualizacaoTelegram`: `canalId` com cascata, `updateId` guardado como texto decimal porque o teto do `update_id` não é documentado, par `(canalId, updateId)` único, `criadoEm`). O dedupe grava a linha antes de processar: violação de unicidade significa reenvio e o update é ignorado. Linhas com mais de 7 dias são purgadas (`purgarAtualizacoes`), de forma oportunista no webhook, no máximo uma vez por hora por processo. `botId` único impede dois agentes de disputarem o mesmo bot (o Telegram guarda um webhook por bot). Desconectar apaga o canal e as atualizações, mantém as conversas (PR-18, FT-09).
+**Por quê:** o dedupe por insert-primeiro é atômico no SQLite e não depende de leitura prévia; texto evita o limite de inteiro; `botId` único evita roubar o webhook de outro agente sem aviso.
+**O que invalida:** se um mesmo bot precisar servir mais de um agente (PR-07), ou se a instalação rodar em mais de um processo com bancos separados.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-07
+
+---
+
+### PR-64 — Adaptador do Telegram: token nunca vaza, erros e reenvio
+
+**Assunto:** F2 da FT-07 — PR-14 e PR-22 no canal Telegram
+**Decisão:** `src/lib/telegram.ts` é o único ponto que fala com o Telegram (`TELEGRAM_API_BASE`, padrão `https://api.telegram.org`). O token vai na URL, então todo erro é construído a partir de textos fixos em português e de `status`/`error_code`: nunca se repassa `description` do Telegram, mensagem de exceção, `cause` ou pilha; uma função única de redação troca o token e qualquer `bot<dígitos>:<segredo>` por `bot<oculto>` em qualquer texto que o adaptador ainda precise manter. Códigos: `telegram_token_invalido` (401), `telegram_sem_acesso` (403), `telegram_webhook_recusado` (400 do `setWebhook`), `telegram_limite` (429), `telegram_indisponivel` (rede, tempo esgotado, 5xx, JSON inválido). Prazo de 10 s por chamada (15 s no envio). No envio, o 429 com `retry_after` de até 30 s é esperado e repetido uma vez; sem `retry_after`, ou acima de 30 s, não repete. Texto acima de 4096 caracteres é dividido em pedaços de até 4096 preferindo quebra de linha, depois espaço, depois corte seco; os pedaços saem em ordem. Nunca `parse_mode`.
+**Por quê:** a documentação do Telegram põe o token no caminho; sem redação num ponto só, um `TypeError` de rede com a URL iria ao log; o corpo do erro do Telegram é conteúdo de terceiro.
+**O que invalida:** se o Telegram passar o token em cabeçalho, ou se a empresa quiser ver a descrição bruta do erro (o que reabre o risco de vazamento).
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-07
+
+---
+
+### PR-65 — Conexão do bot: HTTPS, segredo e ciclo de vida
+
+**Assunto:** F2 da FT-07 — PR-07, PR-14 e PR-12
+**Decisão:** `conectar(autor, agenteId, token)` valida o formato (`<dígitos>:<35 a 120 caracteres [A-Za-z0-9_-]>`), chama `getMe` (precisa ser bot), gera 32 bytes aleatórios em hexadecimal como `secret_token` (64 caracteres, dentro de `[A-Za-z0-9_-]{1,256}`), chama `setWebhook({url: <APP_URL>/api/telegram/<agenteId>/webhook, secret_token, allowed_updates: ['message']})` e só então grava o token cifrado e o hash do segredo; o segredo em claro nunca é gravado nem devolvido. Exige `APP_URL` HTTPS (`appUrlPublica`); sem ela ou com `http`, erro `telegram_url_nao_https` em pt-BR explicando que o Telegram só aceita webhook HTTPS público e que em desenvolvimento se usa um túnel (por exemplo ngrok ou Cloudflare Tunnel) com `APP_URL` apontando para ele. A exceção `TELEGRAM_PERMITIR_URL_NAO_HTTPS=1` só vale fora de produção (`NODE_ENV` diferente de `production`) e serve a teste e desenvolvimento com servidor simulado. Reconectar o mesmo agente com outro token substitui tudo e gira o segredo; `botId` já usado por outro agente é recusado com `telegram_bot_em_uso`. `desconectar` chama `deleteWebhook` (falha dele não impede apagar localmente), apaga canal, token e segredo e mantém as conversas. `pausar` só marca `ativo=false` e o webhook segue registrado (o app responde 200 sem processar): como o segredo em claro não é guardado, não é possível re-registrar o webhook ao retomar; mensagens enviadas na pausa não são atendidas depois. `estado` devolve só bot, estado, último erro, última mensagem, URL e limite; `verificar` chama `getWebhookInfo` e diz se a URL registrada confere e quantas atualizações pendem. Qualquer usuário autenticado gerencia (PR-12). Ponto de extensão para a FT-10: `aoAlterarCanal(ouvinte)` recebe `{acao, agenteId, usuarioId}` e nunca token, segredo ou conteúdo.
+**Por quê:** validar o token antes de gravar evita canal quebrado; hash do segredo impede que um vazamento do banco permita forjar updates; a pausa sem `deleteWebhook` é o único jeito de retomar sem guardar o segredo em claro.
+**O que invalida:** se o Telegram passar a aceitar webhook HTTP, se a empresa quiser que mensagens na pausa sejam atendidas depois (exige fila ou polling), ou se a auditoria (FT-10) precisar do conteúdo do evento.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-07
+
+---
+
+### PR-66 — Webhook do Telegram: autenticação, resposta e processamento posterior
+
+**Assunto:** F2 da FT-07 — PR-07 e PR-16, contrato HTTP
+**Decisão:** `POST /api/telegram/[agenteId]/webhook` (handler fino em `src/app/api/telegram/[agenteId]/webhook/route.ts`): lê `X-Telegram-Bot-Api-Secret-Token`, calcula o SHA-256 e compara em tempo constante com `segredoDoWebhookHash`; ausente, errado ou canal inexistente dão o mesmo 401 sem corpo informativo (a comparação roda também contra um hash fixo quando o canal não existe, para não distinguir por tempo). Canal pausado com segredo certo: 200 sem processar. Corpo acima de 64 KB: 413 depois da autenticação; JSON inválido ou fora do formato esperado (zod) com segredo certo: 200 mudo e linha de log sem conteúdo, para o Telegram não reenviar lixo. Com update válido: grava o `AtualizacaoTelegram` (dedupe), responde 200 vazio e processa em `after()` do Next com captura de qualquer erro (log JSON sem texto da conversa nem token, PR-42). Update perdido se o processo cair entre o 200 e a resposta é limite conhecido: o Telegram já recebeu 200 e não reenvia.
+**Por quê:** o Telegram reenvia em resposta lenta ou não 2xx e o turno do modelo leva segundos; 401 igual evita revelar quais agentes têm bot.
+**O que invalida:** se o Telegram exigir resposta no corpo do webhook, ou se a perda de update no reinício não for aceitável (exige fila persistente, PR-05).
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-07
+
+---
+
+### PR-67 — Escopo do atendimento no Telegram: só texto em chat privado
+
+**Assunto:** F2 da FT-07 — PR-07 e PR-18
+**Decisão:** Só `message` de texto em chat com `chat.type = 'private'` é atendida; `edited_message`, grupos, supergrupos e canais são ignorados (o `allowed_updates` já pede só `message`; o resto é descartado com 200). Mensagem privada sem texto (foto, voz, documento) recebe "Só consigo ler mensagens de texto por enquanto." `/start` (também `/start@bot` e com argumento) responde a `mensagemInicial` do agente (padrão "Olá! Envie sua pergunta." se vazia); `/novo` e `/reiniciar` abrem uma conversa nova vazia e confirmam; o texto comum vai a `responderMensagem` com `canal: 'telegram'` e `identificadorExterno = String(chat.id)`, na conversa mais recente daquele chat. Texto acima de 4000 caracteres recebe aviso de tamanho. A resposta sai sem `parse_mode`, com `[n]` mantidos e, se houve citação, uma linha final "Fontes: Título A, Título B" só com os títulos das fontes citadas; falha do provedor responde `mensagemParaVisitante`. A conversa nasce com `titulo` "Telegram: <nome público>" (`first_name` e `last_name`, até 60 caracteres no total, sem `@usuario` nem id) e nada mais do perfil é gravado.
+**Por quê:** o pedido é atender pelo aplicativo; grupos trazem mensagens de terceiros e custo sem controle; texto puro elimina injeção de marcação; o nome público ajuda a leitura do histórico e é o mínimo de dado pessoal.
+**O que invalida:** se a empresa quiser atender em grupos, mídia (voz, imagem) ou mostrar o `@usuario` no histórico.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-07
+
+---
+
+### PR-68 — Limites do Telegram: por chat, por conversa e teto diário do canal
+
+**Assunto:** F2 da FT-07 — PR-16 e PR-57 no Telegram
+**Decisão:** Por chat 10 mensagens por minuto (`criarLimitador`, chave `telegram:chat:<canalId>:<chatId>`, relógio injetável); por IP não se aplica (o tráfego vem do Telegram); 60 mensagens `user` por conversa; teto diário por agente contado no banco: mensagens `user` de conversas `canal = 'telegram'` do agente desde a meia-noite do fuso do servidor, comparadas com `CanalTelegram.limiteDiario` (padrão 500), com `exigirTetoDiario` ganhando o parâmetro de canal (padrão `widget`, comportamento do chat embutido intacto). Excesso responde ao chat uma frase amigável ("Você enviou muitas mensagens em pouco tempo. Aguarde um instante.", "Esta conversa atingiu o limite. Envie /novo para começar outra.", "Este assistente atingiu o limite de mensagens de hoje. Tente novamente amanhã.") em vez de silêncio, e não gasta o provedor. Um chat é atendido em ordem por exclusão mútua em memória (fila de promessas por canal e chat). O limite por minuto e a exclusão mútua valem por processo (PR-05).
+**Por quê:** cada mensagem custa IA paga pela empresa (PR-16); reaproveitar a contagem do banco do widget mantém um só critério e sobrevive a reinício.
+**O que invalida:** se a instalação rodar em mais de um processo, se o teto precisar somar widget e Telegram, ou se 10 por minuto por chat for pouco para o uso real.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-07
+
+---
+
+### PR-69 — Aba Canais e cartão do Telegram
+
+**Assunto:** F2 da FT-07 — PR-14, PR-23 e PR-12 na interface
+**Decisão:** Aba "Canais" (`src/app/(sistema)/agentes/[id]/canais`) como lista de cartões de canal extensível; o cartão Telegram traz o passo a passo (BotFather, `/newbot`, colar o token, Conectar), campo de token do tipo senha que nunca é preenchido de volta, e, conectado, nome e `@usuario` do bot com link `https://t.me/<usuario>`, selo (Conectado, Pausado, Com erro), último erro, última mensagem, URL do webhook, Verificar, Pausar/Retomar, Desconectar (confirmação na própria tela) e o limite diário. O token nunca vai ao navegador depois de gravado: o estado devolve o `@usuario` do bot no lugar da máscara do token. Sem `APP_URL` HTTPS (e sem a exceção de desenvolvimento), a tela mostra aviso destacado com o caminho do túnel e desabilita Conectar. As ações são Server Actions (`src/app/acoes.ts`), com erro sempre em pt-BR sem o token (`mensagemSemSegredo`).
+**Por quê:** o usuário precisa ver o estado do bot sem poder extrair a credencial; o aviso evita o beco sem saída de um webhook que o Telegram recusa.
+**O que invalida:** se a empresa quiser mostrar a máscara do token ou gerenciar o canal só como admin.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-07
+
+---
+
+### PR-70 — Variáveis de ambiente e simulado de teste do Telegram
+
+**Assunto:** F2 da FT-07 — PR-26 e CONVENCOES (HTTP de saída simulado)
+**Decisão:** `TELEGRAM_API_BASE` (padrão `https://api.telegram.org`, sem barra final) e `TELEGRAM_PERMITIR_URL_NAO_HTTPS` (`1` liga; ignorada em produção) são lidas só em `src/lib/ambiente.ts` (`telegramApiBase`, `telegramPermitirUrlNaoHttps`) e documentadas no `.env.example` e no README. Nenhum teste chama a rede real: `tests/apoio/telegram-falso.ts` imita `getMe`, `setWebhook`, `deleteWebhook`, `getWebhookInfo`, `sendMessage` e `sendChatAction` em porta livre, registra as requisições, devolve `401 {ok:false}` para token desconhecido, aceita falha e latência configuráveis e oferece `dispararUpdate` ao webhook do app com o cabeçalho certo. A verificação de produção usa `APP_URL` HTTPS de fachada (o simulado nunca chama de volta o app) e dispara os updates por `curl` direto em `localhost`.
+**Por quê:** mesmo padrão do `OPENROUTER_BASE_URL`; a exceção só em desenvolvimento evita um modo inseguro em produção.
+**O que invalida:** se a empresa quiser chamar o Telegram real em teste de integração, o que exigiria token e URL públicos dela (PEND-06).
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-07
 
 ---
 
