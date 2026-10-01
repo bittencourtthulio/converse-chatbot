@@ -11,7 +11,7 @@ tasks:
   - id: T-03.01
     titulo: "Leitor de corpo com teto em stream"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Criar lerCorpoLimitado, que lê um stream contando bytes e cancela ao passar do teto (PR-106)."
     arquivos:
       cria: ["docs/robustez-de-midia-e-operacao/sprint-03/sprint.md", "docs/robustez-de-midia-e-operacao/sprint-03/fases.md", "docs/robustez-de-midia-e-operacao/sprint-03/tasks.md", "src/lib/corpo-limitado.ts", "tests/corpo-limitado.test.ts"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/corpo-limitado.test.ts passa e falha quando a contagem de bytes é removida (mutação registrada)."
     depende_de: ["T-01.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-03.02
     titulo: "Rota de documentos com corpo limitado"
     fase: F-03.1
@@ -103,7 +103,7 @@ teste_funcional: "Corpo de 100 KB sob teto de 1 MB devolve os 100 KB, corpo exat
 criterio_aceite: "tests/corpo-limitado.test.ts passa e falha quando a contagem de bytes é removida (mutação registrada)."
 depende_de: ["T-01.04"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/corpo-limitado 5 passed; mutação registrada
 ```
 
 ---
