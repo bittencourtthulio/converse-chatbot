@@ -52,7 +52,7 @@ flowchart LR
   class T_04_01 concluida
   class T_04_02 concluida
   class T_04_03 concluida
-  class T_04_04 pendente
+  class T_04_04 concluida
 ```
 
 ---

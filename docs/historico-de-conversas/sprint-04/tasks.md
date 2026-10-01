@@ -56,18 +56,18 @@ tasks:
   - id: T-04.04
     titulo: "Detalhe da conversa"
     fase: F-04.2
-    status: pendente
+    status: concluida
     objetivo: "Criar /conversas/[id] com transcricao em bolhas, fontes da FT-05, metadados do canal, Exportar e Apagar com confirmacao."
     arquivos:
-      cria: ["src/app/(sistema)/conversas/[id]/page.tsx", "src/app/(sistema)/conversas/[id]/loading.tsx", "src/app/(sistema)/conversas/[id]/not-found.tsx", "src/componentes/TranscricaoDaConversa.tsx", "src/componentes/AcoesDaConversa.tsx", "tests/conversas-detalhe-ui.test.tsx"]
+      cria: ["src/app/(sistema)/conversas/[id]/page.tsx", "src/app/(sistema)/conversas/[id]/loading.tsx", "src/app/(sistema)/conversas/[id]/not-found.tsx", "src/componentes/TranscricaoDaConversa.tsx", "src/componentes/AcoesDaConversa.tsx", "tests/conversas-detalhe-ui.test.tsx", "tests/conversas-detalhe-rota.test.ts", "src/app/(sistema)/conversas/[id]/layout.tsx", "src/app/(sistema)/conversas/[id]/carregar-conversa.ts"]
       altera: ["src/estilos/global.css", "tests/rotas.test.ts"]
     teste_integracao: "A pagina de uma conversa do widget com fontes, renderizada contra o servidor de producao do teste, mostra as bolhas na ordem, o horario, as fontes da resposta e o link para o agente, e id inexistente da 404."
     teste_funcional: "Uma mensagem de visitante com script e img onerror aparece como texto escapado sem elemento script nem img, o botao Exportar aponta para /api/conversas/<id>/exportar, Apagar pede confirmacao na tela e a pagina nao usa dangerouslySetInnerHTML."
     criterio_aceite: "tests/conversas-detalhe-ui.test.tsx e o bloco de detalhe de tests/rotas.test.ts passam."
     depende_de: ["T-04.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
 ---
 
 # Tasks — Sprint 04
@@ -132,13 +132,13 @@ id: T-04.04
 titulo: "Detalhe da conversa"
 objetivo: "Criar /conversas/[id] com transcricao em bolhas, fontes da FT-05, metadados do canal, Exportar e Apagar com confirmacao."
 arquivos:
-  cria: ["src/app/(sistema)/conversas/[id]/page.tsx", "src/app/(sistema)/conversas/[id]/loading.tsx", "src/app/(sistema)/conversas/[id]/not-found.tsx", "src/componentes/TranscricaoDaConversa.tsx", "src/componentes/AcoesDaConversa.tsx", "tests/conversas-detalhe-ui.test.tsx"]
+  cria: ["src/app/(sistema)/conversas/[id]/page.tsx", "src/app/(sistema)/conversas/[id]/loading.tsx", "src/app/(sistema)/conversas/[id]/not-found.tsx", "src/componentes/TranscricaoDaConversa.tsx", "src/componentes/AcoesDaConversa.tsx", "tests/conversas-detalhe-ui.test.tsx", "tests/conversas-detalhe-rota.test.ts", "src/app/(sistema)/conversas/[id]/layout.tsx", "src/app/(sistema)/conversas/[id]/carregar-conversa.ts"]
   altera: ["src/estilos/global.css", "tests/rotas.test.ts"]
 teste_integracao: "A pagina de uma conversa do widget com fontes, renderizada contra o servidor de producao do teste, mostra as bolhas na ordem, o horario, as fontes da resposta e o link para o agente, e id inexistente da 404."
 teste_funcional: "Uma mensagem de visitante com script e img onerror aparece como texto escapado sem elemento script nem img, o botao Exportar aponta para /api/conversas/<id>/exportar, Apagar pede confirmacao na tela e a pagina nao usa dangerouslySetInnerHTML."
 criterio_aceite: "tests/conversas-detalhe-ui.test.tsx e o bloco de detalhe de tests/rotas.test.ts passam."
 depende_de: ["T-04.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — detalhe-ui, detalhe-rota, lista-ui, lista-estilos e tokens 85 passed; desvio: layout.tsx, carregar-conversa.ts e tests/conversas-detalhe-rota.test.ts
 ```
 
