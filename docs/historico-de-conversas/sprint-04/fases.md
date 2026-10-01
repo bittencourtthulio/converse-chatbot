@@ -10,14 +10,14 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-04.1
     titulo: "Lista"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "A lista renderiza filtros, badges, paginacao e estados."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-04.01", "T-04.02"]
   - id: F-04.2
     titulo: "Lote e detalhe"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "O lote apaga com confirmacao na tela e o detalhe mostra a transcricao segura com fontes."
     paralelizavel: false
     paralela_com: []
