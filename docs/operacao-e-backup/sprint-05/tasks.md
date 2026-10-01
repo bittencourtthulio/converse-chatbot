@@ -56,7 +56,7 @@ tasks:
   - id: T-05.04
     titulo: "Servico de backup: gerar, listar e localizar"
     fase: F-05.2
-    status: pendente
+    status: concluida
     objetivo: "Criar src/servicos/backup.ts com gerarBackupAgora, listarBackups e caminhoDoBackup, exigindo admin e auditando."
     arquivos:
       cria: ["src/servicos/backup.ts", "tests/backup-servico.test.ts"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "tests/backup-servico.test.ts passa."
     depende_de: ["T-05.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-05.05
     titulo: "Comando npm run backup"
     fase: F-05.2
@@ -182,7 +182,7 @@ teste_funcional: "Usuario comum recebe 403, duas geracoes ao mesmo tempo dao 409
 criterio_aceite: "tests/backup-servico.test.ts passa."
 depende_de: ["T-05.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/backup-servico.test.ts 13 passed; arquivos novos
 ```
 
 ---
