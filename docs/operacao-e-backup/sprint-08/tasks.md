@@ -56,7 +56,7 @@ tasks:
   - id: T-08.04
     titulo: "Fechamento no laco do buildx"
     fase: F-08.2
-    status: pendente
+    status: concluida
     objetivo: "Fechar a feature no mapa, nas premissas e na recursao e consolidar os artefatos de entrega."
     arquivos:
       cria: ["docs/operacao-e-backup/FECHAMENTO.md", "docs/operacao-e-backup/RELATORIO-FEATURE.md", "docs/operacao-e-backup/ORQUESTRADOR.md", "docs/operacao-e-backup/00-AUDITORIA.md", "docs/operacao-e-backup/00-BLOQUEIOS.md", "docs/operacao-e-backup/00-DECISOES.md", "docs/operacao-e-backup/BRIEFING-BUILDX.md", "docs/operacao-e-backup/base/00-INDICE.md", "docs/operacao-e-backup/base/00-LACUNAS.md", "docs/operacao-e-backup/base/log-e-erros.md", "docs/operacao-e-backup/base/ambiente-e-start.md", "docs/operacao-e-backup/base/banco-e-armazenamento.md", "docs/operacao-e-backup/base/segundo-plano-e-auditoria.md", "docs/operacao-e-backup/base/telas-menu-e-guardas.md", "docs/operacao-e-backup/base/testes-ci-e-docs.md", "docs/operacao-e-backup/base/conteiner-e-ferramentas.md", "docs/entregas/operacao-e-backup/ENTREGA.md", "docs/entregas/operacao-e-backup/PR.md", "docs/entregas/operacao-e-backup/QA-PACOTE.md", "docs/entregas/operacao-e-backup/ATENCAO.md"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "A suite inteira esta verde, tsc, lint, build e npm audit --audit-level=high passam e o MAPA.md tem status entregue."
     depende_de: ["T-08.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
 ---
 
 # Tasks — Sprint 08
@@ -137,6 +137,6 @@ teste_funcional: "docs/operacao-e-backup/RELATORIO-FEATURE.md existe com o que f
 criterio_aceite: "A suite inteira esta verde, tsc, lint, build e npm audit --audit-level=high passam e o MAPA.md tem status entregue."
 depende_de: ["T-08.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2863 passed, 9 skipped (opt-in do contêiner), 243 arquivos; tsc, lint, build e npm audit verdes
 ```
 

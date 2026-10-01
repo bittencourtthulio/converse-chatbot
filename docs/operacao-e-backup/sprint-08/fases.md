@@ -17,7 +17,7 @@ fases:
     tasks: ["T-08.01", "T-08.02"]
   - id: F-08.2
     titulo: "Verificacao e fechamento"
-    status: em_andamento
+    status: concluido
     criterio_saida: "VERIFICACAO-VISUAL.md escrito e MAPA, PREMISSAS e RECURSAO atualizados"
     paralelizavel: false
     paralela_com: []
@@ -52,7 +52,7 @@ flowchart LR
   class T_08_01 concluida
   class T_08_02 concluida
   class T_08_03 concluida
-  class T_08_04 pendente
+  class T_08_04 concluida
   class T_08_04,T_08_03,T_08_02,T_08_01 critico
 ```
 

@@ -762,3 +762,33 @@ describe('convenções da operação e do backup (FT-11)', () => {
     expect(lacunas).toMatch(/sem celular real e sem leitor de tela/)
   })
 })
+
+describe('fechamento da operação e do backup (FT-11)', () => {
+  it('o MAPA marca a FT-11 entregue com sprints, testes e PR local, e o projeto conta 11 entregues', () => {
+    const mapa = ler('docs/projeto/MAPA.md')
+    expect(mapa).toMatch(/^entregues: 11$/m)
+    expect(mapa).toMatch(/^em_andamento: 0$/m)
+    expect(mapa).toMatch(/\| FT-11 \| Operação e backup \| entregue \| local \(branch feat\/operacao-e-backup\) \|/)
+    expect(mapa).toMatch(/\*\*Sprints:\*\* 8 \(38 tasks\)/)
+    expect(ler('docs/projeto/PROJETO.md')).toMatch(/^features_entregues: 11$/m)
+  })
+
+  it('PR-92 a PR-100 estão registradas e PR-20, PR-21 e PR-24 realizadas na FT-11', () => {
+    const premissas = ler('docs/projeto/PREMISSAS.md')
+    for (let n = 92; n <= 100; n++) expect(premissas).toMatch(new RegExp(`### PR-${n} — `))
+    for (const n of [20, 21, 24]) {
+      const trecho = premissas.split(`### PR-${n} — `)[1]!.split('\n---')[0]!
+      expect(trecho, `PR-${n}`).toMatch(/\*\*Realizada em:\*\* FT-11/)
+    }
+  })
+
+  it('a recursão registra a PEND-09 e o relatório da feature existe com o resumo operacional', () => {
+    expect(ler('docs/projeto/RECURSAO.md')).toMatch(/### PEND-09 — /)
+    const relatorio = ler('docs/operacao-e-backup/RELATORIO-FEATURE.md')
+    expect(relatorio).toMatch(/^status: entregue$/m)
+    for (const secao of ['## O que foi entregue', '## Como demonstrar', '## O que a próxima etapa precisa saber', '## Resumo operacional', '## Desvios do plano']) {
+      expect(relatorio, secao).toContain(secao)
+    }
+    expect(relatorio).toContain('docker compose up -d --build')
+  })
+})

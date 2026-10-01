@@ -6,7 +6,7 @@ projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-10-01
 ciclo_atual: 1
 teto_ciclos: 3
-pendencias_abertas: 8
+pendencias_abertas: 9
 pendencias_resolvidas: 0
 ---
 
@@ -19,7 +19,7 @@ houver pendência resolvível, até o teto.
 
 | Ciclo | Pendências entraram | Viraram feature | Replanejadas | Ficaram para o humano |
 |---|---|---|---|---|
-| 1 | 8 (6 até o B3, 1 na FT-01, 1 na FT-10) | 0 | 0 | 8 |
+| 1 | 9 (6 até o B3, 1 na FT-01, 1 na FT-10, 1 na FT-11) | 0 | 0 | 9 |
 
 ---
 
@@ -66,6 +66,14 @@ houver pendência resolvível, até o teto.
 
 ## Aberto — o que exige recurso externo
 
+### PEND-09 — Onde o operador hospeda, onde guarda os backups e a ENCRYPTION_KEY
+
+**Classe:** `recurso_externo`
+**Origem:** B4, FT-11 (PR-24, PR-96, PR-97, PR-99)
+**O que falta:** uma máquina com Docker, um domínio com HTTPS (proxy reverso do operador, exemplo Caddy no README, com `TRUST_PROXY=1`), um lugar fora da máquina para copiar os arquivos de `BACKUP_DIR` (o sistema só guarda a cópia local e a retenção `BACKUP_MANTER`) e um cofre separado para a `ENCRYPTION_KEY` (o backup não a contém). A imagem foi construída e exercitada só na máquina de desenvolvimento (arm64), sem registro de imagens, sem hospedagem real e sem a restauração rodada num servidor de terceiros.
+**O que destrava:** a decisão de onde hospedar (PR-24 é `Provisória: true`; plataforma serverless exigiria trocar banco e armazenamento) e a rotina de cópia externa.
+**Estado atual:** `docker compose up -d --build`, `npm run backup`, `npm run restore -- <arquivo>` e `npm run admin:criar` documentados em "Operação e backup" no README e provados no contêiner por `tests/conteiner-imagem.test.ts` (opt-in `VERIFICAR_CONTEINER=1`).
+
 ### PEND-04 — Arquivo `.env` local não foi criado
 
 **Classe:** `recurso_externo`
@@ -93,8 +101,8 @@ houver pendência resolvível, até o teto.
 ### PEND-07 — Verificação visual em celular real e dos fluxos interativos
 
 **Classe:** `recurso_externo`
-**Origem:** B4, FT-01 (`docs/fundacao-e-esqueleto/VERIFICACAO-VISUAL.md`), FT-02 (`docs/agentes-e-openrouter/VERIFICACAO-VISUAL.md`), FT-03 (`docs/conversa-de-teste/VERIFICACAO-VISUAL.md`), FT-04 (`docs/conhecimento-arquivos-e-texto/VERIFICACAO-VISUAL.md`) FT-05 (`docs/respostas-com-conhecimento/VERIFICACAO-VISUAL.md`) FT-06 (`docs/chat-embutido/VERIFICACAO-VISUAL.md`) FT-07 (`docs/canal-telegram/VERIFICACAO-VISUAL.md`) FT-08 (`docs/conhecimento-em-video/VERIFICACAO-VISUAL.md`) FT-09 (`docs/historico-de-conversas/VERIFICACAO-VISUAL.md`) e FT-10 (`docs/privacidade-e-auditoria/VERIFICACAO-VISUAL.md`)
-**O que falta:** abrir o sistema (e, desde a FT-02, os formulários de agente e da chave do OpenRouter; desde a FT-03, a aba Testar, com o botão Parar por clique, a rolagem automática e o contador de caracteres; desde a FT-04, a aba Conhecimento, com o arrastar-e-soltar, o spinner de "Processando", o foco por teclado na zona de soltar e as regras de 375 px; desde a FT-05, as Fontes e as referências `[n]` na aba Testar, o tema claro com fontes, a seção recolhida das fontes consultadas e o cartão "Testar busca" a 375 px; desde a FT-06, o botão e o painel do `widget.js` em tela cheia abaixo de 480 px, o tema claro do chat embutido e da aba Publicar e o botão Copiar código; desde a FT-07, o cartão do Telegram da aba Canais a 375 px, o aviso de `APP_URL` sem HTTPS e o selo "Com erro"; desde a FT-08, a aba Vídeo, a barra de progresso do envio, a lista com etapa e o campo Modelo de transcrição, que só foram vistos com a largura do navegador emulada em 375 px; desde a FT-09, a lista de Conversas em cartões, o detalhe com fontes, o apagar em lote com confirmação e o painel com o gráfico; desde a FT-10, as telas Privacidade e Auditoria, a confirmação de Excluir definitivamente, as ferramentas do titular e o botão Apagar minha conversa do chat embutido, tudo visto num Chrome sem janela com 375 px emulados, sem celular real nem leitor de tela) num celular ou com a janela do navegador realmente a 375px e acionar o menu do usuário, a gaveta, o alternador de tema e a mensagem de excesso de tentativas de login. A janela do navegador da sessão não reduziu a largura, e os quadros de 375px foram feitos sem JavaScript.
+**Origem:** B4, FT-01 (`docs/fundacao-e-esqueleto/VERIFICACAO-VISUAL.md`), FT-02 (`docs/agentes-e-openrouter/VERIFICACAO-VISUAL.md`), FT-03 (`docs/conversa-de-teste/VERIFICACAO-VISUAL.md`), FT-04 (`docs/conhecimento-arquivos-e-texto/VERIFICACAO-VISUAL.md`) FT-05 (`docs/respostas-com-conhecimento/VERIFICACAO-VISUAL.md`) FT-06 (`docs/chat-embutido/VERIFICACAO-VISUAL.md`) FT-07 (`docs/canal-telegram/VERIFICACAO-VISUAL.md`) FT-08 (`docs/conhecimento-em-video/VERIFICACAO-VISUAL.md`) FT-09 (`docs/historico-de-conversas/VERIFICACAO-VISUAL.md`), FT-10 (`docs/privacidade-e-auditoria/VERIFICACAO-VISUAL.md`) e FT-11 (`docs/operacao-e-backup/VERIFICACAO-VISUAL.md`)
+**O que falta:** abrir o sistema (e, desde a FT-02, os formulários de agente e da chave do OpenRouter; desde a FT-03, a aba Testar, com o botão Parar por clique, a rolagem automática e o contador de caracteres; desde a FT-04, a aba Conhecimento, com o arrastar-e-soltar, o spinner de "Processando", o foco por teclado na zona de soltar e as regras de 375 px; desde a FT-05, as Fontes e as referências `[n]` na aba Testar, o tema claro com fontes, a seção recolhida das fontes consultadas e o cartão "Testar busca" a 375 px; desde a FT-06, o botão e o painel do `widget.js` em tela cheia abaixo de 480 px, o tema claro do chat embutido e da aba Publicar e o botão Copiar código; desde a FT-07, o cartão do Telegram da aba Canais a 375 px, o aviso de `APP_URL` sem HTTPS e o selo "Com erro"; desde a FT-08, a aba Vídeo, a barra de progresso do envio, a lista com etapa e o campo Modelo de transcrição, que só foram vistos com a largura do navegador emulada em 375 px; desde a FT-09, a lista de Conversas em cartões, o detalhe com fontes, o apagar em lote com confirmação e o painel com o gráfico; desde a FT-10, as telas Privacidade e Auditoria, a confirmação de Excluir definitivamente, as ferramentas do titular e o botão Apagar minha conversa do chat embutido, e, desde a FT-11, a tela Configurações > Sistema, o botão Gerar backup agora e as páginas de erro com código de referência, vistos num Chrome próprio com 375 px emulados; o contêiner foi exercitado por teste automatizado, não pelo navegador; sem celular real nem leitor de tela) num celular ou com a janela do navegador realmente a 375px e acionar o menu do usuário, a gaveta, o alternador de tema e a mensagem de excesso de tentativas de login. A janela do navegador da sessão não reduziu a largura, e os quadros de 375px foram feitos sem JavaScript.
 **O que destrava:** confirmação visual completa; o comportamento tem teste automatizado, o que falta é o olho.
 **Estado atual:** contraste 4,5:1 e ausência de cor literal provados por `tests/tokens.test.ts`; rotas e cabeçalhos por `tests/rotas.test.ts`.
 

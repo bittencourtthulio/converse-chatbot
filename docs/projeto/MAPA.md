@@ -6,8 +6,8 @@ projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-10-01
 total_features: 11
 pendentes: 0
-em_andamento: 1
-entregues: 10
+em_andamento: 0
+entregues: 11
 bloqueadas: 0
 ---
 
@@ -34,7 +34,7 @@ da feature de que depende (PRs empilhados).
 | FT-08 | Base de conhecimento: vídeo | entregue | local (branch feat/conhecimento-em-video) |
 | FT-09 | Histórico de conversas e painel | entregue | local (branch feat/historico-de-conversas) |
 | FT-10 | Privacidade e auditoria | entregue | local (branch feat/privacidade-e-auditoria) |
-| FT-11 | Operação e backup | em_andamento | — |
+| FT-11 | Operação e backup | entregue | local (branch feat/operacao-e-backup) |
 
 ---
 
@@ -220,7 +220,10 @@ Trabalho: adaptar o template (nome, layout e tokens SaaS no lugar do VS Code, te
 **Premissas que realiza:** [PR-20, PR-21, PR-24]
 **Módulo disponível:** -
 **Fatias candidatas:** -
-**Status:** em_andamento
+**Status:** entregue
+**Sprints:** 8 (38 tasks)
+**Testes:** 2863 (suíte inteira)
+**PR:** local (branch feat/operacao-e-backup)
 
 ---
 
