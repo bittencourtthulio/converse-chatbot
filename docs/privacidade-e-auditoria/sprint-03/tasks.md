@@ -56,18 +56,18 @@ tasks:
   - id: T-03.04
     titulo: "Aviso padrao no chat embutido e no /start do Telegram"
     fase: F-03.2
-    status: pendente
+    status: concluida
     objetivo: "Usar o aviso padrao do workspace quando o agente nao tem aviso proprio e anexa-lo a resposta do /start."
     arquivos:
       cria: ["tests/privacidade-aviso-canais.test.ts"]
-      altera: ["src/servicos/chat-publico-config.ts", "src/servicos/telegram-atendimento.ts", "src/componentes/FormularioDoChat.tsx"]
+      altera: ["src/servicos/chat-publico-config.ts", "src/servicos/telegram-atendimento.ts", "src/componentes/FormularioDoChat.tsx", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md"]
     teste_integracao: "configuracaoPublica e a previa devolvem o aviso do agente quando ha texto e o do workspace quando nao ha, e o /start do Telegram simulado envia a mensagem inicial seguida do aviso e da URL."
     teste_funcional: "Com aviso padrao Seus dados sao usados so para atendimento e agente sem aviso, a configuracao publica traz esse texto e a URL, com aviso proprio traz o do agente, e sem aviso padrao o /start envia so a mensagem inicial."
     criterio_aceite: "tests/privacidade-aviso-canais.test.ts passa e tests/chat-publico-config-publica.test.ts e tests/telegram-comandos.test.ts continuam passando."
     depende_de: ["T-03.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
 ---
 
 # Tasks — Sprint 03
@@ -131,12 +131,12 @@ titulo: "Aviso padrao no chat embutido e no /start do Telegram"
 objetivo: "Usar o aviso padrao do workspace quando o agente nao tem aviso proprio e anexa-lo a resposta do /start."
 arquivos:
   cria: ["tests/privacidade-aviso-canais.test.ts"]
-  altera: ["src/servicos/chat-publico-config.ts", "src/servicos/telegram-atendimento.ts", "src/componentes/FormularioDoChat.tsx"]
+  altera: ["src/servicos/chat-publico-config.ts", "src/servicos/telegram-atendimento.ts", "src/componentes/FormularioDoChat.tsx", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md"]
 teste_integracao: "configuracaoPublica e a previa devolvem o aviso do agente quando ha texto e o do workspace quando nao ha, e o /start do Telegram simulado envia a mensagem inicial seguida do aviso e da URL."
 teste_funcional: "Com aviso padrao Seus dados sao usados so para atendimento e agente sem aviso, a configuracao publica traz esse texto e a URL, com aviso proprio traz o do agente, e sem aviso padrao o /start envia so a mensagem inicial."
 criterio_aceite: "tests/privacidade-aviso-canais.test.ts passa e tests/chat-publico-config-publica.test.ts e tests/telegram-comandos.test.ts continuam passando."
 depende_de: ["T-03.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2362 passed, 0 failed (191 arquivos); lint e build antes
 ```
 

@@ -7,6 +7,7 @@ import { prisma } from '@/lib/prisma'
 import { decifrar } from '@/lib/cripto'
 import { ErroDoTelegram, sendChatAction, sendMessage } from '@/lib/telegram'
 import { registrarErroDoCanal } from '@/servicos/canal-telegram'
+import { avisoPadraoDoWorkspace } from '@/servicos/privacidade'
 import { LIMITE_DA_MENSAGEM, mensagemParaOperador, mensagemParaVisitante, responderMensagem } from '@/servicos/chat'
 import type { FonteDaResposta } from '@/servicos/fontes-da-resposta'
 import { exclusaoMutuaPadrao, type ExclusaoMutua } from '@/lib/exclusao-mutua'
@@ -135,7 +136,11 @@ async function atenderMensagem(
   if (comando === 'start') {
     const agente = await prisma.agente.findUnique({ where: { id: canal.agenteId }, select: { mensagemInicial: true } })
     const inicial = agente?.mensagemInicial.trim() ?? ''
-    await enviarAoChat(canal, mensagem.chatId, inicial === '' ? MENSAGEM_INICIAL_PADRAO : inicial)
+    const base = inicial === '' ? MENSAGEM_INICIAL_PADRAO : inicial
+    // O aviso de privacidade padrão do workspace vai junto, com o link (FT-10, PR-91).
+    const aviso = await avisoPadraoDoWorkspace()
+    const texto = aviso === null ? base : `${base}\n\n${aviso.texto}${aviso.url === null ? '' : `\n${aviso.url}`}`
+    await enviarAoChat(canal, mensagem.chatId, texto)
     return
   }
   if (comando === 'novo') {

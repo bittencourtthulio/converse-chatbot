@@ -8,6 +8,7 @@ import { entradaInvalida, naoAutenticado, naoEncontrado } from '@/lib/erros'
 import { COR_PADRAO, normalizarCor } from '@/lib/cor'
 import { LIMITE_DE_DOMINIOS, normalizarLista } from '@/lib/dominios-permitidos'
 import type { UsuarioAutenticado } from '@/servicos/autenticacao'
+import { avisoPadraoDoWorkspace, type AvisoPadrao } from '@/servicos/privacidade'
 
 export const POSICOES = ['direita', 'esquerda'] as const
 export const AVATARES = ['iniciais', 'chat', 'robo', 'estrela', 'fone'] as const
@@ -279,8 +280,15 @@ export interface ConfiguracaoPublica {
 
 type AgenteParaExibir = { nome: string; mensagemInicial: string }
 
-/** O que se mostra do agente: os campos visuais, sem nada interno. */
-function paraExibir(c: ConfiguracaoDoChat, agente: AgenteParaExibir): Omit<ConfiguracaoPublica, 'ativo'> {
+/**
+ * O que se mostra do agente: os campos visuais, sem nada interno. O aviso de privacidade é o
+ * do agente quando ele tem texto; sem texto, o padrão do workspace (FT-10, PR-91), se houver.
+ */
+function paraExibir(
+  c: ConfiguracaoDoChat,
+  agente: AgenteParaExibir,
+  avisoPadrao: AvisoPadrao | null,
+): Omit<ConfiguracaoPublica, 'ativo'> {
   return {
     titulo: c.titulo !== '' ? c.titulo : agente.nome,
     cor: c.cor,
@@ -289,7 +297,7 @@ function paraExibir(c: ConfiguracaoDoChat, agente: AgenteParaExibir): Omit<Confi
     mensagemInicial: agente.mensagemInicial,
     avisoDePrivacidade:
       c.avisoDePrivacidade === ''
-        ? null
+        ? avisoPadrao
         : { texto: c.avisoDePrivacidade, url: c.avisoDePrivacidadeUrl === '' ? null : c.avisoDePrivacidadeUrl },
     sugestoes: c.sugestoes,
   }
@@ -307,7 +315,7 @@ export async function configuracaoPublica(agenteId: string): Promise<Configuraca
     include: { agente: { select: { nome: true, mensagemInicial: true } } },
   })
   if (!linha || !linha.ativo) return null
-  return { ativo: true, ...paraExibir(configuracaoDeLinha(linha), linha.agente) }
+  return { ativo: true, ...paraExibir(configuracaoDeLinha(linha), linha.agente, await avisoPadraoDoWorkspace()) }
 }
 
 export interface ConfiguracaoDaPrevia extends Omit<ConfiguracaoPublica, 'ativo'> {
@@ -330,7 +338,7 @@ export async function configuracaoDaPrevia(
   })
   if (!agente) throw naoEncontrado('Agente não encontrado.')
   const c = await obterConfiguracao(autor, agenteId)
-  return { ativo: c.ativo, ...paraExibir(c, agente) }
+  return { ativo: c.ativo, ...paraExibir(c, agente, await avisoPadraoDoWorkspace()) }
 }
 
 export interface DominiosDoEmbed {

@@ -232,7 +232,7 @@ export function FormularioDoChat({
             aria-describedby="ajuda-do-aviso"
           />
           <span className="campo-ajuda" id="ajuda-do-aviso">
-            Texto curto mostrado no rodapé do chat. <Contador atual={aviso.length} limite={LIMITE_DO_AVISO} />
+            Texto curto mostrado no rodapé do chat. Em branco, vale o aviso padrão do workspace (Configurações &gt; Privacidade). <Contador atual={aviso.length} limite={LIMITE_DO_AVISO} />
           </span>
         </label>
 
