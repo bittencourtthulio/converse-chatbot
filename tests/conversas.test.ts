@@ -60,6 +60,23 @@ describe('criar', () => {
     expect(conversa.titulo).toBeNull()
   })
 
+  it('usa o título dado (FT-07), aparado em 60 caracteres, e sem ele deriva da primeira mensagem', async () => {
+    const { agente } = await cenario()
+    const comTitulo = await criar({
+      agenteId: agente.id,
+      canal: 'telegram',
+      identificadorExterno: '42',
+      titulo: 'Telegram: ' + 'N'.repeat(100),
+      primeiraMensagem: 'texto que seria o título',
+    })
+    expect(comTitulo.titulo).toHaveLength(60)
+    expect(comTitulo.titulo?.startsWith('Telegram: N')).toBe(true)
+    const semTitulo = await criar({ agenteId: agente.id, canal: 'telegram', identificadorExterno: '43', primeiraMensagem: '  texto   da pergunta ' })
+    expect(semTitulo.titulo).toBe('texto da pergunta')
+    const vazio = await criar({ agenteId: agente.id, canal: 'telegram', identificadorExterno: '44', titulo: '   ' })
+    expect(vazio.titulo).toBeNull()
+  })
+
   it('recusa canal desconhecido', async () => {
     const { agente } = await cenario()
     await expect(

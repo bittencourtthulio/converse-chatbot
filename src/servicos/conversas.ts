@@ -53,6 +53,8 @@ const entradaDeCriacao = z.object({
   canal,
   identificadorExterno: z.string().max(200).nullish(),
   criadoPorId: z.string().min(1).nullish(),
+  /** Sem título explícito, ele sai da primeira mensagem. O Telegram dá o nome público (FT-07). */
+  titulo: z.string().max(200).nullish(),
   primeiraMensagem: z.string().optional(),
 })
 
@@ -83,7 +85,8 @@ export function tituloDaConversa(texto: string): string {
 
 export async function criar(entrada: EntradaDeConversa): Promise<ConversaVisivel> {
   const dados = validar(entradaDeCriacao, entrada)
-  const titulo = dados.primeiraMensagem ? tituloDaConversa(dados.primeiraMensagem) : ''
+  const explicito = dados.titulo ? tituloDaConversa(dados.titulo) : ''
+  const titulo = explicito !== '' ? explicito : dados.primeiraMensagem && !dados.titulo ? tituloDaConversa(dados.primeiraMensagem) : ''
   if (!(await prisma.agente.findUnique({ where: { id: dados.agenteId }, select: { id: true } }))) {
     throw naoEncontrado('Agente não encontrado.')
   }

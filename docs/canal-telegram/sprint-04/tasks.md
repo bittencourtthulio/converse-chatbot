@@ -26,7 +26,7 @@ tasks:
   - id: T-04.02
     titulo: "Comandos, mensagens nao textuais e conversa do chat"
     fase: F-04.2
-    status: pendente
+    status: concluida
     objetivo: "Escrever o atendimento de /start, /novo, /reiniciar, mensagem nao textual, grupo ignorado e a conversa do chat com titulo Telegram: Nome (conversas.criar ganha titulo opcional)."
     arquivos:
       cria: ["src/servicos/telegram-atendimento.ts", "tests/telegram-comandos.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/telegram-comandos.test.ts e tests/conversas.test.ts passam."
     depende_de: ["T-04.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-04.03
     titulo: "Resposta do agente no Telegram"
     fase: F-04.2
@@ -105,7 +105,7 @@ teste_funcional: "Update de grupo ou canal nao gera nenhuma chamada ao simulado,
 criterio_aceite: "tests/telegram-comandos.test.ts e tests/conversas.test.ts passam."
 depende_de: ["T-04.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/telegram-comandos.test.ts e tests/conversas.test.ts, 37 passed; tsc e eslint limpos
 ```
 
 ---
