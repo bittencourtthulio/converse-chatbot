@@ -2,7 +2,7 @@
 
 Data: 2026-10-01 (rodada 2, reauditoria depois de regerar o plano)
 
-Rodada 1 terminou em `VEREDITO: NÃO` por um achado ALTA (a T-07.01 pedia uma variável de ambiente de teste não declarada, fora da lista de arquivos e contra D-11). O plano foi regerado na F3 endereçando todos os achados ALTA e MÉDIA da rodada 1 (decisão D-25 registrada, `aguardarGravacoesPendentes` e PEND-08 incluídos nos critérios, rollback da primeira transação interativa exigido na T-02.04).
+Histórico: a rodada 1 reprovou o plano por um achado ALTA (a T-07.01 pedia uma variável de ambiente de teste não declarada, fora da lista de arquivos e contra D-11). O plano foi regerado na F3 endereçando todos os achados ALTA e MÉDIA da rodada 1 (decisão D-25 registrada, `aguardarGravacoesPendentes` e PEND-08 incluídos nos critérios, rollback da primeira transação interativa exigido na T-02.04).
 
 Conferido na rodada 2: as 28 tasks têm os dois testes e critério binário; não há ciclo em `depende_de`; nenhuma task é paralelizável; todo arquivo que o plano prevê tocar está em `arquivos` de alguma task, inclusive `sprint.md`, `fases.md`, MAPA, PREMISSAS, RECURSAO, PROJETO, `.gitignore`, exemplo de ambiente, `package.json`, lockfile e README na T-07.04; a base (identificadores por canal, FK restritiva de `Agente.criadoPorId`, ouvintes, Origin do DELETE público, lote do expurgo) está tratada em D-04, D-06, D-10 e D-14.
 
