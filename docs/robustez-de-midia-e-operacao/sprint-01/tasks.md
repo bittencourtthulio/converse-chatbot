@@ -56,7 +56,7 @@ tasks:
   - id: T-01.04
     titulo: "Apoios de PDF grande e de corpo chunked"
     fase: F-01.2
-    status: pendente
+    status: concluida
     objetivo: "Criar o gerador de PDF com N páginas e o cliente que envia corpo chunked sem Content-Length."
     arquivos:
       cria: ["tests/apoio/pdf-sintetico.ts", "tests/apoio/corpo-chunked.ts", "tests/apoio-pdf-chunked.test.ts"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "tests/apoio-pdf-chunked.test.ts passa."
     depende_de: ["T-01.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
 ---
 
 # Tasks — Sprint 01
@@ -139,6 +139,6 @@ teste_funcional: "gerarPdf(3) tem texto extraível por extrairPdf e enviarChunke
 criterio_aceite: "tests/apoio-pdf-chunked.test.ts passa."
 depende_de: ["T-01.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/apoio-pdf-chunked.test.ts 4 passed; mutação registrada
 ```
 
