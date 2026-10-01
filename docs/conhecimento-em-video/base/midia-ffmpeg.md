@@ -4,7 +4,7 @@
 
 - Binários externos `ffmpeg` e `ffprobe`, caminhos por `FFMPEG_PATH` e `FFPROBE_PATH` (padrão pelo nome, `PATH`). Versão disponível na máquina de desenvolvimento: ffmpeg 8.0.1 em `/opt/homebrew/bin` (`ffmpeg -version`, 2026-09-30); a do CI será a do pacote `apt` da imagem `ubuntu-latest` (versão NÃO DOCUMENTADA).
 - Chamadas previstas, sempre por `spawn` com vetor de argumentos (sem shell): `ffprobe -v error -show_entries format=duration:stream=codec_type -of json <arquivo>`; `ffmpeg -i <arquivo> -vn -ac 1 -ar 16000 -c:a libmp3lame -b:a 32k <saida.mp3>`; divisão com `-f segment -segment_time 600`. Os parâmetros são conhecimento do ffmpeg em uso, não documentação consultada nesta sessão: serão provados por teste com mídia gerada por `lavfi`.
-- Mídia de teste: `ffmpeg -f lavfi -i sine=frequency=440:duration=3 ...`; `libmp3lame` presente nesta máquina (provado na T de `midia`; verificação inicial `ffmpeg -encoders` pendente).
+- Mídia de teste: `ffmpeg -f lavfi -i sine=frequency=440:duration=3 ...`; `libmp3lame` presente nesta máquina e os três comandos acima funcionaram numa senoide de 25 s (execução local, 2026-09-30): a sonda devolveu `duration` "25.000000" e um stream `audio`; `-f segment -segment_time 10 -c copy` gerou 3 arquivos.
 
 ## 2. Contrato de saída
 
