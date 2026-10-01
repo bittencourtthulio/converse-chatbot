@@ -11,7 +11,7 @@ tasks:
   - id: T-01.01
     titulo: "Migration e modelo da auditoria e da privacidade"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar a tabela registros_de_auditoria e as colunas de retencao e de aviso padrao em configuracao_do_workspace."
     arquivos:
       cria: ["prisma/migrations/20261002000000_privacidade_e_auditoria/migration.sql", "tests/privacidade-modelo.test.ts", "docs/privacidade-e-auditoria/sprint-01/sprint.md", "docs/privacidade-e-auditoria/sprint-01/fases.md", "docs/privacidade-e-auditoria/sprint-01/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/privacidade-modelo.test.ts e tests/migracoes.test.ts passam e a migration nao contem DROP."
     depende_de: []
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
   - id: T-01.02
     titulo: "Fixtures de conversa antiga e de registro de auditoria"
     fase: F-01.2
@@ -71,7 +71,7 @@ teste_funcional: "Um registro criado para um usuario sobrevive com usuarioId nul
 criterio_aceite: "tests/privacidade-modelo.test.ts e tests/migracoes.test.ts passam e a migration nao contem DROP."
 depende_de: []
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2258 passed, 0 failed (177 arquivos); build antes
 ```
 
 ---

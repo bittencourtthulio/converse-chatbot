@@ -28,6 +28,7 @@ model Usuario {
   agentes   Agente[]
   conversas Conversa[]
   fontes    Fonte[]
+  registros RegistroDeAuditoria[]
 
   @@map("usuarios")
 }
@@ -40,9 +41,16 @@ model ConfiguracaoDoWorkspace {
   // Modelo do OpenRouter que transcreve áudio (FT-08, PR-73); nulo vale o
   // padrão do ambiente ou da constante.
   modeloDeTranscricao    String?
+  // Retenção das conversas em dias (FT-10, PR-89): 90 por padrão, de 7 a 3650; nulo
+  // significa "sem expurgo automático", escolha explícita do admin.
+  retencaoDiasConversas  Int?     @default(90)
+  // Aviso de privacidade padrão do workspace (FT-10, PR-91): vale quando o agente não
+  // tem aviso próprio e é anexado ao /start do Telegram.
+  avisoDePrivacidadePadrao    String @default("")
+  avisoDePrivacidadePadraoUrl String @default("")
   atualizadoEm           DateTime @updatedAt
-  // Id do usuário que gravou por último (sem chave estrangeira: a exclusão de
-  // usuário é da FT-10).
+  // Id do usuário que gravou por último (sem chave estrangeira). A exclusão
+  // definitiva de usuário (FT-10, PR-88) zera este campo quando for dele.
   atualizadoPor          String?
 
   @@map("configuracao_do_workspace")
@@ -233,4 +241,25 @@ model AtualizacaoTelegram {
   @@unique([canalId, updateId])
   @@index([criadoEm])
   @@map("atualizacoes_telegram")
+}
+
+// Trilha de auditoria (FT-10, PR-19, PR-86): somente acréscimo. `usuarioRotulo` é o
+// "Nome <e-mail>" gravado na hora da ação, para o registro sobreviver à exclusão do
+// usuário (`usuarioId` vira nulo). `acao` é de um conjunto fechado validado no serviço;
+// `detalhes` é JSON curto sem segredo, sem conteúdo de conversa e sem identificador de
+// visitante. Só o expurgo por idade apaga linhas.
+model RegistroDeAuditoria {
+  id            String   @id @default(cuid())
+  quando        DateTime @default(now())
+  usuarioId     String?
+  usuario       Usuario? @relation(fields: [usuarioId], references: [id], onDelete: SetNull)
+  usuarioRotulo String
+  acao          String
+  alvoTipo      String
+  alvoId        String?
+  detalhes      String   @default("{}")
+
+  @@index([quando])
+  @@index([acao])
+  @@map("registros_de_auditoria")
 }
