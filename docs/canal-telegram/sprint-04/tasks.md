@@ -11,7 +11,7 @@ tasks:
   - id: T-04.01
     titulo: "Autenticar o segredo, validar o update e deduplicar"
     fase: F-04.1
-    status: pendente
+    status: concluida
     objetivo: "Escrever autenticarWebhook (hash em tempo constante), lerUpdate (zod), registrarAtualizacao (insert-primeiro) e purgarAtualizacoes (7 dias)."
     arquivos:
       cria: ["src/servicos/telegram-webhook.ts", "tests/telegram-webhook-base.test.ts", "docs/canal-telegram/sprint-04/sprint.md", "docs/canal-telegram/sprint-04/fases.md", "docs/canal-telegram/sprint-04/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/telegram-webhook-base.test.ts passa com ao menos 10 casos."
     depende_de: ["T-03.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-04.02
     titulo: "Comandos, mensagens nao textuais e conversa do chat"
     fase: F-04.2
@@ -88,7 +88,7 @@ teste_funcional: "lerUpdate aceita message de texto privado e recusa corpo sem u
 criterio_aceite: "tests/telegram-webhook-base.test.ts passa com ao menos 10 casos."
 depende_de: ["T-03.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/telegram-webhook-base.test.ts, 15 passed; tsc e eslint limpos
 ```
 
 ---
