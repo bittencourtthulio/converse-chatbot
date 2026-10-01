@@ -56,7 +56,7 @@ tasks:
   - id: T-06.04
     titulo: "Modelo de transcricao nas Integracoes"
     fase: F-06.2
-    status: pendente
+    status: concluida
     objetivo: "Criar o painel Modelo de transcricao em Configuracoes e Integracoes (admin), com padrao visivel, salvar e restaurar o padrao por acao de servidor."
     arquivos:
       cria: ["src/componentes/PainelDoModeloDeTranscricao.tsx", "tests/painel-modelo-transcricao.test.tsx"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "tests/painel-modelo-transcricao.test.tsx e tests/acoes.test.ts passam."
     depende_de: ["T-06.03", "T-04.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
 ---
 
 # Tasks — Sprint 06
@@ -139,7 +139,7 @@ teste_funcional: "Salvar vazio restaura o padrao, modelo com espaco mostra erro 
 criterio_aceite: "tests/painel-modelo-transcricao.test.tsx e tests/acoes.test.ts passam."
 depende_de: ["T-06.03", "T-04.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/painel-modelo-transcricao.test.tsx, tests/integracoes.test.ts, tests/integracoes-transcricao.test.ts, tests/acoes-de-agente.test.ts, tests/telegram-acoes.test.ts, tests/publicar-acao.test.ts, tests/camadas.test.ts e tests/componentes.test.tsx
 ```
 
 ---

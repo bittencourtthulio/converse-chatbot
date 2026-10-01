@@ -1,12 +1,14 @@
 import { exigirUsuarioAdmin } from '@/app/sessao-servidor'
-import { estadoDoOpenrouter } from '@/servicos/integracoes'
+import { estadoDoModeloDeTranscricao, estadoDoOpenrouter } from '@/servicos/integracoes'
 import {
   salvarChaveOpenrouter,
   testarConexaoOpenrouter,
   removerChaveOpenrouter,
+  salvarModeloTranscricao,
 } from '@/app/acoes'
 import { CabecalhoDaPagina } from '@/componentes/CabecalhoDaPagina'
 import { PainelDaChaveOpenrouter } from '@/componentes/PainelDaChaveOpenrouter'
+import { PainelDoModeloDeTranscricao } from '@/componentes/PainelDoModeloDeTranscricao'
 
 const formatarData = new Intl.DateTimeFormat('pt-BR', {
   dateStyle: 'short',
@@ -21,7 +23,7 @@ const formatarData = new Intl.DateTimeFormat('pt-BR', {
  */
 export default async function Integracoes() {
   const admin = await exigirUsuarioAdmin()
-  const estado = await estadoDoOpenrouter(admin)
+  const [estado, modelo] = await Promise.all([estadoDoOpenrouter(admin), estadoDoModeloDeTranscricao(admin)])
 
   return (
     <div className="pilha">
@@ -42,6 +44,7 @@ export default async function Integracoes() {
           remover: removerChaveOpenrouter,
         }}
       />
+      <PainelDoModeloDeTranscricao estado={modelo} acao={salvarModeloTranscricao} />
     </div>
   )
 }

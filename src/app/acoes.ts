@@ -11,6 +11,7 @@ import { criar as criarAgenteNoServico, editar as editarAgenteNoServico, excluir
 import {
   salvarChaveDoOpenrouter,
   removerChaveDoOpenrouter,
+  salvarModeloDeTranscricao,
   testarConexaoDoOpenrouter,
 } from '@/servicos/integracoes'
 import {
@@ -207,6 +208,24 @@ export async function removerChaveOpenrouter(): Promise<EstadoDoFormulario> {
   }
   revalidatePath('/configuracoes/integracoes')
   return { sucesso: 'Chave removida.' }
+}
+
+/** Modelo de transcrição de vídeo (FT-08, PR-73): só o admin; vazio ou `restaurar` volta ao padrão. */
+export async function salvarModeloTranscricao(
+  _estado: EstadoDoFormulario,
+  form: FormData,
+): Promise<EstadoDoFormulario> {
+  let restaurado = false
+  try {
+    const admin = await exigirUsuarioAdmin()
+    const modelo = form.get('restaurar') ? '' : form.get('modelo')
+    restaurado = typeof modelo === 'string' && modelo.trim() === ''
+    await salvarModeloDeTranscricao(admin, { modelo: modelo ?? '' })
+  } catch (erro) {
+    return { erro: mensagemDe(erro) }
+  }
+  revalidatePath('/configuracoes/integracoes')
+  return { sucesso: restaurado ? 'Modelo restaurado para o padrão.' : 'Modelo de transcrição salvo.' }
 }
 
 /** Os campos do formulário de agente, como o serviço os valida. */
