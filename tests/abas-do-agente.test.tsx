@@ -5,9 +5,10 @@ import { Icone } from '@/componentes/Icones'
 import { ABAS_DO_AGENTE, hrefDaAba } from '@/componentes/abas-do-agente'
 
 describe('lista de abas do agente', () => {
-  it('tem Configurações, na raiz do agente, Conhecimento (FT-04), Testar (FT-03) e Publicar (FT-06)', () => {
-    expect(ABAS_DO_AGENTE.map((a) => a.rotulo)).toEqual(['Configurações', 'Conhecimento', 'Testar', 'Publicar'])
+  it('tem Configurações, na raiz do agente, Conhecimento (FT-04), Testar (FT-03), Publicar (FT-06) e Canais (FT-07)', () => {
+    expect(ABAS_DO_AGENTE.map((a) => a.rotulo)).toEqual(['Configurações', 'Conhecimento', 'Testar', 'Publicar', 'Canais'])
     expect(hrefDaAba('abc', ABAS_DO_AGENTE[3]!)).toBe('/agentes/abc/publicar')
+    expect(hrefDaAba('abc', ABAS_DO_AGENTE[4]!)).toBe('/agentes/abc/canais')
     expect(hrefDaAba('abc', ABAS_DO_AGENTE[0]!)).toBe('/agentes/abc')
     expect(hrefDaAba('abc', ABAS_DO_AGENTE[1]!)).toBe('/agentes/abc/conhecimento')
     expect(hrefDaAba('abc', ABAS_DO_AGENTE[2]!)).toBe('/agentes/abc/testar')
@@ -21,11 +22,11 @@ describe('lista de abas do agente', () => {
 })
 
 describe('AbasDoAgente', () => {
-  it('lista as quatro abas e marca Conhecimento na página de uma fonte', () => {
+  it('lista as cinco abas e marca Conhecimento na página de uma fonte', () => {
     const html = renderToStaticMarkup(
       <AbasDoAgente agenteId="x" caminhoAtual="/agentes/x/conhecimento/fonte9" />,
     )
-    for (const rotulo of ['Configurações', 'Conhecimento', 'Testar', 'Publicar']) expect(html).toContain(rotulo)
+    for (const rotulo of ['Configurações', 'Conhecimento', 'Testar', 'Publicar', 'Canais']) expect(html).toContain(rotulo)
     const marcadas = html.match(/<a [^>]*aria-current="page"[^>]*>/g) ?? []
     expect(marcadas).toHaveLength(1)
     expect(marcadas[0]).toContain('href="/agentes/x/conhecimento"')
@@ -46,13 +47,13 @@ describe('AbasDoAgente', () => {
     const abas = [
       ...ABAS_DO_AGENTE,
       { rotulo: 'Conversas', caminho: 'conversas' },
-      { rotulo: 'Canais', caminho: 'canais' },
+      { rotulo: 'Histórico', caminho: 'historico' },
     ]
     const html = renderToStaticMarkup(
       <AbasDoAgente agenteId="abc" abas={abas} caminhoAtual="/agentes/abc/conversas" />,
     )
     expect(html).toContain('href="/agentes/abc/conversas"')
-    expect(html).toContain('href="/agentes/abc/canais"')
+    expect(html).toContain('href="/agentes/abc/historico"')
     const marcadas = html.match(/<a [^>]*aria-current="page"[^>]*>/g) ?? []
     expect(marcadas).toHaveLength(1)
     expect(marcadas[0]).toContain('/agentes/abc/conversas')
@@ -62,7 +63,7 @@ describe('AbasDoAgente', () => {
     const html = renderToStaticMarkup(
       <AbasDoAgente
         agenteId="abc"
-        abas={[...ABAS_DO_AGENTE, { rotulo: 'Canais', caminho: 'canais' }]}
+        abas={ABAS_DO_AGENTE}
         caminhoAtual="/agentes/abc/canais"
       />,
     )

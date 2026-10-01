@@ -404,8 +404,8 @@ describe('Aba Testar do agente', () => {
     const html = await r.text()
     expect(r.status).toBe(200)
     const abas = (html.match(/<a [^>]*>/g) ?? []).filter((t) => t.includes('class="aba"'))
-    // Configurações, Conhecimento, Testar e, desde a FT-06, Publicar.
-    expect(abas).toHaveLength(4)
+    // Configurações, Conhecimento, Testar, Publicar (FT-06) e, desde a FT-07, Canais.
+    expect(abas).toHaveLength(5)
     const marcada = abas.filter((t) => t.includes('aria-current="page"'))
     expect(marcada).toHaveLength(1)
     expect(marcada[0]).toContain(`href="/agentes/${agente.id}/testar"`)
@@ -450,6 +450,38 @@ describe('Aba Testar do agente', () => {
       await pedir(`/agentes/${agente.id}`, await cookieDe('comum.rota@teste.local'))
     ).text()
     expect(html).toContain('as conversas')
+  })
+})
+
+describe('Aba Canais do agente (FT-07)', () => {
+  async function agenteDeCanais() {
+    const dono = await prisma.usuario.findFirstOrThrow({ where: { email: 'comum.rota@teste.local' } })
+    return prisma.agente.create({ data: { nome: 'Agente de canais', modelo: 'openai/gpt-4o-mini', criadoPorId: dono.id } })
+  }
+
+  it('sem sessão manda para o login', async () => {
+    const r = await pedir('/agentes/qualquer-id/canais')
+    expect(r.status).toBe(307)
+    expect(r.headers.get('location')).toContain('/entrar')
+  })
+
+  it('agente que não existe dá 404', async () => {
+    const r = await pedir('/agentes/nao-existe/canais', await cookieDe('comum.rota@teste.local'))
+    expect(r.status).toBe(404)
+  })
+
+  it('abre com a aba Canais marcada e o cartão do Telegram ainda não conectado', async () => {
+    const agente = await agenteDeCanais()
+    const r = await pedir(`/agentes/${agente.id}/canais`, await cookieDe('comum.rota@teste.local'))
+    const html = await r.text()
+    expect(r.status).toBe(200)
+    const abas = (html.match(/<a [^>]*>/g) ?? []).filter((t) => t.includes('class="aba"'))
+    const marcada = abas.filter((t) => t.includes('aria-current="page"'))
+    expect(marcada).toHaveLength(1)
+    expect(marcada[0]).toContain(`href="/agentes/${agente.id}/canais"`)
+    expect(html).toContain('Telegram')
+    expect(html).toContain('Não conectado')
+    expect(html).not.toContain('style="')
   })
 })
 
