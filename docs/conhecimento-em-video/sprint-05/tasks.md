@@ -41,18 +41,18 @@ tasks:
   - id: T-05.03
     titulo: "YouTube: baixar a legenda com SSRF"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar a youtube.ts o download da legenda em json3 ou XML com host conferido, um redirect, teto de 5 MB e prazo, devolvendo as falas com tempo."
     arquivos:
       cria: ["tests/youtube-legenda.test.ts"]
-      altera: ["src/lib/youtube.ts"]
+      altera: ["src/lib/youtube.ts", "tests/apoio/youtube-falso.ts"]
     teste_integracao: "Contra o simulado a legenda em json3 e a em XML devolvem as mesmas falas com tempo de inicio e o texto das entidades decodificado."
     teste_funcional: "Uma baseUrl de host fora de youtube.com e recusada sem conexao, um redirect para host fora da lista e recusado, dois redirects em sequencia sao recusados, resposta acima do teto aborta e a legenda lenta estoura o prazo."
     criterio_aceite: "tests/youtube-legenda.test.ts passa e o simulado registra zero conexoes ao host proibido."
     depende_de: ["T-05.02", "T-04.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-05.04
     titulo: "Servico: adicionar YouTube"
     fase: F-05.2
@@ -146,13 +146,13 @@ titulo: "YouTube: baixar a legenda com SSRF"
 objetivo: "Acrescentar a youtube.ts o download da legenda em json3 ou XML com host conferido, um redirect, teto de 5 MB e prazo, devolvendo as falas com tempo."
 arquivos:
   cria: ["tests/youtube-legenda.test.ts"]
-  altera: ["src/lib/youtube.ts"]
+  altera: ["src/lib/youtube.ts", "tests/apoio/youtube-falso.ts"]
 teste_integracao: "Contra o simulado a legenda em json3 e a em XML devolvem as mesmas falas com tempo de inicio e o texto das entidades decodificado."
 teste_funcional: "Uma baseUrl de host fora de youtube.com e recusada sem conexao, um redirect para host fora da lista e recusado, dois redirects em sequencia sao recusados, resposta acima do teto aborta e a legenda lenta estoura o prazo."
 criterio_aceite: "tests/youtube-legenda.test.ts passa e o simulado registra zero conexoes ao host proibido."
 depende_de: ["T-05.02", "T-04.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/youtube-legenda.test.ts, tests/youtube-pagina.test.ts e tests/youtube-falso.test.ts, 24 passed
 ```
 
 ---

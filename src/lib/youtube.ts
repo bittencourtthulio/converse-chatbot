@@ -268,3 +268,111 @@ export function escolherFaixa(faixas: FaixaDeLegenda[]): FaixaDeLegenda | null {
   }
   return null
 }
+
+export interface FalaDoVideo {
+  /** Início da fala, em segundos. */
+  inicio: number
+  /** Duração, em segundos, quando a legenda a informa. */
+  duracao: number | null
+  texto: string
+}
+
+const erroSemLegendas = () =>
+  new ErroDeAplicacao(
+    'Este vídeo não tem legendas disponíveis. Baixe o vídeo e envie o arquivo para transcrever.',
+    422,
+    'sem_legendas',
+  )
+
+const ENTIDADES: Record<string, string> = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'" }
+
+/** O YouTube escapa o XML e, por cima, o apóstrofo (`&amp;#39;`): duas passadas desfazem as duas camadas. */
+function decodificarEntidades(texto: string): string {
+  const passada = (t: string) =>
+    t.replace(/&(#x[0-9a-f]+|#\d+|amp|lt|gt|quot|apos);/gi, (inteiro, corpo: string) => {
+      if (corpo.startsWith('#')) {
+        const codigo = corpo[1]?.toLowerCase() === 'x' ? Number.parseInt(corpo.slice(2), 16) : Number.parseInt(corpo.slice(1), 10)
+        return Number.isInteger(codigo) && codigo > 0 && codigo <= 0x10ffff ? String.fromCodePoint(codigo) : inteiro
+      }
+      return ENTIDADES[corpo.toLowerCase()] ?? inteiro
+    })
+  return passada(passada(texto))
+}
+
+function falasDeJson3(corpo: unknown): FalaDoVideo[] | null {
+  const eventos = (corpo as { events?: unknown })?.events
+  if (!Array.isArray(eventos)) return null
+  const falas: FalaDoVideo[] = []
+  for (const e of eventos as Array<{ tStartMs?: unknown; dDurationMs?: unknown; segs?: Array<{ utf8?: unknown }> }>) {
+    if (!Array.isArray(e?.segs)) continue
+    const texto = e.segs.map((s) => (typeof s?.utf8 === 'string' ? s.utf8 : '')).join('').replace(/\s+/g, ' ').trim()
+    if (texto === '') continue
+    falas.push({
+      inicio: Number(e.tStartMs) / 1000 || 0,
+      duracao: Number.isFinite(Number(e.dDurationMs)) && e.dDurationMs !== undefined ? Number(e.dDurationMs) / 1000 : null,
+      texto,
+    })
+  }
+  return falas
+}
+
+function falasDeXml(xml: string): FalaDoVideo[] {
+  const falas: FalaDoVideo[] = []
+  for (const m of xml.matchAll(/<text\b([^>]*)>([\s\S]*?)<\/text>/g)) {
+    const atributos = m[1] ?? ''
+    const inicio = Number(/\bstart="([^"]*)"/.exec(atributos)?.[1])
+    const duracao = Number(/\bdur="([^"]*)"/.exec(atributos)?.[1])
+    const texto = decodificarEntidades((m[2] ?? '').replace(/<[^>]*>/g, '')).replace(/\s+/g, ' ').trim()
+    if (texto === '') continue
+    falas.push({ inicio: Number.isFinite(inicio) ? inicio : 0, duracao: Number.isFinite(duracao) ? duracao : null, texto })
+  }
+  return falas
+}
+
+/**
+ * Baixa o texto de uma faixa, pedindo `fmt=json3` e aceitando também XML. O
+ * destino é conferido antes de conectar e a legenda vazia é `sem_legendas`.
+ */
+export async function baixarLegenda(faixa: FaixaDeLegenda, opcoes: OpcoesDeLeitura = {}): Promise<FalaDoVideo[]> {
+  let endereco: URL
+  try {
+    endereco = new URL(faixa.baseUrl)
+  } catch {
+    throw erroDeFormato()
+  }
+  endereco.searchParams.set('fmt', 'json3')
+  const corpo = await lerComLimite(endereco.toString(), {
+    tetoBytes: opcoes.tetoDaLegendaBytes ?? TETO_DA_LEGENDA_BYTES,
+    prazoMs: opcoes.prazoMs ?? PRAZO_DO_YOUTUBE_MS,
+  })
+  let falas: FalaDoVideo[] | null = null
+  try {
+    falas = falasDeJson3(JSON.parse(corpo))
+  } catch {
+    falas = null
+  }
+  falas ??= falasDeXml(corpo)
+  if (falas.length === 0) throw erroSemLegendas()
+  return falas
+}
+
+export interface LegendasDoVideo {
+  id: string
+  titulo: string
+  duracaoSegundos: number | null
+  idioma: string
+  automatica: boolean
+  falas: FalaDoVideo[]
+}
+
+/** Da URL do usuário às falas da legenda preferida: id, página, faixa e download (PR-75). */
+export async function obterLegendas(url: unknown, opcoes: OpcoesDeLeitura = {}): Promise<LegendasDoVideo> {
+  const id = extrairIdDoYoutube(url)
+  const pagina = await obterPaginaDoVideo(id, opcoes)
+  const faixa = escolherFaixa(pagina.faixas)
+  if (!faixa) throw erroSemLegendas()
+  const falas = await baixarLegenda(faixa, opcoes)
+  const ultima = falas.at(-1)
+  const duracao = pagina.duracaoSegundos ?? (ultima ? Math.ceil(ultima.inicio + (ultima.duracao ?? 0)) : null)
+  return { id, titulo: pagina.titulo, duracaoSegundos: duracao, idioma: faixa.idioma, automatica: faixa.automatica, falas }
+}

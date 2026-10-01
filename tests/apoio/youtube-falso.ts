@@ -25,6 +25,7 @@
  *   latenciaMs, latenciaDaLegendaMs   atrasos (teste de prazo)
  *   paginaQuebrada         a página não traz `ytInitialPlayerResponse` (formato mudou)
  *   statusDaPagina         status HTTP da página (padrão 200)
+ *   ignorarFmt             serve a legenda em XML mesmo quando o pedido traz `fmt=json3`
  *
  * Estado observável: `requisicoes` (caminho, consulta e cabeçalho host).
  */
@@ -66,6 +67,7 @@ export interface OpcoesDoYoutubeFalso {
   latenciaDaLegendaMs?: number
   paginaQuebrada?: boolean
   statusDaPagina?: number
+  ignorarFmt?: boolean
 }
 
 export interface RequisicaoDoYoutube {
@@ -216,7 +218,7 @@ export async function iniciarYoutubeFalso(inicial: OpcoesDoYoutubeFalso = {}): P
         res,
         url.searchParams.get('v') ?? '',
         Number(url.searchParams.get('track') ?? 0),
-        url.searchParams.get('fmt') === 'json3',
+        url.searchParams.get('fmt') === 'json3' && !opcoes.ignorarFmt,
       )
     }
     res.writeHead(404)
