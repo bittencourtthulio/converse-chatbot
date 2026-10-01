@@ -73,6 +73,101 @@ const FONTE_DE_EXEMPLO = {
   ].join('\n\n'),
 }
 
+// Conversas fictícias do agente de exemplo (FT-09, PR-84, PR-25): uma do painel, do usuário de
+// demonstração, e outra do widget, de um visitante inventado. Id fixo e criação só se a
+// conversa não existe (idempotente). As respostas citam a fonte de exemplo com um trecho
+// real dela, para a tela de Conversas mostrar as fontes. Nenhum dado real.
+const MODELO_DE_EXEMPLO = 'openai/gpt-4o-mini'
+const CONVERSAS_DE_EXEMPLO = [
+  {
+    id: 'conversa-de-exemplo-painel',
+    canal: 'painel',
+    usuarioEmail: 'usuario@exemplo.local',
+    identificadorExterno: null,
+    horasAtras: 3,
+    pares: [
+      {
+        pergunta: 'Qual é o horário de atendimento da loja?',
+        resposta:
+          'A Loja Exemplo atende de segunda a sexta, das 9h às 18h, e aos sábados, das 9h às 13h. Não abrimos aos domingos e feriados [1].',
+        termo: 'Horário de atendimento',
+      },
+      {
+        pergunta: 'E se eu quiser trocar um produto?',
+        resposta:
+          'Você pode trocar ou devolver qualquer produto em até 7 dias corridos depois da compra, sem uso, na embalagem original e com a nota fiscal [1].',
+        termo: 'Política de troca',
+      },
+    ],
+  },
+  {
+    id: 'conversa-de-exemplo-widget',
+    canal: 'widget',
+    usuarioEmail: null,
+    identificadorExterno: 'visitante-demo-0001-abcdef',
+    horasAtras: 27,
+    pares: [
+      {
+        pergunta: 'Vocês têm frete grátis?',
+        resposta:
+          'Pedidos acima de R$ 150,00 têm frete grátis para a capital. Nas demais cidades o frete é calculado no carrinho [1].',
+        termo: 'Entrega',
+      },
+      {
+        pergunta: 'Aceitam Pix?',
+        resposta:
+          'Sim! Aceitamos Pix com 5% de desconto, além de cartão de crédito em até 6 parcelas sem juros, cartão de débito e boleto bancário [1].',
+        termo: 'Formas de pagamento',
+      },
+    ],
+  },
+]
+
+/** O trecho da fonte de exemplo que contém o termo, como a lista de fontes o guarda (até 300 caracteres). */
+function trechoDeExemplo(termo: string): { posicao: number; trechoTexto: string } {
+  const trechos = dividirEmTrechos(FONTE_DE_EXEMPLO.texto)
+  const indice = Math.max(0, trechos.findIndex((t) => t.includes(termo)))
+  const limpo = (trechos[indice] ?? '').replace(/\s+/g, ' ').trim()
+  return { posicao: indice + 1, trechoTexto: limpo.length <= 300 ? limpo : `${limpo.slice(0, 299).trimEnd()}…` }
+}
+
+async function semearConversas(): Promise<void> {
+  for (const c of CONVERSAS_DE_EXEMPLO) {
+    if (await prisma.conversa.findUnique({ where: { id: c.id } })) continue
+    const usuario = c.usuarioEmail ? await prisma.usuario.findUniqueOrThrow({ where: { email: c.usuarioEmail } }) : null
+    const inicio = Date.now() - c.horasAtras * 3_600_000
+    let segundo = 0
+    const mensagens = c.pares.flatMap((par) => {
+      const trecho = trechoDeExemplo(par.termo)
+      const fontes = JSON.stringify([
+        {
+          fonteId: FONTE_DE_EXEMPLO.id,
+          titulo: FONTE_DE_EXEMPLO.titulo,
+          citada: true,
+          trechos: [{ n: 1, posicao: trecho.posicao, trechoTexto: trecho.trechoTexto }],
+        },
+      ])
+      const pergunta = { papel: 'user', conteudo: par.pergunta, criadoEm: new Date(inicio + segundo++ * 20_000) }
+      const resposta = { papel: 'assistant', conteudo: par.resposta, modelo: MODELO_DE_EXEMPLO, fontes, criadoEm: new Date(inicio + segundo++ * 20_000) }
+      return [pergunta, resposta]
+    })
+    const ultima = mensagens[mensagens.length - 1]?.criadoEm ?? new Date(inicio)
+    await prisma.conversa.create({
+      data: {
+        id: c.id,
+        agenteId: AGENTE_DE_EXEMPLO.id,
+        canal: c.canal,
+        identificadorExterno: c.identificadorExterno,
+        titulo: c.pares[0]?.pergunta.slice(0, 60) ?? null,
+        criadoPorId: usuario?.id ?? null,
+        criadoEm: new Date(inicio),
+        atualizadoEm: ultima,
+        mensagens: { create: mensagens },
+      },
+    })
+  }
+}
+
 async function semear() {
   if (process.env.NODE_ENV === 'production') {
     throw new Error(
@@ -146,6 +241,8 @@ async function semear() {
     ])
   }
 
+  await semearConversas()
+
   console.log('Seed de demonstração aplicada:')
   for (const conta of DEMONSTRACAO) {
     console.log(`  ${conta.papel.padEnd(8)} ${conta.email}  senha: ${conta.senha}`)
@@ -153,6 +250,7 @@ async function semear() {
   console.log(`  agente   ${AGENTE_DE_EXEMPLO.nome} (sem chave do OpenRouter)`)
   console.log(`  fonte    ${FONTE_DE_EXEMPLO.titulo} (já processada)`)
   console.log('  chat     publicado no agente de exemplo (aba Publicar)')
+  console.log('  conversa duas conversas fictícias no agente de exemplo (painel e widget)')
 }
 
 semear()

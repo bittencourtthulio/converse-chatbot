@@ -11,7 +11,7 @@ tasks:
   - id: T-06.01
     titulo: "Conversas ficticias na seed"
     fase: F-06.1
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar ao agente de exemplo duas conversas ficticias, uma do painel e outra do widget, com fontes plausiveis."
     arquivos:
       cria: ["tests/seed-conversas.test.ts", "docs/historico-de-conversas/sprint-06/sprint.md", "docs/historico-de-conversas/sprint-06/fases.md", "docs/historico-de-conversas/sprint-06/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/seed-conversas.test.ts e tests/seed.test.ts passam."
     depende_de: ["T-05.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-06.02
     titulo: "Verificacao no navegador dos tres canais"
     fase: F-06.1
@@ -88,7 +88,7 @@ teste_funcional: "Uma conversa e do painel com o usuario de demonstracao, a outr
 criterio_aceite: "tests/seed-conversas.test.ts e tests/seed.test.ts passam."
 depende_de: ["T-05.04"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/seed-conversas e seed 22 passed
 ```
 
 ---
