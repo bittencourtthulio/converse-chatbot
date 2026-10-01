@@ -25,6 +25,7 @@ atencao:
 portao: null
 desvios:
   - "T-03.03: src/lib/midia-formatos.ts (mimeDeMidia) alterado depois da T-02.03, e tests/conhecimento-paginas.test.tsx e tests/painel-de-conhecimento.test.tsx ganharam os quatro campos novos de FonteVisivel para o tsc passar"
+  - "T-06.01: nasceu src/lib/youtube-url.ts (parte pura do YouTube, sem ambiente) porque o navegador valida o link ao digitar e src/lib/youtube.ts importa ambiente.ts; youtube.ts reexporta as funcoes. A opcao Video em opcoes-de-fonte.ts passou para a T-06.02 para nao deixar tests/adicionar-fontes.test.tsx vermelho entre as duas tasks"
   - "T-05.06: src/lib/youtube.ts (T-05.01) ganhou tituloProvisorioDoYoutube, movido de fontes.ts para evitar importacao circular, e src/servicos/fontes.ts (T-05.04) passou a importa-lo"
   - "T-05.03: tests/apoio/youtube-falso.ts (T-01.05) ganhou a opcao ignorarFmt para servir XML mesmo com fmt=json3, usada no teste da legenda em XML"
   - "T-04.05: src/servicos/fontes-fila.ts ganhou a opcao segundosPorParte (so teste: partes de 10 segundos) e reprocessar zera etapa e progresso"
@@ -63,3 +64,4 @@ Branch `feat/conhecimento-em-video`, aberta em 2026-09-30 a partir de `feat/cana
 - T-04.05: src/servicos/fontes-fila.ts ganhou a opcao segundosPorParte (so teste: partes de 10 segundos) e reprocessar zera etapa e progresso
 - T-05.03: tests/apoio/youtube-falso.ts (T-01.05) ganhou a opcao ignorarFmt para servir XML mesmo com fmt=json3, usada no teste da legenda em XML
 - T-05.06: src/lib/youtube.ts (T-05.01) ganhou tituloProvisorioDoYoutube, movido de fontes.ts para evitar importacao circular, e src/servicos/fontes.ts (T-05.04) passou a importa-lo
+- T-06.01: nasceu src/lib/youtube-url.ts (parte pura do YouTube, sem ambiente) porque o navegador valida o link ao digitar e src/lib/youtube.ts importa ambiente.ts; youtube.ts reexporta as funcoes. A opcao Video em opcoes-de-fonte.ts passou para a T-06.02 para nao deixar tests/adicionar-fontes.test.tsx vermelho entre as duas tasks

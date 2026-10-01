@@ -114,6 +114,12 @@ const FORMAS: Record<NomeDeIcone, React.ReactNode> = {
     </>
   ),
   voltar: <path d="m15 18-6-6 6-6" />,
+  video: (
+    <>
+      <rect x="2" y="5" width="14" height="14" rx="2" />
+      <path d="m16 10 6-3v10l-6-3" />
+    </>
+  ),
   conversa: <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z" />,
 }
 

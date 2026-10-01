@@ -6,7 +6,7 @@ trabalho_id: conhecimento-em-video
 origem_buildx: plataforma-chatbot-ia
 feature_id: FT-08
 sprint_id: sprint-06
-atualizado_em: 2026-09-30
+atualizado_em: 2026-10-01
 fases:
   - id: F-06.1
     titulo: "Logica e painel do video"
@@ -49,7 +49,7 @@ flowchart LR
   classDef pendente  fill:#eceff1,stroke:#78909c,color:#263238
   classDef critico   stroke-width:3px
 
-  class T_06_01 pendente
+  class T_06_01 concluida
   class T_06_02 pendente
   class T_06_03 pendente
   class T_06_04 pendente

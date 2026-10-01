@@ -6,23 +6,23 @@ trabalho_id: conhecimento-em-video
 origem_buildx: plataforma-chatbot-ia
 feature_id: FT-08
 sprint_id: sprint-06
-atualizado_em: 2026-09-30
+atualizado_em: 2026-10-01
 tasks:
   - id: T-06.01
     titulo: "Logica pura e envio do video"
     fase: F-06.1
-    status: pendente
+    status: concluida
     objetivo: "Criar video-logica.ts (validacao de arquivo e URL no navegador, duracao, texto de etapa, aviso de creditos) e enviar-video.ts (XMLHttpRequest com corpo bruto), o icone de video e a opcao Video."
     arquivos:
       cria: ["src/componentes/video-logica.ts", "src/componentes/enviar-video.ts", "tests/video-logica.test.ts", "docs/conhecimento-em-video/sprint-06/sprint.md", "docs/conhecimento-em-video/sprint-06/fases.md", "docs/conhecimento-em-video/sprint-06/tasks.md"]
-      altera: ["src/componentes/opcoes-de-fonte.ts", "src/componentes/itens-de-menu.ts", "src/componentes/Icones.tsx"]
+      altera: ["src/componentes/opcoes-de-fonte.ts", "src/componentes/itens-de-menu.ts", "src/componentes/Icones.tsx", "src/lib/youtube-url.ts", "src/lib/youtube.ts"]
     teste_integracao: "A lista de opcoes tem Video depois de Texto com o icone novo e a interpretacao da resposta do envio traduz 202, 413, 415 e 422 em mensagens."
     teste_funcional: "Um arquivo txt acima do limite ou vazio e recusado no navegador com motivo, uma URL do YouTube valida e aceita e uma de outro host recusada, 3725 segundos viram 1h 02min e a etapa Transcrevendo parte 2 de 5 vira o texto com percentual."
     criterio_aceite: "tests/video-logica.test.ts e tests/opcoes-de-fonte.test.ts passam."
     depende_de: ["T-03.04", "T-05.05"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-06.02
     titulo: "Painel de video com duas abas"
     fase: F-06.1
@@ -82,13 +82,13 @@ titulo: "Logica pura e envio do video"
 objetivo: "Criar video-logica.ts (validacao de arquivo e URL no navegador, duracao, texto de etapa, aviso de creditos) e enviar-video.ts (XMLHttpRequest com corpo bruto), o icone de video e a opcao Video."
 arquivos:
   cria: ["src/componentes/video-logica.ts", "src/componentes/enviar-video.ts", "tests/video-logica.test.ts", "docs/conhecimento-em-video/sprint-06/sprint.md", "docs/conhecimento-em-video/sprint-06/fases.md", "docs/conhecimento-em-video/sprint-06/tasks.md"]
-  altera: ["src/componentes/opcoes-de-fonte.ts", "src/componentes/itens-de-menu.ts", "src/componentes/Icones.tsx"]
+  altera: ["src/componentes/opcoes-de-fonte.ts", "src/componentes/itens-de-menu.ts", "src/componentes/Icones.tsx", "src/lib/youtube-url.ts", "src/lib/youtube.ts"]
 teste_integracao: "A lista de opcoes tem Video depois de Texto com o icone novo e a interpretacao da resposta do envio traduz 202, 413, 415 e 422 em mensagens."
 teste_funcional: "Um arquivo txt acima do limite ou vazio e recusado no navegador com motivo, uma URL do YouTube valida e aceita e uma de outro host recusada, 3725 segundos viram 1h 02min e a etapa Transcrevendo parte 2 de 5 vira o texto com percentual."
 criterio_aceite: "tests/video-logica.test.ts e tests/opcoes-de-fonte.test.ts passam."
 depende_de: ["T-03.04", "T-05.05"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/video-logica.test.ts, tests/adicionar-fontes.test.tsx, tests/menu.test.ts, tests/componentes.test.tsx e tests/youtube-url.test.ts, 100+ passed
 ```
 
 ---

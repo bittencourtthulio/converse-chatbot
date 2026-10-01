@@ -27,7 +27,7 @@ export type NomeDeIcone =
   | 'upload'
   | 'relogio'
   | 'atualizar'
-  | 'voltar'
+  | 'voltar' | 'video'
 
 export interface ItemDeMenu {
   rotulo: string
