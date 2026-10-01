@@ -13,9 +13,9 @@ prisma/test.db*
 .env
 .env.local
 
-# arquivos enviados pelos usuários e backups locais (PR-11, PR-20)
+# arquivos enviados pelos usuários e backups locais (PR-11, PR-20); só a pasta da raiz: src/app/api/backups é código
 storage/
-backups/
+/backups/
 
 .DS_Store
 *.tsbuildinfo

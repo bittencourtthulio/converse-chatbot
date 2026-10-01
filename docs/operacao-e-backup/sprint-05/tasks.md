@@ -86,18 +86,18 @@ tasks:
   - id: T-05.06
     titulo: "Download autenticado do backup"
     fase: F-05.3
-    status: pendente
+    status: concluida
     objetivo: "Criar a rota GET /api/backups/[nome] que entrega o arquivo do BACKUP_DIR ao admin com cabecalhos seguros."
     arquivos:
       cria: ["src/app/api/backups/[nome]/route.ts", "tests/backups-rota.test.ts"]
-      altera: []
+      altera: [".gitignore"]
     teste_integracao: "Contra o servidor de producao, admin autenticado baixa um backup existente com 200, Content-Type application/gzip, Content-Disposition attachment com o nome do arquivo, Content-Length igual ao tamanho, no-store e nosniff, e os bytes batem."
     teste_funcional: "Sem sessao a rota responde 401 em JSON, usuario comum 403, nome inexistente 404 e nome com .. ou barra codificada 404 sem ler arquivo fora do BACKUP_DIR."
     criterio_aceite: "tests/backups-rota.test.ts passa."
     depende_de: ["T-05.05"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-05.07
     titulo: "Gerar, listar e baixar backup na tela Sistema"
     fase: F-05.3
@@ -210,13 +210,13 @@ titulo: "Download autenticado do backup"
 objetivo: "Criar a rota GET /api/backups/[nome] que entrega o arquivo do BACKUP_DIR ao admin com cabecalhos seguros."
 arquivos:
   cria: ["src/app/api/backups/[nome]/route.ts", "tests/backups-rota.test.ts"]
-  altera: []
+  altera: [".gitignore"]
 teste_integracao: "Contra o servidor de producao, admin autenticado baixa um backup existente com 200, Content-Type application/gzip, Content-Disposition attachment com o nome do arquivo, Content-Length igual ao tamanho, no-store e nosniff, e os bytes batem."
 teste_funcional: "Sem sessao a rota responde 401 em JSON, usuario comum 403, nome inexistente 404 e nome com .. ou barra codificada 404 sem ler arquivo fora do BACKUP_DIR."
 criterio_aceite: "tests/backups-rota.test.ts passa."
 depende_de: ["T-05.05"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/backups-rota.test.ts 4 passed contra o build de produção; achado: o .gitignore ignorava backups/ em qualquer nível e escondia src/app/api/backups, agora só /backups/
 ```
 
 ---
