@@ -1,7 +1,8 @@
 // GET /api/publico/agentes/[id]/conversa: a conversa do visitante para retomar
 // ao reabrir o chat (PR-56). Sem sessão; o visitante vem no cabeçalho
 // `X-Visitante-Id` (nunca na URL, que vai para log de acesso). Devolve só as
-// últimas 50 mensagens da conversa mais recente dele.
+// últimas 50 mensagens da conversa mais recente dele, com o mesmo limite de uso por
+// IP e agente do POST e do DELETE (FT-12, PR-56).
 //
 // DELETE (FT-10, PR-90): o visitante apaga a própria conversa com este agente. Mesmo cabeçalho
 // do visitante, `Origin` da plataforma como no POST, agente ativo e limite de uso.
@@ -14,7 +15,9 @@ export const dynamic = 'force-dynamic'
 export async function GET(request: Request, contexto: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await contexto.params
-    const resultado = await retomarConversaDoVisitante(id, request.headers.get('x-visitante-id'))
+    const resultado = await retomarConversaDoVisitante(id, request.headers.get('x-visitante-id'), {
+      ip: await ipDoCliente(),
+    })
     return Response.json(resultado, { headers: semCache })
   } catch (erro) {
     return erroPublico(erro)

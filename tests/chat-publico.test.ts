@@ -212,13 +212,16 @@ describe('reduzirFontes', () => {
   })
 })
 
+/** A leitura pública exige o IP (FT-12): cada chamada ganha um limitador novo para não gastar o de outra. */
+const opcoesDeLeitura = () => ({ ip: 'ip-de-teste', limitador: criarLimitador() })
+
 describe('retomarConversaDoVisitante', () => {
   it('sem conversa devolve nulo; agente inativo dá 404; id inválido dá 422', async () => {
     const { agente } = await cenarioPublico()
-    expect(await retomarConversaDoVisitante(agente.id, VISITANTE_A)).toEqual({ conversa: null })
-    await expect(retomarConversaDoVisitante(agente.id, 'curto')).rejects.toMatchObject({ status: 422 })
+    expect(await retomarConversaDoVisitante(agente.id, VISITANTE_A, opcoesDeLeitura())).toEqual({ conversa: null })
+    await expect(retomarConversaDoVisitante(agente.id, 'curto', opcoesDeLeitura())).rejects.toMatchObject({ status: 422 })
     const { agente: inativo } = await cenarioPublico({ ativo: false })
-    await expect(retomarConversaDoVisitante(inativo.id, VISITANTE_A)).rejects.toMatchObject({ status: 404 })
+    await expect(retomarConversaDoVisitante(inativo.id, VISITANTE_A, opcoesDeLeitura())).rejects.toMatchObject({ status: 404 })
   })
 
   it('devolve só a conversa do próprio visitante, com as últimas 50 mensagens em ordem e truncada', async () => {
@@ -235,7 +238,7 @@ describe('retomarConversaDoVisitante', () => {
       })),
     })
     await prisma.mensagem.create({ data: { conversaId: alheia.id, papel: 'user', conteudo: 'do outro visitante' } })
-    const r = await retomarConversaDoVisitante(agente.id, VISITANTE_A)
+    const r = await retomarConversaDoVisitante(agente.id, VISITANTE_A, opcoesDeLeitura())
     if (!r.conversa) throw new Error('sem conversa')
     expect(r.conversa.conversaId).toBe(minha.id)
     expect(r.conversa.truncada).toBe(true)
@@ -249,7 +252,7 @@ describe('retomarConversaDoVisitante', () => {
     const { agente } = await cenarioPublico()
     await criarBase({ agenteId: agente.id, titulo: 'Política de troca', textos: ['Aceitamos a troca em até sete dias corridos.'] })
     await turno(agente.id)
-    const r = await retomarConversaDoVisitante(agente.id, VISITANTE_A)
+    const r = await retomarConversaDoVisitante(agente.id, VISITANTE_A, opcoesDeLeitura())
     if (!r.conversa) throw new Error('sem conversa')
     expect(r.conversa.truncada).toBe(false)
     expect(r.conversa.mensagens.map((m) => m.papel)).toEqual(['user', 'assistant'])

@@ -26,7 +26,7 @@ tasks:
   - id: T-04.02
     titulo: "Limite de uso na leitura publica da conversa"
     fase: F-04.1
-    status: pendente
+    status: concluida
     objetivo: "Fazer o GET publico da conversa passar o IP e exigir o limite por IP e agente antes de ler o banco."
     arquivos:
       cria: ["tests/publico-conversa-limite.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "npm run build executado depois da ultima mudanca em src/, tests/publico-conversa-limite.test.ts e os testes publicos existentes passam e o novo falha quando o limite sai da leitura (mutacao registrada) e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
     depende_de: ["T-04.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
   - id: T-04.03
     titulo: "auditoria.listar confere o papel admin"
     fase: F-04.2
@@ -120,7 +120,7 @@ teste_funcional: "A 11a leitura do mesmo IP e agente no minuto recebe 429 com Re
 criterio_aceite: "npm run build executado depois da ultima mudanca em src/, tests/publico-conversa-limite.test.ts e os testes publicos existentes passam e o novo falha quando o limite sai da leitura (mutacao registrada) e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
 depende_de: ["T-04.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 257 arquivos, 2950 passed, 9 skipped, 0 failed; build antes
 ```
 
 ---

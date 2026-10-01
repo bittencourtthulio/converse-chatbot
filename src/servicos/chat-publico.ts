@@ -166,12 +166,21 @@ export interface ConversaRetomadaPublica {
 /**
  * A conversa mais recente do visitante com o agente, com as últimas 50
  * mensagens (PR-56); `{conversa: null}` se ele ainda não conversou. Só a dele.
+ * Sujeita ao limite de uso por IP e agente, como as demais chamadas públicas.
  */
 export async function retomarConversaDoVisitante(
   agenteId: string,
   visitanteIdBruto: unknown,
+  opcoes: {
+    /** O IP de quem chama (`ipDoCliente`); com `TRUST_PROXY` desligado é fixo. */
+    ip: string
+    /** Limitador de IP; o de teste recebe relógio injetado. */
+    limitador?: Limitador
+  },
 ): Promise<{ conversa: ConversaRetomadaPublica | null }> {
   const visitanteId = validarVisitanteId(visitanteIdBruto)
+  // A leitura é pública e vai ao banco sem sessão: mesmo limite por IP e agente do POST e do DELETE (PR-56, PR-57).
+  exigirLimiteDeIp({ ip: opcoes.ip, agenteId }, opcoes.limitador)
   await exigirAgenteAtivo(agenteId)
   const [conversa] = await listarConversas({ agenteId, canal: 'widget', identificadorExterno: visitanteId, limite: 1 })
   if (!conversa) return { conversa: null }
