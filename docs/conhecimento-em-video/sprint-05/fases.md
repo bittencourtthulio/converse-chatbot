@@ -10,14 +10,14 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-05.1
     titulo: "Biblioteca do YouTube"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Id, pagina, faixas e legenda com SSRF testados contra o simulado."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-05.01", "T-05.02", "T-05.03"]
   - id: F-05.2
     titulo: "Servico, rota e fila"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Servico, rota e fila do YouTube testados."
     paralelizavel: false
     paralela_com: []
