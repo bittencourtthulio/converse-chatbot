@@ -1018,7 +1018,7 @@ textarea { min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: verti
 }
 .fontes-titulo { margin: 0; color: var(--fg-muted); font-weight: 650; letter-spacing: 0.02em; }
 .fontes-lista { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
-.fonte-item { display: flex; flex-direction: column; gap: 6px; max-width: 100%; }
+.fontes-lista .fonte-item { display: flex; flex-direction: column; gap: 6px; max-width: 100%; }
 
 .chip-de-fonte {
   display: inline-flex;

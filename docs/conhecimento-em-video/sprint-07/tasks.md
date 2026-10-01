@@ -6,23 +6,23 @@ trabalho_id: conhecimento-em-video
 origem_buildx: plataforma-chatbot-ia
 feature_id: FT-08
 sprint_id: sprint-07
-atualizado_em: 2026-09-30
+atualizado_em: 2026-10-01
 tasks:
   - id: T-07.01
     titulo: "Verificacao ponta a ponta no navegador"
     fase: F-07.1
-    status: pendente
+    status: concluida
     objetivo: "Subir o app de producao, o OpenRouter falso e o YouTube falso, enviar uma midia gerada com ffmpeg e um link do YouTube falso, ver barra, etapa e pronto e achar o trecho na busca."
     arquivos:
       cria: ["tests/apoio/servir-youtube-falso.ts", "docs/conhecimento-em-video/VERIFICACAO-VISUAL.md", "docs/conhecimento-em-video/sprint-07/sprint.md", "docs/conhecimento-em-video/sprint-07/fases.md", "docs/conhecimento-em-video/sprint-07/tasks.md"]
-      altera: []
+      altera: ["tests/apoio/servir-falso.ts", "src/estilos/global.css"]
     teste_integracao: "O roteiro roda contra o app de producao e os dois simulados e o OpenRouter falso registra um pedido por parte com input_audio e o YouTube falso registra a pagina e a legenda."
     teste_funcional: "A tela mostra a barra de envio, a etapa de transcricao e o selo Pronto das duas fontes, Testar busca acha uma frase da transcricao e do YouTube e a varredura dos logs do servidor nao acha texto transcrito."
     criterio_aceite: "docs/conhecimento-em-video/VERIFICACAO-VISUAL.md lista o que foi visto e o que nao pode ser visto."
     depende_de: ["T-06.04", "T-05.06", "T-04.05"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-07.02
     titulo: "Convencoes, lacunas e README"
     fase: F-07.1
@@ -67,13 +67,13 @@ titulo: "Verificacao ponta a ponta no navegador"
 objetivo: "Subir o app de producao, o OpenRouter falso e o YouTube falso, enviar uma midia gerada com ffmpeg e um link do YouTube falso, ver barra, etapa e pronto e achar o trecho na busca."
 arquivos:
   cria: ["tests/apoio/servir-youtube-falso.ts", "docs/conhecimento-em-video/VERIFICACAO-VISUAL.md", "docs/conhecimento-em-video/sprint-07/sprint.md", "docs/conhecimento-em-video/sprint-07/fases.md", "docs/conhecimento-em-video/sprint-07/tasks.md"]
-  altera: []
+  altera: ["tests/apoio/servir-falso.ts", "src/estilos/global.css"]
 teste_integracao: "O roteiro roda contra o app de producao e os dois simulados e o OpenRouter falso registra um pedido por parte com input_audio e o YouTube falso registra a pagina e a legenda."
 teste_funcional: "A tela mostra a barra de envio, a etapa de transcricao e o selo Pronto das duas fontes, Testar busca acha uma frase da transcricao e do YouTube e a varredura dos logs do servidor nao acha texto transcrito."
 criterio_aceite: "docs/conhecimento-em-video/VERIFICACAO-VISUAL.md lista o que foi visto e o que nao pode ser visto."
 depende_de: ["T-06.04", "T-05.06", "T-04.05"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/conhecimento-estilos.test.ts, tests/fontes-da-resposta.test.tsx e tests/tokens.test.ts, 56 passed; verificação manual no navegador registrada
 ```
 
 ---

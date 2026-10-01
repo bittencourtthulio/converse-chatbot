@@ -6,7 +6,7 @@ trabalho_id: conhecimento-em-video
 origem_buildx: plataforma-chatbot-ia
 feature_id: FT-08
 sprint_id: sprint-07
-atualizado_em: 2026-09-30
+atualizado_em: 2026-10-01
 fases:
   - id: F-07.1
     titulo: "Verificacao e documentacao"
@@ -47,7 +47,7 @@ flowchart LR
   classDef pendente  fill:#eceff1,stroke:#78909c,color:#263238
   classDef critico   stroke-width:3px
 
-  class T_07_01 pendente
+  class T_07_01 concluida
   class T_07_02 pendente
   class T_07_03 pendente
 ```

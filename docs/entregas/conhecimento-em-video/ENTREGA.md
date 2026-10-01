@@ -25,6 +25,7 @@ atencao:
 portao: null
 desvios:
   - "T-03.03: src/lib/midia-formatos.ts (mimeDeMidia) alterado depois da T-02.03, e tests/conhecimento-paginas.test.tsx e tests/painel-de-conhecimento.test.tsx ganharam os quatro campos novos de FonteVisivel para o tsc passar"
+  - "T-07.01: tests/apoio/servir-falso.ts (transcricoes por parte e latencia, para o roteiro de QA) e src/estilos/global.css (a regra .fonte-item da FT-05 passou a valer so em .fontes-lista; achado da verificacao: a lista de fontes da aba Conhecimento aparecia empilhada e centralizada)"
   - "T-06.04: tests/acoes.test.ts nao existe; a acao foi provada em tests/painel-modelo-transcricao.test.tsx (mesmo padrao de tests/telegram-acoes.test.ts) e as acoes existentes seguem cobertas por tests/acoes-de-agente.test.ts, tests/telegram-acoes.test.ts e tests/publicar-acao.test.ts"
   - "T-06.03: tests/conhecimento-logica.test.ts alterado (icone do tipo video e a lista de opcoes com Video); nao havia src/componentes/fonte-da-tela.ts a alterar: os campos novos de FonteVisivel ja atravessam serializarFonte"
   - "T-06.02: tests/adicionar-fontes.test.tsx, tests/painel-de-conhecimento.test.tsx e tests/conhecimento-estilos.test.ts foram alterados (novas props de video, tres abas, novos componentes na lista de classes conferidas); a opcao Video em opcoes-de-fonte.ts entrou nesta task"
@@ -71,3 +72,4 @@ Branch `feat/conhecimento-em-video`, aberta em 2026-09-30 a partir de `feat/cana
 - T-06.02: tests/adicionar-fontes.test.tsx, tests/painel-de-conhecimento.test.tsx e tests/conhecimento-estilos.test.ts foram alterados (novas props de video, tres abas, novos componentes na lista de classes conferidas); a opcao Video em opcoes-de-fonte.ts entrou nesta task
 - T-06.03: tests/conhecimento-logica.test.ts alterado (icone do tipo video e a lista de opcoes com Video); nao havia src/componentes/fonte-da-tela.ts a alterar: os campos novos de FonteVisivel ja atravessam serializarFonte
 - T-06.04: tests/acoes.test.ts nao existe; a acao foi provada em tests/painel-modelo-transcricao.test.tsx (mesmo padrao de tests/telegram-acoes.test.ts) e as acoes existentes seguem cobertas por tests/acoes-de-agente.test.ts, tests/telegram-acoes.test.ts e tests/publicar-acao.test.ts
+- T-07.01: tests/apoio/servir-falso.ts (transcricoes por parte e latencia, para o roteiro de QA) e src/estilos/global.css (a regra .fonte-item da FT-05 passou a valer so em .fontes-lista; achado da verificacao: a lista de fontes da aba Conhecimento aparecia empilhada e centralizada)
