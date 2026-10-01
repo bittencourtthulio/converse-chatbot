@@ -858,3 +858,51 @@ describe('convenções da sessão e do acesso (FT-12)', () => {
     }
   })
 })
+
+describe('fechamento da sessão e do acesso endurecidos (FT-12)', () => {
+  it('o MAPA marca a FT-12 entregue com sprints, testes e PR local, e o projeto conta 12 entregues', () => {
+    const mapa = ler('docs/projeto/MAPA.md')
+    expect(mapa).toMatch(/^entregues: 12$/m)
+    expect(mapa).toMatch(/^em_andamento: 0$/m)
+    expect(mapa).toMatch(/\| FT-12 \| Sessão e acesso endurecidos \| entregue \| local \(branch feat\/sessao-e-acesso-endurecidos\) \|/)
+    const bloco = mapa.split('### FT-12 — ')[1]!.split('\n---')[0]!
+    expect(bloco).toMatch(/\*\*Status:\*\* entregue/)
+    expect(bloco).toMatch(/\*\*Sprints:\*\* 6 \(26 tasks\)/)
+    expect(bloco).toMatch(/\*\*Testes:\*\* \d+ \(suíte inteira\)/)
+    expect(bloco).toMatch(/\*\*PR:\*\* local \(branch feat\/sessao-e-acesso-endurecidos\)/)
+    expect(ler('docs/projeto/PROJETO.md')).toMatch(/^features_entregues: 12$/m)
+  })
+
+  it('a recursão move PEND-12 a PEND-17 para Resolvido nos ciclos (ciclo 2, FT-12) e os contadores batem', () => {
+    const recursao = ler('docs/projeto/RECURSAO.md')
+    const resolvido = recursao.split('## Resolvido nos ciclos')[1]!.split('\n---')[0]!
+    for (let n = 12; n <= 17; n++) {
+      expect(resolvido, `PEND-${n}`).toMatch(new RegExp(`\\| PEND-${n} \\|.*\\| 2 \\|.*FT-12`))
+    }
+    const emResolucao = recursao.split('## Em resolução no ciclo 2')[1]!.split('## Resolvido nos ciclos')[0]!
+    for (let n = 12; n <= 17; n++) expect(emResolucao, `PEND-${n} ainda listada em resolução`).not.toMatch(new RegExp(`\\| PEND-${n} \\|`))
+    for (let n = 18; n <= 27; n++) expect(emResolucao, `PEND-${n}`).toMatch(new RegExp(`\\| PEND-${n} \\|`))
+    expect(recursao).toMatch(/^pendencias_resolvidas: 6$/m)
+  })
+
+  it('o relatório da feature existe com as seções e o que a FT-13 precisa saber, e as mutações estão no ENTREGA.md', () => {
+    const relatorio = ler('docs/sessao-e-acesso-endurecidos/RELATORIO-FEATURE.md')
+    expect(relatorio).toMatch(/^status: entregue$/m)
+    for (const secao of ['## O que foi entregue', '## Como demonstrar', '## O que a FT-13 precisa saber', '## Desvios do plano', '## Verificação']) {
+      expect(relatorio, secao).toContain(secao)
+    }
+    for (const termo of ['src/proxy.ts', 'sessoes_revogadas', 'versaoDaSessao', 'expurgo']) expect(relatorio, termo).toContain(termo)
+    const entrega = ler('docs/entregas/sessao-e-acesso-endurecidos/ENTREGA.md')
+    expect(entrega).toContain('## Mutações que provam as proteções')
+    for (const linha of ler('docs/sessao-e-acesso-endurecidos/MUTACOES.md').split('\n').filter((l) => /^\| T-\d\d\.\d\d \|/.test(l))) {
+      expect(entrega, linha.slice(0, 40)).toContain(linha)
+    }
+  })
+
+  it('o FECHAMENTO.md existe e declara os módulos', () => {
+    const fechamento = ler('docs/sessao-e-acesso-endurecidos/FECHAMENTO.md')
+    expect(fechamento).toMatch(/^kind: fechamento$/m)
+    expect(fechamento).toMatch(/^modulo_afetado: \[.*aplicacao.*\]$/m)
+  })
+})
+

@@ -41,7 +41,7 @@ tasks:
   - id: T-06.03
     titulo: "Fechamento no laco do buildx"
     fase: F-06.2
-    status: pendente
+    status: concluida
     objetivo: "Fechar a feature no mapa, nas premissas e na recursao e consolidar os artefatos de entrega."
     arquivos:
       cria: ["docs/sessao-e-acesso-endurecidos/FECHAMENTO.md", "docs/sessao-e-acesso-endurecidos/RELATORIO-FEATURE.md", "docs/sessao-e-acesso-endurecidos/ORQUESTRADOR.md", "docs/sessao-e-acesso-endurecidos/00-AUDITORIA.md", "docs/sessao-e-acesso-endurecidos/00-BLOQUEIOS.md", "docs/sessao-e-acesso-endurecidos/00-DECISOES.md", "docs/sessao-e-acesso-endurecidos/BRIEFING-BUILDX.md", "docs/sessao-e-acesso-endurecidos/base/00-INDICE.md", "docs/sessao-e-acesso-endurecidos/base/00-LACUNAS.md", "docs/sessao-e-acesso-endurecidos/base/sessao-e-cookie.md", "docs/sessao-e-acesso-endurecidos/base/troca-de-senha-e-versao.md", "docs/sessao-e-acesso-endurecidos/base/limites-de-uso.md", "docs/sessao-e-acesso-endurecidos/base/proxy-e-renovacao.md", "docs/sessao-e-acesso-endurecidos/base/guardas-de-acesso.md", "docs/sessao-e-acesso-endurecidos/base/testes-expurgo-e-ambiente.md", "docs/entregas/sessao-e-acesso-endurecidos/ENTREGA.md", "docs/entregas/sessao-e-acesso-endurecidos/PR.md", "docs/entregas/sessao-e-acesso-endurecidos/QA-PACOTE.md", "docs/entregas/sessao-e-acesso-endurecidos/ATENCAO.md"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "A suite inteira esta verde, tsc, lint, build e npm audit --audit-level=high passam, o ENTREGA.md copia as linhas de MUTACOES.md e o MAPA.md tem status entregue."
     depende_de: ["T-06.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
 ---
 
 # Tasks — Sprint 06
@@ -107,5 +107,5 @@ teste_funcional: "docs/sessao-e-acesso-endurecidos/RELATORIO-FEATURE.md existe c
 criterio_aceite: "A suite inteira esta verde, tsc, lint, build e npm audit --audit-level=high passam, o ENTREGA.md copia as linhas de MUTACOES.md e o MAPA.md tem status entregue."
 depende_de: ["T-06.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 261 arquivos, 2993 passed, 9 skipped, 0 failed; tsc, lint, build e audit verdes
 ```

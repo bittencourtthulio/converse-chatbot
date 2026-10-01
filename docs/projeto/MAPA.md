@@ -6,8 +6,8 @@ projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-10-01
 total_features: 13
 pendentes: 1
-em_andamento: 1
-entregues: 11
+em_andamento: 0
+entregues: 12
 bloqueadas: 0
 ---
 
@@ -35,7 +35,7 @@ da feature de que depende (PRs empilhados).
 | FT-09 | Histórico de conversas e painel | entregue | local (branch feat/historico-de-conversas) |
 | FT-10 | Privacidade e auditoria | entregue | local (branch feat/privacidade-e-auditoria) |
 | FT-11 | Operação e backup | entregue | local (branch feat/operacao-e-backup) |
-| FT-12 | Sessão e acesso endurecidos | em_andamento | — |
+| FT-12 | Sessão e acesso endurecidos | entregue | local (branch feat/sessao-e-acesso-endurecidos) |
 | FT-13 | Robustez de mídia, upload e operação | pendente | — |
 
 ---
@@ -239,7 +239,10 @@ Trabalho: adaptar o template (nome, layout e tokens SaaS no lugar do VS Code, te
 **Premissas que realiza:** [PR-12, PR-16, PR-27, PR-31, PR-36, PR-56]
 **Módulo disponível:** -
 **Fatias candidatas:** -
-**Status:** em_andamento
+**Status:** entregue
+**Sprints:** 6 (26 tasks)
+**Testes:** 2993 (suíte inteira)
+**PR:** local (branch feat/sessao-e-acesso-endurecidos)
 
 Vem do B6 (ciclo 2): `docs/projeto/validacao/premissas-01-34.md` (A-01, A-02, A-04, R-01 a R-03), `premissas-35-70.md` (achados 1 e 4) e `sistema-de-pe.md` (A-1). Premissas de segurança com evidência parcial não podem sair como pendência aceita.
 

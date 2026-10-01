@@ -8,7 +8,7 @@ feature_id: FT-12
 sprint_id: sprint-06
 atualizado_em: 2026-10-01
 titulo: "Documentacao, verificacao no navegador e fechamento"
-status: nao_iniciado
+status: concluido
 criterio_saida: "README, convencoes e lacunas conferidos por teste, verificacao no navegador registrada e a feature fechada no mapa, nas premissas e na recursao"
 fases: ["F-06.1", "F-06.2"]
 riscos: ["citacoes de linha mudam a cada edicao: tests/projeto.test.ts as confere", "a verificacao visual depende de Chrome proprio com porta livre e alvo confirmado"]

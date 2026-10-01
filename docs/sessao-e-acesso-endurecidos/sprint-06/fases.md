@@ -10,14 +10,14 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-06.1
     titulo: "Documentacao e convencoes"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "as tasks T-06.01 concluidas com os dois testes passando"
     paralelizavel: false
     paralela_com: []
     tasks: ["T-06.01"]
   - id: F-06.2
     titulo: "Verificacao e fechamento"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "as tasks T-06.02, T-06.03 concluidas com os dois testes passando"
     paralelizavel: false
     paralela_com: []
@@ -49,7 +49,7 @@ flowchart LR
 
   class T_06_01 concluida
   class T_06_02 concluida
-  class T_06_03 pendente
+  class T_06_03 concluida
   class T_06_01,T_06_02,T_06_03 critico
 ```
 

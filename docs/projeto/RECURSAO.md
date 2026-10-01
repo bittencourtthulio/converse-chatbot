@@ -6,8 +6,8 @@ projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-10-01
 ciclo_atual: 2
 teto_ciclos: 3
-pendencias_abertas: 11
-pendencias_resolvidas: 0
+pendencias_abertas: 12
+pendencias_resolvidas: 6
 ---
 
 # Plataforma de chatbot com IA e base de conhecimento — Recursão
@@ -81,6 +81,15 @@ houver pendência resolvível, até o teto.
 **O que o buildx fez enquanto isso:** `TRUST_PROXY` desligado por padrão, ligado no `docker-compose.yml` com exemplo de Caddy que sobrescreve; teto diário por agente limita o dano mesmo com IP forjado.
 **Reversibilidade:** baixa custo; é configuração e uma função em `src/lib/requisicao.ts`.
 
+### PEND-31 — Roubo de cookie sem logout e segundo fator
+
+**Classe:** `decisao_humana`
+**Origem:** B4, FT-12 (PR-101, PR-102, lacuna 43 de `docs/stack/LACUNAS.md`)
+**A decisão:** a revogação cobre o `sair`; um cookie roubado e usado sem que a pessoa saia continua valendo até o `exp` do token e, com uso contínuo (renovação), até `SESSAO_MAXIMA_HORAS` (12 horas). Aceitar esse risco ou exigir mais?
+**As opções:** (a) manter como está e, se for o caso, baixar `SESSAO_MAXIMA_HORAS`; (b) ligar a sessão ao IP ou ao navegador (derruba quem troca de rede); (c) segundo fator no login (feature nova, fora do escopo do pedido).
+**O que o buildx fez enquanto isso:** (a), com o padrão de 12 horas configurável e a troca de senha derrubando todas as outras sessões.
+**Reversibilidade:** alta: (a) é uma variável de ambiente; (b) e (c) são features novas.
+
 ---
 
 ## Aberto — o que exige recurso externo
@@ -127,16 +136,10 @@ houver pendência resolvível, até o teto.
 
 ## Em resolução no ciclo 2 (classe `trabalho_novo`)
 
-Todas vêm do B6 e estão em `docs/projeto/validacao/`. Viram as features **FT-12** e **FT-13** do `MAPA.md`.
+Todas vêm do B6 e estão em `docs/projeto/validacao/`. Viraram as features **FT-12** (entregue: PEND-12 a PEND-17, na seção seguinte) e **FT-13** (as que seguem).
 
 | ID | Assunto | Severidade | Feature |
 |---|---|---|---|
-| PEND-12 | limite de login sem teste na ação `autenticar` (PR-16, PR-36), segurança | média | FT-12 |
-| PEND-13 | atributos do cookie de sessão sem teste (PR-27, PR-31), segurança | média | FT-12 |
-| PEND-14 | `sair` não revoga a sessão e a sessão não renova por atividade (L4) | média | FT-12 |
-| PEND-15 | login feito logo depois da troca de senha é derrubado (A-1) | baixa | FT-12 |
-| PEND-16 | página de detalhe da conversa e `auditoria.listar` sem guarda própria (PR-12) | baixa | FT-12 |
-| PEND-17 | `GET /api/publico/agentes/[id]/conversa` sem limite por IP (PR-56) | baixa | FT-12 |
 | PEND-18 | trecho de vídeo sem fala derruba a fonte inteira (lacuna 13, PR-09) | média | FT-13 |
 | PEND-19 | corpo de upload sem `Content-Length` lido inteiro antes do teto (PR-45) | baixa | FT-13 |
 | PEND-20 | restauração não vê servidor de pé em outro contêiner (PR-98) | média | FT-13 |
@@ -147,6 +150,7 @@ Todas vêm do B6 e estão em `docs/projeto/validacao/`. Viram as features **FT-1
 | PEND-25 | sem trava contra rede real nos testes (PR-26) | baixa | FT-13 |
 | PEND-26 | auditoria pode subir desligada sem que a tela Sistema avise (PR-19) | baixa | FT-13 |
 | PEND-27 | extração de PDF: limite de páginas só depois de abrir; prazo não interrompe CPU (PR-45) | baixa | FT-13 |
+| PEND-30 | teste intermitente em `tests/embed-pagina.test.ts`: o código de referência aleatório do 404 pode conter `4321`, que o teste proíbe no HTML (visto uma vez em 14 execuções da suíte inteira, na FT-12) | baixa | FT-13 |
 
 PEND-28 e PEND-29 (rastreabilidade de documentos: mapa sem PR-35 a PR-100 e `PROJETO.md` desatualizado) foram resolvidas pelo próprio buildx no B6, por serem edição de artefato, não de código.
 
@@ -156,6 +160,12 @@ PEND-28 e PEND-29 (rastreabilidade de documentos: mapa sem PR-35 a PR-100 e `PRO
 
 | ID | Assunto | Classe | Ciclo | Como resolveu |
 |---|---|---|---|---|
+| PEND-12 | limite de login sem teste na ação `autenticar` | trabalho_novo | 2 | FT-12: Teste que chama a ação `autenticar` com o IP e o relógio simulados: a 6ª tentativa por minuto do mesmo IP e e-mail e a 21ª do mesmo IP são barradas com a mensagem amigável, a credencial certa dentro do limite entra e o limite reinicia depois de 60 s (`tests/acao-autenticar-limite.test.ts`); o limitador padrão passou a ler o relógio na hora da chamada. Remover a chamada quebra 5 casos. |
+| PEND-13 | atributos do cookie de sessão sem teste | trabalho_novo | 2 | FT-12: Atributos do cookie provados em três níveis: `opcoesDoCookie()` em teste e produção (`tests/sessao-cookie.test.ts`), `salvarSenha` com a gravação real do cookie (`tests/acao-salvar-senha.test.ts`) e o `Set-Cookie` do login real contra `next start` (`tests/sessao-fim-a-fim.test.ts`). |
+| PEND-14 | `sair` não revoga a sessão e a sessão não renova por atividade | trabalho_novo | 2 | FT-12: `sair` revoga o `jti` (tabela `sessoes_revogadas`, expurgo das vencidas) e o cookie roubado antes do logout é barrado, página e API, contra o servidor de produção; a sessão é renovada por atividade no `src/proxy.ts` com limite absoluto `SESSAO_MAXIMA_HORAS` (padrão 12). Premissas PR-101 e PR-102. |
+| PEND-15 | login feito logo depois da troca de senha é derrubado | trabalho_novo | 2 | FT-12: Contador de versão de sessão no usuário (`versaoDaSessao`) no lugar do corte `agora + 1 s`: o login logo depois da troca de senha funciona, duas trocas seguidas e usuários existentes (versão 0) provados (`tests/sessao-versao.test.ts`, `tests/sessao-fim-a-fim.test.ts`). Premissa PR-103. |
+| PEND-16 | página de detalhe da conversa e `auditoria.listar` sem guarda própria | trabalho_novo | 2 | FT-12: `conversas/[id]/page.tsx` chama `exigirUsuario()`, `auditoria.listar` recebe o ator e exige admin, varredura dos serviços em `docs/sessao-e-acesso-endurecidos/VARREDURA-DE-GUARDAS.md` e teste de arquitetura das telas e rotas (`tests/guardas-arquitetura.test.ts`). Premissa PR-104. |
+| PEND-17 | `GET /api/publico/agentes/[id]/conversa` sem limite por IP | trabalho_novo | 2 | FT-12: `GET /api/publico/agentes/[id]/conversa` usa `exigirLimiteDeIp`; a 11ª leitura do minuto recebe 429 com `Retry-After`, sem dado do agente, contra o servidor de produção (`tests/publico-conversa-limite.test.ts`). |
 
 ---
 
