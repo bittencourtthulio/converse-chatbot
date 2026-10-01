@@ -102,5 +102,5 @@ export async function trocarSenha(
   // O token novo nasce exatamente no corte. A comparação em
   // `usuarioDaSessao` é `iat < corte`, então este sobrevive (igual não é
   // menor) e todo token anterior, com `iat` menor, cai.
-  return { token: await assinarSessao(atual.id, atual.papel, corteEmSegundos) }
+  return { token: await assinarSessao(atual.id, atual.papel, { agora: corteEmSegundos }) }
 }

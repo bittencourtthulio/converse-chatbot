@@ -41,7 +41,7 @@ tasks:
   - id: T-02.03
     titulo: "Token de sessao com jti, versao, inicio e relogio injetavel"
     fase: F-02.2
-    status: pendente
+    status: concluida
     objetivo: "Fazer assinarSessao e lerSessao carregarem jti, versao e inicio, limitarem o exp ao limite absoluto e aceitarem o relogio por parametro, sem quebrar a chamada de duas posicoes; a troca de senha passa a chamar a forma nova com o corte atual para a suite seguir verde."
     arquivos:
       cria: ["tests/sessao-token.test.ts"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/sessao-token.test.ts passa e falha quando a conferencia do jti e removida e quando o teto ini mais maximo sai do exp (mutacoes registradas) e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
     depende_de: ["T-02.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-02.04
     titulo: "Atributos do cookie de sessao provados"
     fase: F-02.2
@@ -182,7 +182,7 @@ teste_funcional: "Um token sem jti, sem v ou sem ini e recusado com 401, um toke
 criterio_aceite: "tests/sessao-token.test.ts passa e falha quando a conferencia do jti e removida e quando o teto ini mais maximo sai do exp (mutacoes registradas) e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
 depende_de: ["T-02.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — suíte inteira rodou: 2894 passed e 1 falha intermitente alheia (tests/embed-pagina.test.ts: o código de correlação aleatório 5c5a4321 contém 4321; o arquivo isolado passa, 10 passed); por isso parcial, e a próxima suíte inteira cobre
 ```
 
 ---

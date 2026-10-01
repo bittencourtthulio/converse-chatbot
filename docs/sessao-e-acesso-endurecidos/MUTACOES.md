@@ -15,3 +15,5 @@ Regra da feature: cada proteção tem um teste que **falha** quando ela é remov
 | Task | Proteção | Mutação aplicada (temporária) | Teste que falhou |
 |---|---|---|---|
 | T-01.01 | relógio do limitador padrão alcançável pelo relógio falso | o padrão de `criarLimitador` volta a ser a referência `Date.now` capturada | 3 casos de `tests/limite-de-uso.test.ts` ("o limitador padrão do processo e o relógio falso do teste") |
+| T-02.03 | `lerSessao` recusa token sem `jti` | removida a conferência de `jti` em `src/lib/sessao.ts` | `tests/sessao-token.test.ts` ("token sem a claim jti é recusado com 401") |
+| T-02.03 | o `exp` nunca passa de início mais `SESSAO_MAXIMA_HORAS` | `exp = agora + TTL`, sem o `min` com o limite absoluto | 2 casos de `tests/sessao-token.test.ts` ("limite absoluto no exp") |
