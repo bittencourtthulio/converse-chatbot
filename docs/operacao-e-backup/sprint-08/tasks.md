@@ -11,7 +11,7 @@ tasks:
   - id: T-08.01
     titulo: "Exemplo de ambiente e README operacional"
     fase: F-08.1
-    status: pendente
+    status: concluida
     objetivo: "Documentar todas as variaveis no exemplo de ambiente e escrever as secoes de operacao no README com teste que as confere."
     arquivos:
       cria: ["docs/operacao-e-backup/sprint-08/sprint.md", "docs/operacao-e-backup/sprint-08/fases.md", "docs/operacao-e-backup/sprint-08/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/projeto.test.ts passa."
     depende_de: ["T-07.05"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-08.02
     titulo: "Convencoes e lacunas com evidencia"
     fase: F-08.1
@@ -86,7 +86,7 @@ teste_funcional: "A tabela de variaveis do README tem uma linha para cada variav
 criterio_aceite: "tests/projeto.test.ts passa."
 depende_de: ["T-07.05"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/projeto.test.ts 181 passed; só documentação e teste
 ```
 
 ---

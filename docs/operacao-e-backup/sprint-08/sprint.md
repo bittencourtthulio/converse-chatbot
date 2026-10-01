@@ -8,7 +8,7 @@ feature_id: FT-11
 sprint_id: sprint-08
 atualizado_em: 2026-10-01
 titulo: "Documentacao operacional, verificacao e fechamento"
-status: nao_iniciado
+status: em_andamento
 criterio_saida: "README, exemplo de ambiente, convencoes e lacunas atualizados e conferidos por teste, verificacao no navegador registrada, e a feature fechada no mapa, nas premissas e na recursao"
 fases: ["F-08.1", "F-08.2"]
 riscos: ["citacoes de linha mudam a cada edicao: tests/projeto.test.ts as confere", "a verificacao visual depende de Chrome proprio com porta livre"]

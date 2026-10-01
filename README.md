@@ -104,6 +104,107 @@ Só o administrador vê estas telas (Configurações > **Privacidade** e **Audit
 5. **Aviso de privacidade padrão.** O texto (até 300 caracteres) e o link de Privacidade aparecem no chat embutido dos agentes sem aviso próprio e junto do `/start` do Telegram. O painel "Dados pessoais tratados" descreve o que é guardado, por quê, onde e quem acessa; a **base legal está marcada "legítimo interesse, a confirmar pela empresa"**: o sistema não afirma conformidade, a empresa precisa confirmar.
 6. Para ver tudo sem serviços reais: depois de `npm run setup`, rode `DATABASE_URL=file:./prisma/dev.db npx tsx tests/apoio/semear-privacidade.ts` (conversas antigas e recentes, dois usuários e um agente fictícios) e siga o roteiro de `docs/entregas/privacidade-e-auditoria/QA-PACOTE.md`.
 
+## Operação e backup
+
+Para quem põe o Converse no ar e cuida dele. O sistema roda como **um processo de longa duração** (SQLite em arquivo, disco local e processamento em segundo plano): não roda em função serverless.
+
+### Requisitos
+
+- Uma máquina com Docker e Docker Compose v2 (ou Node 22, npm 10 e `ffmpeg` instalados, para rodar sem contêiner).
+- Um endereço **HTTPS** público apontando para a máquina (o chat embutido e o webhook do Telegram só funcionam assim) e um proxy reverso na frente (veja abaixo).
+- Os segredos: `JWT_SECRET` e `ENCRYPTION_KEY` (geradas por você, o comando está no `.env.example`) e, para a IA, uma chave do OpenRouter com saldo (cadastrada depois, na tela Integrações).
+
+### Subir com Docker
+
+```bash
+cp .env.example .env        # preencha JWT_SECRET, ENCRYPTION_KEY e APP_URL (https://seu-dominio)
+docker compose up -d --build
+docker compose run --rm app npm run admin:criar -- admin@suaempresa.com.br "Seu nome"
+```
+
+O `docker-compose.yml` constrói a imagem (`node:22-bookworm-slim` com `ffmpeg`, usuário não-root), aplica as migrations a cada subida e guarda tudo no volume `dados` (`/data`: o banco `app.db`, os arquivos em `storage/` e os backups em `backups/`). A porta só escuta em `127.0.0.1:3000` (mude por `PORTA`); o healthcheck consulta `GET /api/saude`, que responde `{"status":"ok"}`, `"degradado"` (sem `ffmpeg`, só o vídeo deixa de funcionar) ou `"falha"` (HTTP 503). O fuso é `America/Sao_Paulo`; troque por `TZ`.
+
+A seed de demonstração **nunca** roda em produção, por isso o primeiro administrador nasce por `npm run admin:criar`: a senha (8 caracteres ou mais) vem de `ADMIN_SENHA` no ambiente do comando (`docker compose run --rm -e ADMIN_SENHA=... app npm run admin:criar -- <e-mail> <nome>`) ou da entrada padrão, nunca de argumento. Depois, entre e veja **Configurações > Sistema**: estado de saúde, versões, tamanhos, fila, agendador, o que está configurado (sim ou não, nunca o valor) e os backups.
+
+Parar com calma: `docker compose stop` (até 30 s). O servidor para o expurgo, deixa a fila de fontes terminar o passo corrente, espera as gravações de auditoria e sai com código 0; a fonte que ficar pela metade volta à fila no próximo start.
+
+### HTTPS e proxy reverso
+
+O contêiner fala HTTP; o HTTPS é do proxy. Exemplo com Caddy (certificado automático) na mesma máquina:
+
+```
+converse.suaempresa.com.br {
+    reverse_proxy 127.0.0.1:3000
+}
+```
+
+O `docker-compose.yml` já define `TRUST_PROXY=1`: os limites de uso do login e do chat público passam a ler o IP de `X-Forwarded-For`. **Só ligue `TRUST_PROXY` atrás de um proxy que sobrescreve esse cabeçalho** (Caddy e nginx com `proxy_set_header X-Forwarded-For $remote_addr` fazem); sem proxy, deixe `TRUST_PROXY=0`, ou qualquer visitante forjaria o IP e furaria o limite. Sem `TRUST_PROXY`, todos os visitantes dividem um IP só.
+
+### URL pública para o chat embutido e o Telegram
+
+Defina `APP_URL` com o endereço HTTPS público (`https://converse.suaempresa.com.br`, sem barra no fim). Ela é a origem do código da aba Publicar e o endereço do webhook que o Telegram chama; sem HTTPS o canal Telegram não conecta. Se o domínio mudar, use **Verificar** na aba Canais do agente e reconecte o bot.
+
+### Backup
+
+- **Pela tela:** Configurações > Sistema > Backup > **Gerar backup agora** (só admin; fica registrado em Auditoria como "Backup gerado"), com a lista dos backups e o download de cada um.
+- **Pela linha de comando:** `npm run backup` (no contêiner: `docker compose exec app npm run backup`). Serve ao cron.
+
+Cada backup é **um arquivo** `backup-AAAAMMDD-HHMMSS.tar.gz` (UTC) em `BACKUP_DIR`, com permissão 0600, com o `manifest.json` (data, versão do app, migrations, contagem por tabela e SHA-256 de cada parte), o banco copiado pela API de backup online do SQLite (consistente mesmo com o servidor escrevendo; nunca a cópia crua do arquivo em uso) e os arquivos de `storage/` **sem** os temporários (`audio/`, `segmentos/` e `*.parcial`). Ficam os `BACKUP_MANTER` mais recentes (padrão 7); só arquivos com esse padrão de nome são removidos.
+
+### Restauração
+
+A restauração é **só por linha de comando**, nunca pela interface: ela troca o banco sob um servidor de pé, derruba as sessões e exige parar a fila e o agendador, o que um clique no navegador não garante.
+
+```bash
+docker compose stop app
+docker compose run --rm app npm run restore -- /data/backups/backup-AAAAMMDD-HHMMSS.tar.gz
+docker compose start app
+```
+
+Em instalação sem contêiner: pare o servidor e rode `npm run restore -- <arquivo>`. O comando, nesta ordem:
+
+1. recusa rodar se `GET /api/saude` responder em `http://127.0.0.1:<PORT>` (use `--forcar` por sua conta e risco; a conferência só enxerga o mesmo host: com o servidor em outro contêiner do mesmo volume, pare-o antes);
+2. **valida tudo antes de tocar em qualquer coisa**: manifesto, tamanho e SHA-256 de cada parte, que nada veio fora do manifesto e que o banco passa na conferência de integridade; arquivo adulterado, truncado ou sem manifesto é recusado sem efeito;
+3. recusa backup de **esquema mais novo** que o do app (atualize o sistema antes); de esquema mais antigo, aplica `prisma migrate deploy` depois da troca;
+4. guarda o estado de antes em `BACKUP_DIR/pre-restauracao-<data>` (cópia consistente do banco e o `storage/` anterior);
+5. troca o `storage/` e o banco por renomeação (desfaz o `storage/` se algo falhar no meio), reconstrói o índice de busca FTS5 e grava "Restauração de dados" na Auditoria, já no banco restaurado;
+6. imprime o resumo e o que fazer a seguir.
+
+O expurgo automático é por processo e não roda durante o comando. Quem restaurar com o servidor de pé num desenho futuro precisa chamar `obterAgendadorDoExpurgo().parar()` (de `src/servicos/expurgo.ts`) antes e `.iniciar()` depois, senão uma rodada apagaria conversas de um banco que está sendo trocado, e um backup antigo restaurado seria expurgado na primeira rodada.
+
+O teste `tests/restauracao-fim-a-fim.test.ts` prova o caminho todo: monta uma instalação com dados de todas as camadas, gera o backup, destrói a instalação, restaura em diretórios limpos e confere linha a linha.
+
+### Rotina de backup por cron
+
+O sistema não agenda backup sozinho: use o agendador da máquina. Todo dia às 3 horas, com cópia para fora da máquina:
+
+```
+0 3 * * * cd /opt/converse && docker compose exec -T app npm run backup >> /var/log/converse-backup.log 2>&1
+30 3 * * * rsync -a --delete /var/lib/docker/volumes/converse_dados/_data/backups/ backup@outro-servidor:/backups/converse/
+```
+
+Um backup que está só no mesmo disco do banco não protege de perder o disco: copie para outro lugar e **teste uma restauração** de vez em quando.
+
+### Atualizar a versão
+
+1. Gere um backup (`npm run backup`) e copie-o para fora.
+2. Baixe a versão nova (`git pull`) ou a imagem nova e reconstrua: `docker compose up -d --build`. As migrations só acrescentam e são aplicadas na subida.
+3. Confira Configurações > Sistema (versão, esquema `N de N migrations`, estado `Tudo em ordem`).
+4. Se algo der errado, restaure o backup do passo 1 com a versão anterior do sistema.
+
+### Segurança: o que o backup contém e a ENCRYPTION_KEY
+
+**O backup NÃO contém a `ENCRYPTION_KEY`.** Ele leva dado pessoal (conversas, e-mails, hashes de senha) e as chaves **cifradas** do OpenRouter e do Telegram; sem a mesma `ENCRYPTION_KEY` elas não decifram depois de restaurar (o resto volta; você cadastra a chave do OpenRouter de novo e reconecta o Telegram). Guarde a `ENCRYPTION_KEY` em um cofre separado do backup, e trate o arquivo de backup como dado sensível: permissão 0600, fora de repositório, transferência cifrada.
+
+### Solução de problemas
+
+- **"Código de referência: xxxxxxxx" na tela:** é o identificador do erro. O mesmo código aparece no cabeçalho `X-Correlacao` da resposta e na linha de log; procure-o: `docker compose logs app | grep xxxxxxxx`. Nas páginas, o código é o `digest` do Next, gravado na linha `erro_na_requisicao` junto da correlação. O log é uma linha JSON por evento (`nivel`, `quando`, `msg`, `correlacao`) e **nunca** leva senha, token, chave, texto de conversa nem pilha: só o nome do erro.
+- **O contêiner reinicia sem parar:** `docker compose logs app`; se a linha `configuracao_invalida` listar `JWT_SECRET`, `DATABASE_URL` ou `ENCRYPTION_KEY`, defina-as no `.env` (a mensagem cita só os nomes).
+- **`/api/saude` devolve `degradado`:** `ffmpeg` ou `ffprobe` não responde; o vídeo e o áudio não são processados, o resto funciona.
+- **`/api/saude` devolve 503 (`falha`):** banco, disco de dados ou índice de busca com problema; Configurações > Sistema, se abrir, mostra qual item.
+- **Telegram não conecta:** `APP_URL` precisa ser HTTPS público; veja o aviso `configuracao_aviso` no log.
+- **Restauração recusada:** o texto do erro diz o motivo (servidor de pé, arquivo alterado ou truncado, esquema mais novo).
+
 ## Configuração
 
 Toda variável é lida em um ponto só, `src/lib/ambiente.ts`. O que cada uma faz está no `.env.example`.
@@ -130,6 +231,16 @@ Toda variável é lida em um ponto só, `src/lib/ambiente.ts`. O que cada uma fa
 | `OPENROUTER_MODELO_TRANSCRICAO` | modelo do OpenRouter que transcreve o áudio (padrão `google/gemini-2.5-flash`); o valor salvo em Configurações > Integrações vale mais | não |
 | `AUDITORIA_RETENCAO_DIAS` | por quantos dias os registros de auditoria ficam guardados (padrão 365); a retenção das conversas não é variável: o admin a define em Configurações > Privacidade (padrão 90 dias) | não |
 | `YOUTUBE_BASE` | endereço do YouTube lido para as legendas (padrão `https://www.youtube.com`); só o simulado de teste o muda | não |
+| `LOG_LEVEL` | nível mínimo do log: `debug`, `info`, `aviso` ou `erro` (padrão `info`) | não |
+| `BACKUP_DIR` | pasta dos backups (padrão `./backups`; no contêiner `/data/backups`) | não |
+| `BACKUP_MANTER` | quantos backups ficam (padrão 7); os mais antigos do mesmo padrão de nome são removidos | não |
+| `NODE_ENV` | `production` liga a validação do start (o contêiner define); em desenvolvimento e teste nada é exigido | não |
+| `TZ` | fuso do servidor: o painel agrupa as mensagens por dia local (padrão da imagem: `America/Sao_Paulo`) | recomendado em produção |
+| `PORT` | porta do servidor dentro do contêiner (padrão 3000); o comando de restauração a usa para saber se o servidor está de pé | não |
+| `ADMIN_SENHA` | senha do primeiro administrador, só no ambiente do comando `npm run admin:criar` (nunca em argumento) | só nesse comando |
+| `PORTA` | porta publicada no endereço local pelo `docker-compose.yml` (padrão 3000) | não |
+
+**Em produção** (`NODE_ENV=production`) o servidor **não sobe** sem `JWT_SECRET` (32 caracteres ou mais), `DATABASE_URL` (arquivo SQLite) e uma `ENCRYPTION_KEY` válida: a saída lista os nomes que faltam, nunca os valores. `APP_URL` ausente ou sem HTTPS gera só um aviso no log, porque o chat embutido e o Telegram dependem dela.
 
 ## Comandos
 

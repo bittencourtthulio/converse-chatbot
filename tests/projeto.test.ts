@@ -625,3 +625,70 @@ describe('convenções da privacidade e da auditoria (FT-10)', () => {
     expect(readme).toContain('semear-privacidade.ts')
   })
 })
+
+describe('operação e backup (FT-11)', () => {
+  const readme = ler('README.md')
+  const exemplo = ler('.env.example')
+  const ambienteTs = ler('src/lib/ambiente.ts')
+
+  it('o exemplo de ambiente documenta LOG_LEVEL, BACKUP_DIR, BACKUP_MANTER, ADMIN_SENHA e TZ, sem valor secreto', () => {
+    for (const chave of ['LOG_LEVEL', 'BACKUP_DIR', 'BACKUP_MANTER', 'ADMIN_SENHA', 'TZ']) {
+      expect(exemplo, chave).toMatch(new RegExp(`^#?\\s*${chave}=`, 'm'))
+    }
+    expect(exemplo).toMatch(/^LOG_LEVEL="info"/m)
+    expect(exemplo).toMatch(/^BACKUP_MANTER="7"/m)
+    expect(exemplo).toMatch(/^# ADMIN_SENHA=""/m)
+    expect(exemplo).toMatch(/NÃO contém a\s+#?\s*ENCRYPTION_KEY/)
+    expect(exemplo).not.toMatch(/^ADMIN_SENHA=".+"/m)
+  })
+
+  it('a tabela de variáveis do README tem uma linha para cada variável lida em src/lib/ambiente.ts', () => {
+    const lidas = new Set<string>()
+    for (const m of ambienteTs.matchAll(/process\.env\.([A-Z][A-Z0-9_]+)|(?:obrigatoria|inteiroComPadrao|textoComPadrao)\('([A-Z][A-Z0-9_]+)'/g)) lidas.add(m[1] ?? m[2]!)
+    lidas.delete('NODE_ENV')
+    expect(lidas.size).toBeGreaterThan(20)
+    for (const nome of lidas) expect(readme, nome).toContain(`| \`${nome}\` |`)
+    for (const extra of ['NODE_ENV', 'TZ', 'PORT', 'ADMIN_SENHA', 'PORTA']) expect(readme, extra).toContain(`| \`${extra}\` |`)
+  })
+
+  it('o README tem as seções da operação, na ordem do passo a passo', () => {
+    const secoes = [
+      '## Operação e backup',
+      '### Requisitos',
+      '### Subir com Docker',
+      '### HTTPS e proxy reverso',
+      '### URL pública para o chat embutido e o Telegram',
+      '### Backup',
+      '### Restauração',
+      '### Rotina de backup por cron',
+      '### Atualizar a versão',
+      '### Segurança: o que o backup contém e a ENCRYPTION_KEY',
+      '### Solução de problemas',
+    ]
+    let posicao = -1
+    for (const s of secoes) {
+      const onde = readme.indexOf(s)
+      expect(onde, s).toBeGreaterThan(posicao)
+      posicao = onde
+    }
+  })
+
+  it('diz com destaque que o backup NÃO contém a ENCRYPTION_KEY e que a restauração é só por linha de comando, e por quê', () => {
+    expect(readme).toMatch(/\*\*O backup NÃO contém a `ENCRYPTION_KEY`/)
+    expect(readme).toMatch(/restauração é \*\*só por linha de comando\*\*/)
+    expect(readme).toMatch(/troca o banco sob um servidor de pé/)
+    expect(readme).toContain('npm run restore -- <arquivo>')
+    expect(readme).toContain('obterAgendadorDoExpurgo().parar()')
+  })
+
+  it('traz o comando para subir, o primeiro administrador, o exemplo de Caddy com TRUST_PROXY e a rotina de cron', () => {
+    expect(readme).toContain('docker compose up -d --build')
+    expect(readme).toContain('npm run admin:criar')
+    expect(readme).toMatch(/reverse_proxy 127\.0\.0\.1:3000/)
+    expect(readme).toContain('TRUST_PROXY')
+    expect(readme).toMatch(/0 3 \* \* \* .*npm run backup/)
+    expect(readme).toContain('/api/saude')
+    expect(readme).toMatch(/Código de referência/)
+    expect(readme).toContain('X-Correlacao')
+  })
+})
