@@ -41,7 +41,7 @@ tasks:
   - id: T-04.03
     titulo: "Resposta do agente no Telegram"
     fase: F-04.2
-    status: pendente
+    status: concluida
     objetivo: "Ligar o texto comum a responderMensagem com canal telegram, enviar a resposta em texto puro com Fontes, o digitando renovado, falha pela frase unica e atualizar ultimaMensagemEm e ultimoErro."
     arquivos:
       cria: ["tests/telegram-resposta.test.ts"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/telegram-resposta.test.ts passa e nenhum texto enviado ao Telegram contem codigo ou corpo do provedor."
     depende_de: ["T-04.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-04.04
     titulo: "Limites por chat, por conversa, teto diario e ordem"
     fase: F-04.2
@@ -122,7 +122,7 @@ teste_funcional: "Com fonte citada a ultima linha enviada e Fontes: seguida so d
 criterio_aceite: "tests/telegram-resposta.test.ts passa e nenhum texto enviado ao Telegram contem codigo ou corpo do provedor."
 depende_de: ["T-04.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/telegram-resposta.test.ts e tests/telegram-comandos.test.ts, 27 passed; tsc e eslint limpos
 ```
 
 ---

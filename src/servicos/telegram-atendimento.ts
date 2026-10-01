@@ -5,14 +5,24 @@
 // sobe: o que falha vira o último erro do canal (mensagem segura, sem token).
 import { prisma } from '@/lib/prisma'
 import { decifrar } from '@/lib/cripto'
-import { ErroDoTelegram, sendMessage } from '@/lib/telegram'
+import { ErroDoTelegram, sendChatAction, sendMessage } from '@/lib/telegram'
 import { registrarErroDoCanal } from '@/servicos/canal-telegram'
+import { LIMITE_DA_MENSAGEM, mensagemParaOperador, mensagemParaVisitante, responderMensagem } from '@/servicos/chat'
+import type { FonteDaResposta } from '@/servicos/fontes-da-resposta'
 import { criar as criarConversa, listar as listarConversas, LIMITE_DO_TITULO } from '@/servicos/conversas'
 import type { CanalAutenticado, MensagemDoUpdate, UpdateLido } from '@/servicos/telegram-webhook'
 
 export const AVISO_SO_TEXTO = 'Só consigo ler mensagens de texto por enquanto.'
 export const MENSAGEM_INICIAL_PADRAO = 'Olá! Envie sua pergunta.'
 export const MENSAGEM_DE_NOVA_CONVERSA = 'Certo, começamos uma nova conversa. Pode perguntar.'
+
+export const AVISO_MENSAGEM_LONGA = `Sua mensagem é longa demais. Envie até ${LIMITE_DA_MENSAGEM} caracteres por vez.`
+/** O "digitando…" do Telegram dura cerca de 5 s: renova-se a cada 4. */
+export const INTERVALO_DO_DIGITANDO_MS = 4000
+
+export interface OpcoesDeAtendimento {
+  intervaloDigitandoMs?: number
+}
 
 export type Comando = 'start' | 'novo'
 
@@ -82,7 +92,11 @@ async function marcarMensagemRecebida(canalId: string): Promise<void> {
  * Atende o update. Só chat privado; grupos, canais e updates que não são
  * mensagem são ignorados sem resposta.
  */
-export async function atenderUpdate(canal: CanalAutenticado, update: UpdateLido): Promise<void> {
+export async function atenderUpdate(
+  canal: CanalAutenticado,
+  update: UpdateLido,
+  opcoes: OpcoesDeAtendimento = {},
+): Promise<void> {
   const mensagem = update.mensagem
   if (!mensagem || mensagem.tipoDoChat !== 'private') return
   await marcarMensagemRecebida(canal.id)
@@ -103,5 +117,81 @@ export async function atenderUpdate(canal: CanalAutenticado, update: UpdateLido)
     await enviarAoChat(canal, mensagem.chatId, MENSAGEM_DE_NOVA_CONVERSA)
     return
   }
-  // Texto comum: a resposta do agente (T-04.03).
+  if (mensagem.texto.trim() === '') return
+  if (mensagem.texto.length > LIMITE_DA_MENSAGEM) {
+    await enviarAoChat(canal, mensagem.chatId, AVISO_MENSAGEM_LONGA)
+    return
+  }
+  await responderAoChat(canal, mensagem, mensagem.texto, opcoes)
+}
+
+/** Mantém o "digitando…" até `parar()`. Falha do indicador nunca atrapalha a resposta. */
+function manterDigitando(token: string, chatId: number, intervaloMs: number): () => void {
+  let ativo = true
+  const mostrar = () => {
+    if (ativo) sendChatAction(token, chatId).catch(() => undefined)
+  }
+  mostrar()
+  const relogio = setInterval(mostrar, intervaloMs)
+  return () => {
+    ativo = false
+    clearInterval(relogio)
+  }
+}
+
+/** A linha final com os títulos das fontes citadas, ou nada se nenhuma foi. */
+function linhaDeFontes(fontes: FonteDaResposta[]): string {
+  const titulos = [...new Set(fontes.filter((f) => f.citada).map((f) => f.titulo.replace(/\s+/g, ' ').trim()).filter(Boolean))]
+  return titulos.length === 0 ? '' : `\n\nFontes: ${titulos.join(', ')}`
+}
+
+/**
+ * O turno do agente: `responderMensagem` com canal `telegram` e o chat id como
+ * identificador externo. A resposta sai em texto puro, com `[n]` mantidos e a
+ * linha de fontes; falha do provedor vira a frase única ao chat e a mensagem
+ * segura do operador no último erro do canal.
+ */
+async function responderAoChat(
+  canal: CanalAutenticado,
+  mensagem: MensagemDoUpdate,
+  texto: string,
+  opcoes: OpcoesDeAtendimento,
+): Promise<void> {
+  const token = decifrar(canal.tokenCifrado)
+  const pararDigitando = manterDigitando(token, mensagem.chatId, opcoes.intervaloDigitandoMs ?? INTERVALO_DO_DIGITANDO_MS)
+  let resposta = ''
+  let fontes: FonteDaResposta[] = []
+  let concluiu = false
+  let erro: unknown
+  try {
+    const conversa = await conversaDoChat(canal, mensagem)
+    for await (const evento of responderMensagem({
+      agenteId: canal.agenteId,
+      conversaId: conversa.id,
+      canal: 'telegram',
+      identificadorExterno: String(mensagem.chatId),
+      mensagem: texto,
+    })) {
+      if (evento.tipo === 'trecho') resposta += evento.texto
+      else if (evento.tipo === 'fontes') fontes = evento.fontes
+      else if (evento.tipo === 'fim') concluiu = true
+    }
+  } catch (e) {
+    erro = e
+  } finally {
+    pararDigitando()
+  }
+
+  if (erro !== undefined || !concluiu) {
+    const segura = mensagemParaOperador(erro).mensagem
+    await registrarErroDoCanal(canal.id, segura).catch(() => undefined)
+    await enviarAoChat(canal, mensagem.chatId, mensagemParaVisitante(erro))
+    return
+  }
+  const enviou = await enviarAoChat(canal, mensagem.chatId, resposta + linhaDeFontes(fontes))
+  if (enviou) await limparErroDoCanal(canal.id)
+}
+
+async function limparErroDoCanal(canalId: string): Promise<void> {
+  await prisma.canalTelegram.updateMany({ where: { id: canalId, NOT: { ultimoErro: null } }, data: { ultimoErro: null, ultimoErroEm: null } })
 }
