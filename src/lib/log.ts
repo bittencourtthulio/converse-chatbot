@@ -160,5 +160,43 @@ export const log = {
   erro: (msg: string, campos?: Record<string, unknown>) => escrever('erro', msg, campos),
 }
 
+// ---- saída própria do Next ---------------------------------------------------------------------
+
+const CHAVE_DO_FILTRO = Symbol.for('converse.filtroDoConsoleDoNext')
+
+function ehErro(valor: unknown): valor is Error & { digest?: unknown } {
+  return valor instanceof Error || (typeof valor === 'object' && valor !== null && 'stack' in valor && 'message' in valor)
+}
+
+/**
+ * Em produção, o Next imprime sozinho, em `console.error`, o objeto do erro (a mensagem e a
+ * pilha, que podem trazer dado pessoal ou o texto de uma consulta) e linhas com o prefixo `⨯`.
+ * Este filtro troca essa saída por UMA linha estruturada, `erro_do_next`, só com o nome do erro e
+ * o `digest` (o código de referência mostrado na tela). O que já é linha estruturada ou texto sem
+ * esses sinais passa sem mudança; com `LOG_LEVEL=debug` o original também sai, para quem
+ * investiga. Idempotente; devolve a função que desfaz (os testes a usam).
+ */
+export function filtrarConsoleDoNext(): () => void {
+  const g = globalThis as unknown as Record<symbol, boolean | undefined>
+  if (g[CHAVE_DO_FILTRO]) return () => undefined
+  g[CHAVE_DO_FILTRO] = true
+  const original = console.error
+  console.error = (...args: unknown[]) => {
+    const erro = args.find(ehErro)
+    const prefixoDoNext = typeof args[0] === 'string' && args[0].includes('⨯')
+    if (!erro && !prefixoDoNext) {
+      original(...args)
+      return
+    }
+    if (nivelMinimo() === 'debug') original(...args)
+    const digest = erro && typeof erro.digest === 'string' ? erro.digest : undefined
+    escrever('erro', 'erro_do_next', { ...(digest && { referencia: digest }), ...(erro && camposDoErro(erro)) })
+  }
+  return () => {
+    console.error = original
+    g[CHAVE_DO_FILTRO] = false
+  }
+}
+
 export { NIVEIS_DE_LOG }
 export type { NivelDeLog }

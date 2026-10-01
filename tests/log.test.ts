@@ -4,7 +4,7 @@
  * valores sensíveis de todo tipo e prova que nenhum chega à linha.
  */
 import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest'
-import { camposDoErro, comCorrelacao, correlacaoAtual, log, novaCorrelacao, redigir } from '../src/lib/log.js'
+import { camposDoErro, comCorrelacao, correlacaoAtual, filtrarConsoleDoNext, log, novaCorrelacao, redigir } from '../src/lib/log.js'
 import { ErroDeAplicacao } from '../src/lib/erros.js'
 
 let erro: MockInstance<typeof console.error>
@@ -226,5 +226,73 @@ describe('correlação', () => {
   it('a correlação passada como campo vale mais que a do contexto', () => {
     comCorrelacao('contexto1', () => log.info('x', { correlacao: 'explicita' }))
     expect(linhaDe(info).correlacao).toBe('explicita')
+  })
+})
+
+describe('filtro da saída de erro do Next (PR-21)', () => {
+  // O Next imprime sozinho, em `console.error`, o objeto do erro (mensagem e pilha) e linhas com o
+  // prefixo do próprio Next. Em produção isso é trocado por uma linha estruturada sem os dois.
+  it('um Error vira a linha erro_do_next só com o nome e o digest, sem a mensagem nem a pilha', () => {
+    const restaurar = filtrarConsoleDoNext()
+    try {
+      const e = Object.assign(new Error('falhou com a senha=hunter2 do usuario@exemplo.com'), { digest: '1234567890' })
+      console.error(e)
+      const l = linhaDe(erro)
+      expect(l).toMatchObject({ nivel: 'erro', msg: 'erro_do_next', erro: 'Error', referencia: '1234567890' })
+      const texto = JSON.stringify(l)
+      expect(texto).not.toContain('hunter2')
+      expect(texto).not.toContain('usuario@')
+      expect(texto).not.toContain('node_modules')
+    } finally {
+      restaurar()
+    }
+  })
+
+  it('uma linha com o prefixo do Next vira a mesma linha sem o texto', () => {
+    const restaurar = filtrarConsoleDoNext()
+    try {
+      console.error('⨯ Error: Invalid `prisma.$queryRaw()` invocation com dado pessoal')
+      const l = linhaDe(erro)
+      expect(l).toMatchObject({ msg: 'erro_do_next' })
+      expect(JSON.stringify(l)).not.toContain('dado pessoal')
+    } finally {
+      restaurar()
+    }
+  })
+
+  it('o que já é linha estruturada e o texto sem prefixo passam sem mudança', () => {
+    const restaurar = filtrarConsoleDoNext()
+    try {
+      console.error('{"nivel":"erro","msg":"x"}')
+      console.error('aviso solto de uma biblioteca')
+      expect(erro.mock.calls).toEqual([['{"nivel":"erro","msg":"x"}'], ['aviso solto de uma biblioteca']])
+    } finally {
+      restaurar()
+    }
+  })
+
+  it('com LOG_LEVEL=debug o original também sai, para quem investiga', () => {
+    process.env.LOG_LEVEL = 'debug'
+    const restaurar = filtrarConsoleDoNext()
+    try {
+      const e = new Error('detalhe para depuração')
+      console.error(e)
+      expect(erro.mock.calls.some((c) => c[0] === e)).toBe(true)
+      expect(erro.mock.calls.some((c) => String(c[0]).includes('erro_do_next'))).toBe(true)
+    } finally {
+      restaurar()
+    }
+  })
+
+  it('é idempotente e restaurar devolve o console original', () => {
+    const antes = console.error
+    const restaurar = filtrarConsoleDoNext()
+    const depoisDoPrimeiro = console.error
+    const segundo = filtrarConsoleDoNext()
+    expect(console.error).toBe(depoisDoPrimeiro)
+    segundo()
+    expect(console.error).toBe(depoisDoPrimeiro)
+    restaurar()
+    expect(console.error).toBe(antes)
   })
 })

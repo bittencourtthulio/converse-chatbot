@@ -101,18 +101,18 @@ tasks:
   - id: T-02.07
     titulo: "A pilha nao vaza em rota de API nem em pagina"
     fase: F-02.2
-    status: pendente
+    status: concluida
     objetivo: "Provar contra o servidor de producao com banco inacessivel que a rota de API e a pagina devolvem so mensagem generica e codigo de referencia, com X-Correlacao e a mesma referencia no log."
     arquivos:
       cria: ["tests/pilha-nao-vaza.test.ts"]
-      altera: ["tests/apoio/servidor.ts"]
+      altera: ["src/lib/log.ts", "src/instrumentation.ts", "tests/log.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md", "docs/stack/LACUNAS.md"]
     teste_integracao: "Com DATABASE_URL apontando para arquivo inacessivel, GET em uma rota publica de API devolve 5xx com JSON generico e Codigo de referencia, e GET em uma pagina devolve a pagina de erro, ambas com X-Correlacao."
     teste_funcional: "Nem o corpo das respostas nem o log do servidor contem at e caminho de arquivo de pilha, node_modules, a URL do banco ou a mensagem do erro, e o log tem a referencia mostrada."
     criterio_aceite: "tests/pilha-nao-vaza.test.ts passa contra o build de producao."
     depende_de: ["T-02.06"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
 ---
 
 # Tasks — Sprint 02
@@ -227,12 +227,12 @@ titulo: "A pilha nao vaza em rota de API nem em pagina"
 objetivo: "Provar contra o servidor de producao com banco inacessivel que a rota de API e a pagina devolvem so mensagem generica e codigo de referencia, com X-Correlacao e a mesma referencia no log."
 arquivos:
   cria: ["tests/pilha-nao-vaza.test.ts"]
-  altera: ["tests/apoio/servidor.ts"]
+  altera: ["src/lib/log.ts", "src/instrumentation.ts", "tests/log.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md", "docs/stack/LACUNAS.md"]
 teste_integracao: "Com DATABASE_URL apontando para arquivo inacessivel, GET em uma rota publica de API devolve 5xx com JSON generico e Codigo de referencia, e GET em uma pagina devolve a pagina de erro, ambas com X-Correlacao."
 teste_funcional: "Nem o corpo das respostas nem o log do servidor contem at e caminho de arquivo de pilha, node_modules, a URL do banco ou a mensagem do erro, e o log tem a referencia mostrada."
 criterio_aceite: "tests/pilha-nao-vaza.test.ts passa contra o build de producao."
 depende_de: ["T-02.06"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2624 passed, 0 failed (217 arquivos); build antes
 ```
 

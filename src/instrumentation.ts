@@ -8,7 +8,9 @@
 export async function register(): Promise<void> {
   if (process.env.NEXT_RUNTIME !== 'nodejs') return
   // Import dinâmico: o log usa módulos do Node e este arquivo também é analisado para o runtime de borda.
-  const { camposDoErro, log } = await import('@/lib/log')
+  const { camposDoErro, filtrarConsoleDoNext, log } = await import('@/lib/log')
+  // Em produção o erro que o Next imprime sozinho (mensagem e pilha) vira uma linha estruturada.
+  if (process.env.NODE_ENV === 'production') filtrarConsoleDoNext()
   try {
     const { ligarAuditoria } = await import('@/servicos/auditoria-ouvintes')
     ligarAuditoria()

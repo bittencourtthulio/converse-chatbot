@@ -17,7 +17,7 @@ fases:
     tasks: ["T-02.01", "T-02.02", "T-02.03", "T-02.04", "T-02.05"]
   - id: F-02.2
     titulo: "Erro com codigo de referencia"
-    status: em_andamento
+    status: concluido
     criterio_saida: "error, global-error e not-found mostram o codigo e o teste contra next start prova que a pilha nao vaza"
     paralelizavel: false
     paralela_com: []
@@ -61,7 +61,7 @@ flowchart LR
   class T_02_04 concluida
   class T_02_05 concluida
   class T_02_06 concluida
-  class T_02_07 pendente
+  class T_02_07 concluida
   class T_02_07,T_02_06,T_02_05,T_02_04,T_02_03,T_02_02,T_02_01 critico
 ```
 
