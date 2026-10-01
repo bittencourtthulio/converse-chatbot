@@ -11,7 +11,7 @@ tasks:
   - id: T-02.01
     titulo: "Nucleo do adaptador e metodos de configuracao"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Escrever a chamada ao Telegram com prazo, redacao do token e erros em ErroDeAplicacao, e os metodos getMe, setWebhook, deleteWebhook e getWebhookInfo."
     arquivos:
       cria: ["src/lib/telegram.ts", "tests/telegram.test.ts", "docs/canal-telegram/sprint-02/sprint.md", "docs/canal-telegram/sprint-02/fases.md", "docs/canal-telegram/sprint-02/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/telegram.test.ts passa e nenhuma mensagem de erro contem o texto do description do Telegram."
     depende_de: ["T-01.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-02.02
     titulo: "Envio de mensagem, digitando e divisao em pedacos"
     fase: F-02.2
@@ -73,7 +73,7 @@ teste_funcional: "getMe devolve id, username e nome do bot, setWebhook com URL r
 criterio_aceite: "tests/telegram.test.ts passa e nenhuma mensagem de erro contem o texto do description do Telegram."
 depende_de: ["T-01.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/telegram.test.ts e tests/camadas.test.ts, 16 passed; tsc e eslint limpos
 ```
 
 ---
