@@ -22,8 +22,11 @@ atencao:
   olho_obrigatorio: 0
   leitura_rapida: 0
   dispensavel: 0
-portao: null
-desvios: []
+portao: pronto
+desvios:
+  - "convencao PEND-10: suite por task registrada como parcial (subconjunto) ou verde (suite inteira); suite inteira verde no fechamento: 261 arquivos, 2993 passed, 9 skipped, 0 failed"
+  - "T-02.03 ficou parcial: uma suite inteira teve falha intermitente alheia (tests/embed-pagina.test.ts, PEND-30); reexecutada na T-02.05"
+  - "tests/projeto.test.ts alterado na T-01.01 para nao fixar o placar do mapa da FT-11"
 push_feito: false
 pr_url: null
 pr_estado: null
@@ -78,3 +81,12 @@ Regra da feature: cada proteção tem um teste que falha quando ela é removida.
 | T-05.01 | o login logo depois da troca de senha abre o sistema e a sessão anterior cai | `trocarSenha` sem o `increment` de `versaoDaSessao`, novo build | `tests/sessao-fim-a-fim.test.ts` ("login logo depois da troca de senha") |
 | T-05.02 | `sair` revoga de verdade: o cookie roubado antes do logout é barrado (página 307, API 401) | a chamada `revogarSessao` sai da ação `sair`, novo build | `tests/sessao-fim-a-fim.test.ts` ("sair revoga de verdade", contra `next start`) |
 | T-05.03 | quem usa o sistema continua logado além do TTL (renovação no proxy) | a chamada `renovarCookieNaResposta` sai de `src/proxy.ts`, novo build | `tests/sessao-fim-a-fim.test.ts` ("renovação do usuário ativo e queda do inativo", contra `next start`) |
+
+## Desvios: suíte por task (convenção PEND-10)
+
+Registro `suite` de cada task, como gravado em `tasks.md` (parcial = rodou o subconjunto afetado; verde = rodou a suíte inteira):
+
+- **verde (14 tasks, suíte inteira):** T-01.01, T-02.01, T-02.02, T-02.05, T-02.06, T-02.07, T-02.08, T-03.01, T-03.03, T-04.02, T-04.03, T-04.04, T-05.04, T-06.03.
+- **parcial (12 tasks, só teste, documento ou subconjunto):** T-01.02, T-01.03, T-02.03, T-02.04, T-03.02, T-04.01, T-04.05, T-05.01, T-05.02, T-05.03, T-06.01, T-06.02.
+
+A suíte inteira foi executada e ficou verde no fechamento de cada sprint e na T-06.03: 261 arquivos, 2993 passed, 9 skipped, 0 failed. Nenhum `parcial` foi reescrito para `verde`. O V2 do portão foi lido como aviso (PEND-10, opção a). Outros desvios: a T-02.03 ficou `parcial` porque uma execução da suíte inteira teve uma falha intermitente alheia (`tests/embed-pagina.test.ts`, PEND-30, para a FT-13); o teste de fechamento da FT-11 em `tests/projeto.test.ts` foi relaxado na T-01.01.
