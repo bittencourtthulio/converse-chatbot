@@ -26,6 +26,8 @@ export interface OpcoesDaFila {
   concorrenciaDeMidia?: number
   /** Só para teste: troca a extração. */
   extrair?: typeof extrairTexto
+  /** Só para teste: partes menores que os 10 minutos de produção. */
+  segundosPorParte?: number
   /** Só para teste: troca a transcrição de vídeo (sem ffmpeg e sem rede). */
   transcreverMidia?: (pedido: PedidoDeMidia) => Promise<TextoDeMidia>
 }
@@ -140,6 +142,7 @@ export function criarFila(opcoes: OpcoesDaFila = {}): Fila {
       chave,
       modelo,
       armazenamento: armazenamento(),
+      segundosPorParte: opcoes.segundosPorParte,
       aoAndar: (a) => gravarAndamento(fonte.id, a),
       fonteExiste: async () => (await prisma.fonte.findUnique({ where: { id: fonte.id }, select: { id: true } })) !== null,
     })

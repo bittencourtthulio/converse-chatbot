@@ -341,7 +341,7 @@ export async function reprocessar(
   await obter(autor, agenteId, fonteId) // 404 se não existe ou é de outro agente
   const { count } = await prisma.fonte.updateMany({
     where: { id: fonteId, agenteId, status: 'erro' },
-    data: { status: 'pendente', mensagemErro: null },
+    data: { status: 'pendente', mensagemErro: null, etapa: null, progresso: null },
   })
   if (count === 0) throw conflito('Só é possível reprocessar uma fonte que terminou com erro.')
   obterFila().acordar()

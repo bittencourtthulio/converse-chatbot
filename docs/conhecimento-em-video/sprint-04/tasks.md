@@ -71,18 +71,18 @@ tasks:
   - id: T-04.05
     titulo: "Video fim a fim na fila"
     fase: F-04.2
-    status: pendente
+    status: concluida
     objetivo: "Provar o caminho completo com ffmpeg real e OpenRouter simulado, a falha de parte com Reprocessar retomando das partes que faltam e o texto buscavel pela recuperacao."
     arquivos:
       cria: ["tests/fontes-video-fim-a-fim.test.ts"]
-      altera: ["src/servicos/fontes.ts"]
+      altera: ["src/servicos/fontes.ts", "src/servicos/fontes-fila.ts"]
     teste_integracao: "Um audio de 25 segundos gerado pelo ffmpeg, enviado por adicionarVideo e processado pela fila com segmentos de 10 segundos, vira fonte pronta com trechos que comecam em [00:00] e buscarTrechos acha uma palavra da transcricao."
     teste_funcional: "Com falha configurada na parte 2 a fonte fica em erro com Falha na parte 2 de 3, o Reprocessar zera etapa e progresso, retoma e so a parte 2 e a 3 chamam o simulado e ao concluir nao sobram audio nem segmentos."
     criterio_aceite: "tests/fontes-video-fim-a-fim.test.ts passa (com ffmpeg local ou EXIGIR_FFMPEG=1)."
     depende_de: ["T-04.04", "T-03.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
 ---
 
 # Tasks — Sprint 04
@@ -165,13 +165,13 @@ titulo: "Video fim a fim na fila"
 objetivo: "Provar o caminho completo com ffmpeg real e OpenRouter simulado, a falha de parte com Reprocessar retomando das partes que faltam e o texto buscavel pela recuperacao."
 arquivos:
   cria: ["tests/fontes-video-fim-a-fim.test.ts"]
-  altera: ["src/servicos/fontes.ts"]
+  altera: ["src/servicos/fontes.ts", "src/servicos/fontes-fila.ts"]
 teste_integracao: "Um audio de 25 segundos gerado pelo ffmpeg, enviado por adicionarVideo e processado pela fila com segmentos de 10 segundos, vira fonte pronta com trechos que comecam em [00:00] e buscarTrechos acha uma palavra da transcricao."
 teste_funcional: "Com falha configurada na parte 2 a fonte fica em erro com Falha na parte 2 de 3, o Reprocessar zera etapa e progresso, retoma e so a parte 2 e a 3 chamam o simulado e ao concluir nao sobram audio nem segmentos."
 criterio_aceite: "tests/fontes-video-fim-a-fim.test.ts passa (com ffmpeg local ou EXIGIR_FFMPEG=1)."
 depende_de: ["T-04.04", "T-03.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/fontes-video-fim-a-fim.test.ts, 3 passed (ffmpeg real)
 ```
 
 ---
