@@ -26,7 +26,7 @@ tasks:
   - id: T-05.02
     titulo: "Rota de exportacao do titular"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Servir a exportacao do titular como download seguro so para admin."
     arquivos:
       cria: ["src/app/api/titulares/exportar/route.ts", "tests/titulares-exportar-rota.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/titulares-exportar-rota.test.ts passa contra next start."
     depende_de: ["T-05.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-05.03
     titulo: "Visitante apaga a propria conversa: servico e API publica"
     fase: F-05.2
@@ -103,7 +103,7 @@ teste_funcional: "A exportacao em JSON e em TXT tem Content-Disposition attachme
 criterio_aceite: "tests/titulares-exportar-rota.test.ts passa contra next start."
 depende_de: ["T-05.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/titulares-exportar-rota.test.ts 6 passed contra next start (build antes); suite inteira no fim da sprint
 ```
 
 ---
