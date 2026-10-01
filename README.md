@@ -144,6 +144,7 @@ Toda variável é lida em um ponto só, `src/lib/ambiente.ts`. O que cada uma fa
 | `npm run setup` | generate, migrations e seed |
 | `npm run db:migrate` | aplica as migrations |
 | `npm run db:seed` | cria as contas de demonstração |
+| `npm run backup` | gera um backup (`.tar.gz` com o banco e os arquivos) em `BACKUP_DIR`, fora do servidor; o guia completo vem na seção de operação |
 | `npx tsc --noEmit` | checagem de tipos |
 | `npm audit --audit-level=high` | auditoria de dependências |
 

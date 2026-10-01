@@ -71,18 +71,18 @@ tasks:
   - id: T-05.05
     titulo: "Comando npm run backup"
     fase: F-05.2
-    status: pendente
+    status: concluida
     objetivo: "Criar scripts/backup.ts que le o ambiente, gera o backup pelo mesmo servico com origem linha de comando e imprime o resumo."
     arquivos:
-      cria: ["scripts/backup.ts", "tests/backup-comando.test.ts"]
-      altera: ["package.json", "eslint.config.mjs"]
+      cria: ["scripts/backup.ts", "tests/backup-comando.test.ts", "tests/apoio/comando.ts"]
+      altera: ["package.json", "eslint.config.mjs", "README.md"]
     teste_integracao: "O comando executado como processo filho com DATABASE_URL, STORAGE_DIR e BACKUP_DIR de teste cria o arquivo, imprime nome e tamanho e sai com 0, e a auditoria backup_gerado fica com origem linha de comando."
     teste_funcional: "Sem DATABASE_URL ou com BACKUP_DIR sem permissao de escrita o comando sai com codigo diferente de zero e mensagem clara sem pilha."
     criterio_aceite: "tests/backup-comando.test.ts passa e package.json tem o script backup."
     depende_de: ["T-05.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-05.06
     titulo: "Download autenticado do backup"
     fase: F-05.3
@@ -192,14 +192,14 @@ id: T-05.05
 titulo: "Comando npm run backup"
 objetivo: "Criar scripts/backup.ts que le o ambiente, gera o backup pelo mesmo servico com origem linha de comando e imprime o resumo."
 arquivos:
-  cria: ["scripts/backup.ts", "tests/backup-comando.test.ts"]
-  altera: ["package.json", "eslint.config.mjs"]
+  cria: ["scripts/backup.ts", "tests/backup-comando.test.ts", "tests/apoio/comando.ts"]
+  altera: ["package.json", "eslint.config.mjs", "README.md"]
 teste_integracao: "O comando executado como processo filho com DATABASE_URL, STORAGE_DIR e BACKUP_DIR de teste cria o arquivo, imprime nome e tamanho e sai com 0, e a auditoria backup_gerado fica com origem linha de comando."
 teste_funcional: "Sem DATABASE_URL ou com BACKUP_DIR sem permissao de escrita o comando sai com codigo diferente de zero e mensagem clara sem pilha."
 criterio_aceite: "tests/backup-comando.test.ts passa e package.json tem o script backup."
 depende_de: ["T-05.04"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/backup-comando.test.ts e tests/projeto.test.ts passam; tsx resolve o alias @/ fora do Next; só script, scripts do package.json e README
 ```
 
 ---

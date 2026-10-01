@@ -12,7 +12,8 @@
     "test:watch": "vitest",
     "db:migrate": "prisma migrate deploy",
     "db:seed": "tsx prisma/seed.ts",
-    "setup": "prisma generate && prisma migrate deploy && npm run db:seed"
+    "setup": "prisma generate && prisma migrate deploy && npm run db:seed",
+    "backup": "tsx scripts/backup.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
