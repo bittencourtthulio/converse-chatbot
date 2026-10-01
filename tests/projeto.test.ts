@@ -406,11 +406,11 @@ describe('convenções do vídeo (FT-08)', () => {
     ['src/lib/midia.ts:107', /export async function verificarMidia/],
     ['src/lib/midia.ts:141', /export async function sondar/],
     ['src/lib/midia.ts:183', /export async function extrairAudio/],
-    ['src/servicos/fontes-fila.ts:69', /const TIPOS_DE_MIDIA/],
-    ['src/servicos/fontes-fila.ts:82', /export function criarFila/],
-    ['src/servicos/fontes-fila.ts:153', /async function processarVideo/],
-    ['src/servicos/fontes-fila.ts:249', /async function trabalhador/],
-    ['src/servicos/fontes-fila.ts:357', /export function obterFila/],
+    ['src/servicos/fontes-fila.ts:72', /const TIPOS_DE_MIDIA/],
+    ['src/servicos/fontes-fila.ts:85', /export function criarFila/],
+    ['src/servicos/fontes-fila.ts:157', /async function processarVideo/],
+    ['src/servicos/fontes-fila.ts:253', /async function trabalhador/],
+    ['src/servicos/fontes-fila.ts:361', /export function obterFila/],
     ['src/servicos/transcricao-de-midia.ts:31', /export interface DependenciasDeMidia/],
     ['src/servicos/transcricao-de-midia.ts:87', /export async function transcreverMidia/],
     ['src/servicos/transcricao-marcadores.ts:42', /export function formatarMarcador/],
@@ -731,7 +731,7 @@ describe('convenções da operação e do backup (FT-11)', () => {
     ['src/servicos/usuarios.ts:97', /export async function criarAdministradorInicial/],
     ['docker-entrypoint.sh:20', /exec node node_modules\/next/],
     ['docker-compose.yml:30', /stop_grace_period/],
-    ['src/servicos/fontes-fila.ts:64', /aguardarEncerramento\(prazoMs: number\): Promise<boolean>/],
+    ['src/servicos/fontes-fila.ts:67', /aguardarEncerramento\(prazoMs: number\): Promise<boolean>/],
   ]
 
   it.each(CITACOES)('%s existe e contém o que o CONVENCOES.md diz', (citacao, esperado) => {

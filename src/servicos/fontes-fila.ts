@@ -8,6 +8,7 @@ import { ambiente } from '@/lib/ambiente'
 import { ErroDeAplicacao } from '@/lib/erros'
 import { criarArmazenamento, type Armazenamento } from '@/lib/armazenamento'
 import { extrairTexto } from '@/lib/extracao'
+import { extrairParaFila, extrairTextoIsolado } from '@/lib/extracao/isolada'
 import { LIMITES } from '@/lib/extracao/limites'
 import { extrairIdDoYoutube, obterLegendas, tituloProvisorioDoYoutube } from '@/lib/youtube'
 import { formatoDoNome, type Formato } from '@/lib/extracao/formatos'
@@ -30,6 +31,8 @@ export interface OpcoesDaFila {
   concorrenciaDeMidia?: number
   /** Só para teste: troca a extração. */
   extrair?: typeof extrairTexto
+  /** Só para teste: troca a extração em processo filho de PDF, DOCX e HTML (espião, prazo curto, trabalhador travado). */
+  extrairIsolado?: typeof extrairTextoIsolado
   /** Só para teste: partes menores que os 10 minutos de produção. */
   segundosPorParte?: number
   /** Só para teste: troca a leitura das legendas do YouTube. */
@@ -81,7 +84,8 @@ function formatoDaFonte(fonte: { tipo: string; nomeOriginal: string | null }): F
 
 export function criarFila(opcoes: OpcoesDaFila = {}): Fila {
   const relogio = opcoes.relogio ?? (() => new Date())
-  const extrair = opcoes.extrair ?? extrairTexto
+  // PDF, DOCX e HTML rodam num processo filho que o prazo encerra de verdade (PR-107); o resto, no servidor.
+  const extrair = opcoes.extrair ?? ((entrada: Parameters<typeof extrairTexto>[0]) => extrairParaFila(entrada, opcoes.extrairIsolado))
   const transcrever = opcoes.transcreverMidia ?? transcreverMidia
   const lerLegendas = opcoes.legendas ?? obterLegendas
   const armazenamento = () => opcoes.armazenamento ?? criarArmazenamento(ambiente.storageDir)

@@ -56,7 +56,7 @@ tasks:
   - id: T-03.04
     titulo: "Fila usa a extração isolada para PDF, DOCX e HTML"
     fase: F-03.2
-    status: pendente
+    status: concluida
     objetivo: "Trocar o extrair padrão da fila para escolher o processo filho nos formatos pesados (PR-107)."
     arquivos:
       cria: ["tests/fontes-fila-extracao.test.ts"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "Os testes passam e falham quando a fila volta a chamar extrairTexto para PDF (mutação registrada)."
     depende_de: ["T-03.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-03.05
     titulo: "Extração isolada sob o build do Next"
     fase: F-03.2
@@ -154,7 +154,7 @@ teste_funcional: "Um espião em extrairIsolado prova que PDF, DOCX e HTML passam
 criterio_aceite: "Os testes passam e falham quando a fila volta a chamar extrairTexto para PDF (mutação registrada)."
 depende_de: ["T-03.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — fontes-fila-extracao, fontes-fila, fontes-ciclo, fontes-arquivos, fontes-rota*, fontes-fila-execucao, fontes, instrumentacao, projeto verdes após npm run build (38 s no total, sem estouro de tempo); mutação registrada
 ```
 
 ---
