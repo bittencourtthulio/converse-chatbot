@@ -11,7 +11,7 @@ tasks:
   - id: T-04.01
     titulo: "Marcadores de tempo e montagem"
     fase: F-04.1
-    status: pendente
+    status: concluida
     objetivo: "Criar src/servicos/transcricao-marcadores.ts puro com o marcador [MM:SS] ou [H:MM:SS], a juncao das partes e a montagem do texto de legenda com marcador a cada cerca de 60 segundos."
     arquivos:
       cria: ["src/servicos/transcricao-marcadores.ts", "tests/transcricao-marcadores.test.ts", "docs/conhecimento-em-video/sprint-04/sprint.md", "docs/conhecimento-em-video/sprint-04/fases.md", "docs/conhecimento-em-video/sprint-04/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/transcricao-marcadores.test.ts passa."
     depende_de: ["T-03.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-04.02
     titulo: "Modelo de transcricao efetivo"
     fase: F-04.1
@@ -103,7 +103,7 @@ teste_funcional: "O marcador de 3600 segundos e [1:00:00], uma parte vazia e ign
 criterio_aceite: "tests/transcricao-marcadores.test.ts passa."
 depende_de: ["T-03.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/transcricao-marcadores.test.ts, 8 passed
 ```
 
 ---
