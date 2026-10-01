@@ -41,18 +41,18 @@ tasks:
   - id: T-02.03
     titulo: "Ouvintes de canal e de conversa apagada ligados a auditoria"
     fase: F-02.2
-    status: pendente
+    status: concluida
     objetivo: "Ligar aoAlterarCanal e aoApagarConversa a auditoria por ligarAuditoria, com os ouvintes em globalThis e a subida chamando a ligacao."
     arquivos:
       cria: ["src/servicos/auditoria-ouvintes.ts", "tests/auditoria-ouvintes.test.ts"]
-      altera: ["src/servicos/canal-telegram.ts", "src/servicos/historico.ts", "src/instrumentation.ts", "tests/instrumentacao.test.ts"]
+      altera: ["src/servicos/canal-telegram.ts", "src/servicos/historico.ts", "src/instrumentation.ts", "tests/instrumentacao.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md", "src/servicos/auditoria.ts"]
     teste_integracao: "Depois de ligarAuditoria chamada duas vezes, ainda com os modulos recarregados por vi.resetModules, apagar conversas e conectar, pausar, retomar, mudar o limite e desconectar o Telegram simulado gravam um registro cada no banco de teste."
     teste_funcional: "Apagar duas conversas de tres mensagens grava dois conversa_apagada com a contagem 3 e sem texto, a exclusao com origem titular nao grava, e o log recebe auditoria_falhou sem derrubar a exclusao quando a gravacao falha."
     criterio_aceite: "tests/auditoria-ouvintes.test.ts e tests/instrumentacao.test.ts passam, register chama ligarAuditoria e os testes aguardam as gravacoes pendentes por aguardarGravacoesPendentes."
     depende_de: ["T-02.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
   - id: T-02.04
     titulo: "Auditoria da chave e do modelo de transcricao"
     fase: F-02.2
@@ -144,13 +144,13 @@ titulo: "Ouvintes de canal e de conversa apagada ligados a auditoria"
 objetivo: "Ligar aoAlterarCanal e aoApagarConversa a auditoria por ligarAuditoria, com os ouvintes em globalThis e a subida chamando a ligacao."
 arquivos:
   cria: ["src/servicos/auditoria-ouvintes.ts", "tests/auditoria-ouvintes.test.ts"]
-  altera: ["src/servicos/canal-telegram.ts", "src/servicos/historico.ts", "src/instrumentation.ts", "tests/instrumentacao.test.ts"]
+  altera: ["src/servicos/canal-telegram.ts", "src/servicos/historico.ts", "src/instrumentation.ts", "tests/instrumentacao.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md", "src/servicos/auditoria.ts"]
 teste_integracao: "Depois de ligarAuditoria chamada duas vezes, ainda com os modulos recarregados por vi.resetModules, apagar conversas e conectar, pausar, retomar, mudar o limite e desconectar o Telegram simulado gravam um registro cada no banco de teste."
 teste_funcional: "Apagar duas conversas de tres mensagens grava dois conversa_apagada com a contagem 3 e sem texto, a exclusao com origem titular nao grava, e o log recebe auditoria_falhou sem derrubar a exclusao quando a gravacao falha."
 criterio_aceite: "tests/auditoria-ouvintes.test.ts e tests/instrumentacao.test.ts passam, register chama ligarAuditoria e os testes aguardam as gravacoes pendentes por aguardarGravacoesPendentes."
 depende_de: ["T-02.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2301 testes, 2296 passed na 1a rodada e os 5 de citacao de linha em tests/projeto.test.ts corrigidos e reexecutados (144 passed); build antes
 ```
 
 ---

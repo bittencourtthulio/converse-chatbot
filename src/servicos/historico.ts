@@ -230,23 +230,41 @@ export interface ConversaApagada {
   conversaId: string
   agenteId: string
   canal: string
-  usuarioId: string
+  /** Quem pediu; nulo quando foi o próprio visitante (FT-10, PR-90). */
+  usuarioId: string | null
   quantidadeDeMensagens: number
+  /**
+   * De onde veio o pedido, quando não é um usuário do painel (FT-10, D-23): `titular` é a
+   * exclusão de todos os dados de um titular pelo admin (a auditoria registra o resumo) e
+   * `visitante` é o visitante apagando a própria conversa. Ausente: um usuário do painel.
+   */
+  origem?: 'titular' | 'visitante'
 }
 
-const ouvintes = new Set<(apagada: ConversaApagada) => void>()
+const CHAVE_DOS_OUVINTES = Symbol.for('converse.ouvintesDeConversaApagada')
+
+/**
+ * O conjunto de ouvintes mora em `globalThis`: o Next pode carregar este módulo mais de uma
+ * vez (a subida em `instrumentation.ts` e os handlers), e a auditoria precisa ser vista por
+ * todos (FT-10, PR-86).
+ */
+function obterOuvintes(): Set<(apagada: ConversaApagada) => void> {
+  const g = globalThis as unknown as Record<symbol, Set<(apagada: ConversaApagada) => void> | undefined>
+  return (g[CHAVE_DOS_OUVINTES] ??= new Set())
+}
 
 /**
  * Ponto de extensão da FT-10: registra um ouvinte das conversas apagadas e devolve a função
  * que o remove. Ouvinte que lança não derruba a exclusão (que já foi confirmada no banco).
  */
 export function aoApagarConversa(ouvinte: (apagada: ConversaApagada) => void): () => void {
-  ouvintes.add(ouvinte)
-  return () => void ouvintes.delete(ouvinte)
+  const conjunto = obterOuvintes()
+  conjunto.add(ouvinte)
+  return () => void conjunto.delete(ouvinte)
 }
 
 function avisarExclusao(apagada: ConversaApagada): void {
-  for (const ouvinte of [...ouvintes]) {
+  for (const ouvinte of [...obterOuvintes()]) {
     try {
       ouvinte(apagada)
     } catch {

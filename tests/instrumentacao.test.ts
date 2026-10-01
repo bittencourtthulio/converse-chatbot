@@ -4,6 +4,11 @@ import path from 'node:path'
 import { prisma } from '@/lib/prisma'
 import { criarFila, type Fila } from '@/servicos/fontes-fila'
 import { register } from '@/instrumentation'
+import { aguardarGravacoesPendentes } from '@/servicos/auditoria'
+import { desligarAuditoria } from '@/servicos/auditoria-ouvintes'
+import { apagarConversas } from '@/servicos/historico'
+import { criarAdmin } from './ajuda'
+import { criarConversaDeTeste } from './apoio/historico'
 import { limparBanco } from './ajuda'
 import { armazenamentoDeTeste, criarAgenteDeTeste, criarFonteDeTeste } from './apoio/fontes'
 
@@ -17,6 +22,7 @@ beforeEach(async () => {
   agenteId = (await criarAgenteDeTeste()).agente.id
 })
 afterEach(() => {
+  desligarAuditoria()
   delete global_[CHAVE]
   if (runtimeOriginal === undefined) delete process.env.NEXT_RUNTIME
   else process.env.NEXT_RUNTIME = runtimeOriginal
@@ -99,5 +105,33 @@ describe('register (src/instrumentation.ts)', () => {
     const fonte = readFileSync(path.resolve(process.cwd(), 'src/instrumentation.ts'), 'utf8')
     expect(fonte).toMatch(/await import\('@\/servicos\/fontes-fila'\)/)
     expect(fonte).not.toMatch(/^import .*fontes-fila/m)
+  })
+
+  it('liga a auditoria na subida: depois de register, apagar conversa grava o registro (FT-10)', async () => {
+    process.env.NEXT_RUNTIME = 'nodejs'
+    global_[CHAVE] = criarFila({ armazenamento: armazenamentoDeTeste() })
+    const admin = await criarAdmin()
+    const c = await criarConversaDeTeste({ agenteId, canal: 'widget', mensagens: [{ papel: 'user', conteudo: 'x' }] })
+    await apagarConversas([c.id], admin.id)
+    await aguardarGravacoesPendentes()
+    expect(await prisma.registroDeAuditoria.count()).toBe(0)
+
+    await register()
+    const d = await criarConversaDeTeste({ agenteId, canal: 'widget', mensagens: [{ papel: 'user', conteudo: 'y' }] })
+    await apagarConversas([d.id], admin.id)
+    await aguardarGravacoesPendentes()
+    expect(await prisma.registroDeAuditoria.count()).toBe(1)
+  })
+
+  it('fora do runtime Node a auditoria não é ligada, e a ligação é por import dinâmico', async () => {
+    process.env.NEXT_RUNTIME = 'edge'
+    await register()
+    const admin = await criarAdmin()
+    const c = await criarConversaDeTeste({ agenteId, canal: 'widget', mensagens: [{ papel: 'user', conteudo: 'x' }] })
+    await apagarConversas([c.id], admin.id)
+    await aguardarGravacoesPendentes()
+    expect(await prisma.registroDeAuditoria.count()).toBe(0)
+    const fonte = readFileSync(path.resolve(process.cwd(), 'src/instrumentation.ts'), 'utf8')
+    expect(fonte).toMatch(/await import\('@\/servicos\/auditoria-ouvintes'\)/)
   })
 })

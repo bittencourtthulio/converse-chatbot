@@ -23,9 +23,14 @@ import { fimDoDia, inicioDoDia } from '@/servicos/historico-logica'
 
 export const ROTULO_DO_SISTEMA = 'Sistema'
 export const ROTULO_DO_VISITANTE = 'Visitante (chat embutido)'
+export const ROTULO_DE_USUARIO_REMOVIDO = 'Usuário removido'
 
-/** Quem agiu: um usuário autenticado, o sistema (tarefa em segundo plano) ou o visitante do chat. */
-export type AtorDaAuditoria = UsuarioAutenticado | 'sistema' | 'visitante'
+/**
+ * Quem agiu: um usuário autenticado, o sistema (tarefa em segundo plano), o visitante do chat
+ * ou uma referência a usuário por id (o ouvinte só sabe o id; o rótulo é lido na hora de
+ * gravar, e um usuário que já não existe vira "Usuário removido").
+ */
+export type AtorDaAuditoria = UsuarioAutenticado | 'sistema' | 'visitante' | { usuarioId: string }
 
 export interface EventoDeAuditoria {
   ator: AtorDaAuditoria
@@ -36,7 +41,7 @@ export interface EventoDeAuditoria {
 }
 
 /** O cliente que grava: o do Prisma ou o de uma transação. */
-export type ClienteDeAuditoria = Pick<Prisma.TransactionClient, 'registroDeAuditoria'>
+export type ClienteDeAuditoria = Pick<Prisma.TransactionClient, 'registroDeAuditoria' | 'usuario'>
 
 export interface RegistroListado {
   id: string
@@ -49,10 +54,20 @@ export interface RegistroListado {
   detalhes: Record<string, unknown>
 }
 
-function rotuloDoAtor(ator: AtorDaAuditoria): { usuarioId: string | null; usuarioRotulo: string } {
+async function rotuloDoAtor(
+  ator: AtorDaAuditoria,
+  cliente: ClienteDeAuditoria,
+): Promise<{ usuarioId: string | null; usuarioRotulo: string }> {
   if (ator === 'sistema') return { usuarioId: null, usuarioRotulo: ROTULO_DO_SISTEMA }
   if (ator === 'visitante') return { usuarioId: null, usuarioRotulo: ROTULO_DO_VISITANTE }
-  return { usuarioId: ator.id, usuarioRotulo: `${ator.nome} <${ator.email}>` }
+  if ('email' in ator) return { usuarioId: ator.id, usuarioRotulo: `${ator.nome} <${ator.email}>` }
+  const u = await cliente.usuario.findUnique({
+    where: { id: ator.usuarioId },
+    select: { id: true, nome: true, email: true },
+  })
+  return u
+    ? { usuarioId: u.id, usuarioRotulo: `${u.nome} <${u.email}>` }
+    : { usuarioId: null, usuarioRotulo: ROTULO_DE_USUARIO_REMOVIDO }
 }
 
 function lerDetalhes(json: string): Record<string, unknown> {
@@ -88,31 +103,45 @@ export async function registrar(
   const acao = validarAcao(evento.acao)
   const alvoTipo = validarTipoDeAlvo(evento.alvoTipo)
   const detalhes = validarDetalhes(acao, evento.detalhes)
-  const { usuarioId, usuarioRotulo } = rotuloDoAtor(evento.ator)
+  const { usuarioId, usuarioRotulo } = await rotuloDoAtor(evento.ator, cliente)
   const linha = await cliente.registroDeAuditoria.create({
     data: { usuarioId, usuarioRotulo, acao, alvoTipo, alvoId: evento.alvoId ?? null, detalhes },
   })
   return paraListado(linha)
 }
 
-const pendentes = new Set<Promise<unknown>>()
+const CHAVE_DAS_PENDENTES = Symbol.for('converse.auditoriaPendentes')
+
+/** As gravações em andamento, em `globalThis`: valem para todas as cópias carregadas do módulo. */
+function obterPendentes(): Set<Promise<unknown>> {
+  const g = globalThis as unknown as Record<symbol, Set<Promise<unknown>> | undefined>
+  return (g[CHAVE_DAS_PENDENTES] ??= new Set())
+}
 
 /**
  * Grava sem nunca lançar (PR-87): falha vira a linha de log `auditoria_falhou`, com a ação
  * e o nome do erro, sem detalhes nem a mensagem do erro. Devolve quando a gravação termina.
  */
-export function registrarMelhorEsforco(evento: EventoDeAuditoria): Promise<void> {
-  const tarefa = registrar(evento)
-    .then(() => undefined)
+export function registrarMelhorEsforco(
+  evento: EventoDeAuditoria | (() => Promise<EventoDeAuditoria>),
+  acaoParaOLog = 'desconhecida',
+): Promise<void> {
+  const tarefa = Promise.resolve()
+    .then(() => (typeof evento === 'function' ? evento() : evento))
+    .then(async (e) => {
+      acaoParaOLog = typeof e.acao === 'string' ? e.acao : acaoParaOLog
+      await registrar(e)
+    })
     .catch((erro: unknown) => {
       console.error(
         JSON.stringify({
           evento: 'auditoria_falhou',
-          acao: typeof evento.acao === 'string' ? evento.acao : 'desconhecida',
+          acao: acaoParaOLog,
           erro: erro instanceof Error ? erro.name : 'desconhecido',
         }),
       )
     })
+  const pendentes = obterPendentes()
   pendentes.add(tarefa)
   void tarefa.finally(() => pendentes.delete(tarefa))
   return tarefa
@@ -120,6 +149,7 @@ export function registrarMelhorEsforco(evento: EventoDeAuditoria): Promise<void>
 
 /** Espera as gravações de melhor esforço em andamento (os testes, e o desligamento limpo). */
 export async function aguardarGravacoesPendentes(): Promise<void> {
+  const pendentes = obterPendentes()
   while (pendentes.size > 0) await Promise.all([...pendentes])
 }
 

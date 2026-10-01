@@ -20,19 +20,29 @@ export interface AlteracaoDoCanal {
   usuarioId: string
 }
 
-const ouvintes = new Set<(alteracao: AlteracaoDoCanal) => void>()
+const CHAVE_DOS_OUVINTES = Symbol.for('converse.ouvintesDoCanal')
+
+/**
+ * Os ouvintes moram em `globalThis`: o Next pode carregar este módulo mais de uma vez e a
+ * auditoria (FT-10, PR-86) precisa ser vista por todos.
+ */
+function obterOuvintes(): Set<(alteracao: AlteracaoDoCanal) => void> {
+  const g = globalThis as unknown as Record<symbol, Set<(alteracao: AlteracaoDoCanal) => void> | undefined>
+  return (g[CHAVE_DOS_OUVINTES] ??= new Set())
+}
 
 /**
  * Ponto de extensão da FT-10: registra um ouvinte das alterações do canal e
  * devolve a função que o remove. Ouvinte que lança não derruba a operação.
  */
 export function aoAlterarCanal(ouvinte: (alteracao: AlteracaoDoCanal) => void): () => void {
-  ouvintes.add(ouvinte)
-  return () => void ouvintes.delete(ouvinte)
+  const conjunto = obterOuvintes()
+  conjunto.add(ouvinte)
+  return () => void conjunto.delete(ouvinte)
 }
 
 function avisarAlteracao(acao: AcaoNoCanal, autor: UsuarioAutenticado, agenteId: string): void {
-  for (const ouvinte of [...ouvintes]) {
+  for (const ouvinte of [...obterOuvintes()]) {
     try {
       ouvinte({ acao, agenteId, usuarioId: autor.id })
     } catch {
