@@ -7,6 +7,8 @@
 // `DateTime` do Prisma fica no SQLite como texto ISO em UTC (`tests/sqlite-formatos.test.ts`),
 // e `strftime(..., 'localtime')` o converte para o dia local do processo.
 import { prisma } from '@/lib/prisma'
+import { listarConversas, type ItemDoHistorico } from '@/servicos/historico'
+import { chaveDoOpenrouterConfigurada } from '@/servicos/integracoes'
 import { CANAIS_DO_HISTORICO, instanteParaSql, type CanalDoHistorico } from '@/servicos/historico-logica'
 
 export const DIAS_DOS_NUMEROS = 7
@@ -93,4 +95,91 @@ export async function serieDeMensagens(agora: Date = new Date()): Promise<DiaDaS
     const dia = chaveDoDia(inicioDoDiaLocal(agora, i - (DIAS_DA_SERIE - 1)))
     return { dia, mensagens: porDia.get(dia) ?? 0 }
   })
+}
+
+export const LIMITE_DE_RECENTES = 5
+export const LIMITE_DE_FONTES_COM_ERRO = 5
+
+/** As conversas de atividade mais recente, de todos os canais, com o rótulo mascarado (PR-78). */
+export async function conversasRecentes(): Promise<ItemDoHistorico[]> {
+  return (await listarConversas({ pagina: 1, tamanho: LIMITE_DE_RECENTES })).itens
+}
+
+export interface FonteComErro {
+  id: string
+  titulo: string
+  agenteId: string
+  agenteNome: string
+  /** A mensagem segura gravada pela fila (nunca pilha nem caminho). */
+  mensagemErro: string | null
+}
+
+/** As fontes que terminaram em erro: o total e as 5 mais recentes. */
+export async function fontesComErro(): Promise<{ total: number; itens: FonteComErro[] }> {
+  const [total, fontes] = await Promise.all([
+    prisma.fonte.count({ where: { status: 'erro' } }),
+    prisma.fonte.findMany({
+      where: { status: 'erro' },
+      orderBy: [{ atualizadoEm: 'desc' }, { id: 'desc' }],
+      take: LIMITE_DE_FONTES_COM_ERRO,
+      select: { id: true, titulo: true, agenteId: true, mensagemErro: true, agente: { select: { nome: true } } },
+    }),
+  ])
+  return {
+    total,
+    itens: fontes.map((f) => ({
+      id: f.id,
+      titulo: f.titulo,
+      agenteId: f.agenteId,
+      agenteNome: f.agente.nome,
+      mensagemErro: f.mensagemErro,
+    })),
+  }
+}
+
+/** Os passos de começo de uso (PR-82). Só verdadeiro ou falso: a chave nunca sai daqui (PR-14). */
+export interface PrimeirosPassos {
+  chaveConfigurada: boolean
+  primeiroAgente: boolean
+  primeiraFontePronta: boolean
+  /** Chat embutido publicado ou bot do Telegram conectado. */
+  canalAtivo: boolean
+  completo: boolean
+}
+
+export async function primeirosPassos(): Promise<PrimeirosPassos> {
+  const [chaveConfigurada, agentes, fontesProntas, chatsPublicados, bots] = await Promise.all([
+    chaveDoOpenrouterConfigurada(),
+    prisma.agente.count(),
+    prisma.fonte.count({ where: { status: 'pronto' } }),
+    prisma.configuracaoDoChat.count({ where: { ativo: true } }),
+    prisma.canalTelegram.count(),
+  ])
+  const passos = {
+    chaveConfigurada,
+    primeiroAgente: agentes > 0,
+    primeiraFontePronta: fontesProntas > 0,
+    canalAtivo: chatsPublicados > 0 || bots > 0,
+  }
+  return { ...passos, completo: Object.values(passos).every(Boolean) }
+}
+
+export interface DadosDoPainel {
+  numeros: NumerosDoPainel
+  serie: DiaDaSerie[]
+  recentes: ItemDoHistorico[]
+  fontesComErro: { total: number; itens: FonteComErro[] }
+  passos: PrimeirosPassos
+}
+
+/** Tudo que o painel inicial mostra, numa chamada. */
+export async function obterPainel(agora: Date = new Date()): Promise<DadosDoPainel> {
+  const [numeros, serie, recentes, comErro, passos] = await Promise.all([
+    numerosDoPainel(agora),
+    serieDeMensagens(agora),
+    conversasRecentes(),
+    fontesComErro(),
+    primeirosPassos(),
+  ])
+  return { numeros, serie, recentes, fontesComErro: comErro, passos }
 }

@@ -26,7 +26,7 @@ tasks:
   - id: T-05.02
     titulo: "Recentes, alerta e primeiros passos"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar ao painel as 5 conversas recentes, as fontes com erro e a lista de primeiros passos."
     arquivos:
       cria: ["tests/painel-passos.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/painel-passos.test.ts passa."
     depende_de: ["T-05.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-05.03
     titulo: "Grafico de mensagens por dia acessivel"
     fase: F-05.2
@@ -105,7 +105,7 @@ teste_funcional: "Sem nada feito os quatro passos aparecem pendentes, com tudo f
 criterio_aceite: "tests/painel-passos.test.ts passa."
 depende_de: ["T-05.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/painel-passos.test.ts 8 passed
 ```
 
 ---
