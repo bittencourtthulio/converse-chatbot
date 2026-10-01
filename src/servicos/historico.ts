@@ -7,12 +7,15 @@
 // concatenado em SQL (PR-13, PR-79).
 import { Prisma } from '@/gerado/prisma/client'
 import { prisma } from '@/lib/prisma'
+import { naoEncontrado } from '@/lib/erros'
+import { lerFontesGravadas, type FonteDaResposta } from '@/servicos/fontes-da-resposta'
 import {
   LIMITE_DE_CASADAS,
   escaparLike,
   instanteParaSql,
   lerFiltros,
   previaDaMensagem,
+  rotuloDoCanal,
   rotuloDoInterlocutor,
   type FiltrosDoHistorico,
 } from '@/servicos/historico-logica'
@@ -130,4 +133,90 @@ export async function listarConversas(entrada: unknown): Promise<PaginaDoHistori
     tamanho: filtros.tamanho,
     totalDePaginas: Math.max(1, Math.ceil(total / filtros.tamanho)),
   }
+}
+
+export interface MensagemDoHistorico {
+  id: string
+  papel: 'user' | 'assistant'
+  conteudo: string
+  criadoEm: Date
+  /** Modelo que respondeu (só nas respostas). */
+  modelo: string | null
+  /** De onde veio a resposta (FT-05); vazio quando não houve trechos. */
+  fontes: FonteDaResposta[]
+}
+
+export interface ConversaDoHistorico {
+  id: string
+  agenteId: string
+  agenteNome: string
+  canal: string
+  rotulo: string
+  criadoEm: Date
+  atualizadoEm: Date
+  totalDeMensagens: number
+  mensagens: MensagemDoHistorico[]
+}
+
+/** A conversa com todas as mensagens em ordem cronológica; id inexistente é 404. */
+export async function obterConversa(id: string): Promise<ConversaDoHistorico> {
+  const conversa = await prisma.conversa.findUnique({
+    where: { id },
+    include: {
+      agente: { select: { nome: true } },
+      criadoPor: { select: { nome: true } },
+      mensagens: { orderBy: [{ criadoEm: 'asc' }, { id: 'asc' }] },
+    },
+  })
+  if (!conversa) throw naoEncontrado('Conversa não encontrada.')
+  return {
+    id: conversa.id,
+    agenteId: conversa.agenteId,
+    agenteNome: conversa.agente.nome,
+    canal: conversa.canal,
+    rotulo: rotuloDoInterlocutor({
+      canal: conversa.canal,
+      identificadorExterno: conversa.identificadorExterno,
+      titulo: conversa.titulo,
+      nomeDoUsuario: conversa.criadoPor?.nome ?? null,
+    }),
+    criadoEm: conversa.criadoEm,
+    atualizadoEm: conversa.atualizadoEm,
+    totalDeMensagens: conversa.mensagens.length,
+    mensagens: conversa.mensagens.map((m) => ({
+      id: m.id,
+      papel: m.papel === 'assistant' ? ('assistant' as const) : ('user' as const),
+      conteudo: m.conteudo,
+      criadoEm: m.criadoEm,
+      modelo: m.modelo,
+      fontes: lerFontesGravadas(m.fontes),
+    })),
+  }
+}
+
+const formatoDeData = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'medium' })
+
+/**
+ * A conversa em texto simples e legível (PR-83). O nome do arquivo usa só o id interno da
+ * conversa; o texto traz o rótulo mascarado e os títulos das fontes, nunca o identificador
+ * externo nem o texto dos trechos.
+ */
+export async function exportarConversaTexto(id: string): Promise<{ nomeDoArquivo: string; texto: string }> {
+  const c = await obterConversa(id)
+  const linhas = [
+    `Conversa com o agente "${c.agenteNome}"`,
+    `Canal: ${rotuloDoCanal(c.canal)} (${c.canal})`,
+    `Interlocutor: ${c.rotulo}`,
+    `Início: ${formatoDeData.format(c.criadoEm)}`,
+    `Última atividade: ${formatoDeData.format(c.atualizadoEm)}`,
+    `Mensagens: ${c.totalDeMensagens}`,
+    '',
+  ]
+  for (const m of c.mensagens) {
+    linhas.push(`[${formatoDeData.format(m.criadoEm)}] ${m.papel === 'assistant' ? 'Agente' : c.rotulo}:`)
+    linhas.push(m.conteudo)
+    if (m.fontes.length > 0) linhas.push(`Fontes: ${m.fontes.map((f) => f.titulo).join('; ')}`)
+    linhas.push('')
+  }
+  return { nomeDoArquivo: `conversa-${c.id}.txt`, texto: linhas.join('\n') }
 }

@@ -56,7 +56,7 @@ tasks:
   - id: T-02.04
     titulo: "obterConversa e exportarConversaTexto"
     fase: F-02.2
-    status: pendente
+    status: concluida
     objetivo: "Ler uma conversa com todas as mensagens em ordem e fontes, e gerar o texto de exportacao."
     arquivos:
       cria: ["tests/historico-obter.test.ts"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "tests/historico-obter.test.ts passa."
     depende_de: ["T-02.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-02.05
     titulo: "apagarConversa, apagarConversas e aoApagarConversa"
     fase: F-02.2
@@ -154,7 +154,7 @@ teste_funcional: "A exportacao de uma conversa do widget traz agente, canal, rot
 criterio_aceite: "tests/historico-obter.test.ts passa."
 depende_de: ["T-02.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/historico-obter.test.ts 6 passed
 ```
 
 ---

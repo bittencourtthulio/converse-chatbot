@@ -133,3 +133,14 @@ export function lerFiltros(entrada: unknown): FiltrosDoHistorico {
 export function instanteParaSql(data: Date): string {
   return data.toISOString().slice(0, 23)
 }
+
+const ROTULOS_DE_CANAL: Record<string, string> = {
+  painel: 'Painel',
+  widget: 'Chat embutido',
+  telegram: 'Telegram',
+}
+
+/** O nome do canal para a interface e para a exportação. */
+export function rotuloDoCanal(canal: string): string {
+  return ROTULOS_DE_CANAL[canal] ?? canal
+}
