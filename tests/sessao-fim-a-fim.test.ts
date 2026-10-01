@@ -71,3 +71,27 @@ describe('login logo depois da troca de senha (funcional)', () => {
     expect(aposTroca.headers.get('location')).toContain('/entrar')
   })
 })
+
+describe('sair revoga de verdade (integração)', () => {
+  it('o cookie copiado antes do logout é barrado depois (página 307, API 401) e a outra sessão do usuário continua', async () => {
+    const u = await criarUsuario()
+    const roubado = await entrar(u.email, SENHA_PADRAO)
+    const doOutroAparelho = await entrar(u.email, SENHA_PADRAO)
+    expect((await pedir('/perfil', roubado)).status).toBe(200)
+
+    // O Sair logo após o login, antes da metade da vida do token: a prova é a revogação, não o Set-Cookie.
+    const saida = await enviarFormulario(servidor.base, '/', {}, { contendo: 'Sair', cookie: roubado })
+    expect(saida.status).toBe(303)
+    expect(saida.location).toContain('/entrar')
+    const apagado = saida.setCookies.find((c) => c.startsWith('expx_sessao='))
+    expect(apagado, 'a resposta apaga o cookie').toMatch(/Max-Age=0|Expires=Thu, 01 Jan 1970/i)
+
+    const pagina = await pedir('/perfil', roubado)
+    expect(pagina.status).toBe(307)
+    expect(pagina.headers.get('location')).toContain('/entrar')
+    expect((await pedir('/api/conversas/qualquer-id/exportar', roubado)).status).toBe(401)
+
+    expect((await pedir('/perfil', doOutroAparelho)).status).toBe(200)
+    expect((await pedir('/api/conversas/qualquer-id/exportar', doOutroAparelho)).status).toBe(404)
+  })
+})

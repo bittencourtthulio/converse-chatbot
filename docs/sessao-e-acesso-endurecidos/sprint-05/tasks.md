@@ -26,7 +26,7 @@ tasks:
   - id: T-05.02
     titulo: "Logout e reuso do cookie roubado"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Provar contra next start que sair revoga: o cookie copiado antes e barrado depois, e outra sessao do mesmo usuario continua."
     arquivos:
       cria: []
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "npm run build executado depois da ultima mudanca em src/, o caso passa e falha quando a acao sair deixa de revogar (mutacao registrada)."
     depende_de: ["T-05.01", "T-03.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-05.03
     titulo: "Renovacao do usuario ativo e queda do inativo"
     fase: F-05.1
@@ -105,7 +105,7 @@ teste_funcional: "A pagina responde 307 para /entrar e a API responde 401 com o 
 criterio_aceite: "npm run build executado depois da ultima mudanca em src/, o caso passa e falha quando a acao sair deixa de revogar (mutacao registrada)."
 depende_de: ["T-05.01", "T-03.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/sessao-fim-a-fim.test.ts 3 passed contra next start; build antes; só teste novo
 ```
 
 ---
