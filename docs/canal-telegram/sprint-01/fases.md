@@ -10,14 +10,14 @@ atualizado_em: 2026-09-30
 fases:
   - id: F-01.1
     titulo: "Dados e ambiente"
-    status: pendente
+    status: concluido
     criterio_saida: "Tabelas, limparBanco e variaveis de ambiente prontos e testados."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-01.01", "T-01.02"]
   - id: F-01.2
     titulo: "Simulado do Telegram"
-    status: pendente
+    status: concluido
     criterio_saida: "Servidor simulado reutilizavel testado."
     paralelizavel: false
     paralela_com: []
@@ -49,7 +49,7 @@ flowchart LR
 
   class T_01_01 concluida
   class T_01_02 concluida
-  class T_01_03 pendente
+  class T_01_03 concluida
   class T_01_01,T_01_02,T_01_03 critico
 ```
 

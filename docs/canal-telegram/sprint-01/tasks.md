@@ -41,7 +41,7 @@ tasks:
   - id: T-01.03
     titulo: "Servidor simulado do Telegram"
     fase: F-01.2
-    status: pendente
+    status: concluida
     objetivo: "Escrever tests/apoio/telegram-falso.ts com os seis metodos, registro de requisicoes, token invalido com 401, falhas e latencia configuraveis e funcao para disparar update ao webhook."
     arquivos:
       cria: ["tests/apoio/telegram-falso.ts", "tests/telegram-falso.test.ts"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/telegram-falso.test.ts passa e o simulado nao importa nada de src."
     depende_de: ["T-01.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
 ---
 
 # Tasks — Sprint 01
@@ -107,5 +107,5 @@ teste_funcional: "getMe com token valido devolve ok true com o bot configurado, 
 criterio_aceite: "tests/telegram-falso.test.ts passa e o simulado nao importa nada de src."
 depende_de: ["T-01.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/telegram-falso.test.ts, 6 passed
 ```

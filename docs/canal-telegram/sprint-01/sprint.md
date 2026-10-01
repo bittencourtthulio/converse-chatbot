@@ -8,7 +8,7 @@ feature_id: FT-07
 sprint_id: sprint-01
 atualizado_em: 2026-09-30
 titulo: "Capacidade de testar: dados, ambiente e simulado do Telegram"
-status: pendente
+status: concluido
 criterio_saida: "A suite inteira esta verde com a migration nova, as duas variaveis de ambiente lidas e o servidor simulado do Telegram testado."
 fases: ["F-01.1", "F-01.2"]
 riscos: ["migration tem de so acrescentar (tests/migracoes.test.ts)", "o simulado precisa imitar o formato real de erro do Telegram (base/telegram-bot-api.md)"]
