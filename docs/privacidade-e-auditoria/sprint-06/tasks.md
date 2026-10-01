@@ -56,18 +56,18 @@ tasks:
   - id: T-06.04
     titulo: "Pagina de privacidade: retencao, aviso e dados tratados"
     fase: F-06.3
-    status: pendente
+    status: concluida
     objetivo: "Criar a pagina Privacidade com os formularios de retencao e de aviso padrao e o painel somente leitura de dados pessoais tratados."
     arquivos:
-      cria: ["src/app/(sistema)/configuracoes/privacidade/page.tsx", "src/componentes/FormularioDeRetencao.tsx", "src/componentes/FormularioDoAvisoPadrao.tsx", "src/componentes/PainelDeDadosPessoais.tsx", "src/componentes/privacidade-logica.ts", "tests/privacidade-ui.test.tsx", "tests/privacidade-logica.test.ts"]
-      altera: ["src/app/acoes.ts", "src/estilos/global.css", "tests/privacidade-estilos.test.ts"]
+      cria: ["src/app/(sistema)/configuracoes/privacidade/page.tsx", "src/componentes/FormularioDeRetencao.tsx", "src/componentes/FormularioDoAvisoPadrao.tsx", "src/componentes/PainelDeDadosPessoais.tsx", "src/componentes/privacidade-logica.ts", "tests/privacidade-ui.test.tsx", "tests/privacidade-logica.test.ts", "tests/privacidade-acoes.test.ts"]
+      altera: ["src/app/acoes.ts", "src/estilos/global.css", "tests/privacidade-estilos.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md"]
     teste_integracao: "As acoes salvarRetencao e salvarAvisoPadrao chamam o servico com a sessao de admin, gravam o registro de auditoria e devolvem erro de validacao em portugues, e a pagina mostra a retencao atual lida do banco."
     teste_funcional: "O painel de dados tem texto fixo com os campos de cada canal, a finalidade de atendimento e a base legal escrita como legitimo interesse, a confirmar pela empresa, com a frase exata da PR-91 e sem a palavra parecer, e escolher sem expurgo exige marcar o aviso de risco."
     criterio_aceite: "tests/privacidade-ui.test.tsx e tests/privacidade-logica.test.ts passam."
     depende_de: ["T-06.03", "T-03.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-06.05
     titulo: "Ferramentas do titular na tela de privacidade"
     fase: F-06.3
@@ -145,14 +145,14 @@ id: T-06.04
 titulo: "Pagina de privacidade: retencao, aviso e dados tratados"
 objetivo: "Criar a pagina Privacidade com os formularios de retencao e de aviso padrao e o painel somente leitura de dados pessoais tratados."
 arquivos:
-  cria: ["src/app/(sistema)/configuracoes/privacidade/page.tsx", "src/componentes/FormularioDeRetencao.tsx", "src/componentes/FormularioDoAvisoPadrao.tsx", "src/componentes/PainelDeDadosPessoais.tsx", "src/componentes/privacidade-logica.ts", "tests/privacidade-ui.test.tsx", "tests/privacidade-logica.test.ts"]
-  altera: ["src/app/acoes.ts", "src/estilos/global.css", "tests/privacidade-estilos.test.ts"]
+  cria: ["src/app/(sistema)/configuracoes/privacidade/page.tsx", "src/componentes/FormularioDeRetencao.tsx", "src/componentes/FormularioDoAvisoPadrao.tsx", "src/componentes/PainelDeDadosPessoais.tsx", "src/componentes/privacidade-logica.ts", "tests/privacidade-ui.test.tsx", "tests/privacidade-logica.test.ts", "tests/privacidade-acoes.test.ts"]
+  altera: ["src/app/acoes.ts", "src/estilos/global.css", "tests/privacidade-estilos.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md"]
 teste_integracao: "As acoes salvarRetencao e salvarAvisoPadrao chamam o servico com a sessao de admin, gravam o registro de auditoria e devolvem erro de validacao em portugues, e a pagina mostra a retencao atual lida do banco."
 teste_funcional: "O painel de dados tem texto fixo com os campos de cada canal, a finalidade de atendimento e a base legal escrita como legitimo interesse, a confirmar pela empresa, com a frase exata da PR-91 e sem a palavra parecer, e escolher sem expurgo exige marcar o aviso de risco."
 criterio_aceite: "tests/privacidade-ui.test.tsx e tests/privacidade-logica.test.ts passam."
 depende_de: ["T-06.03", "T-03.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — privacidade-logica 8, privacidade-acoes 6, privacidade-ui 8 contra next start (build antes), estilos, tokens, projeto 150; suite inteira no fim da sprint
 ```
 
 ---

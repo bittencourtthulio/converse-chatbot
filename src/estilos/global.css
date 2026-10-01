@@ -1699,4 +1699,17 @@ textarea { min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: verti
   .tabela-de-auditoria .celula-detalhe { max-width: none; }
 }
 
+/* retenção, aviso padrão e painel de dados (tela de Privacidade) */
+.campo-numerico { width: 7rem; min-height: var(--altura-controle); padding: 0 12px; background: var(--bg-surface); color: var(--fg-default); border: 1px solid var(--border-input); border-radius: var(--raio-controle); font: inherit; }
+.campo-numerico:disabled { opacity: 0.55; }
+.campo-radio:has(.campo-numerico) { flex-wrap: wrap; }
+.campo-checkbox { display: flex; align-items: flex-start; gap: 10px; min-height: var(--alvo-toque); }
+.campo-checkbox input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--accent); flex: none; }
+.secao-subtitulo { margin: 0; font-size: var(--texto-grande); font-weight: 650; }
+.dados-por-canal { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.dados-do-canal { min-width: 0; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--raio-controle); background: var(--bg-subtle); }
+.dados-do-canal ul { margin: 6px 0 0; padding-left: 18px; }
+.dados-do-canal li { overflow-wrap: anywhere; }
+.dados-gerais dd { overflow-wrap: anywhere; }
+
 /* ---------- fim da privacidade e auditoria ---------- */

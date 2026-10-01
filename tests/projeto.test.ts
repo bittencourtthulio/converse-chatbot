@@ -416,7 +416,7 @@ describe('convenções do vídeo (FT-08)', () => {
     ['src/lib/youtube.ts:298', /export async function baixarLegenda/],
     ['src/lib/youtube.ts:331', /export async function obterLegendas/],
     ['src/componentes/AdicionarFontes.tsx:21', /const PAINEIS/],
-    ['src/app/acoes.ts:47', /console\.error\(erro\)/],
+    ['src/app/acoes.ts:48', /console\.error\(erro\)/],
     ['tests/apoio/ffmpeg.ts:40', /export function descreverComFfmpeg/],
     ['tests/apoio/youtube-falso.ts:116', /export async function iniciarYoutubeFalso/],
     ['tests/apoio/openrouter-falso.ts:111', /function extrairAudio/],

@@ -6,6 +6,7 @@ import { entrar, exigirLimiteDeLogin } from '@/servicos/autenticacao'
 import { ipDoCliente } from '@/lib/requisicao'
 import { criar, editar, desativar, excluirDefinitivamente } from '@/servicos/usuarios'
 import { atualizarPerfil, trocarSenha } from '@/servicos/perfil'
+import { salvarAvisoPadrao, salvarRetencao } from '@/servicos/privacidade'
 import { salvarConfiguracao as salvarConfiguracaoDoChat } from '@/servicos/chat-publico-config'
 import { criar as criarAgenteNoServico, editar as editarAgenteNoServico, excluir as excluirAgenteNoServico } from '@/servicos/agentes'
 import {
@@ -154,6 +155,45 @@ export async function excluirUsuario(
   }
   revalidatePath('/configuracoes/usuarios')
   return { sucesso: 'Usuário excluído definitivamente.' }
+}
+
+/** A retenção das conversas (FT-10, PR-89): só admin; "sem expurgo" exige a confirmação do risco. */
+export async function salvarRetencaoDasConversas(
+  _estado: EstadoDoFormulario,
+  form: FormData,
+): Promise<EstadoDoFormulario> {
+  let sucesso: string
+  try {
+    const admin = await exigirUsuarioAdmin()
+    const semExpurgo = form.get('modo') === 'sem_expurgo'
+    const salva = await salvarRetencao(
+      admin,
+      semExpurgo ? { modo: 'sem_expurgo', confirmarRisco: form.get('confirmarRisco') } : { modo: 'dias', dias: form.get('dias') },
+    )
+    sucesso =
+      salva.retencaoDias === null
+        ? 'Retenção salva: sem expurgo automático. As conversas ficam guardadas até alguém apagá-las.'
+        : `Retenção salva: as conversas sem atividade há mais de ${salva.retencaoDias} dias serão apagadas.`
+  } catch (erro) {
+    return { erro: mensagemDe(erro) }
+  }
+  revalidatePath('/configuracoes/privacidade')
+  return { sucesso }
+}
+
+/** O aviso de privacidade padrão do workspace (FT-10, PR-91): só admin. */
+export async function salvarAvisoPadraoDoWorkspace(
+  _estado: EstadoDoFormulario,
+  form: FormData,
+): Promise<EstadoDoFormulario> {
+  try {
+    const admin = await exigirUsuarioAdmin()
+    await salvarAvisoPadrao(admin, { texto: form.get('texto') ?? '', url: form.get('url') ?? '' })
+  } catch (erro) {
+    return { erro: mensagemDe(erro) }
+  }
+  revalidatePath('/configuracoes/privacidade')
+  return { sucesso: 'Aviso de privacidade padrão salvo.' }
 }
 
 export async function salvarPerfil(
