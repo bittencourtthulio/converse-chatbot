@@ -92,12 +92,13 @@ export async function lerSessao(token: string, opcoes: { agora?: number } = {}):
 /** O nome do cookie de sessão. httpOnly, secure em produção, sameSite lax (L4, L7). */
 export const COOKIE_SESSAO = 'expx_sessao'
 
-export function opcoesDoCookie() {
+/** Os atributos do cookie; `maxAge` é a vida do token (a renovação passa o que resta dele). */
+export function opcoesDoCookie(maxAge: number = ambiente.jwtTtlSegundos) {
   return {
     httpOnly: true,
     secure: ambiente.ehProducao,
     sameSite: 'lax' as const,
     path: '/',
-    maxAge: ambiente.jwtTtlSegundos,
+    maxAge,
   }
 }

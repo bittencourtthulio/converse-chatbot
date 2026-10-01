@@ -56,7 +56,7 @@ tasks:
   - id: T-02.04
     titulo: "Atributos do cookie de sessao provados"
     fase: F-02.2
-    status: pendente
+    status: concluida
     objetivo: "Provar HttpOnly, SameSite lax, Path /, Secure em producao e Max-Age coerente de opcoesDoCookie, com o Max-Age por parametro."
     arquivos:
       cria: ["tests/sessao-cookie.test.ts"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "tests/sessao-cookie.test.ts passa e falha quando httpOnly vira false, quando secure ignora producao ou quando sameSite muda (mutacao registrada) e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
     depende_de: ["T-02.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-02.05
     titulo: "Entrar, validar e revogar a sessao no servico"
     fase: F-02.2
@@ -199,7 +199,7 @@ teste_funcional: "Em teste secure e false, em producao e true, httpOnly e sempre
 criterio_aceite: "tests/sessao-cookie.test.ts passa e falha quando httpOnly vira false, quando secure ignora producao ou quando sameSite muda (mutacao registrada) e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
 depende_de: ["T-02.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/sessao-cookie.test.ts 5 passed e testes de sessão, autenticação, perfil e projeto verdes
 ```
 
 ---
