@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
-import { entrar, exigirLimiteDeLogin } from '@/servicos/autenticacao'
+import { entrar, exigirLimiteDeLogin, revogarSessao } from '@/servicos/autenticacao'
 import { ipDoCliente } from '@/lib/requisicao'
 import { criar, editar, desativar, excluirDefinitivamente } from '@/servicos/usuarios'
 import { atualizarPerfil, trocarSenha } from '@/servicos/perfil'
@@ -35,6 +35,7 @@ import {
   exigirUsuarioAdmin,
   gravarCookieDeSessao,
   apagarCookieDeSessao,
+  tokenDaSessao,
 } from '@/app/sessao-servidor'
 
 export interface EstadoDoFormulario {
@@ -74,7 +75,20 @@ export async function autenticar(
   redirect('/')
 }
 
+/**
+ * Sair de verdade (PR-101): revoga o `jti` do token do cookie, para que o token copiado antes do logout deixe de
+ * valer, apaga o cookie e volta ao login. Se a gravação da revogação falhar, o cookie é apagado do mesmo jeito e a
+ * falha vai ao log só pelo nome do erro (nunca a mensagem nem o token).
+ */
 export async function sair(): Promise<void> {
+  const token = await tokenDaSessao()
+  if (token) {
+    try {
+      await revogarSessao(token)
+    } catch (erro) {
+      log.erro('sessao_revogacao_falhou', camposDoErro(erro))
+    }
+  }
   await apagarCookieDeSessao()
   redirect('/entrar')
 }

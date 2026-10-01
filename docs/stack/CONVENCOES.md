@@ -202,7 +202,7 @@ funções de `src/lib/erros.ts` (inclusive `limiteExcedido`, 429). A ação conv
 mensagem para a tela; rastro de pilha nunca chega ao usuário (L17); erro inesperado
 vira frase genérica com o **código de referência** (FT-11, PR-93): a correlação da requisição, a mesma do cabeçalho `X-Correlacao` e da linha de log (rota de API por `respostaDeErro`, ação de servidor por `mensagemDe`); as páginas de erro (`error.tsx`, `global-error.tsx`, `not-found.tsx` e o do sistema) mostram o `digest` do Next, que `onRequestError` grava junto da correlação na linha `erro_na_requisicao`.
 Falha do provedor de IA: `erroDoProvedor` (status 502, ou 504 no tempo esgotado; códigos `provedor_*`; mensagem em português sem o corpo do provedor). Ação que lida com segredo usa `mensagemSemSegredo`, que registra só o nome do erro inesperado.
-**Evidência:** `src/lib/erros.ts:4`, `src/lib/erros.ts:45`, `src/app/acoes.ts:30-33`, `src/app/acoes.ts:53`, `src/app/(sistema)/error.tsx`
+**Evidência:** `src/lib/erros.ts:4`, `src/lib/erros.ts:45`, `src/app/acoes.ts:30-33`, `src/app/acoes.ts:54`, `src/app/(sistema)/error.tsx`
 
 ### Consulta SQL com texto do usuário
 O texto do usuário nunca é concatenado em SQL (PR-13, PR-30). SQL cru só existe para FTS5 (migration e `prisma.$queryRaw` com template tagueado); a pergunta vira termos limpos (letras e dígitos) e só a expressão `MATCH` montada com eles e o `agenteId` vão como parâmetros. `$queryRawUnsafe` e `$executeRawUnsafe` não são usados no código de `src/` (um teste confere o módulo de recuperação, e a pergunta hostil é exercitada contra o FTS5 real).

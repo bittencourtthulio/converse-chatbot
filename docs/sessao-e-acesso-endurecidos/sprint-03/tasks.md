@@ -11,7 +11,7 @@ tasks:
   - id: T-03.01
     titulo: "Acao sair revoga a sessao"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Fazer a acao sair ler o token do cookie, revogar o jti, apagar o cookie e redirecionar."
     arquivos:
       cria: ["docs/sessao-e-acesso-endurecidos/sprint-03/sprint.md", "docs/sessao-e-acesso-endurecidos/sprint-03/fases.md", "docs/sessao-e-acesso-endurecidos/sprint-03/tasks.md", "tests/acao-sair.test.ts"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/acao-sair.test.ts passa e falha quando a chamada de revogacao sai da acao (mutacao registrada) e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
     depende_de: ["T-02.05", "T-01.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
   - id: T-03.02
     titulo: "salvarSenha grava o cookie real"
     fase: F-03.1
@@ -73,7 +73,7 @@ teste_funcional: "Depois de sair, usuarioDaSessao recusa o token antigo e aceita
 criterio_aceite: "tests/acao-sair.test.ts passa e falha quando a chamada de revogacao sai da acao (mutacao registrada) e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
 depende_de: ["T-02.05", "T-01.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 253 arquivos, 2925 passed, 9 skipped, 0 failed
 ```
 
 ---

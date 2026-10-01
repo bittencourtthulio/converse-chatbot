@@ -34,6 +34,11 @@ export async function exigirUsuarioAdmin(): Promise<UsuarioAutenticado> {
   return usuario
 }
 
+/** O token do cookie de sessão, ou `undefined` sem cookie. É o que `sair` revoga (PR-101). */
+export async function tokenDaSessao(): Promise<string | undefined> {
+  return (await cookies()).get(COOKIE_SESSAO)?.value
+}
+
 export async function gravarCookieDeSessao(token: string): Promise<void> {
   ;(await cookies()).set(COOKIE_SESSAO, token, opcoesDoCookie())
 }
