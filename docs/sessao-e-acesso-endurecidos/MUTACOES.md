@@ -22,3 +22,5 @@ Regra da feature: cada proteção tem um teste que **falha** quando ela é remov
 | T-02.04 | cookie de sessão `SameSite=Lax` | `sameSite: 'none'` | 3 casos de `tests/sessao-cookie.test.ts` |
 | T-02.05 | `usuarioDaSessao` recusa token revogado | removida a consulta a `sessoes_revogadas` | `tests/sessao-revogacao.test.ts` ("depois de revogar, o token recebe 401 e outra sessão do mesmo usuário continua válida") |
 | T-02.05 | `usuarioDaSessao` recusa sessão além do limite absoluto mesmo com `exp` válido | removida a conferência de início mais o máximo | `tests/sessao-revogacao.test.ts` ("um token forjado com início antigo e exp ainda válido") |
+| T-02.06 | a troca de senha derruba as outras sessões (versão de sessão) | removido o `increment` de `versaoDaSessao` em `trocarSenha` | `tests/sessao-versao.test.ts` e `tests/perfil.test.ts` |
+| T-02.06 | `usuarioDaSessao` recusa token de versão menor | removida a comparação `sessao.versao < usuario.versaoDaSessao` | `tests/sessao-versao.test.ts` e `tests/perfil.test.ts` |

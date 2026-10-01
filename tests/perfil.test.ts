@@ -152,9 +152,7 @@ describe('trocarSenha', () => {
 
     const depois = await prisma.usuario.findUniqueOrThrow({ where: { id: usuario.id } })
     expect(depois.senhaHash).toBe(antes.senhaHash)
-    expect(depois.sessoesValidasDesde.getTime()).toBe(
-      antes.sessoesValidasDesde.getTime(),
-    )
+    expect(depois.versaoDaSessao).toBe(antes.versaoDaSessao)
   })
 })
 

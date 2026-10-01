@@ -86,7 +86,7 @@ tasks:
   - id: T-02.06
     titulo: "Troca de senha por versao de sessao"
     fase: F-02.3
-    status: pendente
+    status: concluida
     objetivo: "Trocar, na mesma task, a leitura do corte por relogio em usuarioDaSessao e a gravacao em trocarSenha pela versaoDaSessao: entrar emite a versao, trocarSenha a incrementa e o token novo nasce na versao nova."
     arquivos:
       cria: ["tests/sessao-versao.test.ts"]
@@ -96,8 +96,8 @@ tasks:
     criterio_aceite: "tests/sessao-versao.test.ts e tests/perfil.test.ts passam e falham quando o incremento da versao e removido (mutacao registrada) e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
     depende_de: ["T-02.05"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
   - id: T-02.07
     titulo: "Renovacao deslizante com limite absoluto"
     fase: F-02.3
@@ -233,7 +233,7 @@ teste_funcional: "Duas trocas seguidas deixam so o token da ultima e os logins p
 criterio_aceite: "tests/sessao-versao.test.ts e tests/perfil.test.ts passam e falham quando o incremento da versao e removido (mutacao registrada) e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
 depende_de: ["T-02.05"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 250 arquivos, 2910 passed, 9 skipped, 0 failed
 ```
 
 ---

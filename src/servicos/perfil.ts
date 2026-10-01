@@ -85,22 +85,17 @@ export async function trocarSenha(
     throw entradaInvalida('A senha atual está incorreta.')
   }
 
-  // O `iat` do JWT tem resolução de segundos, então um token emitido no
-  // mesmo segundo da troca teria `iat` igual ao corte e sobreviveria a ele.
-  // O corte avança um segundo para ficar estritamente à frente de todo
-  // token já emitido — é isso que derruba de fato as sessões abertas.
-  const corteEmSegundos = Math.floor(Date.now() / 1000) + 1
-
-  await prisma.usuario.update({
+  // O contador de versão de sessão (PR-103) substitui o corte por relógio: a troca incrementa a versão do
+  // usuário junto da senha nova, e todo token de versão menor deixa de valer. Não há comparação de
+  // instantes, então o login feito no mesmo segundo da troca nasce na versão nova e vale.
+  const atualizado = await prisma.usuario.update({
     where: { id: usuario.id },
     data: {
       senhaHash: await hashDeSenha(dados.data.senhaNova),
-      sessoesValidasDesde: new Date(corteEmSegundos * 1000),
+      versaoDaSessao: { increment: 1 },
     },
   })
 
-  // O token novo nasce exatamente no corte. A comparação em
-  // `usuarioDaSessao` é `iat < corte`, então este sobrevive (igual não é
-  // menor) e todo token anterior, com `iat` menor, cai.
-  return { token: await assinarSessao(atual.id, atual.papel, { agora: corteEmSegundos }) }
+  // O token novo já nasce na versão nova: quem trocou a senha não é derrubado pela própria troca.
+  return { token: await assinarSessao(atual.id, atual.papel, { versao: atualizado.versaoDaSessao }) }
 }

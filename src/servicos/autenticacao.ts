@@ -81,7 +81,7 @@ export async function entrar(
   if (!(await senhaConfere(dados.data.senha, usuario.senhaHash))) throw falha
 
   return {
-    token: await assinarSessao(usuario.id, usuario.papel, { agora: opcoes.agora }),
+    token: await assinarSessao(usuario.id, usuario.papel, { agora: opcoes.agora, versao: usuario.versaoDaSessao }),
     usuario: {
       id: usuario.id,
       nome: usuario.nome,
@@ -111,10 +111,8 @@ export async function usuarioDaSessao(token: string, opcoes: { agora?: number } 
   })
   if (!usuario || !usuario.ativo) throw naoAutenticado()
 
-  const invalidasAte = Math.floor(usuario.sessoesValidasDesde.getTime() / 1000)
-  if (sessao.emitidoEm < invalidasAte) {
-    throw naoAutenticado('Sessão encerrada por troca de senha.')
-  }
+  // Contador de versão (PR-103): o token de uma versão anterior à do usuário foi derrubado por uma troca de senha.
+  if (sessao.versao < usuario.versaoDaSessao) throw naoAutenticado('Sessão encerrada por troca de senha.')
 
   return {
     id: usuario.id,
