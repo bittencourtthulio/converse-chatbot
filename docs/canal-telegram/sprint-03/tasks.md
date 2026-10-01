@@ -11,7 +11,7 @@ tasks:
   - id: T-03.01
     titulo: "Conectar o bot e ler o estado"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Escrever conectar (formato do token, getMe, segredo de 32 bytes, setWebhook, token cifrado, hash, HTTPS, bot unico, reconexao gira o segredo) e estado sem segredo."
     arquivos:
       cria: ["src/servicos/canal-telegram.ts", "tests/canal-telegram-conectar.test.ts", "docs/canal-telegram/sprint-03/sprint.md", "docs/canal-telegram/sprint-03/fases.md", "docs/canal-telegram/sprint-03/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/canal-telegram-conectar.test.ts passa e a serializacao do estado nao contem o token de teste."
     depende_de: ["T-02.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-03.02
     titulo: "Desconectar, pausar, retomar e verificar"
     fase: F-03.2
@@ -73,7 +73,7 @@ teste_funcional: "conectar recusa token malformado, APP_URL ausente ou http (tel
 criterio_aceite: "tests/canal-telegram-conectar.test.ts passa e a serializacao do estado nao contem o token de teste."
 depende_de: ["T-02.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/canal-telegram-conectar.test.ts, 13 passed; tsc e eslint limpos
 ```
 
 ---
