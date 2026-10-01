@@ -5,8 +5,8 @@ kind: mapa
 projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-09-30
 total_features: 11
-pendentes: 4
-em_andamento: 0
+pendentes: 3
+em_andamento: 1
 entregues: 7
 bloqueadas: 0
 ---
@@ -31,7 +31,7 @@ da feature de que depende (PRs empilhados).
 | FT-05 | Respostas com base no conhecimento | entregue | local (branch feat/respostas-com-conhecimento) |
 | FT-06 | Chat embutido por script | entregue | local (branch feat/chat-embutido) |
 | FT-07 | Canal Telegram | entregue | local (branch feat/canal-telegram) |
-| FT-08 | Base de conhecimento: vídeo | pendente | — |
+| FT-08 | Base de conhecimento: vídeo | em_andamento | — |
 | FT-09 | Histórico de conversas e painel | pendente | — |
 | FT-10 | Privacidade e auditoria | pendente | — |
 | FT-11 | Operação e backup | pendente | — |
@@ -169,7 +169,7 @@ Trabalho: adaptar o template (nome, layout e tokens SaaS no lugar do VS Code, te
 **Premissas que realiza:** [PR-09]
 **Módulo disponível:** -
 **Fatias candidatas:** -
-**Status:** pendente
+**Status:** em_andamento
 
 ---
 
