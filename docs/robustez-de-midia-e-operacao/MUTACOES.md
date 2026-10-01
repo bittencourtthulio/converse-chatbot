@@ -15,3 +15,4 @@ Regra da feature: cada correção tem um teste que **falha** quando ela é remov
 | Task | Correção | Mutação aplicada (temporária) | Teste que falhou |
 |---|---|---|---|
 | T-01.01 | trava contra rede real nos testes | comentada a chamada `instalarTravaDeRede()` de `tests/setup-rede.ts` | 3 casos de `tests/trava-de-rede.test.ts` (fetch, http/https e net.connect para host público) |
+| T-01.02 | a regra do limite no embed não depende do código aleatório | `contemOLimite` volta a `html.includes('4321')` | "um código aleatório com 4321 no meio não dispara a regra, o limite solto dispara" em `tests/embed-pagina.test.ts` |

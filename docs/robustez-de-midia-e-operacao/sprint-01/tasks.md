@@ -26,7 +26,7 @@ tasks:
   - id: T-01.02
     titulo: "Teste do embed estável contra o código aleatório"
     fase: F-01.1
-    status: pendente
+    status: concluida
     objetivo: "Fazer tests/embed-pagina.test.ts não depender do acaso do código de referência (PEND-30)."
     arquivos:
       cria: []
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "O arquivo passa 30 execuções seguidas sozinho (resultado em ENTREGA.md), a regra falha quando o limite aparece solto no HTML (mutação registrada) e a lacuna 50 de LACUNAS.md foi reajustada."
     depende_de: []
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-01.03
     titulo: "OpenRouter falso com silêncios e áudio com trecho mudo"
     fase: F-01.2
@@ -105,7 +105,7 @@ teste_funcional: "Um HTML com o código ab4321cd não dispara a regra e um HTML 
 criterio_aceite: "O arquivo passa 30 execuções seguidas sozinho (resultado em ENTREGA.md), a regra falha quando o limite aparece solto no HTML (mutação registrada) e a lacuna 50 de LACUNAS.md foi reajustada."
 depende_de: []
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/embed-pagina.test.ts 11 passed e 30 execuções seguidas sozinho passaram (30 de 30); tests/projeto.test.ts verde; mutação registrada
 ```
 
 ---

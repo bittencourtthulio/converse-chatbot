@@ -20,6 +20,13 @@ const SEGREDO = 'PROMO-INTERNO-77'
 const pegar = (caminho: string, comCookie = false) =>
   fetch(`${servidor.base}${caminho}`, { redirect: 'manual', headers: comCookie ? { cookie } : {} })
 
+/**
+ * O limite diário (4321) aparece no HTML? Com borda de palavra: o código de referência do 404 é aleatório,
+ * com 8 hexadecimais, e pode conter a sequência 4321 no meio (PEND-30); um token de 8 caracteres nunca é o
+ * número sozinho.
+ */
+const contemOLimite = (html: string) => /\b4321\b/.test(html)
+
 /** O HTML sem os scripts do Next (que variam por requisição). */
 const semScripts = (html: string) => html.replace(/<script[\s\S]*?<\/script>/g, '')
 
@@ -81,9 +88,10 @@ describe('agente ativo', () => {
 
   it('o HTML nunca traz instruções, modelo, limite nem o nome interno do agente', async () => {
     const html = await (await pegar(`/embed/${ativo}`)).text()
-    for (const proibido of [SEGREDO, 'modelo-secreto', '4321', 'Agente Ativo']) {
+    for (const proibido of [SEGREDO, 'modelo-secreto', 'Agente Ativo']) {
       expect(html, proibido).not.toContain(proibido)
     }
+    expect(contemOLimite(html), 'limite diário no HTML').toBe(false)
   })
 
   it('não é indexável nem guardável em cache compartilhado, e manda o frame-ancestors do agente', async () => {
@@ -99,6 +107,16 @@ describe('agente ativo', () => {
     const html = await (await pegar(`/embed/${ativo}?previa=1`)).text()
     expect(html).toContain('data-modo="publico"')
     expect(html).not.toContain('>Prévia<')
+  })
+})
+
+describe('a regra do limite não depende do acaso do código de referência (PEND-30)', () => {
+  it('um código aleatório com 4321 no meio não dispara a regra, o limite solto dispara', () => {
+    expect(contemOLimite('<p>Código de referência: ab4321cd</p>')).toBe(false)
+    expect(contemOLimite('<p>Código de referência: 43210abc</p>')).toBe(false)
+    expect(contemOLimite('<p>Código de referência: 12344321</p>')).toBe(false)
+    expect(contemOLimite('{"limiteDiario":4321}')).toBe(true)
+    expect(contemOLimite('limite 4321 por dia')).toBe(true)
   })
 })
 
