@@ -11,7 +11,7 @@ tasks:
   - id: T-02.01
     titulo: "Logica pura do historico"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Escrever as funcoes puras de rotulo mascarado, previa de 120 caracteres, escape de LIKE e validacao dos filtros."
     arquivos:
       cria: ["src/servicos/historico-logica.ts", "tests/historico-logica.test.ts", "docs/historico-de-conversas/sprint-02/sprint.md", "docs/historico-de-conversas/sprint-02/fases.md", "docs/historico-de-conversas/sprint-02/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/historico-logica.test.ts passa."
     depende_de: ["T-01.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-02.02
     titulo: "listarConversas: pagina, filtros e sem N+1"
     fase: F-02.1
@@ -103,7 +103,7 @@ teste_funcional: "O rotulo do widget com visitanteId abcdef123456 e Visitante ab
 criterio_aceite: "tests/historico-logica.test.ts passa."
 depende_de: ["T-01.04"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/historico-logica.test.ts 23 passed
 ```
 
 ---
