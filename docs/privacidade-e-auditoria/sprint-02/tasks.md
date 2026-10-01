@@ -11,7 +11,7 @@ tasks:
   - id: T-02.01
     titulo: "Servico de auditoria: registrar e listar"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Criar o conjunto fechado de acoes e o servico com registrar, registrarMelhorEsforco e listar."
     arquivos:
       cria: ["src/servicos/auditoria-acoes.ts", "src/servicos/auditoria.ts", "tests/auditoria-acoes.test.ts", "tests/auditoria.test.ts", "docs/privacidade-e-auditoria/sprint-02/sprint.md", "docs/privacidade-e-auditoria/sprint-02/fases.md", "docs/privacidade-e-auditoria/sprint-02/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/auditoria.test.ts e tests/auditoria-acoes.test.ts passam, o conjunto fechado tem as 18 acoes do plano e aguardarGravacoesPendentes espera as gravacoes de melhor esforco."
     depende_de: ["T-01.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-02.02
     titulo: "Somente-acrescimo e purga por idade"
     fase: F-02.1
@@ -116,7 +116,7 @@ teste_funcional: "registrar com acao fora do conjunto fechado, com chave de deta
 criterio_aceite: "tests/auditoria.test.ts e tests/auditoria-acoes.test.ts passam, o conjunto fechado tem as 18 acoes do plano e aguardarGravacoesPendentes espera as gravacoes de melhor esforco."
 depende_de: ["T-01.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/auditoria.test.ts e tests/auditoria-acoes.test.ts 18 passed; so arquivos novos
 ```
 
 ---
