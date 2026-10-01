@@ -4,12 +4,12 @@ expx_tool: buildx
 kind: premissas
 projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-09-30
-total: 70
+total: 77
 por_origem:
   catalogo_lacunas: 27
   briefing: 0
   decisao_de_stack: 7
-  f2_autonoma: 36
+  f2_autonoma: 43
   recursao: 0
 ---
 
@@ -933,6 +933,97 @@ entram no relatório final como o que o usuário precisa confirmar.
 **Etapa:** b4
 **Provisória:** false
 **Realizada em:** FT-07
+
+---
+
+### PR-71 — Upload de vídeo em streaming e conferência da assinatura
+
+**Assunto:** F2 da FT-08 — PR-10 e PR-13, como receber 500 MB sem estourar a memória
+**Decisão:** `POST /api/agentes/[id]/fontes/video?nome=<nome>` recebe o arquivo como corpo bruto e o escreve em disco por stream (`request.body` para `<STORAGE_DIR>/fontes/<agenteId>/<fonteId>/original.parcial`, depois renomeado para `original`), nunca por `request.formData()`. Sessão obrigatória (401). O limite é `MAX_VIDEO_MB` (padrão 500, no máximo 2000, porque `Fonte.tamanhoBytes` é inteiro de 32 bits): `Content-Length` acima dele é recusado antes de ler o corpo (413) e, sem `Content-Length` confiável, a contagem de bytes aborta o stream ao passar do limite (413) e apaga o parcial. Extensões aceitas: `.mp4 .mov .m4v .webm .mkv .avi .mp3 .wav .m4a .ogg .aac .flac`; os primeiros bytes têm de bater com a extensão (`ftyp` no deslocamento 4 para mp4, mov, m4v e m4a; EBML `1A 45 DF A3` para webm e mkv; `ID3` ou sincronismo MPEG `FF Ex` para mp3 e aac; `RIFF....WAVE` para wav e `RIFF....AVI ` para avi; `OggS`; `fLaC`; `FF F1`/`FF F9` ADTS também vale para aac). Extensão fora da lista ou assinatura incoerente dão 415 (`formato_nao_aceito`, `assinatura_incoerente`); arquivo vazio, 422 (`arquivo_vazio`); nome ausente ou só espaços, 422. O nome enviado é sanitizado (`sanitizarNome`), serve só de título e exibição e nunca entra em caminho (PR-13). O arquivo é gravado antes da linha (PR-47) e qualquer falha apaga o diretório da fonte. A fonte nasce `pendente`, tipo `video` (também para áudio puro).
+**Por quê:** stream em disco com contagem de bytes mantém a memória constante; a assinatura real barra arquivo renomeado; o limite de 2000 MB nasce do tipo do campo.
+**O que invalida:** se o deploy tiver proxy que limite o corpo abaixo de 500 MB (o operador baixa `MAX_VIDEO_MB`), se vídeos acima de 2 GB forem necessários (exige `BigInt` e outra migration) ou se faltar suporte a corpo em stream no servidor de produção (a task prova isso por teste contra `next start`).
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-08
+
+---
+
+### PR-72 — Pipeline de áudio com ffmpeg e segmentos de 10 minutos
+
+**Assunto:** F2 da FT-08 — PR-09, ffmpeg no servidor
+**Decisão:** `src/lib/midia.ts` chama `ffprobe` e `ffmpeg` por `spawn` com vetor de argumentos e sem shell, só com caminhos internos gerados pelo servidor. Os binários vêm de `FFMPEG_PATH` e `FFPROBE_PATH` (padrão `ffmpeg` e `ffprobe` no `PATH`). `sondar` devolve a duração e se há faixa de áudio; sem áudio é erro claro e duração acima de `MAX_VIDEO_MINUTOS` (padrão 180) também. `extrairAudio` gera MP3 mono, 16 kHz, 32 kbps e `dividirEmSegmentos` corta em partes de 10 minutos (600 s) sem reencodar. Cada processo tem prazo (sonda 30 s, extração 30 min, divisão 5 min) e a saída de erro é lida com teto e nunca mostrada ao usuário. Binário ausente vira `Não encontrei o ffmpeg neste servidor. Instale o ffmpeg ou use a imagem de contêiner do projeto.` `verificarMidia()` informa se os dois binários respondem, para o health check da FT-11. Os temporários (`audio/` na pasta da fonte) são apagados ao fim, com sucesso ou erro. Os testes geram a mídia com `lavfi` e usam `describe.skipIf(!ffmpegDisponivel)` localmente; o CI instala ffmpeg e define `EXIGIR_FFMPEG=1`, que faz a ausência falhar.
+**Por quê:** MP3 de 32 kbps mono perde pouco para fala e mantém cada parte em cerca de 2,4 MB; dez minutos mantém a transcrição por parte curta e permite retomar sem pagar de novo; a sonda evita gastar crédito com arquivo sem áudio.
+**O que invalida:** se o servidor não puder ter ffmpeg (PR-09 já o declara), se a transcrição exigir áudio de maior qualidade (música, ruído) ou se o modelo escolhido recusar partes de 10 minutos.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-08
+
+---
+
+### PR-73 — Transcrição por parte e modelo de transcrição configurável
+
+**Assunto:** F2 da FT-08 — PR-06, PR-09, PR-14 e PR-22 aplicados ao áudio
+**Decisão:** `transcreverAudio({chave, modelo, audioBase64, formato, sinal})` em `src/lib/openrouter.ts` envia `chat/completions` sem stream, com uma parte de texto fixa (transcrever fielmente a fala no idioma falado, sem resumo e sem comentários, devolver só o texto) e uma parte `input_audio` com o MP3 em base64. Prazo total de 5 minutos por parte, cancelável por `sinal`; erros pelo `erroDoProvedor` (`provedor_*`); resposta sem texto vira `transcricao_vazia` (502). O modelo vem, nesta ordem, de `ConfiguracaoDoWorkspace.modeloDeTranscricao` (só o admin altera, em Configurações > Integrações), da variável `OPENROUTER_MODELO_TRANSCRICAO` e da constante `MODELO_DE_TRANSCRICAO_PADRAO` (`google/gemini-2.5-flash`, exemplo da documentação do OpenRouter). O campo é texto livre (1 a 100 caracteres, `A-Za-z0-9._:/-`): o adaptador não sabe quais modelos aceitam áudio. Falha transitória (`provedor_indisponivel`, `provedor_tempo_esgotado`, `provedor_limite`, `transcricao_vazia`) é repetida até 2 vezes por parte, com espera curta injetável; chave inválida, sem saldo ou modelo inválido não são repetidos. A tela avisa que a transcrição consome créditos do OpenRouter e mostra o modelo em uso.
+**Por quê:** a lista de modelos do OpenRouter não informa modalidade de áudio, então a escolha é do admin com um padrão que a documentação cita; repetir só o transitório evita gastar crédito à toa.
+**O que invalida:** se o OpenRouter passar a expor a modalidade na lista de modelos (o seletor poderia filtrar), se o modelo padrão deixar de existir ou se for exigida estimativa de custo antes de transcrever.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-08
+
+---
+
+### PR-74 — Fila de vídeo: concorrência 1, andamento e retomada por parte
+
+**Assunto:** F2 da FT-08 — PR-05 e PR-48 estendidos ao trabalho pesado
+**Decisão:** A fila ganha duas raias: a leve (texto, arquivo e YouTube, concorrência 2) e a de mídia (`video`, concorrência 1), que rodam ao mesmo tempo sem uma bloquear a outra. A fonte de vídeo grava `etapa` e `progresso` no banco a cada passo (`Verificando o arquivo`, `Extraindo áudio`, `Dividindo em partes`, `Transcrevendo parte N de M`, `Montando o texto`), por atualização condicional ao status `processando`. O texto de cada parte é gravado em `<STORAGE_DIR>/fontes/<agenteId>/<fonteId>/segmentos/NN.txt` (NN com dois dígitos, base 0) logo que volta do modelo; ao reprocessar ou retomar depois de um reinício, a parte que já tem arquivo não é transcrita de novo. Ao concluir, o áudio extraído e os segmentos são apagados, o original é mantido, as partes são juntas com o marcador de tempo no começo de cada uma (`[00:00]`, `[10:00]`, `[1:00:00]` a partir de uma hora) e o texto segue para o mesmo `normalizarTexto`, `dividirEmTrechos` e gravação de trechos (e o índice FTS5 pelos gatilhos). Falha de uma parte grava `erro` com `Falha na parte N de M: <mensagem>` e mantém os segmentos já feitos; Reprocessar volta a `pendente` e retoma das partes que faltam. Fonte excluída durante o trabalho para a transcrição das partes seguintes (a linha é conferida antes de cada parte). `etapa` e `progresso` voltam a nulo no `pronto`; `duracaoSegundos` fica.
+**Por quê:** a fila de 2 raias evita que um vídeo longo trave texto e arquivos e que dois vídeos disputem CPU e crédito; gravar a parte em disco é o que faz a retomada barata.
+**O que invalida:** se rodar em mais de um processo (PR-05), se a máquina aguentar mais de um ffmpeg ao mesmo tempo ou se o transcritor passar a cobrar tão pouco que repetir tudo compense a complexidade.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-08
+
+---
+
+### PR-75 — YouTube por legendas e sua fragilidade
+
+**Assunto:** F2 da FT-08 — PR-09, link do YouTube
+**Decisão:** `src/lib/youtube.ts` extrai o id de `youtube.com/watch?v=`, `youtu.be/`, `/shorts/` e `/embed/` (11 caracteres de `A-Za-z0-9_-`); lê a página `watch?v=<id>` em `YOUTUBE_BASE` (padrão `https://www.youtube.com`), acha `ytInitialPlayerResponse` e dele `videoDetails.title` e `captionTracks`; escolhe a faixa (manual em português, depois manual em inglês, depois a primeira manual, depois automática, nesta ordem de idioma) e baixa o texto com `fmt=json3`, aceitando também XML. SSRF: a URL do usuário só serve para extrair o id e precisa ter host `youtube.com`, `www.youtube.com`, `m.youtube.com` ou `youtu.be` (outro host é 422); o servidor nunca conecta ao host da URL do usuário, só à base configurada; a `baseUrl` da legenda só é seguida se o host for `*.youtube.com` (ou o host da base configurada) e a conexão use o mesmo esquema; no máximo uma volta de redirect, com o host conferido de novo; prazo de 15 s por requisição e teto de 3 MB para a página e 5 MB para a legenda, lidos em stream. Sem faixa: `Este vídeo não tem legendas disponíveis. Baixe o vídeo e envie o arquivo para transcrever.` O texto ganha um marcador `[MM:SS]` a cada cerca de 60 s de vídeo. O título do vídeo substitui o título provisório da fonte, se o usuário não deu um. Não usa a API oficial nem baixa o vídeo, e não consome créditos. **Fragilidade assumida:** o YouTube muda o formato da página e das legendas sem aviso e pode bloquear o servidor; o recurso pode quebrar sem mudança de código. Os testes usam o servidor simulado `tests/apoio/youtube-falso.ts` com páginas e legendas de fixture; nenhum teste fala com o YouTube real.
+**Por quê:** a API oficial exige chave e autorização do dono do vídeo para baixar legenda; ler a página é o único caminho sem credencial. O host fixo e o id extraído eliminam a requisição a destino arbitrário.
+**O que invalida:** se o formato da página mudar (o erro vira `Não foi possível ler as legendas deste vídeo`), se o YouTube bloquear o IP do servidor, se a política de uso do YouTube proibir a leitura automatizada ou se a empresa preferir a API oficial com credencial própria.
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-08
+
+---
+
+### PR-76 — Contrato HTTP e tela do vídeo
+
+**Assunto:** F2 da FT-08 — interface entre handler, serviço e tela
+**Decisão:** `POST .../fontes/video?nome=` responde 202 com `{fonte}`; `POST .../fontes/youtube` (JSON `{url}`, zod) responde 202 com `{fonte}`. Erros no formato `{codigo, mensagem}`: 401, 404 (agente), 413, 415, 422. `FonteVisivel` ganha `progresso`, `etapa`, `duracaoSegundos` e `urlOrigem`, nunca o caminho. A aba Conhecimento ganha a opção Vídeo com duas abas internas, "Enviar arquivo" (zona de soltar, um arquivo por vez, tipos e limite visíveis, barra de progresso real do envio por `XMLHttpRequest` com o corpo bruto, aviso de créditos e modelo em uso) e "Link do YouTube" (campo com validação imediata e nota de que usa as legendas). A lista mostra ícone de vídeo, barra de progresso e etapa enquanto processa, duração, link de origem do YouTube (só http ou https de host do YouTube, `rel="noopener noreferrer"`), erro, Reprocessar e Excluir; "Ver conteúdo" mostra os trechos com os marcadores de tempo e a duração. Configurações > Integrações ganha o campo Modelo de transcrição (admin). O polling de 2 s já existente atualiza `etapa` e `progresso`.
+**Por quê:** reaproveita o contrato e a tela da FT-04 (PR-49) e acrescenta só o que é de vídeo.
+**O que invalida:** se a empresa quiser enviar vários vídeos de uma vez ou retomar um upload interrompido (upload em partes, outra feature).
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-08
+
+---
+
+### PR-77 — Variáveis de ambiente e simulados da FT-08
+
+**Assunto:** F2 da FT-08 — PR-26 e CONVENCOES (configuração só em `ambiente.ts`, HTTP de saída simulado)
+**Decisão:** `MAX_VIDEO_MB` (500), `MAX_VIDEO_MINUTOS` (180), `FFMPEG_PATH` (`ffmpeg`), `FFPROBE_PATH` (`ffprobe`), `OPENROUTER_MODELO_TRANSCRICAO` e `YOUTUBE_BASE` (`https://www.youtube.com`, sem barra final, só para o simulado de teste) são lidas só em `src/lib/ambiente.ts` e documentadas no `.env.example` e no README; as numéricas exigem inteiro positivo. Nenhum teste chama a rede real: `tests/apoio/openrouter-falso.ts` passa a reconhecer `input_audio` e devolver transcrição configurável por parte, falha e latência por parte, sem quebrar os testes existentes; `tests/apoio/youtube-falso.ts` serve a página e as legendas de fixture. A verificação de produção aponta `OPENROUTER_BASE_URL` e `YOUTUBE_BASE` para os simulados (a base do YouTube não depende de `NODE_ENV`, como `OPENROUTER_BASE_URL`).
+**Por quê:** mesmo padrão das variáveis de URL base das features anteriores (PR-70).
+**O que invalida:** se a empresa chamar o YouTube ou o OpenRouter reais em teste de integração (exige credencial e rede dela, PEND-06).
+**Origem:** f2_autonoma
+**Etapa:** b4
+**Provisória:** false
+**Realizada em:** FT-08
 
 ---
 
