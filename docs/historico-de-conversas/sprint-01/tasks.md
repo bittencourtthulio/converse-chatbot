@@ -56,7 +56,7 @@ tasks:
   - id: T-01.04
     titulo: "Tokens de canal e de serie do grafico"
     fase: F-01.2
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar a tokens.css os tokens de badge de canal e de serie do grafico nos tres blocos de tema."
     arquivos:
       cria: ["tests/tokens-historico.test.ts"]
@@ -66,8 +66,8 @@ tasks:
     criterio_aceite: "tests/tokens-historico.test.ts e tests/tokens.test.ts passam."
     depende_de: ["T-01.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
 ---
 
 # Tasks — Sprint 01
@@ -139,6 +139,6 @@ teste_funcional: "Cada par de texto e fundo dos tokens de canal tem contraste de
 criterio_aceite: "tests/tokens-historico.test.ts e tests/tokens.test.ts passam."
 depende_de: ["T-01.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/tokens-historico.test.ts e tests/tokens.test.ts 72 passed
 ```
 

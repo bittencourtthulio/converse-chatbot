@@ -60,6 +60,20 @@
   --info-fg: #1d4ed8;
   --info-border: #93c5fd;
 
+  /* canais do histórico e série do gráfico (FT-09, PR-85) */
+  --canal-painel-bg: #eef2ff;
+  --canal-painel-fg: #3730a3;
+  --canal-painel-borda: #c7d2fe;
+  --canal-widget-bg: #f0fdfa;
+  --canal-widget-fg: #115e59;
+  --canal-widget-borda: #99f6e4;
+  --canal-telegram-bg: #f0f9ff;
+  --canal-telegram-fg: #075985;
+  --canal-telegram-borda: #bae6fd;
+  --grafico-barra: #4f46e5;
+  --grafico-barra-fraca: #6b7a99;
+  --grafico-eixo: #475569;
+
   /* sombras sutis */
   --sombra-sm: 0 1px 2px rgb(15 23 42 / 0.06);
   --sombra-md: 0 4px 12px -2px rgb(15 23 42 / 0.1), 0 2px 4px -2px rgb(15 23 42 / 0.06);
@@ -129,6 +143,19 @@
   --info-fg: #93c5fd;
   --info-border: #1e3a8a;
 
+  --canal-painel-bg: #1e2a55;
+  --canal-painel-fg: #c7d2fe;
+  --canal-painel-borda: #3a4a8a;
+  --canal-widget-bg: #0f2a2a;
+  --canal-widget-fg: #5eead4;
+  --canal-widget-borda: #134e4a;
+  --canal-telegram-bg: #0c2236;
+  --canal-telegram-fg: #7dd3fc;
+  --canal-telegram-borda: #0c4a6e;
+  --grafico-barra: #818cf8;
+  --grafico-barra-fraca: #8d9bb3;
+  --grafico-eixo: #a7b3c7;
+
   --sombra-sm: 0 1px 2px rgb(0 0 0 / 0.4);
   --sombra-md: 0 4px 12px -2px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.4);
   --sombra-lg: 0 16px 40px -8px rgb(0 0 0 / 0.65);
@@ -177,6 +204,19 @@
   --info-bg: #10203d;
   --info-fg: #93c5fd;
   --info-border: #1e3a8a;
+
+  --canal-painel-bg: #1e2a55;
+  --canal-painel-fg: #c7d2fe;
+  --canal-painel-borda: #3a4a8a;
+  --canal-widget-bg: #0f2a2a;
+  --canal-widget-fg: #5eead4;
+  --canal-widget-borda: #134e4a;
+  --canal-telegram-bg: #0c2236;
+  --canal-telegram-fg: #7dd3fc;
+  --canal-telegram-borda: #0c4a6e;
+  --grafico-barra: #818cf8;
+  --grafico-barra-fraca: #8d9bb3;
+  --grafico-eixo: #a7b3c7;
 
   --sombra-sm: 0 1px 2px rgb(0 0 0 / 0.4);
   --sombra-md: 0 4px 12px -2px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.4);
