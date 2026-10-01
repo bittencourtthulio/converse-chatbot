@@ -41,7 +41,7 @@ tasks:
   - id: T-03.03
     titulo: "Extração isolada em processo filho"
     fase: F-03.2
-    status: pendente
+    status: concluida
     objetivo: "Criar extrairTextoIsolado e o trabalhador que roda a extração num processo encerrável, com limite de páginas conferido ao abrir (PR-107)."
     arquivos:
       cria: ["src/lib/extracao/isolada.ts", "src/lib/extracao/trabalhador.ts", "tests/extracao-isolada.test.ts", "tests/apoio/trabalhador-travado.mjs"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/extracao-isolada.test.ts passa e falha quando o encerramento por prazo é removido (mutação registrada)."
     depende_de: ["T-03.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-03.04
     titulo: "Fila usa a extração isolada para PDF, DOCX e HTML"
     fase: F-03.2
@@ -137,7 +137,7 @@ teste_funcional: "O PDF de 501 páginas devolve pdf_paginas_demais sem texto, um
 criterio_aceite: "tests/extracao-isolada.test.ts passa e falha quando o encerramento por prazo é removido (mutação registrada)."
 depende_de: ["T-03.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/extracao-isolada 7 passed (trabalhador real), extracao, camadas e projeto verdes; tsc e eslint sem erros; mutação registrada
 ```
 
 ---
