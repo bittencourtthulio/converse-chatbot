@@ -41,7 +41,7 @@ tasks:
   - id: T-07.03
     titulo: "Dockerfile, entrypoint, compose e dockerignore"
     fase: F-07.2
-    status: pendente
+    status: concluida
     objetivo: "Criar o Dockerfile multi-estagio, o entrypoint, o docker-compose.yml e o .dockerignore conforme a PR-99."
     arquivos:
       cria: ["Dockerfile", "docker-entrypoint.sh", "docker-compose.yml", ".dockerignore", "tests/conteiner.test.ts"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/conteiner.test.ts passa e docker compose config valida o compose."
     depende_de: ["T-07.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-07.04
     titulo: "Verificacao real do conteiner"
     fase: F-07.2
@@ -118,7 +118,7 @@ teste_funcional: "E-mail ja existente, senha com menos de 8 caracteres e senha p
 criterio_aceite: "tests/criar-admin.test.ts e tests/usuarios.test.ts passam e package.json tem o script admin:criar."
 depende_de: ["T-07.01"]
 paralelizavel: false
-status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2802 passed, 0 failed (241 arquivos, inclui conteiner.test.ts que só leu os arquivos de contêiner ainda não commitados); build antes
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2802 passed, 0 failed (241 arquivos); build antes
 ```
 
 ---
@@ -135,7 +135,7 @@ teste_funcional: "O compose define volume nomeado, env_file, restart unless-stop
 criterio_aceite: "tests/conteiner.test.ts passa e docker compose config valida o compose."
 depende_de: ["T-07.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/conteiner.test.ts 15 passed (inclui docker compose config real); só arquivos novos
 ```
 
 ---

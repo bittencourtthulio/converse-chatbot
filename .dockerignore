@@ -1,0 +1,31 @@
+# O que NÃO entra no contexto de construção da imagem (FT-11, PR-99).
+
+# Segredo, banco e dado do operador: nunca na imagem.
+.env
+.env.*
+!.env.example
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+storage
+backups
+
+# Dependências e saídas de build: a imagem as reconstrói.
+node_modules
+.next
+out
+build
+*.tsbuildinfo
+npm-debug.log*
+
+# Repositório, CI, documentação, testes e ferramentas de agente: não rodam em produção.
+.git
+.github
+.gitignore
+docs
+tests
+.expx
+.claude
+.opencode
+.DS_Store

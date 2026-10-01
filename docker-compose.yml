@@ -1,0 +1,43 @@
+# Converse em contêiner (FT-11, PR-24, PR-99). Veja o README, seção "Operação e backup".
+#
+#   1. Copie o arquivo de exemplo de ambiente para `.env` e preencha JWT_SECRET, ENCRYPTION_KEY e APP_URL.
+#   2. docker compose up -d --build
+#   3. docker compose run --rm app npm run admin:criar -- admin@suaempresa.com.br "Seu nome"
+#      (a senha vem de ADMIN_SENHA ou da entrada padrão; veja o README)
+#
+# O HTTPS é do proxy reverso na frente (Caddy, nginx, Traefik...): a porta abaixo só escuta em 127.0.0.1.
+# O volume `dados` guarda o banco, os arquivos enviados e os backups: nunca o apague sem ter um backup.
+services:
+  app:
+    build: .
+    image: converse:local
+    init: true
+    restart: unless-stopped
+    # O arquivo de ambiente do operador, fora do versionador. Não é obrigatório para o compose abrir.
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      # Atrás do proxy reverso: os limites de uso leem o IP de X-Forwarded-For (o proxy precisa sobrescrever o cabeçalho).
+      TRUST_PROXY: "1"
+      # O fuso do servidor: o painel agrupa as mensagens por dia local. Troque pelo da sua empresa.
+      TZ: ${TZ:-America/Sao_Paulo}
+    ports:
+      - "127.0.0.1:${PORTA:-3000}:3000"
+    volumes:
+      - dados:/data
+    # O desligamento limpo espera a fila de fontes terminar o passo corrente (até 20 s).
+    stop_grace_period: 30s
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3000/api/saude').then((r) => process.exit(r.status === 200 ? 0 : 1), () => process.exit(1))"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+
+volumes:
+  dados:

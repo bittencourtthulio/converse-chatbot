@@ -17,7 +17,7 @@ fases:
     tasks: ["T-07.01", "T-07.02"]
   - id: F-07.2
     titulo: "Imagem, compose e CI"
-    status: nao_iniciado
+    status: em_andamento
     criterio_saida: "Os arquivos de conteiner passam nos testes estaticos, a verificacao real passa e o CI constroi a imagem"
     paralelizavel: false
     paralela_com: []
@@ -53,7 +53,7 @@ flowchart LR
 
   class T_07_01 concluida
   class T_07_02 concluida
-  class T_07_03 pendente
+  class T_07_03 concluida
   class T_07_04 pendente
   class T_07_05 pendente
   class T_07_05,T_07_04,T_07_03,T_07_02,T_07_01 critico
