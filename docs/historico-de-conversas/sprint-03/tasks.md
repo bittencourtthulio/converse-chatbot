@@ -26,7 +26,7 @@ tasks:
   - id: T-03.02
     titulo: "Exportar conversa em texto"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Criar GET /api/conversas/[id]/exportar que devolve o texto como anexo seguro."
     arquivos:
       cria: ["src/app/api/conversas/[id]/exportar/route.ts", "tests/conversas-exportar-rota.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/conversas-exportar-rota.test.ts passa."
     depende_de: ["T-03.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-03.03
     titulo: "Item de menu Conversas"
     fase: F-03.2
@@ -90,7 +90,7 @@ teste_funcional: "A resposta tem text/plain com charset utf-8, Content-Dispositi
 criterio_aceite: "tests/conversas-exportar-rota.test.ts passa."
 depende_de: ["T-03.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/conversas-exportar-rota.test.ts 5 passed
 ```
 
 ---
