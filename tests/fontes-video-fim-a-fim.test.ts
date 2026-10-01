@@ -16,7 +16,7 @@ import { salvarChaveDoOpenrouter } from '@/servicos/integracoes'
 import { buscarTrechos } from '@/servicos/recuperacao'
 import { criarAdmin, limparBanco } from './ajuda'
 import { armazenamentoDeTeste, criarAgenteDeTeste } from './apoio/fontes'
-import { descreverComFfmpeg, gerarMidia } from './apoio/ffmpeg'
+import { descreverComFfmpeg, gerarAudioComSilencio, gerarMidia } from './apoio/ffmpeg'
 import { CHAVE_VALIDA, iniciarOpenRouterFalso, type OpenRouterFalso } from './apoio/openrouter-falso'
 
 let falso: OpenRouterFalso
@@ -142,5 +142,60 @@ descreverComFfmpeg('vídeo e áudio de ponta a ponta', () => {
     expect(depois.status).toBe('erro')
     expect(depois.mensagemErro).toMatch(/áudio ou vídeo|corrompido|faixa de áudio/)
     expect(falso.audios).toHaveLength(0)
+  })
+})
+
+async function enviarArquivo(caminho: string, nome: string) {
+  const bytes = readFileSync(caminho)
+  const stream = new ReadableStream<Uint8Array>({
+    start(c) {
+      c.enqueue(bytes)
+      c.close()
+    },
+  })
+  return adicionarVideo(autor, agenteId, { nome, corpo: stream })
+}
+
+descreverComFfmpeg('áudio com trecho sem fala de ponta a ponta (FT-13, PR-09, PR-105)', () => {
+  it('fala, 10 s de silêncio e ruído: a fonte fica pronta com [sem fala] no texto, a busca acha a fala e a retomada não repaga nada', async () => {
+    // Três partes de 10 s com conteúdos diferentes (fala, silêncio, ruído); o simulado responde vazio à parte 2 (índice 1).
+    falso.configurar({ silencios: [1] })
+    const arquivo = gerarAudioComSilencio({ diretorio: pasta, fala: 10, silencio: 10, ruido: 5, nome: 'aula-com-silencio' })
+    const enviada = await enviarArquivo(arquivo, 'Aula com silêncio.mp3')
+
+    await fila().processarPendentes()
+
+    const pronta = await ler(enviada.id)
+    expect(pronta).toMatchObject({ status: 'pronto', mensagemErro: null })
+    const trechos = await prisma.trecho.findMany({ where: { fonteId: enviada.id }, orderBy: { indice: 'asc' } })
+    const todo = trechos.map((t) => t.texto).join('\n')
+    expect(todo).toContain('[00:00] A política de reembolso')
+    expect(todo).toContain('[00:10] [sem fala]')
+    expect(todo).toContain('[00:20] Entregas acontecem')
+    // O texto do silêncio não é uma fala inventada e a parte muda foi chamada duas vezes (uma repetição), nunca três.
+    expect(falso.audios.filter((a) => a.parte === 1).map((a) => a.tentativa)).toEqual([1, 2])
+    const achados = await buscarTrechos(agenteId, 'qual o prazo do reembolso?')
+    expect(achados.length).toBeGreaterThan(0)
+    expect(achados[0]!.texto).toContain('reembolso')
+  })
+
+  it('áudio sem fala nenhuma vira fonte em erro com Não encontrei fala neste áudio., e Reprocessar não repete as partes já gravadas', async () => {
+    falso.configurar({ silencios: [0, 1, 2] })
+    const arquivo = gerarAudioComSilencio({ diretorio: pasta, fala: 0, silencio: 25, ruido: 0, nome: 'mudo' })
+    const enviada = await enviarArquivo(arquivo, 'Só silêncio.mp3')
+
+    await fila().processarPendentes()
+
+    const falhou = await ler(enviada.id)
+    expect(falhou.status).toBe('erro')
+    expect(falhou.mensagemErro).toBe('Não encontrei fala neste áudio.')
+    const chamadasAntes = falso.audios.length
+    expect(chamadasAntes).toBeGreaterThan(0)
+    expect(await armazenamentoDeTeste().listarSegmentos(agenteId, enviada.id)).toEqual([0, 1, 2])
+
+    await reprocessar(autor, agenteId, enviada.id)
+    await fila().processarPendentes()
+    expect((await ler(enviada.id)).mensagemErro).toBe('Não encontrei fala neste áudio.')
+    expect(falso.audios).toHaveLength(chamadasAntes)
   })
 })

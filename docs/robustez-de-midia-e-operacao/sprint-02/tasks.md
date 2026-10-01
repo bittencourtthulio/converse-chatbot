@@ -41,7 +41,7 @@ tasks:
   - id: T-02.03
     titulo: "Fila sem trecho de marcador e vídeo mudo ponta a ponta"
     fase: F-02.2
-    status: pendente
+    status: concluida
     objetivo: "Fazer a fila descartar trechos só de marcadores e provar o fluxo inteiro com ffmpeg real e OpenRouter falso."
     arquivos:
       cria: []
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "Os testes passam e falham quando o descarte de trechos só de marcadores é removido da fila (mutação registrada)."
     depende_de: ["T-02.02", "T-01.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
 ---
 
 # Tasks — Sprint 02
@@ -107,6 +107,6 @@ teste_funcional: "Áudio de 25 s com 5 s de fala, 10 s de silêncio e 10 s de ru
 criterio_aceite: "Os testes passam e falham quando o descarte de trechos só de marcadores é removido da fila (mutação registrada)."
 depende_de: ["T-02.02", "T-01.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — fontes-fila-video, fontes-video-fim-a-fim (ffmpeg real), fontes-fila, fontes-fila-execucao 33 passed e projeto 241 passed; mutação registrada
 ```
 

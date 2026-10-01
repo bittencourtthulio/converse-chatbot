@@ -15,6 +15,7 @@ import { erroSemChave } from '@/servicos/chat-erros'
 import { modeloDeTranscricaoEfetivo, obterChaveDoOpenrouter } from '@/servicos/integracoes'
 import { transcreverMidia, type PedidoDeMidia, type TextoDeMidia } from '@/servicos/transcricao-de-midia'
 import { montarTextoDeLegenda } from '@/servicos/transcricao-marcadores'
+import { trechoSoDeMarcadores } from '@/servicos/transcricao-marcadores'
 import { dividirEmTrechos, normalizarTexto } from '@/servicos/trechos'
 import { camposDoErro, comCorrelacao, log, novaCorrelacao } from '@/lib/log'
 
@@ -169,7 +170,9 @@ export function criarFila(opcoes: OpcoesDaFila = {}): Fila {
     if (texto === '') {
       throw new ErroDeAplicacao('Não encontrei fala neste arquivo para transcrever.', 422, 'transcricao_vazia')
     }
-    await gravarResultado(fonte.id, fonte.agenteId, dividirEmTrechos(texto), texto.length, { duracaoSegundos })
+    // O trecho feito só de marcadores de tempo e de [sem fala] não vai ao índice de busca (PR-105).
+    const trechos = dividirEmTrechos(texto).filter((t) => !trechoSoDeMarcadores(t))
+    await gravarResultado(fonte.id, fonte.agenteId, trechos, texto.length, { duracaoSegundos })
     // Concluída: o áudio e os segmentos já cumpriram o papel; o original fica (PR-74).
     await armazenamento().apagarTrabalho(fonte.agenteId, fonte.id).catch(() => undefined)
   }

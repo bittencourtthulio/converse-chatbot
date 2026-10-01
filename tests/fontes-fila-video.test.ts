@@ -9,6 +9,8 @@ import { prisma } from '@/lib/prisma'
 import { MODELO_DE_TRANSCRICAO_PADRAO } from '@/lib/ambiente'
 import { ErroDeAplicacao } from '@/lib/erros'
 import { criarFila, type OpcoesDaFila } from '@/servicos/fontes-fila'
+import { formatarMarcador, trechoSoDeMarcadores } from '@/servicos/transcricao-marcadores'
+import { dividirEmTrechos, normalizarTexto } from '@/servicos/trechos'
 import { salvarChaveDoOpenrouter } from '@/servicos/integracoes'
 import { criarAdmin, limparBanco } from './ajuda'
 import { armazenamentoDeTeste, criarAgenteDeTeste, criarFonteDeTeste } from './apoio/fontes'
@@ -182,5 +184,26 @@ describe('exclusão e tipos', () => {
     await f.processarUma(texto.id)
     expect((await ler(estranha.id)).mensagemErro).toBe('Este tipo de fonte ainda não pode ser processado.')
     expect((await ler(texto.id)).status).toBe('pronto')
+  })
+})
+
+describe('trechos só de marcadores não vão ao índice (FT-13, PR-105)', () => {
+  it('uma sequência longa de trechos sem fala não vira trecho de busca, e os trechos com fala continuam', async () => {
+    const fonte = await video()
+    const fala = 'A política de reembolso vale por trinta dias corridos. '.repeat(15).trim()
+    const mudos = Array.from({ length: 60 }, (_, i) => `${formatarMarcador(600 * (i + 1))} [sem fala]`).join('\n\n')
+    const texto = `[00:00] ${fala}\n\n${mudos}`
+    const esperados = dividirEmTrechos(normalizarTexto(texto))
+    expect(esperados.some(trechoSoDeMarcadores)).toBe(true)
+
+    await fila(async () => ({ texto, duracaoSegundos: 3600 })).processarUma(fonte.id)
+
+    expect((await ler(fonte.id)).status).toBe('pronto')
+    const guardados = await prisma.trecho.findMany({ where: { fonteId: fonte.id }, orderBy: { indice: 'asc' } })
+    expect(guardados.length).toBe(esperados.filter((t) => !trechoSoDeMarcadores(t)).length)
+    expect(guardados.length).toBeLessThan(esperados.length)
+    for (const t of guardados) expect(trechoSoDeMarcadores(t.texto)).toBe(false)
+    expect(guardados[0]!.texto).toContain('reembolso')
+    expect(guardados.map((t) => t.indice)).toEqual(guardados.map((_, i) => i))
   })
 })
