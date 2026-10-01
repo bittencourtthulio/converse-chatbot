@@ -11,7 +11,7 @@ tasks:
   - id: T-05.01
     titulo: "YouTube: id e validacao da URL"
     fase: F-05.1
-    status: pendente
+    status: concluida
     objetivo: "Criar src/lib/youtube.ts com a extracao do id de watch, youtu.be, shorts e embed e a validacao do host da URL do usuario."
     arquivos:
       cria: ["src/lib/youtube.ts", "tests/youtube-url.test.ts", "docs/conhecimento-em-video/sprint-05/sprint.md", "docs/conhecimento-em-video/sprint-05/fases.md", "docs/conhecimento-em-video/sprint-05/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/youtube-url.test.ts passa."
     depende_de: ["T-01.05"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-05.02
     titulo: "YouTube: pagina e faixas"
     fase: F-05.1
@@ -118,7 +118,7 @@ teste_funcional: "Host de outro dominio, esquema que nao e http ou https, id for
 criterio_aceite: "tests/youtube-url.test.ts passa."
 depende_de: ["T-01.05"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/youtube-url.test.ts, 33 passed
 ```
 
 ---
