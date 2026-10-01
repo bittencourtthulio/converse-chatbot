@@ -26,7 +26,7 @@ tasks:
   - id: T-08.02
     titulo: "Convencoes e lacunas com evidencia"
     fase: F-08.1
-    status: pendente
+    status: concluida
     objetivo: "Converter log, console, ffmpeg no conteiner e backup do storage em evidencia com arquivo e linha e registrar as lacunas novas."
     arquivos:
       cria: []
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/projeto.test.ts passa."
     depende_de: ["T-08.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-08.03
     titulo: "Verificacao no navegador"
     fase: F-08.2
@@ -103,7 +103,7 @@ teste_funcional: "CONVENCOES.md tem as regras de log, correlacao, ambiente, saud
 criterio_aceite: "tests/projeto.test.ts passa."
 depende_de: ["T-08.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/projeto.test.ts 217 passed (34 citações novas conferidas contra o código)
 ```
 
 ---

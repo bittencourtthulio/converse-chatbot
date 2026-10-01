@@ -692,3 +692,73 @@ describe('operação e backup (FT-11)', () => {
     expect(readme).toContain('X-Correlacao')
   })
 })
+
+describe('convenções da operação e do backup (FT-11)', () => {
+  const convencoes = ler('docs/stack/CONVENCOES.md')
+  const lacunas = ler('docs/stack/LACUNAS.md')
+
+  const CITACOES: Array<[string, RegExp]> = [
+    ['src/lib/log.ts:156', /export const log = /],
+    ['src/lib/log.ts:110', /export function redigir/],
+    ['src/lib/log.ts:179', /export function filtrarConsoleDoNext/],
+    ['src/lib/log.ts:30', /export function comCorrelacao/],
+    ['eslint.config.mjs:68', /no-console/],
+    ['src/proxy.ts:30', /export async function proxy/],
+    ['src/proxy.ts:49', /export const config/],
+    ['src/app/correlacao-servidor.ts:15', /export async function correlacaoDaRequisicao/],
+    ['src/app/api/resposta-de-erro.ts:10', /export async function respostaDeErro/],
+    ['src/app/error.tsx:10', /export default function Erro/],
+    ['src/app/global-error.tsx:10', /export default function ErroGlobal/],
+    ['src/app/not-found.tsx:9', /export default async function NaoEncontrada/],
+    ['src/instrumentation.ts:8', /export async function register/],
+    ['src/instrumentation.ts:69', /export async function desligarComCalma/],
+    ['src/instrumentation.ts:112', /export async function onRequestError/],
+    ['src/lib/ambiente.ts:88', /export function validarAmbiente/],
+    ['src/lib/ambiente.ts:48', /export class ErroDeConfiguracao/],
+    ['src/lib/ambiente.ts:38', /export function bytesDaChaveDeCriptografia/],
+    ['src/servicos/saude.ts:118', /export async function verificarSaude/],
+    ['src/app/api/saude/route.ts:9', /export async function GET/],
+    ['src/servicos/sistema.ts:111', /export async function obterSistema/],
+    ['src/lib/backup.ts:159', /export async function gerarBackup/],
+    ['src/lib/backup.ts:57', /export const PADRAO_DO_NOME_DE_BACKUP/],
+    ['src/servicos/backup.ts:50', /export async function gerarBackupAgora/],
+    ['src/servicos/backup.ts:105', /export async function caminhoDoBackup/],
+    ['src/lib/restauracao.ts:100', /export async function lerEValidarBackup/],
+    ['src/lib/restauracao.ts:219', /export function compararEsquema/],
+    ['src/lib/restauracao.ts:300', /export async function restaurarArquivos/],
+    ['scripts/restore.ts:50', /async function principal/],
+    ['scripts/criar-admin.ts:42', /criarAdministradorInicial/],
+    ['src/servicos/usuarios.ts:97', /export async function criarAdministradorInicial/],
+    ['docker-entrypoint.sh:20', /exec node node_modules\/next/],
+    ['docker-compose.yml:30', /stop_grace_period/],
+    ['src/servicos/fontes-fila.ts:63', /aguardarEncerramento\(prazoMs: number\): Promise<boolean>/],
+  ]
+
+  it.each(CITACOES)('%s existe e contém o que o CONVENCOES.md diz', (citacao, esperado) => {
+    expect(convencoes.includes(citacao) || lacunas.includes(citacao), `${citacao} não citada`).toBe(true)
+    const [arquivo, linha] = citacao.split(':')
+    expect(ler(arquivo!).split('\n')[Number(linha) - 1]).toMatch(esperado)
+  })
+
+  it('registra as regras: log, correlação, páginas de erro, saúde, backup, restauração, comandos e contêiner', () => {
+    expect(convencoes).toMatch(/Um só ponto de saída \(FT-11, PR-21, PR-92\)/)
+    expect(convencoes).toMatch(/Nenhum `console\.\*` em `src\/` fora de `log\.ts`/)
+    expect(convencoes).toMatch(/Correlação por requisição \(FT-11, PR-93\)/)
+    expect(convencoes).toMatch(/Páginas de erro com código de referência/)
+    expect(convencoes).toMatch(/Saúde e tela Sistema \(FT-11, PR-95\)/)
+    expect(convencoes).toMatch(/Backup \(FT-11, PR-20, PR-96, PR-97\)/)
+    expect(convencoes).toMatch(/Restauração só por linha de comando \(FT-11/)
+    expect(convencoes).toMatch(/Contêiner e desligamento limpo \(FT-11/)
+    expect(convencoes).toMatch(/\| 2026-10-01 \| FT-11 \|/)
+    expect(convencoes).toMatch(/derruba o start com os NOMES/)
+  })
+
+  it('as lacunas marcam a 6 como resolvida e registram o que ficou: backup completo, só aarch64, servidor em outro contêiner e o que não foi visto', () => {
+    expect(lacunas).toMatch(/\| 6 \| ~~sem log estruturado nem correlação própria~~/)
+    expect(lacunas).toMatch(/FT-11, resolvidas e novas/)
+    expect(lacunas).toMatch(/o backup é sempre completo/)
+    expect(lacunas).toMatch(/só foi construída e executada em aarch64/)
+    expect(lacunas).toMatch(/outro contêiner do mesmo volume/)
+    expect(lacunas).toMatch(/sem celular real e sem leitor de tela/)
+  })
+})

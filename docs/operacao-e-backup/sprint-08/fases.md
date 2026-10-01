@@ -10,7 +10,7 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-08.1
     titulo: "Documentacao e convencoes"
-    status: em_andamento
+    status: concluido
     criterio_saida: "tests/projeto.test.ts confere README, exemplo de ambiente, convencoes e lacunas"
     paralelizavel: false
     paralela_com: []
@@ -50,7 +50,7 @@ flowchart LR
   classDef critico   stroke-width:3px
 
   class T_08_01 concluida
-  class T_08_02 pendente
+  class T_08_02 concluida
   class T_08_03 pendente
   class T_08_04 pendente
   class T_08_04,T_08_03,T_08_02,T_08_01 critico
