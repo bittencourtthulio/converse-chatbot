@@ -11,7 +11,7 @@ tasks:
   - id: T-02.01
     titulo: "Migration e modelos da sessao revogavel"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar a tabela sessoes_revogadas e a coluna usuarios.versaoDaSessao por migration que so acrescenta, com os modelos do Prisma."
     arquivos:
       cria: ["docs/sessao-e-acesso-endurecidos/sprint-02/sprint.md", "docs/sessao-e-acesso-endurecidos/sprint-02/fases.md", "docs/sessao-e-acesso-endurecidos/sprint-02/tasks.md", "prisma/migrations/20261003000000_sessao_e_acesso_endurecidos/migration.sql", "tests/sessao-esquema.test.ts"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "npx prisma generate executado, tests/sessao-esquema.test.ts e tests/migracoes.test.ts passam e limparBanco apaga a tabela nova."
     depende_de: ["T-01.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
   - id: T-02.02
     titulo: "SESSAO_MAXIMA_HORAS no ambiente"
     fase: F-02.1
@@ -148,7 +148,7 @@ teste_funcional: "Um usuario inserido por SQL sem a coluna nova le versaoDaSessa
 criterio_aceite: "npx prisma generate executado, tests/sessao-esquema.test.ts e tests/migracoes.test.ts passam e limparBanco apaga a tabela nova."
 depende_de: ["T-01.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 246 arquivos, 2881 passed, 9 skipped, 0 failed; build antes
 ```
 
 ---

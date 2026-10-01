@@ -18,9 +18,13 @@ model Usuario {
   papel     String   @default("usuario") // "admin" | "usuario"
   ativo     Boolean  @default(true)
 
-  // Toda sessão emitida depois deste instante é válida; as anteriores não.
-  // É assim que a troca de senha derruba as outras sessões (L4).
+  // LEGADO (FT-12, PR-103): já não é lido nem gravado. A troca de senha derruba as outras
+  // sessões pela `versaoDaSessao`; a coluna fica porque a migration só acrescenta.
   sessoesValidasDesde DateTime @default(now())
+
+  // Contador de versão de sessão (FT-12, PR-103): o token leva a versão do login; a troca de
+  // senha a incrementa, e token de versão menor é inválido, sem comparar relógios.
+  versaoDaSessao Int @default(0)
 
   criadoEm     DateTime @default(now())
   atualizadoEm DateTime @updatedAt
@@ -262,4 +266,16 @@ model RegistroDeAuditoria {
   @@index([quando])
   @@index([acao])
   @@map("registros_de_auditoria")
+}
+
+// Sessões encerradas por `sair` (FT-12, PR-101): o `jti` do token revogado, até `expiraEm` (o fim
+// máximo possível daquela sessão). Sem chave estrangeira: excluir um usuário nunca depende desta tabela.
+model SessaoRevogada {
+  jti        String   @id
+  usuarioId  String
+  revogadaEm DateTime @default(now())
+  expiraEm   DateTime
+
+  @@index([expiraEm])
+  @@map("sessoes_revogadas")
 }

@@ -8,7 +8,7 @@ feature_id: FT-12
 sprint_id: sprint-01
 atualizado_em: 2026-10-01
 titulo: "Capacidade de testar: relogio, cookies e login contra o servidor"
-status: nao_iniciado
+status: concluido
 criterio_saida: "o relogio falso alcanca o limitador padrao, os cookies e cabecalhos do Next sao simulaveis por apoio de teste e o login por formulario funciona contra o servidor de producao, tudo coberto por teste"
 fases: ["F-01.1", "F-01.2"]
 riscos: ["a acao de login enviada sem JavaScript depende dos campos ocultos que o React 19 gera (base/proxy-e-renovacao.md)", "o servidor de producao usa o .next existente: rodar npm run build antes (CONVENCOES, lacuna 17)"]

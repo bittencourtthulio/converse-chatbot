@@ -10,14 +10,14 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-01.1
     titulo: "Relogio e cookies falsos"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "as tasks T-01.01, T-01.02 concluidas com os dois testes passando"
     paralelizavel: false
     paralela_com: []
     tasks: ["T-01.01", "T-01.02"]
   - id: F-01.2
     titulo: "Login por formulario em producao"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "as tasks T-01.03 concluidas com os dois testes passando"
     paralelizavel: false
     paralela_com: []
