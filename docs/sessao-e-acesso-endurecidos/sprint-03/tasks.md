@@ -26,7 +26,7 @@ tasks:
   - id: T-03.02
     titulo: "salvarSenha grava o cookie real"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Provar a acao salvarSenha sem simular gravarCookieDeSessao: o cookie gravado leva o token da versao nova e os atributos certos."
     arquivos:
       cria: ["tests/acao-salvar-senha.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/acao-salvar-senha.test.ts passa e falha quando salvarSenha deixa de gravar o cookie (mutacao registrada)."
     depende_de: ["T-03.01", "T-02.06"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-03.03
     titulo: "Renovacao do cookie no proxy"
     fase: F-03.2
@@ -90,7 +90,7 @@ teste_funcional: "O cookie gravado tem httpOnly, sameSite lax, path /, o Max-Age
 criterio_aceite: "tests/acao-salvar-senha.test.ts passa e falha quando salvarSenha deixa de gravar o cookie (mutacao registrada)."
 depende_de: ["T-03.01", "T-02.06"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/acao-salvar-senha.test.ts 2 passed; só teste novo, nenhum código alterado
 ```
 
 ---
