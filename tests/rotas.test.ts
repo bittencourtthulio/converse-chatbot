@@ -116,9 +116,12 @@ describe('com sessão de usuário comum', () => {
     expect(html).toContain('Painel')
     expect(html).toContain('titulo-da-pagina')
     expect(html).toContain('Visão geral da sua conta')
-    expect(html).toContain('Ainda não há o que mostrar')
-    expect(html).toContain('estado-vazio')
+    expect(html).toContain('Primeiros passos')
+    expect(html).toContain('Mensagens por dia')
+    expect(html).toContain('Nenhuma conversa ainda')
     expect(html).not.toContain('Cadastrar usuário')
+    // usuário comum não recebe o link das Integrações (só o admin configura a chave)
+    expect(html).not.toContain('href="/configuracoes/integracoes"')
   })
 
   it('a lista de conversas abre, vazia, com a orientação para gerar conversas', async () => {

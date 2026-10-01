@@ -1565,4 +1565,45 @@ textarea { min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: verti
 .grafico-tabela table { max-width: 360px; }
 .grafico-tabela th[scope='row'] { background: transparent; color: var(--fg-default); font-weight: 400; }
 
+.cartoes-do-painel { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.quebra-por-canal { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 12px 28px; }
+.quebra-por-canal li { display: flex; align-items: center; gap: 10px; }
+.primeiros-passos { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px; counter-reset: passo; }
+.primeiros-passos li {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--raio-controle);
+}
+.passo-corpo { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; min-width: 0; }
+.passo-titulo { margin: 0; font-weight: 650; }
+.passo-feito .passo-titulo { text-decoration: line-through; color: var(--fg-muted); }
+.fontes-com-erro-do-painel { margin: 8px 0 0; padding-left: 20px; }
+.fontes-com-erro-do-painel a { color: inherit; font-weight: 600; text-decoration: underline; }
+.conversas-recentes { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.conversa-recente {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  color: var(--fg-default);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  border-radius: var(--raio-controle);
+  min-height: var(--alvo-toque);
+}
+.conversa-recente:hover { background: var(--bg-hover); border-color: var(--accent); }
+.conversa-recente:focus-visible { outline: 2px solid var(--border-focus); outline-offset: 2px; }
+.conversa-recente-topo { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.conversa-recente-previa { color: var(--fg-muted); overflow-wrap: anywhere; }
+@media (max-width: 480px) {
+  .primeiros-passos li { flex-direction: column; }
+  .primeiros-passos .botao { min-height: var(--alvo-toque); }
+  .cartoes-do-painel { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
 /* ---------- fim do painel inicial (FT-09) ---------- */

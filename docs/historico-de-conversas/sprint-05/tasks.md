@@ -56,18 +56,18 @@ tasks:
   - id: T-05.04
     titulo: "Pagina do painel com cartoes, listas e estados"
     fase: F-05.2
-    status: pendente
+    status: concluida
     objetivo: "Preencher a pagina inicial mantendo titulo e subtitulo, com cartoes, recentes, alerta, primeiros passos, carregando e erro."
     arquivos:
-      cria: ["src/app/(sistema)/loading.tsx", "src/componentes/CartoesDoPainel.tsx", "src/componentes/PrimeirosPassos.tsx", "src/componentes/ConversasRecentes.tsx", "tests/painel-ui.test.tsx"]
+      cria: ["src/app/(sistema)/(painel)/loading.tsx", "src/app/(sistema)/(painel)/page.tsx", "src/componentes/CartoesDoPainel.tsx", "src/componentes/PrimeirosPassos.tsx", "src/componentes/ConversasRecentes.tsx", "tests/painel-ui.test.tsx"]
       altera: ["src/app/(sistema)/page.tsx", "src/estilos/global.css", "tests/rotas.test.ts"]
     teste_integracao: "A pagina inicial renderizada contra o servidor de producao do teste com dados traz os cartoes, o grafico, as conversas recentes e o alerta de fontes com erro."
     teste_funcional: "O titulo Painel e o subtitulo Visao geral da sua conta continuam, a instalacao vazia mostra os primeiros passos e a lista some quando os passos estao completos, e usuario comum nao ve o link de Integrações."
     criterio_aceite: "tests/painel-ui.test.tsx e o bloco do painel de tests/rotas.test.ts passam."
     depende_de: ["T-05.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
 ---
 
 # Tasks — Sprint 05
@@ -132,13 +132,13 @@ id: T-05.04
 titulo: "Pagina do painel com cartoes, listas e estados"
 objetivo: "Preencher a pagina inicial mantendo titulo e subtitulo, com cartoes, recentes, alerta, primeiros passos, carregando e erro."
 arquivos:
-  cria: ["src/app/(sistema)/loading.tsx", "src/componentes/CartoesDoPainel.tsx", "src/componentes/PrimeirosPassos.tsx", "src/componentes/ConversasRecentes.tsx", "tests/painel-ui.test.tsx"]
+  cria: ["src/app/(sistema)/(painel)/loading.tsx", "src/app/(sistema)/(painel)/page.tsx", "src/componentes/CartoesDoPainel.tsx", "src/componentes/PrimeirosPassos.tsx", "src/componentes/ConversasRecentes.tsx", "tests/painel-ui.test.tsx"]
   altera: ["src/app/(sistema)/page.tsx", "src/estilos/global.css", "tests/rotas.test.ts"]
 teste_integracao: "A pagina inicial renderizada contra o servidor de producao do teste com dados traz os cartoes, o grafico, as conversas recentes e o alerta de fontes com erro."
 teste_funcional: "O titulo Painel e o subtitulo Visao geral da sua conta continuam, a instalacao vazia mostra os primeiros passos e a lista some quando os passos estao completos, e usuario comum nao ve o link de Integrações."
 criterio_aceite: "tests/painel-ui.test.tsx e o bloco do painel de tests/rotas.test.ts passam."
 depende_de: ["T-05.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/painel-ui, rotas e tokens 113 passed; desvio: pagina movida para (sistema)/(painel) para o loading nao envolver as outras rotas
 ```
 
