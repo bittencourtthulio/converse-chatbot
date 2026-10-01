@@ -26,7 +26,7 @@ tasks:
   - id: T-03.02
     titulo: "Desconectar, pausar, retomar e verificar"
     fase: F-03.2
-    status: pendente
+    status: concluida
     objetivo: "Escrever desconectar, pausar, retomar, verificar (getWebhookInfo), definirLimiteDiario e o ponto de extensao aoAlterarCanal."
     arquivos:
       cria: ["tests/canal-telegram-ciclo.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/canal-telegram-ciclo.test.ts passa e qualquer usuario autenticado consegue gerenciar o canal de qualquer agente."
     depende_de: ["T-03.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-03.03
     titulo: "Teto diario parametrizado por canal"
     fase: F-03.2
@@ -90,7 +90,7 @@ teste_funcional: "desconectar com o Telegram fora do ar ainda apaga o canal loca
 criterio_aceite: "tests/canal-telegram-ciclo.test.ts passa e qualquer usuario autenticado consegue gerenciar o canal de qualquer agente."
 depende_de: ["T-03.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/canal-telegram-ciclo.test.ts e tests/canal-telegram-conectar.test.ts, 25 passed; tsc e eslint limpos
 ```
 
 ---

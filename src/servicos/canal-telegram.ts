@@ -8,8 +8,38 @@ import { prisma } from '@/lib/prisma'
 import { ambiente } from '@/lib/ambiente'
 import { cifrar, decifrar } from '@/lib/cripto'
 import { ErroDeAplicacao, entradaInvalida, naoAutenticado, naoEncontrado } from '@/lib/erros'
-import { deleteWebhook, getMe, setWebhook, tokenTemFormatoValido } from '@/lib/telegram'
+import { ErroDoTelegram, deleteWebhook, getMe, getWebhookInfo, redigirToken, setWebhook, tokenTemFormatoValido } from '@/lib/telegram'
 import type { UsuarioAutenticado } from '@/servicos/autenticacao'
+
+export type AcaoNoCanal = 'conectar' | 'desconectar' | 'pausar' | 'retomar' | 'limite'
+
+/** O que a auditoria (FT-10) recebe: quem fez o quê em qual agente. Nunca token, segredo nem conteúdo. */
+export interface AlteracaoDoCanal {
+  acao: AcaoNoCanal
+  agenteId: string
+  usuarioId: string
+}
+
+const ouvintes = new Set<(alteracao: AlteracaoDoCanal) => void>()
+
+/**
+ * Ponto de extensão da FT-10: registra um ouvinte das alterações do canal e
+ * devolve a função que o remove. Ouvinte que lança não derruba a operação.
+ */
+export function aoAlterarCanal(ouvinte: (alteracao: AlteracaoDoCanal) => void): () => void {
+  ouvintes.add(ouvinte)
+  return () => void ouvintes.delete(ouvinte)
+}
+
+function avisarAlteracao(acao: AcaoNoCanal, autor: UsuarioAutenticado, agenteId: string): void {
+  for (const ouvinte of [...ouvintes]) {
+    try {
+      ouvinte({ acao, agenteId, usuarioId: autor.id })
+    } catch {
+      console.error(JSON.stringify({ evento: 'ouvinte_do_canal_falhou', agenteId }))
+    }
+  }
+}
 
 export type SituacaoDoCanal = 'conectado' | 'pausado' | 'com_erro'
 
@@ -188,6 +218,7 @@ export async function conectar(
   }
 
   if (anterior && anterior.botId !== bot.id) await soltarWebhookDoBotAntigo(anterior.tokenCifrado)
+  avisarAlteracao('conectar', autor, agente.id)
   return paraEstado(canal)
 }
 
@@ -198,4 +229,102 @@ async function soltarWebhookDoBotAntigo(tokenCifrado: string): Promise<void> {
   } catch {
     // Token antigo ilegível ou Telegram fora do ar: nada a fazer.
   }
+}
+
+async function exigirCanal(agenteId: string) {
+  const canal = await prisma.canalTelegram.findUnique({ where: { agenteId } })
+  if (!canal) throw naoEncontrado('Este agente não tem um bot do Telegram conectado.')
+  return canal
+}
+
+/**
+ * Desconecta o bot: tenta soltar o webhook no Telegram (a falha não impede a
+ * limpeza local), apaga canal, token, segredo e dedupe, e mantém as conversas.
+ */
+export async function desconectar(
+  autor: UsuarioAutenticado,
+  agenteId: string,
+): Promise<{ webhookRemovido: boolean }> {
+  exigirAutor(autor)
+  const canal = await exigirCanal(agenteId)
+  let webhookRemovido = true
+  try {
+    await deleteWebhook(decifrar(canal.tokenCifrado))
+  } catch {
+    webhookRemovido = false
+  }
+  await prisma.canalTelegram.delete({ where: { agenteId } })
+  avisarAlteracao('desconectar', autor, agenteId)
+  return { webhookRemovido }
+}
+
+async function marcarAtivo(autor: UsuarioAutenticado, agenteId: string, ativo: boolean): Promise<EstadoDoCanal> {
+  exigirAutor(autor)
+  await exigirCanal(agenteId)
+  const canal = await prisma.canalTelegram.update({ where: { agenteId }, data: { ativo } })
+  avisarAlteracao(ativo ? 'retomar' : 'pausar', autor, agenteId)
+  return paraEstado(canal)
+}
+
+/** Pausa: o webhook segue registrado e o app responde 200 sem atender (PR-65). */
+export const pausar = (autor: UsuarioAutenticado, agenteId: string) => marcarAtivo(autor, agenteId, false)
+export const retomar = (autor: UsuarioAutenticado, agenteId: string) => marcarAtivo(autor, agenteId, true)
+
+export interface ResultadoDaVerificacao {
+  urlConfere: boolean
+  urlEsperada: string
+  urlRegistrada: string
+  pendentes: number
+  /** O último erro de entrega que o Telegram reporta, já sem token e curto. */
+  ultimoErroDoTelegram: string | null
+  ultimoErroDoTelegramEm: Date | null
+}
+
+/** "Verificar": compara o webhook registrado no Telegram com o esperado. */
+export async function verificar(autor: UsuarioAutenticado, agenteId: string): Promise<ResultadoDaVerificacao> {
+  exigirAutor(autor)
+  const canal = await exigirCanal(agenteId)
+  const token = decifrar(canal.tokenCifrado)
+  try {
+    const info = await getWebhookInfo(token)
+    return {
+      urlConfere: info.url === canal.webhookUrl,
+      urlEsperada: canal.webhookUrl,
+      urlRegistrada: info.url,
+      pendentes: info.pendentes,
+      ultimoErroDoTelegram: info.ultimoErro === null ? null : redigirToken(info.ultimoErro, token).slice(0, 200),
+      ultimoErroDoTelegramEm: info.ultimoErroEm,
+    }
+  } catch (erro) {
+    if (erro instanceof ErroDoTelegram) await registrarErroDoCanal(canal.id, erro.message)
+    throw erro
+  }
+}
+
+/** Grava o último erro do canal (mensagem já segura, em português). */
+export async function registrarErroDoCanal(canalId: string, mensagem: string): Promise<void> {
+  await prisma.canalTelegram.updateMany({
+    where: { id: canalId },
+    data: { ultimoErro: mensagem.slice(0, 300), ultimoErroEm: new Date() },
+  })
+}
+
+export const LIMITE_DIARIO_MINIMO = 1
+export const LIMITE_DIARIO_MAXIMO = 100_000
+
+export async function definirLimiteDiario(
+  autor: UsuarioAutenticado,
+  agenteId: string,
+  valor: unknown,
+): Promise<EstadoDoCanal> {
+  exigirAutor(autor)
+  const texto = typeof valor === 'string' ? valor.trim() : valor
+  const numero = typeof texto === 'string' && /^\d+$/.test(texto) ? Number(texto) : texto
+  if (typeof numero !== 'number' || !Number.isInteger(numero) || numero < LIMITE_DIARIO_MINIMO || numero > LIMITE_DIARIO_MAXIMO) {
+    throw entradaInvalida(`O limite diário precisa ser um número inteiro de ${LIMITE_DIARIO_MINIMO} a ${LIMITE_DIARIO_MAXIMO}.`)
+  }
+  await exigirCanal(agenteId)
+  const canal = await prisma.canalTelegram.update({ where: { agenteId }, data: { limiteDiario: numero } })
+  avisarAlteracao('limite', autor, agenteId)
+  return paraEstado(canal)
 }
