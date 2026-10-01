@@ -56,18 +56,18 @@ tasks:
   - id: T-04.04
     titulo: "Fila: duas raias e andamento"
     fase: F-04.2
-    status: pendente
+    status: concluida
     objetivo: "Alterar fontes-fila.ts para duas raias (leve com concorrencia 2 e midia com 1), tratar video e atualizar etapa e progresso por atualizacao condicional."
     arquivos:
       cria: ["tests/fontes-fila-video.test.ts"]
-      altera: ["src/servicos/fontes-fila.ts"]
+      altera: ["src/servicos/fontes-fila.ts", "tests/fontes-fila.test.ts"]
     teste_integracao: "Com o transcritor injetado a fila leva uma fonte de video de pendente a pronto, grava etapa e progresso no banco durante o trabalho e limpa os dois ao concluir mantendo duracaoSegundos."
     teste_funcional: "Um video lento nao impede um texto de ficar pronto, dois videos nunca rodam ao mesmo tempo, tipo desconhecido segue dando tipo_nao_suportado e fonte excluida no meio nao e recriada pelo andamento."
     criterio_aceite: "tests/fontes-fila-video.test.ts e tests/fontes-fila.test.ts passam."
     depende_de: ["T-04.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-04.05
     titulo: "Video fim a fim na fila"
     fase: F-04.2
@@ -148,13 +148,13 @@ titulo: "Fila: duas raias e andamento"
 objetivo: "Alterar fontes-fila.ts para duas raias (leve com concorrencia 2 e midia com 1), tratar video e atualizar etapa e progresso por atualizacao condicional."
 arquivos:
   cria: ["tests/fontes-fila-video.test.ts"]
-  altera: ["src/servicos/fontes-fila.ts"]
+  altera: ["src/servicos/fontes-fila.ts", "tests/fontes-fila.test.ts"]
 teste_integracao: "Com o transcritor injetado a fila leva uma fonte de video de pendente a pronto, grava etapa e progresso no banco durante o trabalho e limpa os dois ao concluir mantendo duracaoSegundos."
 teste_funcional: "Um video lento nao impede um texto de ficar pronto, dois videos nunca rodam ao mesmo tempo, tipo desconhecido segue dando tipo_nao_suportado e fonte excluida no meio nao e recriada pelo andamento."
 criterio_aceite: "tests/fontes-fila-video.test.ts e tests/fontes-fila.test.ts passam."
 depende_de: ["T-04.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/fontes-fila-video.test.ts, tests/fontes-fila.test.ts, tests/fontes-fila-execucao.test.ts, tests/instrumentacao.test.ts, tests/projeto.test.ts e tests/fontes.test.ts, 110 passed + 10
 ```
 
 ---

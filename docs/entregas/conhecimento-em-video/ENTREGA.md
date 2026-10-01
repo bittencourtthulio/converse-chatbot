@@ -25,6 +25,7 @@ atencao:
 portao: null
 desvios:
   - "T-03.03: src/lib/midia-formatos.ts (mimeDeMidia) alterado depois da T-02.03, e tests/conhecimento-paginas.test.tsx e tests/painel-de-conhecimento.test.tsx ganharam os quatro campos novos de FonteVisivel para o tsc passar"
+  - "T-04.04: tests/fontes-fila.test.ts teve o titulo do caso do tipo video corrigido (o tipo deixou de ser reservado); as citacoes de linha de src/servicos/fontes-fila.ts, src/servicos/integracoes.ts e src/lib/armazenamento.ts em CONVENCOES.md mudaram e sao reconferidas na T-07.02"
   - "T-04.03: src/lib/armazenamento.ts ganhou apagarAudio (apaga só audio/), usado ao fim da transcricao para limpar o audio e manter os segmentos"
 push_feito: false
 pr_url: null
@@ -55,3 +56,4 @@ Branch `feat/conhecimento-em-video`, aberta em 2026-09-30 a partir de `feat/cana
 
 - T-03.03: src/lib/midia-formatos.ts (mimeDeMidia) alterado depois da T-02.03, e tests/conhecimento-paginas.test.tsx e tests/painel-de-conhecimento.test.tsx ganharam os quatro campos novos de FonteVisivel para o tsc passar
 - T-04.03: src/lib/armazenamento.ts ganhou apagarAudio (apaga só audio/), usado ao fim da transcricao para limpar o audio e manter os segmentos
+- T-04.04: tests/fontes-fila.test.ts teve o titulo do caso do tipo video corrigido (o tipo deixou de ser reservado); as citacoes de linha de src/servicos/fontes-fila.ts, src/servicos/integracoes.ts e src/lib/armazenamento.ts em CONVENCOES.md mudaram e sao reconferidas na T-07.02

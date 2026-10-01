@@ -10,6 +10,9 @@ import { ErroDeAplicacao } from '@/lib/erros'
 import { criarArmazenamento, type Armazenamento } from '@/lib/armazenamento'
 import { extrairTexto } from '@/lib/extracao'
 import { formatoDoNome, type Formato } from '@/lib/extracao/formatos'
+import { erroSemChave } from '@/servicos/chat-erros'
+import { modeloDeTranscricaoEfetivo, obterChaveDoOpenrouter } from '@/servicos/integracoes'
+import { transcreverMidia, type PedidoDeMidia, type TextoDeMidia } from '@/servicos/transcricao-de-midia'
 import { dividirEmTrechos, normalizarTexto } from '@/servicos/trechos'
 
 export interface OpcoesDaFila {
@@ -17,9 +20,14 @@ export interface OpcoesDaFila {
   relogio?: () => Date
   /** Injetável: o teste aponta para um diretório temporário. */
   armazenamento?: Armazenamento
+  /** Raia leve (texto e arquivo): quantas fontes ao mesmo tempo (padrão 2). */
   concorrencia?: number
+  /** Raia de mídia (vídeo): quantas ao mesmo tempo (padrão 1, PR-74). */
+  concorrenciaDeMidia?: number
   /** Só para teste: troca a extração. */
   extrair?: typeof extrairTexto
+  /** Só para teste: troca a transcrição de vídeo (sem ffmpeg e sem rede). */
+  transcreverMidia?: (pedido: PedidoDeMidia) => Promise<TextoDeMidia>
 }
 
 export interface Fila {
@@ -38,6 +46,8 @@ export interface Fila {
 }
 
 const MENSAGEM_GENERICA = 'Não foi possível processar este arquivo. Tente reprocessar ou envie outro arquivo.'
+/** Tipos que rodam na raia de mídia, de concorrência 1; o resto roda na leve (PR-74). */
+const TIPOS_DE_MIDIA = ['video']
 const LOTE_DE_TRECHOS = 500
 
 function formatoDaFonte(fonte: { tipo: string; nomeOriginal: string | null }): Formato {
@@ -53,17 +63,36 @@ function formatoDaFonte(fonte: { tipo: string; nomeOriginal: string | null }): F
 export function criarFila(opcoes: OpcoesDaFila = {}): Fila {
   const relogio = opcoes.relogio ?? (() => new Date())
   const extrair = opcoes.extrair ?? extrairTexto
+  const transcrever = opcoes.transcreverMidia ?? transcreverMidia
   const armazenamento = () => opcoes.armazenamento ?? criarArmazenamento(ambiente.storageDir)
 
   async function gravarErro(fonteId: string, mensagem: string): Promise<void> {
     // updateMany: se a fonte foi excluída no meio do caminho, não há o que atualizar.
     await prisma.fonte.updateMany({
       where: { id: fonteId },
-      data: { status: 'erro', mensagemErro: mensagem, processadoEm: relogio() },
+      data: { status: 'erro', mensagemErro: mensagem, processadoEm: relogio(), etapa: null, progresso: null },
     })
   }
 
-  async function gravarResultado(fonteId: string, agenteId: string, trechos: string[], caracteres: number) {
+  /** Etapa e progresso de um vídeo em processamento; updateMany: fonte excluída ou já terminada não é tocada. */
+  async function gravarAndamento(fonteId: string, a: { etapa: string; progresso: number; duracaoSegundos?: number }) {
+    await prisma.fonte.updateMany({
+      where: { id: fonteId, status: 'processando' },
+      data: {
+        etapa: a.etapa,
+        progresso: Math.max(0, Math.min(100, Math.round(a.progresso))),
+        ...(a.duracaoSegundos !== undefined && { duracaoSegundos: a.duracaoSegundos }),
+      },
+    })
+  }
+
+  async function gravarResultado(
+    fonteId: string,
+    agenteId: string,
+    trechos: string[],
+    caracteres: number,
+    extra: { duracaoSegundos?: number } = {},
+  ) {
     await prisma.$transaction(
       async (tx) => {
         // Excluída durante o processamento: o resultado é descartado.
@@ -88,11 +117,39 @@ export function criarFila(opcoes: OpcoesDaFila = {}): Fila {
             totalTrechos: trechos.length,
             caracteres,
             processadoEm: relogio(),
+            etapa: null,
+            progresso: null,
+            ...(extra.duracaoSegundos !== undefined && { duracaoSegundos: extra.duracaoSegundos }),
           },
         })
       },
       { timeout: 60_000, maxWait: 60_000 },
     )
+  }
+
+  /** Vídeo e áudio: transcrição por parte (PR-72 a PR-74). O original só é lido pelo ffmpeg, nunca em memória. */
+  async function processarVideo(fonte: { id: string; agenteId: string; caminhoArquivo: string | null }): Promise<void> {
+    if (!fonte.caminhoArquivo) {
+      throw new ErroDeAplicacao('Esta fonte não tem arquivo original para processar.', 422, 'arquivo_ausente')
+    }
+    const chave = await obterChaveDoOpenrouter()
+    if (!chave) throw erroSemChave()
+    const modelo = await modeloDeTranscricaoEfetivo()
+    const { texto: bruto, duracaoSegundos } = await transcrever({
+      fonte: { id: fonte.id, agenteId: fonte.agenteId },
+      chave,
+      modelo,
+      armazenamento: armazenamento(),
+      aoAndar: (a) => gravarAndamento(fonte.id, a),
+      fonteExiste: async () => (await prisma.fonte.findUnique({ where: { id: fonte.id }, select: { id: true } })) !== null,
+    })
+    const texto = normalizarTexto(bruto)
+    if (texto === '') {
+      throw new ErroDeAplicacao('Não encontrei fala neste arquivo para transcrever.', 422, 'transcricao_vazia')
+    }
+    await gravarResultado(fonte.id, fonte.agenteId, dividirEmTrechos(texto), texto.length, { duracaoSegundos })
+    // Concluída: o áudio e os segmentos já cumpriram o papel; o original fica (PR-74).
+    await armazenamento().apagarTrabalho(fonte.agenteId, fonte.id).catch(() => undefined)
   }
 
   async function processar(fonte: {
@@ -103,6 +160,10 @@ export function criarFila(opcoes: OpcoesDaFila = {}): Fila {
     caminhoArquivo: string | null
   }): Promise<void> {
     try {
+      if (fonte.tipo === 'video') {
+        await processarVideo(fonte)
+        return
+      }
       const formato = formatoDaFonte(fonte)
       if (!fonte.caminhoArquivo) {
         throw new ErroDeAplicacao('Esta fonte não tem arquivo original para processar.', 422, 'arquivo_ausente')
@@ -111,6 +172,8 @@ export function criarFila(opcoes: OpcoesDaFila = {}): Fila {
       const texto = normalizarTexto(await extrair({ formato, bytes }))
       await gravarResultado(fonte.id, fonte.agenteId, dividirEmTrechos(texto), texto.length)
     } catch (erro) {
+      // Fonte excluída durante a transcrição: não há mais o que gravar nem o que reportar.
+      if (erro instanceof ErroDeAplicacao && erro.codigo === 'fonte_excluida') return
       if (erro instanceof ErroDeAplicacao) {
         await gravarErro(fonte.id, erro.message)
         return
@@ -131,15 +194,16 @@ export function criarFila(opcoes: OpcoesDaFila = {}): Fila {
   }
 
   const concorrencia = opcoes.concorrencia ?? 2
+  const concorrenciaDeMidia = opcoes.concorrenciaDeMidia ?? 1
   let ativa = false
   let drenagem: Promise<void> | null = null
   let reexecutar = false
 
-  async function trabalhador(): Promise<number> {
+  async function trabalhador(midia: boolean): Promise<number> {
     let feitas = 0
     for (;;) {
       const proxima = await prisma.fonte.findFirst({
-        where: { status: 'pendente' },
+        where: { status: 'pendente', tipo: midia ? { in: TIPOS_DE_MIDIA } : { notIn: TIPOS_DE_MIDIA } },
         orderBy: { criadoEm: 'asc' },
         select: { id: true },
       })
@@ -149,7 +213,11 @@ export function criarFila(opcoes: OpcoesDaFila = {}): Fila {
   }
 
   async function processarPendentes(): Promise<number> {
-    const parciais = await Promise.all(Array.from({ length: concorrencia }, () => trabalhador()))
+    // Duas raias ao mesmo tempo: um vídeo longo não segura texto nem arquivos (PR-74).
+    const parciais = await Promise.all([
+      ...Array.from({ length: concorrencia }, () => trabalhador(false)),
+      ...Array.from({ length: concorrenciaDeMidia }, () => trabalhador(true)),
+    ])
     return parciais.reduce((soma, n) => soma + n, 0)
   }
 

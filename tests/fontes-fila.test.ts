@@ -82,7 +82,7 @@ describe('processar uma fonte', () => {
     expect(depois.mensagemErro).not.toMatch(/\/|storage/)
   })
 
-  it('fonte sem arquivo gravado e tipo reservado para a FT-08 viram erro, não exceção', async () => {
+  it('fonte sem arquivo gravado e vídeo sem chave do OpenRouter viram erro, não exceção', async () => {
     const semArquivo = await criarFonteDeTeste({ agenteId, bytes: null })
     const video = await criarFonteDeTeste({ agenteId, tipo: 'video', nomeOriginal: 'a.mp4', bytes: Buffer.from('x') })
     await fila().processarUma(semArquivo.id)
