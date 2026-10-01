@@ -26,7 +26,7 @@ tasks:
   - id: T-06.02
     titulo: "Troca de banco e storage com copia pre-restauracao e desfazer"
     fase: F-06.1
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar a restauracao dos arquivos: copia consistente do estado atual em pre-restauracao, troca por renomeacao no mesmo volume e desfazer quando algo falha no meio."
     arquivos:
       cria: ["tests/restauracao-troca.test.ts"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/restauracao-troca.test.ts passa e o diretorio temporario de extracao nao sobra."
     depende_de: ["T-06.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-06.03
     titulo: "Comando npm run restore"
     fase: F-06.2
@@ -118,7 +118,7 @@ teste_funcional: "Uma falha simulada na troca do storage devolve o banco e o sto
 criterio_aceite: "tests/restauracao-troca.test.ts passa e o diretorio temporario de extracao nao sobra."
 depende_de: ["T-06.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/restauracao-troca.test.ts e tests/restauracao-validacao.test.ts passam (22); achado: duas restaurações no mesmo segundo colidiam no nome de pre-restauracao, agora com sufixo; a troca entre volumes (EXDEV) só tem o caminho de cópia, não exercitado
 ```
 
 ---

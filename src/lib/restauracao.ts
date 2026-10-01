@@ -296,7 +296,10 @@ export async function restaurarArquivos(o: OpcoesDaTroca): Promise<ResultadoDaTr
   let storageGuardado: string | null = null
   try {
     if (haBanco || haStorage) {
-      pre = path.join(backupDir, `pre-restauracao-${carimbo(agora)}`)
+      // Nome único: duas restaurações no mesmo segundo não podem sobrescrever a cópia de segurança uma da outra.
+      const base = path.join(backupDir, `pre-restauracao-${carimbo(agora)}`)
+      pre = base
+      for (let n = 1; await existe(pre); n += 1) pre = `${base}-${n}`
       await mkdir(pre, { recursive: true, mode: 0o700 })
       if (haBanco) await guardarBanco(bancoArquivo, path.join(pre, 'app.db'))
     }
