@@ -11,6 +11,7 @@ import { listarModelos } from '@/lib/openrouter'
 import { obterChaveDoOpenrouter } from '@/servicos/integracoes'
 import type { UsuarioAutenticado } from '@/servicos/autenticacao'
 import { registrar } from '@/servicos/auditoria'
+import { log } from '@/lib/log'
 
 export const MODELO_PADRAO = 'openai/gpt-4o-mini'
 export const TEMPERATURA_PADRAO = 0.7
@@ -174,7 +175,7 @@ export async function excluir(autor: UsuarioAutenticado, id: string): Promise<vo
   try {
     await criarArmazenamento(ambiente.storageDir).apagarAgente(id)
   } catch {
-    console.error(JSON.stringify({ evento: 'armazenamento_falhou', agenteId: id }))
+    log.erro('armazenamento_falhou', { agenteId: id })
   }
 }
 

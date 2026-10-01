@@ -57,7 +57,7 @@ describe('excluir', () => {
     await expect(excluir(autor, agenteId, fonte.id)).resolves.toBeUndefined()
     chmodSync(path.join(ambiente.storageDir, 'fontes', agenteId), 0o700)
     expect(await prisma.fonte.count()).toBe(0)
-    expect(JSON.parse(String(log.mock.calls[0]![0]))).toMatchObject({ evento: 'armazenamento_falhou', fonteId: fonte.id })
+    expect(JSON.parse(String(log.mock.calls[0]![0]))).toMatchObject({ msg: 'armazenamento_falhou', fonteId: fonte.id })
   })
 })
 

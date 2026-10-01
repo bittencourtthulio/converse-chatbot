@@ -119,7 +119,10 @@ describe('apagar (funcional)', () => {
     remover()
     await apagarConversa(b.id, 'u1')
     expect(eventos).toHaveLength(1)
-    expect(erro).toHaveBeenCalled()
+    expect(erro).toHaveBeenCalledTimes(1)
+    const linha = JSON.parse(String(erro.mock.calls[0]![0])) as Record<string, unknown>
+    expect(linha).toMatchObject({ nivel: 'erro', msg: 'ouvinte_de_exclusao_falhou', conversaId: a.id })
+    expect(JSON.stringify(linha)).not.toContain('falha do ouvinte')
     erro.mockRestore()
   })
 })

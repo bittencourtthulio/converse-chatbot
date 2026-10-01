@@ -26,18 +26,18 @@ tasks:
   - id: T-02.02
     titulo: "Servicos de conhecimento, Telegram e historico usam o log"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Trocar os console.* de fontes, fila de fontes, transcricao, agentes, canal Telegram, webhook do Telegram e historico por chamadas ao log, com a fila rodando cada fonte dentro de comCorrelacao."
     arquivos:
-      cria: []
+      cria: ["tests/log-servicos.test.ts"]
       altera: ["src/servicos/fontes.ts", "src/servicos/fontes-fila.ts", "src/servicos/transcricao-de-midia.ts", "src/servicos/agentes.ts", "src/servicos/canal-telegram.ts", "src/servicos/telegram-webhook.ts", "src/servicos/historico.ts", "tests/fontes-fila.test.ts", "tests/fontes-fila-video.test.ts", "tests/fontes-fila-execucao.test.ts", "tests/fontes-ciclo.test.ts", "tests/agentes.test.ts", "tests/historico-apagar.test.ts", "tests/telegram-acoes.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md", "docs/stack/LACUNAS.md"]
     teste_integracao: "A falha da fila de fontes, do armazenamento de agente e de um ouvinte de exclusao de conversa vira uma linha JSON do log com nivel erro, msg do evento e os ids, sem conteudo, e a linha da fila leva a correlacao da fonte."
     teste_funcional: "Nenhum arquivo dessa lista contem console. e o processamento de uma fonte com erro mantem a mensagem generica ao usuario e o estado erro da fonte."
     criterio_aceite: "Os testes de fila, agentes, historico e telegram-acoes passam lendo msg no lugar de evento e grep console\\. nesses arquivos nao acha nada."
     depende_de: ["T-02.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
   - id: T-02.03
     titulo: "Camada de apresentacao e instrumentacao usam o log com codigo de referencia"
     fase: F-02.1
@@ -141,14 +141,14 @@ id: T-02.02
 titulo: "Servicos de conhecimento, Telegram e historico usam o log"
 objetivo: "Trocar os console.* de fontes, fila de fontes, transcricao, agentes, canal Telegram, webhook do Telegram e historico por chamadas ao log, com a fila rodando cada fonte dentro de comCorrelacao."
 arquivos:
-  cria: []
+  cria: ["tests/log-servicos.test.ts"]
   altera: ["src/servicos/fontes.ts", "src/servicos/fontes-fila.ts", "src/servicos/transcricao-de-midia.ts", "src/servicos/agentes.ts", "src/servicos/canal-telegram.ts", "src/servicos/telegram-webhook.ts", "src/servicos/historico.ts", "tests/fontes-fila.test.ts", "tests/fontes-fila-video.test.ts", "tests/fontes-fila-execucao.test.ts", "tests/fontes-ciclo.test.ts", "tests/agentes.test.ts", "tests/historico-apagar.test.ts", "tests/telegram-acoes.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md", "docs/stack/LACUNAS.md"]
 teste_integracao: "A falha da fila de fontes, do armazenamento de agente e de um ouvinte de exclusao de conversa vira uma linha JSON do log com nivel erro, msg do evento e os ids, sem conteudo, e a linha da fila leva a correlacao da fonte."
 teste_funcional: "Nenhum arquivo dessa lista contem console. e o processamento de uma fonte com erro mantem a mensagem generica ao usuario e o estado erro da fonte."
 criterio_aceite: "Os testes de fila, agentes, historico e telegram-acoes passam lendo msg no lugar de evento e grep console\\. nesses arquivos nao acha nada."
 depende_de: ["T-02.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2586 passed, 0 failed (213 arquivos); build antes
 ```
 
 ---

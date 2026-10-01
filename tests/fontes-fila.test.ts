@@ -113,7 +113,7 @@ describe('processar uma fonte', () => {
     expect(depois.mensagemErro).not.toMatch(/segredo|\/var/)
     expect(log).toHaveBeenCalledTimes(1)
     const linha = JSON.parse(String(log.mock.calls[0]![0])) as Record<string, string>
-    expect(linha).toMatchObject({ evento: 'fonte_falhou', fonteId: fonte.id, agenteId })
+    expect(linha).toMatchObject({ nivel: 'erro', msg: 'fonte_falhou', fonteId: fonte.id, agenteId, erro: 'Error' })
     expect(linha.correlacao).toMatch(/^[0-9a-f]{8}$/)
     expect(JSON.stringify(linha)).not.toMatch(/segredo|cliente|falha interna/)
   })

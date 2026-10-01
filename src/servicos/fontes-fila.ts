@@ -3,7 +3,6 @@
 // externa. Esta tarefa lê o original, extrai o texto, divide em trechos e
 // grava tudo numa transação; em falha, grava `erro` com mensagem amigável e
 // nunca derruba quem a chamou.
-import { randomBytes } from 'node:crypto'
 import { prisma } from '@/lib/prisma'
 import { ambiente } from '@/lib/ambiente'
 import { ErroDeAplicacao } from '@/lib/erros'
@@ -17,6 +16,7 @@ import { modeloDeTranscricaoEfetivo, obterChaveDoOpenrouter } from '@/servicos/i
 import { transcreverMidia, type PedidoDeMidia, type TextoDeMidia } from '@/servicos/transcricao-de-midia'
 import { montarTextoDeLegenda } from '@/servicos/transcricao-marcadores'
 import { dividirEmTrechos, normalizarTexto } from '@/servicos/trechos'
+import { camposDoErro, comCorrelacao, log, novaCorrelacao } from '@/lib/log'
 
 export interface OpcoesDaFila {
   /** Injetável para o teste fixar a hora de `processadoEm`. */
@@ -217,17 +217,8 @@ export function criarFila(opcoes: OpcoesDaFila = {}): Fila {
         await gravarErro(fonte.id, erro.message)
         return
       }
-      const correlacao = randomBytes(4).toString('hex')
       // Só identificadores e o tipo do erro: nunca o conteúdo do arquivo (PR-21).
-      console.error(
-        JSON.stringify({
-          evento: 'fonte_falhou',
-          correlacao,
-          fonteId: fonte.id,
-          agenteId: fonte.agenteId,
-          erro: erro instanceof Error ? erro.name : 'desconhecido',
-        }),
-      )
+      log.erro('fonte_falhou', { fonteId: fonte.id, agenteId: fonte.agenteId, ...camposDoErro(erro) })
       await gravarErro(fonte.id, MENSAGEM_GENERICA).catch(() => undefined)
     }
   }
@@ -287,7 +278,8 @@ export function criarFila(opcoes: OpcoesDaFila = {}): Fila {
     if (count === 0) return false
     const fonte = await prisma.fonte.findUnique({ where: { id: fonteId } })
     if (!fonte) return true
-    await processar(fonte)
+    // Cada fonte tem a própria correlação: todas as linhas do log do processamento dela a levam.
+    await comCorrelacao(novaCorrelacao(), () => processar(fonte))
     return true
   }
 

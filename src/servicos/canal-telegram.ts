@@ -10,6 +10,7 @@ import { cifrar, decifrar } from '@/lib/cripto'
 import { ErroDeAplicacao, entradaInvalida, naoAutenticado, naoEncontrado } from '@/lib/erros'
 import { ErroDoTelegram, deleteWebhook, getMe, getWebhookInfo, redigirToken, setWebhook, tokenTemFormatoValido } from '@/lib/telegram'
 import type { UsuarioAutenticado } from '@/servicos/autenticacao'
+import { log } from '@/lib/log'
 
 export type AcaoNoCanal = 'conectar' | 'desconectar' | 'pausar' | 'retomar' | 'limite'
 
@@ -46,7 +47,7 @@ function avisarAlteracao(acao: AcaoNoCanal, autor: UsuarioAutenticado, agenteId:
     try {
       ouvinte({ acao, agenteId, usuarioId: autor.id })
     } catch {
-      console.error(JSON.stringify({ evento: 'ouvinte_do_canal_falhou', agenteId }))
+      log.erro('ouvinte_do_canal_falhou', { agenteId })
     }
   }
 }

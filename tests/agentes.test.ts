@@ -222,7 +222,7 @@ describe('excluir e os arquivos da base (PR-47)', () => {
     expect(await prisma.agente.count()).toBe(0)
     expect(log).toHaveBeenCalledTimes(1)
     const linha = JSON.parse(String(log.mock.calls[0]![0])) as Record<string, string>
-    expect(linha.evento).toBe('armazenamento_falhou')
+    expect(linha.msg).toBe('armazenamento_falhou')
     expect(linha.agenteId).toBe(agente.id)
     expect(JSON.stringify(linha)).not.toContain(ambiente.storageDir)
   })

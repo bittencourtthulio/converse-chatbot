@@ -126,7 +126,7 @@ describe('fonte de vídeo na fila', () => {
     expect(depois.status).toBe('erro')
     expect(depois.mensagemErro).not.toMatch(/segredo|\/var/)
     const linha = JSON.parse(log.mock.calls.map((c) => String(c[0])).find((l) => l.includes('fonte_falhou'))!)
-    expect(linha).toMatchObject({ evento: 'fonte_falhou', fonteId: fonte.id })
+    expect(linha).toMatchObject({ nivel: 'erro', msg: 'fonte_falhou', fonteId: fonte.id })
     expect(JSON.stringify(linha)).not.toMatch(/segredo/)
   })
 

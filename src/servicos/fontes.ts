@@ -26,6 +26,7 @@ import {
 import { extrairIdDoYoutube, tituloProvisorioDoYoutube, urlDeOrigem } from '@/lib/youtube'
 import { obterFila } from '@/servicos/fontes-fila'
 import type { UsuarioAutenticado } from '@/servicos/autenticacao'
+import { log } from '@/lib/log'
 
 export const TRECHOS_POR_PAGINA = 20
 
@@ -300,7 +301,7 @@ async function adicionarUmArquivo(
     }
   } catch (erro) {
     if (erro instanceof ErroDeAplicacao) return recusa(erro.codigo, erro.message)
-    console.error(JSON.stringify({ evento: 'envio_falhou', agenteId }))
+    log.erro('envio_falhou', { agenteId })
     return recusa('erro_interno', 'Não foi possível guardar este arquivo. Tente de novo.')
   }
 }
@@ -336,7 +337,7 @@ export async function excluir(autor: UsuarioAutenticado, agenteId: string, fonte
   try {
     await armazenamentoPadrao().apagarFonte(agenteId, fonteId)
   } catch {
-    console.error(JSON.stringify({ evento: 'armazenamento_falhou', agenteId, fonteId }))
+    log.erro('armazenamento_falhou', { agenteId, fonteId })
   }
 }
 

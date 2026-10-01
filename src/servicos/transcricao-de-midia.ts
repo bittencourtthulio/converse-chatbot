@@ -19,6 +19,7 @@ import {
 } from '@/lib/midia'
 import { transcreverAudio, type PedidoDeTranscricao } from '@/lib/openrouter'
 import { juntarPartes } from '@/servicos/transcricao-marcadores'
+import { log } from '@/lib/log'
 
 export interface Andamento {
   etapa: string
@@ -155,15 +156,12 @@ async function transcreverParte(
         continue
       }
       // Só identificadores e o código: nunca o áudio nem o texto transcrito (PR-21).
-      console.error(
-        JSON.stringify({
-          evento: 'transcricao_falhou',
-          fonteId: pedido.fonte.id,
-          agenteId: pedido.fonte.agenteId,
-          parte: indice + 1,
-          codigo: erro instanceof ErroDeAplicacao ? erro.codigo : 'erro_inesperado',
-        }),
-      )
+      log.erro('transcricao_falhou', {
+        fonteId: pedido.fonte.id,
+        agenteId: pedido.fonte.agenteId,
+        parte: indice + 1,
+        codigo: erro instanceof ErroDeAplicacao ? erro.codigo : 'erro_inesperado',
+      })
       const rotulo = `Falha na parte ${indice + 1} de ${total}`
       if (erro instanceof ErroDeAplicacao) throw new ErroDeAplicacao(`${rotulo}: ${erro.message}`, erro.status, erro.codigo)
       throw new ErroDeAplicacao(`${rotulo}: ocorreu um erro inesperado.`, 500, 'erro_inesperado')

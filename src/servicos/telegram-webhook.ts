@@ -5,6 +5,7 @@ import { createHash, timingSafeEqual } from 'node:crypto'
 import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
 import { atenderUpdate } from '@/servicos/telegram-atendimento'
+import { camposDoErro, comCorrelacao, log, novaCorrelacao } from '@/lib/log'
 
 export interface CanalAutenticado {
   id: string
@@ -143,7 +144,7 @@ export interface ResultadoDoWebhook {
 
 /** Uma linha JSON, sem token, segredo nem texto da conversa (PR-42). */
 function registrar(evento: string, agenteId: string, extra: Record<string, unknown> = {}): void {
-  console.info(JSON.stringify({ evento, agenteId, ...extra }))
+  log.info(evento, { agenteId, ...extra })
 }
 
 /**
@@ -178,13 +179,16 @@ export async function tratarWebhook(entrada: EntradaDoWebhook): Promise<Resultad
   return {
     status: 200,
     depois: async () => {
-      try {
-        await purgarAtualizacoesSeNecessario()
-        await atenderUpdate(canal, update)
-      } catch {
-        // Nada do erro vai ao log: pode carregar texto da conversa ou o token.
-        console.error(JSON.stringify({ evento: 'telegram_atendimento_falhou', agenteId: canal.agenteId }))
-      }
+      // Depois da resposta ao Telegram: um código de correlação próprio liga as linhas do atendimento.
+      await comCorrelacao(novaCorrelacao(), async () => {
+        try {
+          await purgarAtualizacoesSeNecessario()
+          await atenderUpdate(canal, update)
+        } catch (erro) {
+          // Só o nome do erro vai ao log: a mensagem pode carregar texto da conversa ou o token.
+          log.erro('telegram_atendimento_falhou', { agenteId: canal.agenteId, ...camposDoErro(erro) })
+        }
+      })
     },
   }
 }

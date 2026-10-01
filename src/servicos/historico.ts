@@ -20,6 +20,7 @@ import {
   rotuloDoInterlocutor,
   type FiltrosDoHistorico,
 } from '@/servicos/historico-logica'
+import { log } from '@/lib/log'
 
 export interface ItemDoHistorico {
   id: string
@@ -268,7 +269,7 @@ function avisarExclusao(apagada: ConversaApagada): void {
     try {
       ouvinte(apagada)
     } catch {
-      console.error(JSON.stringify({ evento: 'ouvinte_de_exclusao_falhou', conversaId: apagada.conversaId }))
+      log.erro('ouvinte_de_exclusao_falhou', { conversaId: apagada.conversaId })
     }
   }
 }
