@@ -41,7 +41,7 @@ tasks:
   - id: T-01.03
     titulo: "OpenRouter falso com silêncios e áudio com trecho mudo"
     fase: F-01.2
-    status: pendente
+    status: concluida
     objetivo: "Estender o OpenRouter falso para responder vazio em partes escolhidas e gerar com o ffmpeg um áudio com fala, silêncio e ruído."
     arquivos:
       cria: ["tests/apoio-audio-com-silencio.test.ts"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/apoio-audio-com-silencio.test.ts passa (com ffmpeg; pula sem ele como os demais) e os testes do OpenRouter falso existentes continuam verdes."
     depende_de: ["T-01.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-01.04
     titulo: "Apoios de PDF grande e de corpo chunked"
     fase: F-01.2
@@ -122,7 +122,7 @@ teste_funcional: "gerarAudioComSilencio({fala:5,silencio:10,ruido:10}) devolve u
 criterio_aceite: "tests/apoio-audio-com-silencio.test.ts passa (com ffmpeg; pula sem ele como os demais) e os testes do OpenRouter falso existentes continuam verdes."
 depende_de: ["T-01.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/apoio-audio-com-silencio, apoio-ffmpeg, transcricao-de-midia, fontes-video-fim-a-fim, openrouter-transcricao, projeto: 0 failed; mutação registrada
 ```
 
 ---

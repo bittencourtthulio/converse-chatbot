@@ -6,6 +6,7 @@
  *   descreverComFfmpeg(...)   `describe` que pula sem ffmpeg; com EXIGIR_FFMPEG=1 (CI) a
  *                             ausência vira um teste vermelho em vez de um pulo
  *   gerarMidia({...})         cria um arquivo de áudio ou vídeo pequeno e devolve o caminho
+ *   gerarAudioComSilencio({...})  mp3 com fala (senoide), silêncio e ruído em sequência (FT-13)
  *
  * `ruido: true` gera áudio diferente a cada chamada (ruído rosa): é o que faz
  * partes de um mesmo arquivo serem áudios distintos para o OpenRouter simulado.
@@ -105,5 +106,36 @@ export function gerarMidia(o: OpcoesDeMidia): string {
   if (r.error || r.status !== 0) {
     throw new Error(`O ffmpeg não gerou ${o.formato}: ${r.stderr || r.error?.message}`)
   }
+  return saida
+}
+
+export interface OpcoesDeAudioComSilencio {
+  diretorio: string
+  /** Segundos de fala (senoide de 440 Hz), de silêncio digital e de ruído rosa, nesta ordem; 0 omite o trecho. */
+  fala: number
+  silencio: number
+  ruido: number
+  nome?: string
+}
+
+/**
+ * Um mp3 mono de 16 kHz com fala, silêncio e ruído em sequência, para provar o trecho sem fala (FT-13, PR-105).
+ * Com partes de 10 s, `{fala: 10, silencio: 10, ruido: 5}` dá três partes de conteúdos diferentes.
+ */
+export function gerarAudioComSilencio(o: OpcoesDeAudioComSilencio): string {
+  const saida = path.join(o.diretorio, `${o.nome ?? 'audio-com-silencio'}.mp3`)
+  const trechos: string[] = []
+  if (o.fala > 0) trechos.push(`sine=frequency=440:duration=${o.fala}:sample_rate=16000`)
+  if (o.silencio > 0) trechos.push(`anullsrc=r=16000:cl=mono:d=${o.silencio}`)
+  if (o.ruido > 0) trechos.push(`anoisesrc=color=pink:amplitude=0.3:duration=${o.ruido}:sample_rate=16000`)
+  if (trechos.length === 0) throw new Error('gerarAudioComSilencio precisa de ao menos um trecho com duração.')
+  const entradas = trechos.flatMap((t) => ['-f', 'lavfi', '-i', t])
+  const filtro = `${trechos.map((_, i) => `[${i}:a]`).join('')}concat=n=${trechos.length}:v=0:a=1[saida]`
+  const r = spawnSync(
+    caminhoDoFfmpeg(),
+    ['-v', 'error', '-y', ...entradas, '-filter_complex', filtro, '-map', '[saida]', '-ac', '1', '-ar', '16000', '-c:a', 'libmp3lame', '-b:a', '32k', saida],
+    { encoding: 'utf8' },
+  )
+  if (r.error || r.status !== 0) throw new Error(`O ffmpeg não gerou o áudio com silêncio: ${r.stderr || r.error?.message}`)
   return saida
 }

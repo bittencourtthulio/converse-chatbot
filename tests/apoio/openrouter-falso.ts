@@ -29,6 +29,8 @@
  * mesmo áudio de novo (nova tentativa) é a mesma parte. Use áudios diferentes
  * (por exemplo ruído) para partes diferentes.
  *   transcricoes         texto por parte (índice 0, 1, ...); faltando, "Transcrição simulada da parte N."
+ *   silencios            índices de parte (de 0) que respondem texto VAZIO (trecho sem fala, FT-13): o vazio vem do
+ *                        índice da parte, não do áudio; o mesmo áudio de novo é a mesma parte e continua vazio
  *   falhasPorParte       { parte: status } o pedido daquela parte responde esse erro, até configurar de novo
  *   latenciaPorParteMs   { parte: ms } atraso só daquela parte
  *   `audios` registra modelo, formato, tamanho do base64, parte e tentativa.
@@ -60,6 +62,7 @@ export interface OpcoesDoFalso {
   partirChunks?: boolean
   erroNoMeioApos?: number | null
   transcricoes?: string[]
+  silencios?: number[]
   falhasPorParte?: Record<number, number>
   latenciaPorParteMs?: Record<number, number>
 }
@@ -281,7 +284,9 @@ export async function iniciarOpenRouterFalso(
         if (espera) await dormir(espera)
         const falha = opcoes.falhasPorParte?.[vista.parte]
         if (falha) return erro(res, falha)
-        const conteudo = opcoes.transcricoes?.[vista.parte] ?? `Transcrição simulada da parte ${vista.parte + 1}.`
+        const conteudo = opcoes.silencios?.includes(vista.parte)
+          ? ''
+          : (opcoes.transcricoes?.[vista.parte] ?? `Transcrição simulada da parte ${vista.parte + 1}.`)
         return json(res, {
           id: 'gen-falso',
           object: 'chat.completion',

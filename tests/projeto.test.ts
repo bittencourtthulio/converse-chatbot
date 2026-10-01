@@ -428,10 +428,10 @@ describe('convenções do vídeo (FT-08)', () => {
     ['src/lib/youtube.ts:331', /export async function obterLegendas/],
     ['src/componentes/AdicionarFontes.tsx:21', /const PAINEIS/],
     ['src/app/acoes.ts:54', /async function mensagemDe\(/],
-    ['tests/apoio/ffmpeg.ts:40', /export function descreverComFfmpeg/],
+    ['tests/apoio/ffmpeg.ts:41', /export function descreverComFfmpeg/],
     ['tests/apoio/youtube-falso.ts:116', /export async function iniciarYoutubeFalso/],
-    ['tests/apoio/openrouter-falso.ts:111', /function extrairAudio/],
-    ['tests/apoio/openrouter-falso.ts:125', /export async function iniciarOpenRouterFalso/],
+    ['tests/apoio/openrouter-falso.ts:114', /function extrairAudio/],
+    ['tests/apoio/openrouter-falso.ts:128', /export async function iniciarOpenRouterFalso/],
   ]
 
   it.each(CITACOES)('%s existe e contém o que o CONVENCOES.md diz', (citacao, esperado) => {
