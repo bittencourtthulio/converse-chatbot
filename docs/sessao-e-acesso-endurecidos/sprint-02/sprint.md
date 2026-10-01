@@ -8,7 +8,7 @@ feature_id: FT-12
 sprint_id: sprint-02
 atualizado_em: 2026-10-01
 titulo: "Nucleo da sessao: token, revogacao, versao, renovacao e expurgo"
-status: nao_iniciado
+status: concluido
 criterio_saida: "token com jti, versao e inicio, sair revogavel no servico, troca de senha por versao, renovacao com limite absoluto e expurgo das revogacoes, tudo provado por teste de servico com relogio injetado"
 fases: ["F-02.1", "F-02.2", "F-02.3"]
 riscos: ["migration so acrescenta: a coluna sessoesValidasDesde nao pode ser removida (tests/migracoes.test.ts)", "mudar assinarSessao e usuarioDaSessao toca 40 arquivos de teste que usam criarUsuario: manter o contrato antigo de duas posicoes"]

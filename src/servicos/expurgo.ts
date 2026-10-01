@@ -1,8 +1,8 @@
 // O expurgo automático (FT-10, PR-18, PR-86, PR-89): apaga o que passou da retenção, em
 // segundo plano. Conversas com `atualizadoEm` estritamente anterior a agora menos N dias (as
 // mensagens saem em cascata), em lotes para não travar o SQLite; as atualizações antigas do
-// dedupe do Telegram (7 dias); e os registros de auditoria com mais de
-// `AUDITORIA_RETENCAO_DIAS`. Com a retenção das conversas desligada ("sem expurgo
+// dedupe do Telegram (7 dias); os registros de auditoria com mais de
+// `AUDITORIA_RETENCAO_DIAS`; e as sessões revogadas por `sair` que já venceram (FT-12, PR-101). Com a retenção das conversas desligada ("sem expurgo
 // automático"), só o dedupe e a auditoria são purgados. Registra `expurgo_automatico` com
 // contagens, nunca conteúdo nem identificador, e só quando algo foi apagado.
 //
@@ -27,6 +27,8 @@ export interface ResultadoDoExpurgo {
   mensagens: number
   atualizacoesDoTelegram: number
   registrosDeAuditoria: number
+  /** As revogações de sessão com `expiraEm` anterior a agora, já sem o que proteger (PR-101). */
+  sessoesRevogadas: number
   /** A retenção aplicada; `null` quando as conversas não são expurgadas. */
   retencaoDias: number | null
   /** O tamanho de cada lote de conversas apagado, na ordem. */
@@ -75,11 +77,16 @@ export async function executarExpurgo(opcoes: OpcoesDoExpurgo = {}): Promise<Res
     new Date(agora.getTime() - ambiente.auditoriaRetencaoDias * DIA_EM_MS),
   )
 
+  // A revogação só protege até o fim máximo da sessão: depois disso o token já não vale por si e a linha sai.
+  // Não conta para a auditoria `expurgo_automatico`, que registra o que é dado do titular.
+  const { count: sessoesRevogadas } = await prisma.sessaoRevogada.deleteMany({ where: { expiraEm: { lt: agora } } })
+
   const resultado: ResultadoDoExpurgo = {
     conversas: conversas.conversas,
     mensagens: conversas.mensagens,
     atualizacoesDoTelegram,
     registrosDeAuditoria,
+    sessoesRevogadas,
     retencaoDias,
     lotesDeConversas: conversas.lotes,
   }

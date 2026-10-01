@@ -116,7 +116,7 @@ tasks:
   - id: T-02.08
     titulo: "Expurgo das revogacoes vencidas"
     fase: F-02.3
-    status: pendente
+    status: concluida
     objetivo: "Fazer o expurgo apagar as sessoes revogadas com expiraEm no passado e devolver a contagem."
     arquivos:
       cria: ["tests/expurgo-sessoes.test.ts"]
@@ -126,8 +126,8 @@ tasks:
     criterio_aceite: "tests/expurgo-sessoes.test.ts e os testes de expurgo existentes passam e o novo falha quando a limpeza e removida (mutacao registrada) e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
     depende_de: ["T-02.05"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
 ---
 
 # Tasks — Sprint 02
@@ -267,5 +267,5 @@ teste_funcional: "A contagem sessoesRevogadas sai no resultado, uma segunda roda
 criterio_aceite: "tests/expurgo-sessoes.test.ts e os testes de expurgo existentes passam e o novo falha quando a limpeza e removida (mutacao registrada) e as citacoes arquivo:linha de tests/projeto.test.ts, CONVENCOES.md e LACUNAS.md foram reajustadas."
 depende_de: ["T-02.05"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 252 arquivos, 2920 passed, 9 skipped, 0 failed (portão da sprint 02)
 ```

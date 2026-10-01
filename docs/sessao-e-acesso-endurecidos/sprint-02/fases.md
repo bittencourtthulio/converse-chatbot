@@ -10,21 +10,21 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-02.1
     titulo: "Esquema e configuracao"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "as tasks T-02.01, T-02.02 concluidas com os dois testes passando"
     paralelizavel: false
     paralela_com: []
     tasks: ["T-02.01", "T-02.02"]
   - id: F-02.2
     titulo: "Token, cookie e validacao"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "as tasks T-02.03, T-02.04, T-02.05 concluidas com os dois testes passando"
     paralelizavel: false
     paralela_com: []
     tasks: ["T-02.03", "T-02.04", "T-02.05"]
   - id: F-02.3
     titulo: "Versao, renovacao e expurgo"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "as tasks T-02.06, T-02.07, T-02.08 concluidas com os dois testes passando"
     paralelizavel: false
     paralela_com: []
@@ -74,7 +74,7 @@ flowchart LR
   class T_02_05 concluida
   class T_02_06 concluida
   class T_02_07 concluida
-  class T_02_08 pendente
+  class T_02_08 concluida
   class T_02_01,T_02_02,T_02_03,T_02_04,T_02_05,T_02_06,T_02_07,T_02_08 critico
 ```
 

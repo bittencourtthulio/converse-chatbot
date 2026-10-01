@@ -27,3 +27,4 @@ Regra da feature: cada proteção tem um teste que **falha** quando ela é remov
 | T-02.07 | a renovação nunca passa do limite absoluto | `exp` renovado = agora + TTL, sem o `min` com início mais o máximo | `tests/sessao-renovacao.test.ts` ("limite absoluto") |
 | T-02.07 | só renova depois da metade da vida | removida a condição da metade | `tests/sessao-renovacao.test.ts` ("antes da metade da vida não renova") |
 | T-02.07 | a renovação mantém o `jti` (revogar uma vez cobre o token roubado antes) | a renovação gera `jti` novo | `tests/sessao-renovacao.test.ts` ("a renovação mantém o jti") |
+| T-02.08 | o expurgo apaga as revogações de sessão vencidas | a limpeza de `sessoes_revogadas` é removida de `executarExpurgo` | 2 casos de `tests/expurgo-sessoes.test.ts` |
