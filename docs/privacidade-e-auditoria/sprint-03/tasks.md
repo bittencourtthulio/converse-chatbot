@@ -41,7 +41,7 @@ tasks:
   - id: T-03.03
     titulo: "Servico de retencao e aviso padrao"
     fase: F-03.2
-    status: pendente
+    status: concluida
     objetivo: "Criar o servico que le e salva a retencao das conversas e o aviso de privacidade padrao do workspace, so para admin."
     arquivos:
       cria: ["src/servicos/privacidade.ts", "tests/privacidade.test.ts"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/privacidade.test.ts passa e retencaoEfetivaDias devolve 90 sem linha, o valor salvo ou nulo para sem expurgo."
     depende_de: ["T-02.01", "T-01.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-03.04
     titulo: "Aviso padrao no chat embutido e no /start do Telegram"
     fase: F-03.2
@@ -120,7 +120,7 @@ teste_funcional: "Retencao 6 e 3651 sao recusadas com 422, 7 e 3650 aceitas, sem
 criterio_aceite: "tests/privacidade.test.ts passa e retencaoEfetivaDias devolve 90 sem linha, o valor salvo ou nulo para sem expurgo."
 depende_de: ["T-02.01", "T-01.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/privacidade.test.ts 11 passed e tests/projeto.test.ts; so arquivos novos
 ```
 
 ---
