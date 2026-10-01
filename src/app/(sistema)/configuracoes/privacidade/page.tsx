@@ -1,7 +1,8 @@
 import { exigirUsuarioAdmin } from '@/app/sessao-servidor'
-import { salvarAvisoPadraoDoWorkspace, salvarRetencaoDasConversas } from '@/app/acoes'
+import { apagarTitularNaTela, buscarTitularNaTela, salvarAvisoPadraoDoWorkspace, salvarRetencaoDasConversas } from '@/app/acoes'
 import { CabecalhoDaPagina } from '@/componentes/CabecalhoDaPagina'
 import { FormularioDeRetencao } from '@/componentes/FormularioDeRetencao'
+import { FerramentasDoTitular } from '@/componentes/FerramentasDoTitular'
 import { FormularioDoAvisoPadrao } from '@/componentes/FormularioDoAvisoPadrao'
 import { PainelDeDadosPessoais } from '@/componentes/PainelDeDadosPessoais'
 import { obterConfiguracaoDePrivacidade } from '@/servicos/privacidade'
@@ -24,6 +25,7 @@ export default async function Privacidade() {
       <FormularioDeRetencao retencaoDias={c.retencaoDias} acao={salvarRetencaoDasConversas} />
       <FormularioDoAvisoPadrao texto={c.avisoPadrao} url={c.avisoPadraoUrl} acao={salvarAvisoPadraoDoWorkspace} />
       <PainelDeDadosPessoais retencaoDias={c.retencaoDias} />
+      <FerramentasDoTitular acaoDeBusca={buscarTitularNaTela} acaoDeApagar={apagarTitularNaTela} />
     </div>
   )
 }

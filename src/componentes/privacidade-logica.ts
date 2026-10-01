@@ -80,3 +80,36 @@ export function textosDoPainelDeDados(retencaoDias: number | null): TextosDoPain
     baseLegal: BASE_LEGAL,
   }
 }
+
+// --- ferramentas do titular (FT-10, PR-90, D-24) ---------------------------------------------
+
+/** Um titular na lista da busca; a data cruza do servidor para o navegador como texto ISO. */
+export interface TitularNaTela {
+  rotulo: string
+  prefixo: string | null
+  conversas: number
+  mensagens: number
+  ultimaAtividade: string
+  agentes: string[]
+}
+
+export interface EstadoDaBuscaDoTitular {
+  erro?: string
+  /** O que foi buscado, devolvido para a tela usar em exportar e apagar (nunca exibido por inteiro). */
+  canal?: string
+  identificador?: string
+  busca?: { estado: 'nenhum' | 'unico' | 'varios'; titulares: TitularNaTela[] }
+}
+
+export const PALAVRA_DE_CONFIRMACAO = 'APAGAR'
+
+/** O botão de apagar só habilita depois de digitar a palavra, sem espaços nas pontas. */
+export function podeConfirmarApagarTitular(digitado: string): boolean {
+  return digitado.trim() === PALAVRA_DE_CONFIRMACAO
+}
+
+/** O nome do arquivo do `Content-Disposition`, só se for seguro (letras, números, ponto, hífen e sublinhado). */
+export function nomeDoArquivoDoCabecalho(cabecalho: string | null): string {
+  const m = cabecalho ? /filename="([A-Za-z0-9._-]+)"/.exec(cabecalho) : null
+  return m?.[1] ?? 'titular.txt'
+}

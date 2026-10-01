@@ -71,18 +71,18 @@ tasks:
   - id: T-06.05
     titulo: "Ferramentas do titular na tela de privacidade"
     fase: F-06.3
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar a busca por canal e identificador com desambiguacao, o download da exportacao e o apagar com confirmacao na tela."
     arquivos:
-      cria: ["src/componentes/FerramentasDoTitular.tsx", "tests/titular-ui.test.tsx"]
-      altera: ["src/app/(sistema)/configuracoes/privacidade/page.tsx", "src/app/acoes.ts", "src/componentes/privacidade-logica.ts", "src/estilos/global.css", "tests/privacidade-estilos.test.ts"]
+      cria: ["src/componentes/FerramentasDoTitular.tsx", "tests/titular-ui.test.tsx", "src/componentes/exportar-titular.ts", "tests/titular-acoes.test.ts"]
+      altera: ["src/app/(sistema)/configuracoes/privacidade/page.tsx", "src/app/acoes.ts", "src/componentes/privacidade-logica.ts", "src/estilos/global.css", "tests/privacidade-estilos.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md"]
     teste_integracao: "A acao buscarTitular devolve o estado nenhum, unico ou varios sem nenhum identificador completo e a acao apagarTitular grava a auditoria e devolve as contagens."
     teste_funcional: "Com varios titulares a tela lista prefixo de 10 caracteres e contagens e pede mais caracteres, com um so mostra Exportar em JSON, Exportar em TXT e Apagar tudo, e apagar so habilita depois de digitar a palavra APAGAR."
     criterio_aceite: "tests/titular-ui.test.tsx passa."
     depende_de: ["T-06.04", "T-05.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
 ---
 
 # Tasks — Sprint 06
@@ -162,13 +162,13 @@ id: T-06.05
 titulo: "Ferramentas do titular na tela de privacidade"
 objetivo: "Acrescentar a busca por canal e identificador com desambiguacao, o download da exportacao e o apagar com confirmacao na tela."
 arquivos:
-  cria: ["src/componentes/FerramentasDoTitular.tsx", "tests/titular-ui.test.tsx"]
-  altera: ["src/app/(sistema)/configuracoes/privacidade/page.tsx", "src/app/acoes.ts", "src/componentes/privacidade-logica.ts", "src/estilos/global.css", "tests/privacidade-estilos.test.ts"]
+  cria: ["src/componentes/FerramentasDoTitular.tsx", "tests/titular-ui.test.tsx", "src/componentes/exportar-titular.ts", "tests/titular-acoes.test.ts"]
+  altera: ["src/app/(sistema)/configuracoes/privacidade/page.tsx", "src/app/acoes.ts", "src/componentes/privacidade-logica.ts", "src/estilos/global.css", "tests/privacidade-estilos.test.ts", "tests/projeto.test.ts", "docs/stack/CONVENCOES.md"]
 teste_integracao: "A acao buscarTitular devolve o estado nenhum, unico ou varios sem nenhum identificador completo e a acao apagarTitular grava a auditoria e devolve as contagens."
 teste_funcional: "Com varios titulares a tela lista prefixo de 10 caracteres e contagens e pede mais caracteres, com um so mostra Exportar em JSON, Exportar em TXT e Apagar tudo, e apagar so habilita depois de digitar a palavra APAGAR."
 criterio_aceite: "tests/titular-ui.test.tsx passa."
 depende_de: ["T-06.04", "T-05.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2505 testes, 2504 passed na rodada e o 1 de tests/chat-de-teste.test.tsx corrigido e reexecutado (25 passed); lint e build antes
 ```
 

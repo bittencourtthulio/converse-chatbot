@@ -7,6 +7,8 @@ import { ipDoCliente } from '@/lib/requisicao'
 import { criar, editar, desativar, excluirDefinitivamente } from '@/servicos/usuarios'
 import { atualizarPerfil, trocarSenha } from '@/servicos/perfil'
 import { salvarAvisoPadrao, salvarRetencao } from '@/servicos/privacidade'
+import { apagarDoTitular, buscarTitular } from '@/servicos/titular'
+import { PALAVRA_DE_CONFIRMACAO, type EstadoDaBuscaDoTitular } from '@/componentes/privacidade-logica'
 import { salvarConfiguracao as salvarConfiguracaoDoChat } from '@/servicos/chat-publico-config'
 import { criar as criarAgenteNoServico, editar as editarAgenteNoServico, excluir as excluirAgenteNoServico } from '@/servicos/agentes'
 import {
@@ -194,6 +196,55 @@ export async function salvarAvisoPadraoDoWorkspace(
   }
   revalidatePath('/configuracoes/privacidade')
   return { sucesso: 'Aviso de privacidade padrão salvo.' }
+}
+
+/**
+ * Busca o titular por canal e identificador (FT-10, PR-90, D-24). Só admin. O resultado leva só
+ * rótulo, prefixo de 10 caracteres e contagens; o identificador completo nunca volta.
+ */
+export async function buscarTitularNaTela(
+  _estado: EstadoDaBuscaDoTitular,
+  form: FormData,
+): Promise<EstadoDaBuscaDoTitular> {
+  const canal = String(form.get('canal') ?? '')
+  const identificador = String(form.get('identificador') ?? '').trim()
+  try {
+    const admin = await exigirUsuarioAdmin()
+    const r = await buscarTitular(admin, { canal, identificador })
+    return {
+      canal,
+      identificador,
+      busca: {
+        estado: r.estado,
+        titulares: r.titulares.map((t) => ({ ...t, ultimaAtividade: t.ultimaAtividade.toISOString() })),
+      },
+    }
+  } catch (erro) {
+    return { erro: mensagemDe(erro) }
+  }
+}
+
+/** Apaga todas as conversas do titular (FT-10, PR-90): só admin e só depois de digitar APAGAR. */
+export async function apagarTitularNaTela(
+  _estado: EstadoDoFormulario,
+  form: FormData,
+): Promise<EstadoDoFormulario> {
+  try {
+    const admin = await exigirUsuarioAdmin()
+    if (String(form.get('confirmacao') ?? '').trim() !== PALAVRA_DE_CONFIRMACAO) {
+      return { erro: `Digite ${PALAVRA_DE_CONFIRMACAO} para confirmar a exclusão.` }
+    }
+    const r = await apagarDoTitular(admin, {
+      canal: String(form.get('canal') ?? ''),
+      identificador: String(form.get('identificador') ?? ''),
+    })
+    revalidatePath('/configuracoes/privacidade')
+    const c = `${r.conversas} ${r.conversas === 1 ? 'conversa' : 'conversas'}`
+    const m = `${r.mensagens} ${r.mensagens === 1 ? 'mensagem' : 'mensagens'}`
+    return { sucesso: `Apagadas ${c} e ${m} do titular.` }
+  } catch (erro) {
+    return { erro: mensagemDe(erro) }
+  }
 }
 
 export async function salvarPerfil(
