@@ -4,7 +4,7 @@
 // aparece no resultado, no arquivo nem na auditoria.
 import { describe, it, expect, beforeEach, afterEach, afterAll } from 'vitest'
 import { prisma } from '@/lib/prisma'
-import { apagarDoTitular, buscarTitular, exportarTitular } from '@/servicos/titular'
+import { apagarDoTitular, buscarTitular, exportarTitular, tamanhoDoPrefixoQueDistingue } from '@/servicos/titular'
 import { aguardarGravacoesPendentes } from '@/servicos/auditoria'
 import { aoApagarConversa, type ConversaApagada } from '@/servicos/historico'
 import { criarAdmin, criarUsuario, limparBanco } from './ajuda'
@@ -53,6 +53,21 @@ describe('buscarTitular (integração com o banco de teste)', () => {
     expect(a.agentes.sort()).toEqual(['Atendimento Loja', 'Suporte'])
     expect(JSON.stringify(r)).not.toContain(VISITANTE_A)
     expect(JSON.stringify(r)).not.toContain(VISITANTE_B)
+  })
+
+  it('se 10 caracteres não distinguem os visitantes, o prefixo mostrado cresce até distinguir', async () => {
+    const admin = await criarAdmin()
+    const agente = await criarAgenteDeTeste()
+    const msgs = [{ papel: 'user' as const, conteudo: 'oi' }]
+    await criarConversaDeTeste({ agenteId: agente.id, canal: 'widget', identificadorExterno: 'visitantealfa0001recente0000001', mensagens: msgs })
+    await criarConversaDeTeste({ agenteId: agente.id, canal: 'widget', identificadorExterno: 'visitantealfa0002recente0000002', mensagens: msgs })
+    const r = await buscarTitular(admin, { canal: 'widget', identificador: 'visitantealfa' })
+    expect(r.estado).toBe('varios')
+    const prefixos = r.titulares.map((t) => t.prefixo as string)
+    expect(new Set(prefixos).size).toBe(2)
+    expect(prefixos.every((p) => p.length === 17)).toBe(true)
+    expect(tamanhoDoPrefixoQueDistingue(['abcdefghijklmnop', 'abcdefghijklmnoq'])).toBe(16)
+    expect(tamanhoDoPrefixoQueDistingue(['abcdefghij000', 'bbcdefghij000'])).toBe(10)
   })
 
   it('um prefixo que identifica um só visitante devolve unico, e o id completo também', async () => {

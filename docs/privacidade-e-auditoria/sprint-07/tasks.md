@@ -26,18 +26,18 @@ tasks:
   - id: T-07.02
     titulo: "Roteiro de dados semeados e verificacao no navegador"
     fase: F-07.2
-    status: pendente
+    status: concluida
     objetivo: "Criar o script de dados para a verificacao e registrar a verificacao no navegador."
     arquivos:
       cria: ["tests/apoio/semear-privacidade.ts", "docs/privacidade-e-auditoria/VERIFICACAO-VISUAL.md"]
-      altera: []
+      altera: ["src/estilos/global.css", "src/servicos/titular.ts", "src/componentes/FerramentasDoTitular.tsx", "tests/titular.test.ts", "tests/privacidade-estilos.test.ts"]
     teste_integracao: "O script semeia no banco de desenvolvimento conversas antigas e recentes dos tres canais e usuarios para excluir, sem tocar em segredo, e a verificacao percorre cada acao ate a tela de auditoria."
     teste_funcional: "Depois de semear, o expurgo apaga so as antigas e a verificacao registra os dois temas, 375 px, exportacao baixada e Apagar minha conversa no widget."
     criterio_aceite: "VERIFICACAO-VISUAL.md lista cada acao vista na tela de auditoria, os dois temas, 375 px, a exportacao e o que nao pode ser visto."
     depende_de: ["T-07.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
   - id: T-07.03
     titulo: "Documentacao: README, convencoes e lacunas"
     fase: F-07.2
@@ -97,13 +97,13 @@ titulo: "Roteiro de dados semeados e verificacao no navegador"
 objetivo: "Criar o script de dados para a verificacao e registrar a verificacao no navegador."
 arquivos:
   cria: ["tests/apoio/semear-privacidade.ts", "docs/privacidade-e-auditoria/VERIFICACAO-VISUAL.md"]
-  altera: []
+  altera: ["src/estilos/global.css", "src/servicos/titular.ts", "src/componentes/FerramentasDoTitular.tsx", "tests/titular.test.ts", "tests/privacidade-estilos.test.ts"]
 teste_integracao: "O script semeia no banco de desenvolvimento conversas antigas e recentes dos tres canais e usuarios para excluir, sem tocar em segredo, e a verificacao percorre cada acao ate a tela de auditoria."
 teste_funcional: "Depois de semear, o expurgo apaga so as antigas e a verificacao registra os dois temas, 375 px, exportacao baixada e Apagar minha conversa no widget."
 criterio_aceite: "VERIFICACAO-VISUAL.md lista cada acao vista na tela de auditoria, os dois temas, 375 px, a exportacao e o que nao pode ser visto."
 depende_de: ["T-07.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira: 2513 passed, 0 failed (208 arquivos); lint, tsc e build antes; verificacao no navegador em VERIFICACAO-VISUAL.md
 ```
 
 ---

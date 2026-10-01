@@ -392,7 +392,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
 
 /* ---------- tabelas ---------- */
 
-.tabela-envoltorio { overflow-x: auto; }
+.tabela-envoltorio { overflow-x: auto; position: relative; }
 
 table { width: 100%; border-collapse: collapse; }
 th {
@@ -1521,7 +1521,8 @@ textarea { min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: verti
   .filtros-de-conversas .botao { flex: 1 1 140px; }
   .paginas-numeradas .botao, .paginacao .botao { min-height: var(--alvo-toque); min-width: var(--alvo-toque); }
 
-  .tabela-envoltorio { overflow-x: visible; }
+  /* Só as tabelas que viram cartões deixam de rolar; a de Usuários continua rolando no próprio envoltório. */
+  .tabela-envoltorio:has(> .tabela-de-conversas, > .tabela-de-auditoria) { overflow-x: visible; }
   .tabela-de-conversas, .tabela-de-conversas tbody { display: block; }
   .tabela-de-conversas thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
   .tabela-de-conversas tr {
@@ -1700,8 +1701,8 @@ textarea { min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: verti
 }
 
 /* retenção, aviso padrão e painel de dados (tela de Privacidade) */
-.campo-numerico { width: 7rem; min-height: var(--altura-controle); padding: 0 12px; background: var(--bg-surface); color: var(--fg-default); border: 1px solid var(--border-input); border-radius: var(--raio-controle); font: inherit; }
-.campo-numerico:disabled { opacity: 0.55; }
+.campo-radio .campo-numerico { width: 7rem; height: auto; min-height: var(--altura-controle); margin: 0; padding: 0 12px; background: var(--bg-surface); color: var(--fg-default); border: 1px solid var(--border-input); border-radius: var(--raio-controle); font: inherit; accent-color: auto; }
+.campo-radio .campo-numerico:disabled { opacity: 0.55; }
 .campo-radio:has(.campo-numerico) { flex-wrap: wrap; }
 .campo-checkbox { display: flex; align-items: flex-start; gap: 10px; min-height: var(--alvo-toque); }
 .campo-checkbox input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--accent); flex: none; }

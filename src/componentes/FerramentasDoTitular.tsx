@@ -91,7 +91,7 @@ function ResultadoDaBusca({ busca, acaoDeApagar, exportar }: PropsDoResultado) {
     return (
       <div className="pilha pilha-compacta">
         <Alerta variante="aviso">
-          Mais de um titular combina com o que você digitou. Digite mais caracteres do identificador (os 10 primeiros de cada um aparecem abaixo) e busque de novo.
+          Mais de um titular combina com o que você digitou. Digite mais caracteres do identificador (o começo de cada um aparece abaixo) e busque de novo.
         </Alerta>
         <div className="dados-por-canal">
           {resultado.titulares.map((t) => (

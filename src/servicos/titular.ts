@@ -23,7 +23,7 @@ export type FormatoDeExportacao = (typeof FORMATOS_DE_EXPORTACAO)[number]
 
 /** O prefixo mínimo do visitante: o que a lista de conversas já mostra. */
 export const PREFIXO_MINIMO_DO_VISITANTE = 6
-/** O prefixo mais longo que a desambiguação mostra de cada visitante. */
+/** O prefixo mínimo que a desambiguação mostra de cada visitante (cresce se 10 não os distingue). */
 export const PREFIXO_DA_DESAMBIGUACAO = 10
 /** No máximo estes titulares na lista de desambiguação. */
 export const MAXIMO_DE_TITULARES_LISTADOS = 10
@@ -87,6 +87,15 @@ async function identificadoresQueCasam(canal: CanalDoTitular, identificador: str
     .filter((id): id is string => id !== null && id.startsWith(identificador))
 }
 
+/** O menor prefixo, de pelo menos 10 caracteres, que distingue todos os identificadores entre si. */
+export function tamanhoDoPrefixoQueDistingue(ids: string[]): number {
+  const maior = Math.max(...ids.map((i) => i.length), PREFIXO_DA_DESAMBIGUACAO)
+  for (let n = PREFIXO_DA_DESAMBIGUACAO; n < maior; n += 1) {
+    if (new Set(ids.map((i) => i.slice(0, n))).size === ids.length) return n
+  }
+  return maior
+}
+
 async function resolverTitular(canal: CanalDoTitular, identificador: string): Promise<string> {
   const ids = await identificadoresQueCasam(canal, identificador)
   if (ids.length === 0) throw naoEncontrado('Nenhum titular encontrado com esse identificador.')
@@ -112,6 +121,7 @@ export async function buscarTitular(autor: UsuarioAutenticado, entrada: unknown)
     },
     orderBy: { atualizadoEm: 'desc' },
   })
+  const tamanhoDoPrefixo = tamanhoDoPrefixoQueDistingue(ids)
   const porId = new Map<string, TitularEncontrado>()
   for (const c of conversas) {
     const id = c.identificadorExterno as string
@@ -124,7 +134,7 @@ export async function buscarTitular(autor: UsuarioAutenticado, entrada: unknown)
       porId.set(id, {
         // A lista vem da mais recente: o título e a última atividade são os dela.
         rotulo: rotuloDoInterlocutor({ canal, identificadorExterno: id, titulo: c.titulo, nomeDoUsuario: null }),
-        prefixo: canal === 'widget' ? id.slice(0, PREFIXO_DA_DESAMBIGUACAO) : null,
+        prefixo: canal === 'widget' ? id.slice(0, tamanhoDoPrefixo) : null,
         conversas: 1,
         mensagens: c._count.mensagens,
         ultimaAtividade: c.atualizadoEm,

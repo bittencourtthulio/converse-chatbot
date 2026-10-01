@@ -45,4 +45,15 @@ describe('estilos de privacidade e auditoria', () => {
   it('só usa tokens: nenhuma cor literal na seção', () => {
     expect(secao).not.toMatch(/#[0-9a-fA-F]{3,8}\b|\brgba?\(|\bhsla?\(/)
   })
+
+  it('só as tabelas que viram cartões deixam de rolar no celular: a de Usuários segue rolando no envoltório', () => {
+    const geral = css.slice(css.indexOf('/* ---------- conversas'), css.indexOf('/* ---------- fim das conversas'))
+    expect(geral).toMatch(/\.tabela-envoltorio:has\(>\s*\.tabela-de-conversas,\s*>\s*\.tabela-de-auditoria\)\s*\{\s*overflow-x:\s*visible/)
+    expect(css).not.toMatch(/(^|\n)\s*\.tabela-envoltorio\s*\{\s*overflow-x:\s*visible/)
+    expect(css).toMatch(/\n\.tabela-envoltorio\s*\{\s*overflow-x:\s*auto;\s*position:\s*relative/)
+  })
+
+  it('o campo de dias dentro do rádio não herda o tamanho de 18px do rádio (achado da verificação)', () => {
+    expect(secao).toMatch(/\.campo-radio\s+\.campo-numerico\s*\{[^}]*width:\s*7rem[^}]*height:\s*auto[^}]*min-height:\s*var\(--altura-controle\)/)
+  })
 })
