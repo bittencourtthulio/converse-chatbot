@@ -56,18 +56,18 @@ tasks:
   - id: T-07.04
     titulo: "Verificacao real do conteiner"
     fase: F-07.2
-    status: pendente
+    status: concluida
     objetivo: "Construir a imagem, subir o conteiner com segredos descartaveis, conferir saude, login, ffmpeg, persistencia, backup e restauracao por dentro e desligamento, e remover tudo."
     arquivos:
       cria: ["tests/conteiner-imagem.test.ts", "docs/operacao-e-backup/VERIFICACAO-CONTEINER.md"]
-      altera: ["Dockerfile", "docker-entrypoint.sh", "docker-compose.yml", ".dockerignore"]
+      altera: ["tests/conteiner.test.ts"]
     teste_integracao: "Com VERIFICAR_CONTEINER=1 o teste constroi a imagem, sobe o conteiner e GET /api/saude responde 200 com status ok, o login de um admin criado por admin:criar funciona e ffmpeg -version responde dentro dele."
     teste_funcional: "Os dados criados sobrevivem a docker compose down e up, npm run backup e npm run restore funcionam dentro do conteiner, docker stop encerra com codigo 0 e a linha desligamento, e o teste remove conteineres, volumes e imagem de teste."
     criterio_aceite: "A execucao com VERIFICAR_CONTEINER=1 passa e VERIFICACAO-CONTEINER.md registra o que foi e o que nao foi verificado."
     depende_de: ["T-07.03"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-07.05
     titulo: "Job de CI que constroi a imagem"
     fase: F-07.2
@@ -146,13 +146,13 @@ titulo: "Verificacao real do conteiner"
 objetivo: "Construir a imagem, subir o conteiner com segredos descartaveis, conferir saude, login, ffmpeg, persistencia, backup e restauracao por dentro e desligamento, e remover tudo."
 arquivos:
   cria: ["tests/conteiner-imagem.test.ts", "docs/operacao-e-backup/VERIFICACAO-CONTEINER.md"]
-  altera: ["Dockerfile", "docker-entrypoint.sh", "docker-compose.yml", ".dockerignore"]
+  altera: ["tests/conteiner.test.ts"]
 teste_integracao: "Com VERIFICAR_CONTEINER=1 o teste constroi a imagem, sobe o conteiner e GET /api/saude responde 200 com status ok, o login de um admin criado por admin:criar funciona e ffmpeg -version responde dentro dele."
 teste_funcional: "Os dados criados sobrevivem a docker compose down e up, npm run backup e npm run restore funcionam dentro do conteiner, docker stop encerra com codigo 0 e a linha desligamento, e o teste remove conteineres, volumes e imagem de teste."
 criterio_aceite: "A execucao com VERIFICAR_CONTEINER=1 passa e VERIFICACAO-CONTEINER.md registra o que foi e o que nao foi verificado."
 depende_de: ["T-07.03"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — VERIFICAR_CONTEINER=1: tests/conteiner-imagem.test.ts 9 passed em 121 s (build, saúde, ffmpeg, admin, seed, persistência, backup, restore, SIGTERM); tests/conteiner.test.ts 15 passed; limpeza conferida
 ```
 
 ---

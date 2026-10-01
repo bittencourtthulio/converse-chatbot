@@ -133,7 +133,7 @@ describe('docker-compose.yml', () => {
     if (!tem) return
     const saida = execFileSync('docker', ['compose', '-f', 'docker-compose.yml', 'config', '--format', 'json'], {
       cwd: process.cwd(),
-      env: { PATH: process.env.PATH ?? '', HOME: process.env.HOME ?? '', DOCKER_CONFIG: process.env.DOCKER_CONFIG ?? '' },
+      env: { PATH: process.env.PATH ?? '', HOME: process.env.HOME ?? '', DOCKER_CONFIG: process.env.DOCKER_CONFIG ?? '' } as unknown as NodeJS.ProcessEnv,
       encoding: 'utf8',
     })
     const config = JSON.parse(saida) as { services: { app: { restart: string; init: boolean; stop_grace_period: string; volumes: Array<{ source: string; target: string }> } }; volumes: Record<string, unknown> }
