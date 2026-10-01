@@ -11,7 +11,7 @@ tasks:
   - id: T-02.01
     titulo: "Midia: binarios e sonda"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Criar src/lib/midia.ts com verificarMidia, o executor de processo sem shell com prazo e teto de saida, o erro de binario ausente e sondar com duracao, faixa de audio e limite de minutos."
     arquivos:
       cria: ["src/lib/midia.ts", "tests/midia-sonda.test.ts", "docs/conhecimento-em-video/sprint-02/sprint.md", "docs/conhecimento-em-video/sprint-02/fases.md", "docs/conhecimento-em-video/sprint-02/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/midia-sonda.test.ts passa (com ffmpeg local ou EXIGIR_FFMPEG=1) e o executor usa spawn com vetor de argumentos."
     depende_de: ["T-01.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-09-30
+    suite: parcial
   - id: T-02.02
     titulo: "Midia: extrair e dividir audio"
     fase: F-02.1
@@ -88,7 +88,7 @@ teste_funcional: "Com FFPROBE_PATH inexistente sondar lanca a mensagem Nao encon
 criterio_aceite: "tests/midia-sonda.test.ts passa (com ffmpeg local ou EXIGIR_FFMPEG=1) e o executor usa spawn com vetor de argumentos."
 depende_de: ["T-01.04"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-09-30 · suíte: parcial — tests/midia-sonda.test.ts, 7 passed
 ```
 
 ---
