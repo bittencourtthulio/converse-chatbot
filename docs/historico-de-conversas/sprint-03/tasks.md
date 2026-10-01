@@ -11,18 +11,18 @@ tasks:
   - id: T-03.01
     titulo: "DELETE de conversa e apagar em lote"
     fase: F-03.1
-    status: pendente
+    status: concluida
     objetivo: "Criar DELETE /api/conversas/[id] e POST /api/conversas/apagar finos sobre o servico."
     arquivos:
-      cria: ["src/app/api/conversas/[id]/route.ts", "src/app/api/conversas/apagar/route.ts", "tests/conversas-apagar-rota.test.ts", "docs/historico-de-conversas/sprint-03/sprint.md", "docs/historico-de-conversas/sprint-03/fases.md", "docs/historico-de-conversas/sprint-03/tasks.md"]
+      cria: ["src/app/api/conversas/[id]/route.ts", "src/app/api/conversas/apagar/route.ts", "src/app/api/conversas/resposta.ts", "tests/conversas-apagar-rota.test.ts", "docs/historico-de-conversas/sprint-03/sprint.md", "docs/historico-de-conversas/sprint-03/fases.md", "docs/historico-de-conversas/sprint-03/tasks.md"]
       altera: []
     teste_integracao: "Contra o servidor de producao do teste, DELETE e POST sem sessao dao 401 e com sessao apagam e devolvem a contagem."
     teste_funcional: "DELETE de id inexistente da 404, POST com lote vazio, com 51 ids ou com id nao texto da 422 e uma conversa apagada some do banco com as mensagens."
     criterio_aceite: "tests/conversas-apagar-rota.test.ts passa."
     depende_de: ["T-02.05"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-03.02
     titulo: "Exportar conversa em texto"
     fase: F-03.1
@@ -66,14 +66,14 @@ id: T-03.01
 titulo: "DELETE de conversa e apagar em lote"
 objetivo: "Criar DELETE /api/conversas/[id] e POST /api/conversas/apagar finos sobre o servico."
 arquivos:
-  cria: ["src/app/api/conversas/[id]/route.ts", "src/app/api/conversas/apagar/route.ts", "tests/conversas-apagar-rota.test.ts", "docs/historico-de-conversas/sprint-03/sprint.md", "docs/historico-de-conversas/sprint-03/fases.md", "docs/historico-de-conversas/sprint-03/tasks.md"]
+  cria: ["src/app/api/conversas/[id]/route.ts", "src/app/api/conversas/apagar/route.ts", "src/app/api/conversas/resposta.ts", "tests/conversas-apagar-rota.test.ts", "docs/historico-de-conversas/sprint-03/sprint.md", "docs/historico-de-conversas/sprint-03/fases.md", "docs/historico-de-conversas/sprint-03/tasks.md"]
   altera: []
 teste_integracao: "Contra o servidor de producao do teste, DELETE e POST sem sessao dao 401 e com sessao apagam e devolvem a contagem."
 teste_funcional: "DELETE de id inexistente da 404, POST com lote vazio, com 51 ids ou com id nao texto da 422 e uma conversa apagada some do banco com as mensagens."
 criterio_aceite: "tests/conversas-apagar-rota.test.ts passa."
 depende_de: ["T-02.05"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/conversas-apagar-rota.test.ts 5 passed; desvio: src/app/api/conversas/resposta.ts
 ```
 
 ---
