@@ -3,7 +3,7 @@ expx_schema: 1
 expx_tool: buildx
 kind: premissas
 projeto_id: plataforma-chatbot-ia
-atualizado_em: 2026-09-30
+atualizado_em: 2026-10-01
 total: 77
 por_origem:
   catalogo_lacunas: 27
@@ -152,7 +152,7 @@ entram no relatório final como o que o usuário precisa confirmar.
 **Origem:** catalogo_lacunas
 **Etapa:** b1
 **Provisória:** true
-**Realizada em:** FT-04
+**Realizada em:** FT-04, FT-08
 
 ---
 
@@ -165,7 +165,7 @@ entram no relatório final como o que o usuário precisa confirmar.
 **Origem:** catalogo_lacunas
 **Etapa:** b1
 **Provisória:** true
-**Realizada em:** FT-04
+**Realizada em:** FT-04, FT-08
 
 ---
 

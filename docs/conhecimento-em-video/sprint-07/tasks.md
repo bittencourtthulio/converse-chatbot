@@ -41,7 +41,7 @@ tasks:
   - id: T-07.03
     titulo: "Fechamento no laco do buildx"
     fase: F-07.2
-    status: pendente
+    status: concluida
     objetivo: "Registrar a feature no mapa, nas premissas, na recursao e no projeto e conferir dependencias, ambiente e CI."
     arquivos:
       cria: ["docs/conhecimento-em-video/ORQUESTRADOR.md", "docs/conhecimento-em-video/00-AUDITORIA.md", "docs/conhecimento-em-video/FECHAMENTO.md", "docs/conhecimento-em-video/RELATORIO-FEATURE.md", "docs/conhecimento-em-video/BRIEFING-BUILDX.md", "docs/conhecimento-em-video/00-DECISOES.md", "docs/conhecimento-em-video/00-BLOQUEIOS.md", "docs/conhecimento-em-video/base/00-INDICE.md", "docs/conhecimento-em-video/base/00-LACUNAS.md", "docs/conhecimento-em-video/base/openrouter-audio.md", "docs/conhecimento-em-video/base/youtube-legendas.md", "docs/conhecimento-em-video/base/midia-ffmpeg.md", "docs/conhecimento-em-video/base/fila-fontes-e-armazenamento.md", "docs/conhecimento-em-video/base/dados-ambiente-e-integracoes.md", "docs/conhecimento-em-video/base/upload-testes-e-ci.md", "docs/entregas/conhecimento-em-video/ENTREGA.md", "docs/entregas/conhecimento-em-video/PR.md", "docs/entregas/conhecimento-em-video/QA-PACOTE.md", "docs/entregas/conhecimento-em-video/ATENCAO.md"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "grep de FT-08 no painel do MAPA.md devolve entregue, o total de premissas do frontmatter e 77 e tests/projeto.test.ts passa."
     depende_de: ["T-07.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: verde
 ---
 
 # Tasks — Sprint 07
@@ -107,7 +107,7 @@ teste_funcional: "O MAPA.md mostra a FT-08 entregue com sprints, testes e PR loc
 criterio_aceite: "grep de FT-08 no painel do MAPA.md devolve entregue, o total de premissas do frontmatter e 77 e tests/projeto.test.ts passa."
 depende_de: ["T-07.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: verde — suíte inteira, 2010 passed (151 arquivos); tsc, lint, build e audit verdes
 ```
 
 ---

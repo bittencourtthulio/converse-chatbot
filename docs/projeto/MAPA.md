@@ -3,11 +3,11 @@ expx_schema: 1
 expx_tool: buildx
 kind: mapa
 projeto_id: plataforma-chatbot-ia
-atualizado_em: 2026-09-30
+atualizado_em: 2026-10-01
 total_features: 11
 pendentes: 3
-em_andamento: 1
-entregues: 7
+em_andamento: 0
+entregues: 8
 bloqueadas: 0
 ---
 
@@ -31,7 +31,7 @@ da feature de que depende (PRs empilhados).
 | FT-05 | Respostas com base no conhecimento | entregue | local (branch feat/respostas-com-conhecimento) |
 | FT-06 | Chat embutido por script | entregue | local (branch feat/chat-embutido) |
 | FT-07 | Canal Telegram | entregue | local (branch feat/canal-telegram) |
-| FT-08 | Base de conhecimento: vídeo | em_andamento | — |
+| FT-08 | Base de conhecimento: vídeo | entregue | local (branch feat/conhecimento-em-video) |
 | FT-09 | Histórico de conversas e painel | pendente | — |
 | FT-10 | Privacidade e auditoria | pendente | — |
 | FT-11 | Operação e backup | pendente | — |
@@ -169,7 +169,10 @@ Trabalho: adaptar o template (nome, layout e tokens SaaS no lugar do VS Code, te
 **Premissas que realiza:** [PR-09]
 **Módulo disponível:** -
 **Fatias candidatas:** -
-**Status:** em_andamento
+**Status:** entregue
+**Sprints:** 7 (31 tasks)
+**Testes:** 2010 (suíte inteira)
+**PR:** local (branch feat/conhecimento-em-video)
 
 ---
 

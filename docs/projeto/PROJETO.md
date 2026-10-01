@@ -6,10 +6,10 @@ projeto_id: plataforma-chatbot-ia
 titulo: Plataforma de chatbot com IA e base de conhecimento
 modo: autonomo
 criado_em: 2026-09-30
-atualizado_em: 2026-09-30
+atualizado_em: 2026-10-01
 etapa: b4
 total_features: 11
-features_entregues: 7
+features_entregues: 8
 features_bloqueadas: 0
 ciclos_recursao: 0
 ---
