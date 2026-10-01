@@ -7,10 +7,11 @@
 // concatenado em SQL (PR-13, PR-79).
 import { Prisma } from '@/gerado/prisma/client'
 import { prisma } from '@/lib/prisma'
-import { naoEncontrado } from '@/lib/erros'
+import { entradaInvalida, naoEncontrado } from '@/lib/erros'
 import { lerFontesGravadas, type FonteDaResposta } from '@/servicos/fontes-da-resposta'
 import {
   LIMITE_DE_CASADAS,
+  LIMITE_DO_LOTE,
   escaparLike,
   instanteParaSql,
   lerFiltros,
@@ -219,4 +220,82 @@ export async function exportarConversaTexto(id: string): Promise<{ nomeDoArquivo
     linhas.push('')
   }
   return { nomeDoArquivo: `conversa-${c.id}.txt`, texto: linhas.join('\n') }
+}
+
+/**
+ * O que o ponto de extensão da auditoria (FT-10) recebe a cada conversa apagada. Nunca o
+ * conteúdo das mensagens nem o identificador externo do visitante ou do chat (PR-80).
+ */
+export interface ConversaApagada {
+  conversaId: string
+  agenteId: string
+  canal: string
+  usuarioId: string
+  quantidadeDeMensagens: number
+}
+
+const ouvintes = new Set<(apagada: ConversaApagada) => void>()
+
+/**
+ * Ponto de extensão da FT-10: registra um ouvinte das conversas apagadas e devolve a função
+ * que o remove. Ouvinte que lança não derruba a exclusão (que já foi confirmada no banco).
+ */
+export function aoApagarConversa(ouvinte: (apagada: ConversaApagada) => void): () => void {
+  ouvintes.add(ouvinte)
+  return () => void ouvintes.delete(ouvinte)
+}
+
+function avisarExclusao(apagada: ConversaApagada): void {
+  for (const ouvinte of [...ouvintes]) {
+    try {
+      ouvinte(apagada)
+    } catch {
+      console.error(JSON.stringify({ evento: 'ouvinte_de_exclusao_falhou', conversaId: apagada.conversaId }))
+    }
+  }
+}
+
+function lerIds(ids: unknown): string[] {
+  if (!Array.isArray(ids) || ids.length === 0) throw entradaInvalida('Escolha ao menos uma conversa para apagar.')
+  if (!ids.every((id) => typeof id === 'string' && id.trim() !== '' && id.length <= 100)) {
+    throw entradaInvalida('Identificador de conversa inválido.')
+  }
+  const unicos = [...new Set(ids as string[])]
+  if (unicos.length > LIMITE_DO_LOTE) {
+    throw entradaInvalida(`Apague no máximo ${LIMITE_DO_LOTE} conversas por vez.`)
+  }
+  return unicos
+}
+
+/**
+ * Apaga as conversas pedidas (e, em cascata, as mensagens) numa transação, só as que existem,
+ * e devolve quantas apagou. Avisa o ouvinte depois de confirmada a exclusão. `usuarioId` é
+ * quem pediu, vindo da sessão (a verificação é de quem chama).
+ */
+export async function apagarConversas(ids: unknown, usuarioId: string): Promise<number> {
+  const pedidas = lerIds(ids)
+  const apagadas = await prisma.$transaction(async (tx) => {
+    const existentes = await tx.conversa.findMany({
+      where: { id: { in: pedidas } },
+      select: { id: true, agenteId: true, canal: true, _count: { select: { mensagens: true } } },
+    })
+    if (existentes.length === 0) return []
+    await tx.conversa.deleteMany({ where: { id: { in: existentes.map((c) => c.id) } } })
+    return existentes
+  })
+  for (const c of apagadas) {
+    avisarExclusao({
+      conversaId: c.id,
+      agenteId: c.agenteId,
+      canal: c.canal,
+      usuarioId,
+      quantidadeDeMensagens: c._count.mensagens,
+    })
+  }
+  return apagadas.length
+}
+
+/** Apaga uma conversa; id inexistente é 404 e ninguém é avisado. */
+export async function apagarConversa(id: string, usuarioId: string): Promise<void> {
+  if ((await apagarConversas([id], usuarioId)) === 0) throw naoEncontrado('Conversa não encontrada.')
 }

@@ -71,7 +71,7 @@ tasks:
   - id: T-02.05
     titulo: "apagarConversa, apagarConversas e aoApagarConversa"
     fase: F-02.2
-    status: pendente
+    status: concluida
     objetivo: "Apagar uma ou varias conversas em transacao, devolver a contagem e avisar o ouvinte sem conteudo."
     arquivos:
       cria: ["tests/historico-apagar.test.ts"]
@@ -81,8 +81,8 @@ tasks:
     criterio_aceite: "tests/historico-apagar.test.ts passa."
     depende_de: ["T-02.04"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
 ---
 
 # Tasks — Sprint 02
@@ -171,6 +171,6 @@ teste_funcional: "Apagar tres ids dos quais um nao existe devolve dois, um lote 
 criterio_aceite: "tests/historico-apagar.test.ts passa."
 depende_de: ["T-02.04"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/historico-apagar.test.ts 10 passed
 ```
 
