@@ -8,7 +8,7 @@ feature_id: FT-09
 sprint_id: sprint-01
 atualizado_em: 2026-10-01
 titulo: "Capacidade de testar: contador de consultas, fixtures, SQLite e tokens"
-status: nao_iniciado
+status: concluido
 criterio_saida: "A suite relativa a sprint passa, tsc e lint sem erro e todas as tasks da sprint estao concluidas (T-01.01, T-01.02, T-01.03, T-01.04)."
 fases: ["F-01.1", "F-01.2"]
 riscos: ["formato do DateTime no SQLite nao documentado (base/00-LACUNAS.md, lacuna 1): a prova por teste vem antes de qualquer strftime", "contar consultas exige cliente Prisma com log de consultas, sem exemplo no repositorio (lacuna 3)"]

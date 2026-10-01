@@ -10,14 +10,14 @@ atualizado_em: 2026-10-01
 fases:
   - id: F-01.1
     titulo: "Apoio de teste e caracterizacao do SQLite"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "O contador, as fixtures e a caracterizacao do SQLite passam em teste."
     paralelizavel: false
     paralela_com: []
     tasks: ["T-01.01", "T-01.02", "T-01.03"]
   - id: F-01.2
     titulo: "Tokens de canal e de serie"
-    status: nao_iniciado
+    status: concluido
     criterio_saida: "Tokens de canal e de serie existem nos tres blocos com contraste de 4,5:1."
     paralelizavel: false
     paralela_com: []
