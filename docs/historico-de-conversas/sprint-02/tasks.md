@@ -41,7 +41,7 @@ tasks:
   - id: T-02.03
     titulo: "Filtro por texto com LIKE"
     fase: F-02.1
-    status: pendente
+    status: concluida
     objetivo: "Acrescentar o filtro de texto com LIKE escapado e o teto de 200 conversas casadas."
     arquivos:
       cria: ["tests/historico-texto.test.ts"]
@@ -51,8 +51,8 @@ tasks:
     criterio_aceite: "tests/historico-texto.test.ts passa e nenhum teste usa queryRawUnsafe."
     depende_de: ["T-02.02"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-02.04
     titulo: "obterConversa e exportarConversaTexto"
     fase: F-02.2
@@ -137,7 +137,7 @@ teste_funcional: "Buscar entrega acha so a conversa com essa palavra, buscar 50%
 criterio_aceite: "tests/historico-texto.test.ts passa e nenhum teste usa queryRawUnsafe."
 depende_de: ["T-02.02"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/historico-texto, listar e consultas 18 passed
 ```
 
 ---

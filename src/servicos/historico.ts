@@ -8,6 +8,8 @@
 import { Prisma } from '@/gerado/prisma/client'
 import { prisma } from '@/lib/prisma'
 import {
+  LIMITE_DE_CASADAS,
+  escaparLike,
   instanteParaSql,
   lerFiltros,
   previaDaMensagem,
@@ -56,7 +58,27 @@ function condicoes(f: FiltrosDoHistorico): Prisma.Sql {
   if (f.canal !== undefined) partes.push(Prisma.sql`c.canal = ${f.canal}`)
   if (f.de !== undefined) partes.push(Prisma.sql`c.atualizadoEm >= ${instanteParaSql(f.de)}`)
   if (f.ate !== undefined) partes.push(Prisma.sql`c.atualizadoEm < ${instanteParaSql(f.ate)}`)
+  if (f.texto !== undefined) {
+    // `%`, `_` e `\` do usuário viram literais; o padrão inteiro vai como parâmetro (PR-79).
+    const padrao = `%${escaparLike(f.texto)}%`
+    partes.push(
+      Prisma.sql`EXISTS (SELECT 1 FROM mensagens mt WHERE mt.conversaId = c.id AND mt.conteudo LIKE ${padrao} ESCAPE '\\')`,
+    )
+  }
   return partes.length === 0 ? Prisma.sql`1 = 1` : Prisma.join(partes, ' AND ')
+}
+
+/**
+ * O universo da listagem. Com texto, só as 200 conversas casadas de atividade mais recente
+ * entram (PR-79): a varredura de `Mensagem.conteudo` não tem índice e o teto a limita.
+ */
+function universo(f: FiltrosDoHistorico): Prisma.Sql {
+  const onde = condicoes(f)
+  if (f.texto === undefined) return onde
+  return Prisma.sql`${onde} AND c.id IN (
+    SELECT id FROM (
+      SELECT c.id AS id FROM conversas c WHERE ${onde}
+      ORDER BY c.atualizadoEm DESC, c.id DESC LIMIT ${LIMITE_DE_CASADAS}))`
 }
 
 /**
@@ -66,7 +88,7 @@ function condicoes(f: FiltrosDoHistorico): Prisma.Sql {
  */
 export async function listarConversas(entrada: unknown): Promise<PaginaDoHistorico> {
   const filtros = lerFiltros(entrada)
-  const onde = condicoes(filtros)
+  const onde = universo(filtros)
   const deslocamento = (filtros.pagina - 1) * filtros.tamanho
 
   const linhas = await prisma.$queryRaw<LinhaDoHistorico[]>`
