@@ -17,7 +17,7 @@ fases:
     tasks: ["T-04.01"]
   - id: F-04.2
     titulo: "Cartoes e estilos"
-    status: nao_iniciado
+    status: em_andamento
     criterio_saida: "Os cartoes mostram o detalhe e o CSS prova 375 px e tokens"
     paralelizavel: false
     paralela_com: []
@@ -48,7 +48,7 @@ flowchart LR
   classDef critico   stroke-width:3px
 
   class T_04_01 concluida
-  class T_04_02 pendente
+  class T_04_02 concluida
   class T_04_03 pendente
   class T_04_03,T_04_02,T_04_01 critico
 ```

@@ -26,7 +26,7 @@ tasks:
   - id: T-04.02
     titulo: "Cartoes de detalhe do sistema"
     fase: F-04.2
-    status: pendente
+    status: concluida
     objetivo: "Criar o painel de detalhe com a logica pura de formatacao e os cartoes por assunto, sem nunca mostrar valor de segredo."
     arquivos:
       cria: ["src/componentes/PainelDoSistema.tsx", "src/componentes/sistema-logica.ts", "tests/sistema-logica.test.ts", "tests/painel-do-sistema.test.tsx"]
@@ -36,8 +36,8 @@ tasks:
     criterio_aceite: "tests/sistema-logica.test.ts e tests/painel-do-sistema.test.tsx passam e o HTML renderizado nao contem valor de segredo."
     depende_de: ["T-04.01"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-04.03
     titulo: "Estilos e responsividade da tela Sistema"
     fase: F-04.2
@@ -88,7 +88,7 @@ teste_funcional: "Bytes, tempo de atividade e a situacao ok, degradado e falha v
 criterio_aceite: "tests/sistema-logica.test.ts e tests/painel-do-sistema.test.tsx passam e o HTML renderizado nao contem valor de segredo."
 depende_de: ["T-04.01"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/sistema-logica.test.ts, tests/painel-do-sistema.test.tsx e tests/sistema-pagina.test.tsx passam (build antes)
 ```
 
 ---
