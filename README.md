@@ -4,6 +4,12 @@ Plataforma de agentes de IA com base de conhecimento própria. Você cria agente
 
 O projeto é construído por features, na ordem de `docs/projeto/MAPA.md`. Hoje existem a fundação (login, papéis, painel, cadastro de usuários, perfil e troca de senha, num layout de SaaS com tema claro e escuro) e os agentes com a chave do OpenRouter. Conversa de teste, base de conhecimento e canais chegam nas próximas features. O nome "Converse" é provisório e se troca por `APP_NAME`.
 
+## Interface e landing pública
+
+- **Visual.** Escala zinc, primário quase preto, azul só em link, foco e seleção, bordas finas no lugar de sombras, raio de 10px (8px em botões e campos, 14px em painéis grandes) e tema claro e escuro (preferência do sistema ou escolha no cabeçalho). Tudo vem de `src/estilos/tokens.css`; nenhum componente usa cor literal. As fontes (Geist, Inter e uma serifa itálica só no título da landing) vêm de pacotes npm e são servidas pelo próprio servidor: o sistema não faz requisição a serviço de fontes.
+- **Landing pública.** Quem abre `/` sem sessão vê a página de apresentação em português (`/inicio` mostra a mesma); quem tem sessão vê o painel. A landing não lê banco, não pede nada a terceiros e só descreve o que o produto faz. Não há cadastro público: o botão **Entrar** leva ao login e as contas são criadas por um administrador.
+- Decisões e capturas de tela em `docs/design/` (`DECISOES.md`, `VERIFICACAO.md`, `capturas/`).
+
 ## Pré-requisitos
 
 - Node 22 ou superior e npm 10.

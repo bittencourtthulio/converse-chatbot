@@ -4,10 +4,10 @@ expx_tool: buildx
 kind: mapa
 projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-10-01
-total_features: 13
+total_features: 14
 pendentes: 0
 em_andamento: 1
-entregues: 12
+entregues: 13
 bloqueadas: 0
 ---
 
@@ -37,6 +37,7 @@ da feature de que depende (PRs empilhados).
 | FT-11 | Operação e backup | entregue | local (branch feat/operacao-e-backup) |
 | FT-12 | Sessão e acesso endurecidos | entregue | local (branch feat/sessao-e-acesso-endurecidos) |
 | FT-13 | Robustez de mídia, upload e operação | em_andamento | local (branch feat/robustez-de-midia-e-operacao) |
+| FT-14 | Design da referência e landing pública | entregue | local (branch feat/design-referencia-e-landing) |
 
 ---
 
@@ -261,6 +262,24 @@ Vem do B6 (ciclo 2): `docs/projeto/validacao/premissas-01-34.md` (A-01, A-02, A-
 **Status:** em_andamento
 
 Vem do B6 (ciclo 2): `premissas-71-100.md` (PR-93, PR-85, PR-98), `premissas-35-70.md` (PR-44, PR-45), `premissas-01-34.md` (A-03, R-03), `pedido-aceite-entregas.md` (A-03) e a lacuna 13 de `docs/stack/LACUNAS.md`.
+
+---
+
+### FT-14 — Design da referência e landing pública
+
+**Slug:** `design-referencia-e-landing` → `docs/design/`
+**Entrega:** o app inteiro, nos temas claro e escuro, segue a nova direção visual (zinc, primário quase preto, azul no acento, bordas finas, Geist e Inter locais), e quem não tem sessão vê em `/` uma landing pública em português do Brasil, sem cadastro e sem afirmação que o produto não cumpre, tudo provado por teste e por capturas de tela.
+**Depende de:** [FT-12]
+**Paralelizável:** false
+**Origem:** descricao (pedido do usuário depois da entrega)
+**Premissas que realiza:** [PR-113, PR-114]
+**Módulo disponível:** -
+**Fatias candidatas:** -
+**Status:** entregue
+**Testes:** 3127 (3118 passaram e 9 pulam sem ffmpeg ou rede) (suíte inteira)
+**PR:** local (branch feat/design-referencia-e-landing)
+
+Nasce da branch `feat/design-referencia-e-landing`, aberta a partir da pilha de features com a FT-13 pausada; por isso depende da FT-12 e não da FT-13. Detalhes em `docs/design/DECISOES.md` e `docs/design/VERIFICACAO.md`.
 
 ---
 

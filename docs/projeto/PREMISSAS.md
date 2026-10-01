@@ -4,9 +4,9 @@ expx_tool: buildx
 kind: premissas
 projeto_id: plataforma-chatbot-ia
 atualizado_em: 2026-10-01
-total: 112
+total: 114
 por_origem:
-  catalogo_lacunas: 27
+  catalogo_lacunas: 29
   briefing: 0
   decisao_de_stack: 7
   f2_autonoma: 66
@@ -1479,6 +1479,32 @@ entram no relatório final como o que o usuário precisa confirmar.
 **Etapa:** b5
 **Provisória:** false
 **Realizada em:** FT-13
+
+---
+
+### PR-113 — Design da referência substitui o acabamento do PR-23
+
+**Assunto:** pedido do usuário depois da entrega — FT-14
+**Decisão:** o acabamento visual passa a seguir o vocabulário estudado no site de referência (escala zinc, primário quase preto, azul só em link, foco e seleção, bordas finas como estrutura, raio de 10px com 8px em controles e 14px em painéis grandes, sombra só em camada flutuante, Geist e Inter servidas localmente). Isso **substitui o acabamento** do PR-23 (índigo, sombras e fonte de sistema) **sem mudar a regra dele**: tokens semânticos em `tokens.css`, nenhuma cor literal fora dele, tema claro e escuro completos, contraste 4,5:1, alvos de 44px e foco visível. Estudou-se o vocabulário; marca, textos, ilustrações e números da referência não foram copiados (PR-03). A cor padrão do chat embutido passou do índigo para o azul do acento; agentes que já guardam outra cor a mantêm.
+**Por quê:** o dono pediu a nova direção depois da entrega; como os tokens são semânticos, a troca não tocou na lógica dos componentes.
+**O que invalida:** o dono indicar marca ou design system próprios, ou a referência mudar de licença de uso do que se estudou (nada foi copiado, então só vale para o vocabulário).
+**Origem:** catalogo_lacunas (fecha a lacuna de identidade visual deixada pelo PR-23; o pedido veio do usuário e está no MAPA como origem `descricao`)
+**Etapa:** pos-entrega
+**Provisória:** false
+**Realizada em:** FT-14
+
+---
+
+### PR-114 — Landing pública sem cadastro, só com o que o produto faz
+
+**Assunto:** pedido do usuário depois da entrega — FT-14, PR-02
+**Decisão:** `/` mostra uma landing pública em pt-BR a quem não tem cookie de sessão e o painel a quem tem (o `src/proxy.ts` reescreve `/` para `/inicio` sem cookie; a página também responde direto em `/inicio`). A landing é componente de servidor, não lê banco nem sessão, não faz requisição a terceiros e só afirma o que o código faz (canais, tipos de fonte, três passos, segurança, FAQ). **Não há cadastro público, planos, depoimentos, logos de clientes, notas nem contagens** (PR-02): o botão principal leva a `/entrar`. O cartão do hero é um exemplo ilustrativo e se declara assim.
+**Por quê:** o pedido quer uma porta de entrada pública; o modelo continua sendo uma instalação por empresa com usuários criados por um administrador.
+**O que invalida:** o dono querer vender contas (PR-02 cai junto e a landing ganharia cadastro e planos), ou um cache na frente do sistema ignorar `Cache-Control: no-store` e servir a landing a quem tem sessão.
+**Origem:** catalogo_lacunas (fecha a lacuna de página pública deixada pelo PR-02; o pedido veio do usuário e está no MAPA como origem `descricao`)
+**Etapa:** pos-entrega
+**Provisória:** false
+**Realizada em:** FT-14
 
 ---
 
