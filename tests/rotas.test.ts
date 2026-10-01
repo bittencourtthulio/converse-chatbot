@@ -80,7 +80,7 @@ async function cookieDe(email: string): Promise<string> {
 }
 
 describe('sem sessão', () => {
-  it.each(['/', '/perfil', '/perfil/senha', '/configuracoes/usuarios', '/configuracoes/integracoes', '/configuracoes/privacidade', '/configuracoes/auditoria', '/agentes', '/agentes/novo', '/conversas'])(
+  it.each(['/perfil', '/perfil/senha', '/configuracoes/usuarios', '/configuracoes/integracoes', '/configuracoes/privacidade', '/configuracoes/auditoria', '/agentes', '/agentes/novo', '/conversas'])(
     'manda %s para o login',
     async (rota) => {
       const r = await pedir(rota)
@@ -88,6 +88,57 @@ describe('sem sessão', () => {
       expect(r.headers.get('location')).toContain('/entrar')
     },
   )
+
+  it('a raiz mostra a landing pública, sem redirecionar (FT-14)', async () => {
+    const r = await pedir('/')
+    const html = await r.text()
+    expect(r.status).toBe(200)
+    expect(r.headers.get('location')).toBeNull()
+    expect(r.headers.get('cache-control')).toMatch(/no-store/)
+    expect(html).toContain('lang="pt-BR"')
+    expect(html).toMatch(/<h1[^>]*>[^<]*Agentes de IA que respondem/)
+    expect(html).toContain('href="/entrar"')
+    expect(html).toContain('href="#como-funciona"')
+    for (const ancora of ['canais', 'conhecimento', 'como-funciona', 'seguranca', 'perguntas']) expect(html).toContain(`id="${ancora}"`)
+    expect(html).toMatch(/<title>[^<]*Converse[^<]*<\/title>/)
+    expect(html).toContain('name="description"')
+    expect(html).toContain('property="og:title"')
+  })
+
+  it('a landing também responde direto em /inicio e é a mesma página', async () => {
+    const r = await pedir('/inicio')
+    expect(r.status).toBe(200)
+    expect(await r.text()).toContain('Agentes de IA que respondem')
+  })
+
+  it('a landing não vaza dado nenhum: nada de sessão, usuário, agente ou conversa', async () => {
+    const html = await (await pedir('/')).text()
+    for (const proibido of ['admin.rota@teste.local', 'comum.rota@teste.local', 'Admin de Rota', 'Visão geral da sua conta', 'Primeiros passos', 'Sair', 'agente-de-exemplo']) {
+      expect(html, proibido).not.toContain(proibido)
+    }
+  })
+
+  it('a landing não pede nada a terceiros: nem no HTML nem nas folhas de estilo', async () => {
+    const html = await (await pedir('/')).text()
+    const folhas = [...html.matchAll(/href="(\/_next\/static\/[^"]+\.css)"/g)].map((m) => m[1] as string)
+    expect(folhas.length).toBeGreaterThan(0)
+    const alvos = [html, ...(await Promise.all(folhas.map(async (f) => (await pedir(f)).text())))]
+    for (const texto of alvos) {
+      expect(texto).not.toMatch(/fonts\.googleapis|fonts\.gstatic|typekit|cdnjs|unpkg|jsdelivr/i)
+      expect(texto).not.toMatch(/(?:src|href)="https?:\/\/(?!www\.w3\.org)/i)
+      expect(texto).not.toMatch(/url\(\s*['"]?https?:/i)
+    }
+    // as fontes saem do próprio servidor
+    expect(html).toMatch(/\/_next\/static\/media\/[^"]+\.woff2/)
+  })
+
+  it('a landing envia os cabeçalhos de segurança e não toca o banco ', async () => {
+    const r = await pedir('/')
+    expect(r.headers.get('x-content-type-options')).toBe('nosniff')
+    expect(r.headers.get('x-frame-options')).toBe('DENY')
+    expect(r.headers.get('referrer-policy')).toBe('strict-origin-when-cross-origin')
+    expect(r.headers.get('x-correlacao')).toBeTruthy()
+  })
 
   it('a tela de login abre', async () => {
     const r = await pedir('/entrar')
@@ -122,6 +173,12 @@ describe('com sessão de usuário comum', () => {
     expect(html).not.toContain('Cadastrar usuário')
     // usuário comum não recebe o link das Integrações (só o admin configura a chave)
     expect(html).not.toContain('href="/configuracoes/integracoes"')
+  })
+
+  it('na raiz, com sessão, aparece o painel e não a landing', async () => {
+    const html = await (await pedir('/', await cookieDe('comum.rota@teste.local'))).text()
+    expect(html).toContain('Visão geral da sua conta')
+    expect(html).not.toContain('lp-titulo-hero')
   })
 
   it('a lista de conversas abre, vazia, com a orientação para gerar conversas', async () => {
@@ -591,6 +648,10 @@ describe('cabeçalhos de segurança', () => {
 
   it('a tela de login envia os cabeçalhos', async () => {
     conferir(await pedir('/entrar'))
+  })
+
+  it('a landing envia os cabeçalhos em /', async () => {
+    conferir(await pedir('/'))
   })
 
   it('uma tela autenticada envia os cabeçalhos', async () => {

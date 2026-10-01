@@ -267,8 +267,8 @@ describe('convenções do chat embutido (FT-06)', () => {
     ['src/servicos/chat-publico.ts:85', /export function erroParaVisitante/],
     ['src/servicos/chat-publico-limites.ts:32', /export function exigirLimiteDeIp/],
     ['src/servicos/chat-publico-limites.ts:75', /export async function exigirTetoDiario/],
-    ['src/proxy.ts:34', /export async function proxy/],
-    ['src/proxy.ts:54', /export const config/],
+    ['src/proxy.ts:39', /export async function proxy/],
+    ['src/proxy.ts:62', /export const config/],
     ['next.config.ts:18', /naoEmoldurar/],
     ['next.config.ts:25', /embed/],
     ['src/lib/dominios-permitidos.ts:109', /export function cabecalhoFrameAncestors/],
@@ -507,7 +507,7 @@ describe('convenções do histórico de conversas e do painel (FT-09)', () => {
     ['src/app/api/conversas/[id]/route.ts:8', /export async function DELETE/],
     ['src/app/api/conversas/[id]/exportar/route.ts:9', /export async function GET/],
     ['src/app/(sistema)/conversas/[id]/carregar-conversa.ts:10', /export const carregarConversa/],
-    ['src/estilos/tokens.css:64', /--canal-painel-bg/],
+    ['src/estilos/tokens.css:67', /--canal-painel-bg/],
     ['tests/apoio/contador-de-consultas.ts:15', /export function criarClienteContador/],
     ['tests/apoio/contador-de-consultas.ts:29', /export async function contarConsultas/],
   ]
@@ -583,7 +583,7 @@ describe('convenções da privacidade e da auditoria (FT-10)', () => {
     ['src/app/api/titulares/exportar/route.ts:33', /export async function POST/],
     ['src/componentes/embed-logica.ts:256', /export function reduzirApagar/],
     ['src/componentes/embed-logica.ts:279', /export async function apagarMinhaConversaNoServidor/],
-    ['src/estilos/global.css:1525', /tabela-envoltorio:has/],
+    ['src/estilos/global.css:1542', /tabela-envoltorio:has/],
   ]
 
   it.each(CITACOES)('%s existe e contém o que o CONVENCOES.md diz', (citacao, esperado) => {
@@ -703,8 +703,8 @@ describe('convenções da operação e do backup (FT-11)', () => {
     ['src/lib/log.ts:179', /export function filtrarConsoleDoNext/],
     ['src/lib/log.ts:30', /export function comCorrelacao/],
     ['eslint.config.mjs:68', /no-console/],
-    ['src/proxy.ts:34', /export async function proxy/],
-    ['src/proxy.ts:54', /export const config/],
+    ['src/proxy.ts:39', /export async function proxy/],
+    ['src/proxy.ts:62', /export const config/],
     ['src/app/correlacao-servidor.ts:15', /export async function correlacaoDaRequisicao/],
     ['src/app/api/resposta-de-erro.ts:10', /export async function respostaDeErro/],
     ['src/app/error.tsx:10', /export default function Erro/],
