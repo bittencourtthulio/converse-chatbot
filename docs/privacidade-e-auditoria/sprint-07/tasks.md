@@ -11,7 +11,7 @@ tasks:
   - id: T-07.01
     titulo: "Prova no servidor de producao: ouvintes e DELETE publico"
     fase: F-07.1
-    status: pendente
+    status: concluida
     objetivo: "Provar contra next start que apagar conversa pelo painel e o DELETE do visitante gravam auditoria pelos ouvintes ligados na subida."
     arquivos:
       cria: ["tests/privacidade-fim-a-fim.test.ts", "docs/privacidade-e-auditoria/sprint-07/sprint.md", "docs/privacidade-e-auditoria/sprint-07/fases.md", "docs/privacidade-e-auditoria/sprint-07/tasks.md"]
@@ -21,8 +21,8 @@ tasks:
     criterio_aceite: "tests/privacidade-fim-a-fim.test.ts passa sem variavel de ambiente nova."
     depende_de: ["T-06.05"]
     paralelizavel: false
-    concluida_em: null
-    suite: nao_executada
+    concluida_em: 2026-10-01
+    suite: parcial
   - id: T-07.02
     titulo: "Roteiro de dados semeados e verificacao no navegador"
     fase: F-07.2
@@ -86,7 +86,7 @@ teste_funcional: "Apagar uma conversa pelo painel e pelo visitante grava exatame
 criterio_aceite: "tests/privacidade-fim-a-fim.test.ts passa sem variavel de ambiente nova."
 depende_de: ["T-06.05"]
 paralelizavel: false
-status: pendente
+status: concluida   # 2026-10-01 · suíte: parcial — tests/privacidade-fim-a-fim.test.ts 5 passed contra next start; suite inteira no fechamento
 ```
 
 ---
