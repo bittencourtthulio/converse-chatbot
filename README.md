@@ -4,6 +4,46 @@ Plataforma de agentes de IA com base de conhecimento própria. Você cria agente
 
 O projeto é construído por features, na ordem de `docs/projeto/MAPA.md`. Hoje existem a fundação (login, papéis, painel, cadastro de usuários, perfil e troca de senha, num layout de SaaS com tema claro e escuro) e os agentes com a chave do OpenRouter. Conversa de teste, base de conhecimento e canais chegam nas próximas features. O nome "Converse" é provisório e se troca por `APP_NAME`.
 
+## Acesso de demonstração
+
+Depois de `npm run setup` (veja [Como rodar](#como-rodar)), entre em `http://localhost:3000` com:
+
+| Papel | E-mail | Senha |
+|---|---|---|
+| Administrador | `admin@exemplo.local` | `demo1234` |
+| Usuário | `usuario@exemplo.local` | `demo1234` |
+
+São contas fictícias da seed de desenvolvimento, que se recusa a rodar em produção. Em produção o primeiro administrador nasce por `npm run admin:criar` (veja [Operação e backup](#operação-e-backup)).
+
+## Stack
+
+| Camada | Tecnologia | Para que serve no projeto |
+|---|---|---|
+| Linguagem | TypeScript 5.9 (modo estrito) em Node.js 22, ESM | Todo o código, do servidor aos testes |
+| Framework | Next.js 16 (App Router) e React 19 | Páginas, Server Actions e rotas de API no mesmo processo |
+| Banco | SQLite em arquivo, com busca de texto FTS5 | Usuários, agentes, conversas, fontes e trechos da base de conhecimento |
+| ORM | Prisma 7 com o adaptador `better-sqlite3` | Esquema, migrations e acesso ao banco |
+| Validação | Zod 4 | Entrada das rotas e das ações |
+| Autenticação | `jose` (JWT em cookie, renovado por atividade) e `bcryptjs` (hash de senha) | Sessão com revogação no logout e papéis administrador e usuário |
+| Criptografia | AES-256-GCM (módulo `crypto` do Node) | Guarda a chave do OpenRouter e o token do Telegram criptografados |
+| IA | OpenRouter (API compatível com OpenAI) | Respostas dos agentes e transcrição de áudio, com o modelo escolhido por agente |
+| Base de conhecimento | `unpdf` (PDF), `mammoth` (DOCX), `parse5` (HTML), texto, vídeo e legendas do YouTube | Extração do texto das fontes, divisão em trechos e busca para fundamentar a resposta |
+| Vídeo e áudio | `ffmpeg` e `ffprobe` | Extração do áudio, divisão em partes de 10 minutos e transcrição |
+| Canais | Telegram (webhook) e chat embutido (`widget.js` e página `/embed`) | Publicação do agente em um bot e em qualquer site |
+| Tempo real | Server-Sent Events | Resposta do agente trecho a trecho e andamento do processamento das fontes |
+| Backup | `tar` e a API de backup online do SQLite | `npm run backup` e `npm run restore`, com manifesto e SHA-256 |
+| Interface | CSS próprio com tokens (`src/estilos/tokens.css`), fontes Geist, Inter e Instrument Serif servidas localmente | Escala zinc, tema claro e escuro, sem serviço externo de fontes |
+| Testes | Vitest 4 e `happy-dom` | Testes de unidade, de rotas e de arquitetura (`npm test`) |
+| Qualidade | ESLint 9 e `tsc --noEmit` | Portões de lint e de tipos no CI |
+| Entrega | Docker (`node:22-bookworm-slim` com `ffmpeg`, usuário não-root), Docker Compose e GitHub Actions | Imagem de produção com healthcheck em `/api/saude` e pipeline de lint, tipos, build, testes e auditoria |
+
+Observações de arquitetura:
+
+- **Um processo de longa duração.** SQLite em arquivo, disco local e a fila de processamento em segundo plano não rodam em função serverless. O HTTPS fica a cargo de um proxy reverso (exemplo com Caddy em [Operação e backup](#operação-e-backup)).
+- **Camadas.** `src/app` (telas e rotas), `src/servicos` (regras de negócio), `src/lib` (infraestrutura: banco, cripto, OpenRouter, Telegram, extração) e `src/componentes` (interface). Um teste de arquitetura falha se uma tela ou rota ficar sem guarda de acesso.
+- **Dados em disco.** O banco, os arquivos enviados (`storage/`) e os backups ficam num volume (`/data` no contêiner).
+- Convenções técnicas completas, com evidência por arquivo e linha, em `docs/stack/CONVENCOES.md`; lacunas conhecidas em `docs/stack/LACUNAS.md`.
+
 ## Interface e landing pública
 
 - **Visual.** Escala zinc, primário quase preto, azul só em link, foco e seleção, bordas finas no lugar de sombras, raio de 10px (8px em botões e campos, 14px em painéis grandes) e tema claro e escuro (preferência do sistema ou escolha no cabeçalho). Tudo vem de `src/estilos/tokens.css`; nenhum componente usa cor literal. As fontes (Geist, Inter e uma serifa itálica só no título da landing) vêm de pacotes npm e são servidas pelo próprio servidor: o sistema não faz requisição a serviço de fontes.
