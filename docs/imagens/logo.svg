@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 64" width="260" height="64" role="img" aria-labelledby="t">
+  <title id="t">Converse</title>
+  <style>
+    .f-ac { fill: #2563eb; } .s-ac { stroke: #2563eb; }
+    .f-bg { fill: #fafafa; } .s-bg { stroke: #fafafa; }
+    .f-fg { fill: #18181b; } .s-fg { stroke: #18181b; }
+    @media (prefers-color-scheme: dark) {
+      .f-ac { fill: #60a5fa; } .s-ac { stroke: #60a5fa; }
+      .f-bg { fill: #18181b; } .s-bg { stroke: #18181b; }
+      .f-fg { fill: #fafafa; } .s-fg { stroke: #fafafa; }
+    }
+    .nome { font: italic 400 40px Georgia, 'Instrument Serif', 'Times New Roman', serif; }
+  </style>
+  <rect width="64" height="64" rx="16" class="f-fg"/>
+  <path d="M15 17h26a6 6 0 0 1 6 6v10a6 6 0 0 1-6 6H29l-8 7v-7h-6a6 6 0 0 1-6-6V23a6 6 0 0 1 6-6z" transform="translate(1 -1)" class="f-bg"/>
+  <path d="M33 31h14a6 6 0 0 1 6 6v7a6 6 0 0 1-6 6h-2v6l-7-6h-5a6 6 0 0 1-6-6v-7a6 6 0 0 1 6-6z" transform="translate(1 -3)" stroke-width="3" class="f-ac s-fg"/>
+  <circle cx="22" cy="25" r="2.4" class="f-fg"/>
+  <circle cx="29" cy="25" r="2.4" class="f-fg"/>
+  <circle cx="36" cy="25" r="2.4" class="f-fg"/>
+  <text x="80" y="46" class="nome f-fg">Converse</text>
+</svg>

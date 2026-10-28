@@ -1,4 +1,10 @@
-# Converse
+<h1 align="center">
+  <img src="docs/imagens/logo.svg" alt="Converse" height="64">
+</h1>
+
+<p align="center">
+  <img src="docs/imagens/banner.svg" alt="Converse: agentes de IA com a sua própria base de conhecimento" width="100%">
+</p>
 
 Plataforma de agentes de IA com base de conhecimento própria. Você cria agentes, escolhe o modelo de linguagem (via OpenRouter), alimenta a base com arquivos, textos e vídeos e publica o agente no Telegram e num chat embutido em qualquer site com um script.
 
@@ -43,6 +49,12 @@ Observações de arquitetura:
 - **Camadas.** `src/app` (telas e rotas), `src/servicos` (regras de negócio), `src/lib` (infraestrutura: banco, cripto, OpenRouter, Telegram, extração) e `src/componentes` (interface). Um teste de arquitetura falha se uma tela ou rota ficar sem guarda de acesso.
 - **Dados em disco.** O banco, os arquivos enviados (`storage/`) e os backups ficam num volume (`/data` no contêiner).
 - Convenções técnicas completas, com evidência por arquivo e linha, em `docs/stack/CONVENCOES.md`; lacunas conhecidas em `docs/stack/LACUNAS.md`.
+
+## Como funciona
+
+<p align="center">
+  <img src="docs/imagens/arquitetura.svg" alt="Fontes viram trechos na base de conhecimento; o agente consulta a base com o modelo do OpenRouter e responde no Telegram, no chat embutido e na aba Testar" width="100%">
+</p>
 
 ## Interface e landing pública
 

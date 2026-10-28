@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 380" width="1200" height="380" role="img" aria-labelledby="t d">
+  <title id="t">Como o Converse funciona</title>
+  <desc id="d">Fontes viram trechos na base de conhecimento, o agente consulta a base com o modelo do OpenRouter e responde nos canais.</desc>
+  <style>
+    .f-ac { fill: #2563eb; } .s-ac { stroke: #2563eb; }
+    .f-acsoft { fill: #dbeafe; } .s-acsoft { stroke: #dbeafe; }
+    .f-bg { fill: #fafafa; } .s-bg { stroke: #fafafa; }
+    .f-fg { fill: #18181b; } .s-fg { stroke: #18181b; }
+    .f-line { fill: #d4d4d8; } .s-line { stroke: #d4d4d8; }
+    .f-mut { fill: #71717a; } .s-mut { stroke: #71717a; }
+    .f-panel { fill: #ffffff; } .s-panel { stroke: #ffffff; }
+    .f-soft { fill: #f4f4f5; } .s-soft { stroke: #f4f4f5; }
+    @media (prefers-color-scheme: dark) {
+      .f-ac { fill: #60a5fa; } .s-ac { stroke: #60a5fa; }
+      .f-acsoft { fill: #1e3a8a; } .s-acsoft { stroke: #1e3a8a; }
+      .f-bg { fill: #09090b; } .s-bg { stroke: #09090b; }
+      .f-fg { fill: #fafafa; } .s-fg { stroke: #fafafa; }
+      .f-line { fill: #3f3f46; } .s-line { stroke: #3f3f46; }
+      .f-mut { fill: #a1a1aa; } .s-mut { stroke: #a1a1aa; }
+      .f-panel { fill: #18181b; } .s-panel { stroke: #18181b; }
+      .f-soft { fill: #27272a; } .s-soft { stroke: #27272a; }
+    }
+    text { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+    .h { font-size: 20px; font-weight: 600; }
+    .p { font-size: 14px; }
+    .n { font-size: 13px; font-weight: 600; letter-spacing: .08em; }
+    .rod { font-size: 14px; }
+  </style>
+  <defs>
+    <marker id="seta" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M1 1.5L8 5 1 8.5" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="s-mut"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="380" rx="24" class="f-bg"/>
+  <rect x="0.5" y="0.5" width="1199" height="379" rx="23.5" fill="none" class="s-line"/>
+
+  <!-- 1. fontes -->
+  <g transform="translate(40 40)">
+    <rect width="240" height="250" rx="18" class="f-panel s-line"/>
+    <text x="24" y="38" class="n f-ac">1</text>
+    <text x="24" y="66" class="h f-fg">Fontes</text>
+    <text x="24" y="88" class="p f-mut">O que o agente precisa saber</text>
+    <g font-size="14" class="f-fg">
+      <rect x="24" y="108" width="62" height="28" rx="14" class="f-soft"/><text x="55" y="127" text-anchor="middle">PDF</text>
+      <rect x="94" y="108" width="68" height="28" rx="14" class="f-soft"/><text x="128" y="127" text-anchor="middle">DOCX</text>
+      <rect x="170" y="108" width="52" height="28" rx="14" class="f-soft"/><text x="196" y="127" text-anchor="middle">HTML</text>
+      <rect x="24" y="146" width="62" height="28" rx="14" class="f-soft"/><text x="55" y="165" text-anchor="middle">Texto</text>
+      <rect x="94" y="146" width="68" height="28" rx="14" class="f-soft"/><text x="128" y="165" text-anchor="middle">Vídeo</text>
+      <rect x="24" y="184" width="104" height="28" rx="14" class="f-soft"/><text x="76" y="203" text-anchor="middle">YouTube</text>
+    </g>
+    <text x="24" y="236" class="p f-mut">ffmpeg transcreve o áudio</text>
+  </g>
+
+  <!-- 2. base -->
+  <g transform="translate(340 40)">
+    <rect width="240" height="250" rx="18" class="f-panel s-line"/>
+    <text x="24" y="38" class="n f-ac">2</text>
+    <text x="24" y="66" class="h f-fg">Base de conhecimento</text>
+    <text x="24" y="88" class="p f-mut">Trechos com busca de texto</text>
+    <g>
+      <ellipse cx="120" cy="130" rx="52" ry="14" class="f-soft s-line"/>
+      <path d="M68 130v54c0 8 23 14 52 14s52-6 52-14v-54" class="f-soft s-line"/>
+      <path d="M68 157c0 8 23 14 52 14s52-6 52-14" fill="none" class="s-line"/>
+      <ellipse cx="120" cy="130" rx="52" ry="14" class="f-soft s-line"/>
+      <circle cx="148" cy="190" r="4" class="f-ac"/>
+    </g>
+    <text x="24" y="236" class="p f-mut">SQLite + FTS5, no mesmo processo</text>
+  </g>
+
+  <!-- 3. agente -->
+  <g transform="translate(640 40)">
+    <rect width="240" height="250" rx="18" class="f-fg"/>
+    <text x="24" y="38" class="n f-bg" opacity=".6">3</text>
+    <text x="24" y="66" class="h f-bg">Agente</text>
+    <text x="24" y="88" class="p f-bg" opacity=".65">Instruções e modelo de IA</text>
+    <g transform="translate(70 124)">
+      <rect width="100" height="84" rx="22" class="f-bg"/>
+      <circle cx="34" cy="38" r="7" class="f-fg"/><circle cx="66" cy="38" r="7" class="f-fg"/>
+      <path d="M36 58q14 10 28 0" fill="none" stroke-width="4" stroke-linecap="round" class="s-ac"/>
+      <line x1="50" y1="0" x2="50" y2="-12" stroke-width="3" stroke-linecap="round" class="s-bg"/>
+      <circle cx="50" cy="-16" r="5" class="f-ac"/>
+    </g>
+    <text x="24" y="236" class="p f-bg" opacity=".65">Responde citando as fontes</text>
+  </g>
+
+  <!-- 4. canais -->
+  <g transform="translate(940 40)">
+    <rect width="220" height="250" rx="18" class="f-panel s-line"/>
+    <text x="24" y="38" class="n f-ac">4</text>
+    <text x="24" y="66" class="h f-fg">Canais</text>
+    <text x="24" y="88" class="p f-mut">Onde as pessoas conversam</text>
+    <g font-size="14" class="f-fg">
+      <rect x="24" y="108" width="172" height="34" rx="10" class="f-soft"/><circle cx="44" cy="125" r="8" class="f-ac"/><path d="M40 125l3 2 5-5" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="s-bg"/><text x="62" y="130">Telegram</text>
+      <rect x="24" y="150" width="172" height="34" rx="10" class="f-soft"/><rect x="36" y="159" width="16" height="16" rx="4" fill="none" stroke-width="1.8" class="s-ac"/><text x="62" y="172">Chat embutido</text>
+      <rect x="24" y="192" width="172" height="34" rx="10" class="f-soft"/><path d="M36 209h16m-6-6 6 6-6 6" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="s-ac"/><text x="62" y="214">Aba Testar</text>
+    </g>
+  </g>
+
+  <!-- setas -->
+  <g fill="none" stroke-width="1.8" marker-end="url(#seta)" class="s-mut">
+    <line x1="284" y1="165" x2="334" y2="165"/>
+    <line x1="584" y1="165" x2="634" y2="165"/>
+    <line x1="884" y1="165" x2="934" y2="165"/>
+  </g>
+
+  <!-- OpenRouter -->
+  <g transform="translate(700 306)">
+    <rect width="120" height="26" rx="13" class="f-acsoft"/>
+    <text x="60" y="18" text-anchor="middle" font-size="13" font-weight="600" class="f-ac">OpenRouter</text>
+  </g>
+  <line x1="760" y1="290" x2="760" y2="304" stroke-width="1.6" stroke-dasharray="3 4" class="s-ac"/>
+
+  <text x="40" y="346" class="rod f-mut">Next.js 16 · TypeScript · Prisma + SQLite · SSE · um único processo de longa duração</text>
+</svg>
