@@ -181,16 +181,15 @@ export async function excluir(autor: UsuarioAutenticado, id: string): Promise<vo
 
 export interface ModelosParaOSeletor {
   modelos: Array<{ id: string; nome: string }>
-  /** Há chave do OpenRouter legível. Sem ela não há lista, só texto livre. */
+  /** Há chave do OpenRouter legível para as conversas do agente. */
   temChave: boolean
   /** A lista veio da reserva embutida porque o OpenRouter não respondeu. */
   reserva: boolean
 }
 
 /**
- * Os modelos que o seletor do formulário de agente sugere (PR-06). A chave
- * fica no servidor: só id e nome dos modelos saem daqui. Chave ausente ou
- * ilegível vale como "sem chave", e o formulário aceita texto livre.
+ * Catálogo público de modelos de texto para criar e editar agentes. Só id e
+ * nome saem daqui; a consulta independe da chave usada nas conversas.
  */
 export async function modelosParaOSeletor(
   autor: UsuarioAutenticado,
@@ -202,11 +201,10 @@ export async function modelosParaOSeletor(
   } catch {
     chave = null
   }
-  if (!chave) return { modelos: [], temChave: false, reserva: false }
-  const lista = await listarModelos(chave)
+  const lista = await listarModelos()
   return {
     modelos: lista.modelos.map(({ id, nome }) => ({ id, nome })),
-    temChave: true,
+    temChave: Boolean(chave),
     reserva: lista.reserva,
   }
 }

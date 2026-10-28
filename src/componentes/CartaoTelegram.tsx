@@ -253,9 +253,9 @@ export function CartaoTelegram({
                 <dd>{canal.conectadoEm}</dd>
               </div>
               <div>
-                <dt>Webhook</dt>
+                <dt>Recebimento de mensagens</dt>
                 <dd>
-                  <code>{canal.webhookUrl}</code>
+                  {canal.webhookUrl ? <code>{canal.webhookUrl}</code> : 'Conexão direta com o Telegram'}
                 </dd>
               </div>
             </dl>
@@ -283,7 +283,7 @@ export function CartaoTelegram({
             <details className="canal-trocar">
               <summary>Trocar o token do bot</summary>
               <p className="texto-de-apoio">
-                Cole o token de outro bot (ou um token novo do mesmo). A conexão é refeita e o segredo do webhook muda.
+                Cole o token de outro bot (ou um token novo do mesmo). A conexão é refeita com o novo token.
               </p>
               <FormularioDoToken
                 agenteId={agenteId}

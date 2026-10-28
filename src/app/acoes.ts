@@ -523,7 +523,7 @@ export async function verificarTelegram(
         erro: `O endereço registrado no Telegram é diferente do esperado. Reconecte o bot para registrá-lo de novo.${pendentes}${ultimo}`,
       }
     }
-    return { sucesso: `O webhook está correto.${pendentes}${ultimo}` }
+    return { sucesso: `${r.urlEsperada ? 'O webhook está correto.' : 'A conexão direta com o Telegram está configurada.'}${pendentes}${ultimo}` }
   } catch (erro) {
     revalidatePath(abaDeCanais(id))
     return { erro: await mensagemDe(erro) }

@@ -120,20 +120,14 @@ describe('conectar', () => {
     expect(await prisma.canalTelegram.count()).toBe(0)
   })
 
-  it('exige APP_URL HTTPS: ausente e http dão telegram_url_nao_https, antes de qualquer chamada ao Telegram', async () => {
-    delete process.env.APP_URL
-    const sem = await erroDe(conectar(autor, agenteId, TOKEN_VALIDO))
-    expect(sem?.codigo).toBe('telegram_url_nao_https')
-    expect(sem?.message).toMatch(/HTTPS/)
-    expect(sem?.message).toMatch(/túnel/i)
-    expect(sem?.message).toMatch(/APP_URL/)
-
-    process.env.APP_URL = 'http://localhost:3000'
-    expect((await erroDe(conectar(autor, agenteId, TOKEN_VALIDO)))?.codigo).toBe('telegram_url_nao_https')
-    process.env.APP_URL = 'isto não é url'
-    expect((await erroDe(conectar(autor, agenteId, TOKEN_VALIDO)))?.codigo).toBe('telegram_url_nao_https')
-    expect(falso.requisicoes).toHaveLength(0)
-  })
+  it.each([undefined, 'http://localhost:3000', 'https://localhost:3000', 'isto não é url'])(
+    'conecta sem túnel com APP_URL=%s usando recebimento direto', async (url) => {
+      if (url === undefined) delete process.env.APP_URL
+      else process.env.APP_URL = url
+      await expect(conectar(autor, agenteId, TOKEN_VALIDO)).resolves.toMatchObject({ estado: 'conectado', webhookUrl: '' })
+      expect(falso.requisicoes.map((r) => r.metodo)).toEqual(['getMe', 'deleteWebhook'])
+    },
+  )
 
   it('TELEGRAM_PERMITIR_URL_NAO_HTTPS=1 libera http fora de produção e é ignorada em produção', async () => {
     process.env.APP_URL = 'http://localhost:3000'
@@ -144,7 +138,7 @@ describe('conectar', () => {
 
     await prisma.canalTelegram.deleteMany()
     Object.assign(process.env, { NODE_ENV: 'production' })
-    expect((await erroDe(conectar(autor, agenteId, TOKEN_VALIDO)))?.codigo).toBe('telegram_url_nao_https')
+    await expect(conectar(autor, agenteId, TOKEN_VALIDO)).resolves.toMatchObject({ webhookUrl: '' })
   })
 
   it('o mesmo bot em outro agente é recusado com telegram_bot_em_uso, dizendo qual agente o usa', async () => {

@@ -14,6 +14,7 @@ export const LIMITES = {
   prazoDaExtracaoMs: 120_000,
   arquivosPorEnvio: 10,
   tituloDoTexto: 120,
+  pergunta: 500,
   conteudoDoTexto: 200_000,
   nomeDoArquivo: 200,
 } as const

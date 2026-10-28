@@ -46,6 +46,8 @@ export interface PedidoDeMidia {
   aoAndar: (andamento: Andamento) => void | Promise<void>
   /** A fonte ainda existe? Conferido antes de cada parte, para parar de gastar crédito se foi excluída. */
   fonteExiste: () => Promise<boolean>
+  /** Arquivo temporário de áudio do YouTube, quando não há original enviado. */
+  caminhoOriginal?: string
   segundosPorParte?: number
   /** Repetições de uma parte com falha transitória (padrão 2, ou seja, até 3 chamadas). */
   repeticoes?: number
@@ -87,13 +89,14 @@ export const erroDeFonteExcluida = () =>
 export async function transcreverMidia(pedido: PedidoDeMidia): Promise<TextoDeMidia> {
   const d: DependenciasDeMidia = { ...dependenciasReais, ...pedido.dependencias }
   const { fonte, armazenamento } = pedido
+  const original = pedido.caminhoOriginal ?? armazenamento.caminhoDoOriginal(fonte.agenteId, fonte.id)
   const segundos = pedido.segundosPorParte ?? SEGUNDOS_POR_PARTE
   const andar = async (etapa: string, progresso: number, duracaoSegundos?: number) =>
     pedido.aoAndar({ etapa, progresso, ...(duracaoSegundos !== undefined && { duracaoSegundos }) })
 
   try {
     await andar('Verificando o arquivo', 2)
-    const sonda = await d.sondar(armazenamento.caminhoDoOriginal(fonte.agenteId, fonte.id))
+    const sonda = await d.sondar(original)
     exigirAudio(sonda)
     await andar('Verificando o arquivo', 4, Math.round(sonda.duracaoSegundos))
 
@@ -108,7 +111,7 @@ export async function transcreverMidia(pedido: PedidoDeMidia): Promise<TextoDeMi
       const pasta = armazenamento.pastaDeTrabalho(fonte.agenteId, fonte.id, 'audio')
       const audio = path.join(pasta, 'audio.mp3')
       await andar('Extraindo áudio', 5)
-      await d.extrairAudio(armazenamento.caminhoDoOriginal(fonte.agenteId, fonte.id), audio)
+      await d.extrairAudio(original, audio)
       await andar('Dividindo em partes', 15)
       partes = await d.dividirEmSegmentos(audio, path.join(pasta, 'partes'), { segundosPorParte: segundos })
       total = partes.length
@@ -155,6 +158,7 @@ async function transcreverParte(
         chave: pedido.chave,
         modelo: pedido.modelo,
         audioBase64,
+        contexto: { funcao: 'transcreverParte', origem: 'conhecimento' },
         formato: 'mp3',
         sinal: pedido.sinal,
       })

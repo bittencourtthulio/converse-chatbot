@@ -96,7 +96,7 @@ describe('stream sem sessão', () => {
     const conversaId = r.headers.get('x-conversa-id')
     expect(conversaId).toBeTruthy()
     const eventos = await eventosDe(r)
-    expect(eventos.map((e) => e.tipo)).toEqual(['trecho', 'trecho', 'trecho', 'fim'])
+    expect(eventos.map((e) => e.tipo)).toEqual(['trecho', 'fim'])
     const fim = eventos.at(-1)
     expect(fim).toMatchObject({ tipo: 'fim', conversaId })
     const conversa = await prisma.conversa.findUniqueOrThrow({ where: { id: conversaId as string } })
@@ -131,8 +131,9 @@ describe('stream sem sessão', () => {
 
 describe('erro sempre genérico ao visitante', () => {
   it('erro do provedor vira o evento erro com a frase única, sem detalhe técnico', async () => {
+    await criarBase({ agenteId, textos: ['Aceitamos a troca em sete dias.'] })
     falso.configurar({ erroHttp: 402 })
-    const r = await postar({ visitanteId: visitante('d'), mensagem: 'Oi' })
+    const r = await postar({ visitanteId: visitante('d'), mensagem: 'Qual o prazo de troca?' })
     // A pergunta já foi gravada quando o provedor falha: o erro vai no stream.
     expect(r.status).toBe(200)
     const texto = await r.text()
@@ -144,10 +145,12 @@ describe('erro sempre genérico ao visitante', () => {
   })
 
   it('erro no meio do stream vira o evento erro com a frase única', async () => {
+    await criarBase({ agenteId, textos: ['Aceitamos a troca em sete dias.'] })
     falso.configurar({ erroNoMeioApos: 1 })
-    const r = await postar({ visitanteId: visitante('e'), mensagem: 'Oi' })
+    const r = await postar({ visitanteId: visitante('e'), mensagem: 'Qual o prazo de troca?' })
     expect(r.status).toBe(200)
     const eventos = await eventosDe(r)
+    expect(eventos.some((e) => e.tipo === 'trecho')).toBe(false)
     const erro = eventos.at(-1)
     expect(erro).toEqual({ tipo: 'erro', codigo: 'indisponivel', mensagem: MENSAGEM_PARA_VISITANTE })
   })

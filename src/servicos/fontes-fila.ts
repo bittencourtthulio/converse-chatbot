@@ -15,6 +15,7 @@ import { formatoDoNome, type Formato } from '@/lib/extracao/formatos'
 import { erroSemChave } from '@/servicos/chat-erros'
 import { modeloDeTranscricaoEfetivo, obterChaveDoOpenrouter } from '@/servicos/integracoes'
 import { transcreverMidia, type PedidoDeMidia, type TextoDeMidia } from '@/servicos/transcricao-de-midia'
+import { recuperarTextoDoYoutube } from '@/servicos/transcricao-do-youtube'
 import { montarTextoDeLegenda } from '@/servicos/transcricao-marcadores'
 import { trechoSoDeMarcadores } from '@/servicos/transcricao-marcadores'
 import { dividirEmTrechos, normalizarTexto } from '@/servicos/trechos'
@@ -37,6 +38,7 @@ export interface OpcoesDaFila {
   segundosPorParte?: number
   /** Só para teste: troca a leitura das legendas do YouTube. */
   legendas?: typeof obterLegendas
+  recuperarYoutube?: typeof recuperarTextoDoYoutube
   /** Só para teste: troca a transcrição de vídeo (sem ffmpeg e sem rede). */
   transcreverMidia?: (pedido: PedidoDeMidia) => Promise<TextoDeMidia>
 }
@@ -69,11 +71,11 @@ export interface Fila {
 
 const MENSAGEM_GENERICA = 'Não foi possível processar este arquivo. Tente reprocessar ou envie outro arquivo.'
 /** Tipos que rodam na raia de mídia, de concorrência 1; o resto roda na leve (PR-74). */
-const TIPOS_DE_MIDIA = ['video']
+const TIPOS_DE_MIDIA = ['video', 'youtube']
 const LOTE_DE_TRECHOS = 500
 
 function formatoDaFonte(fonte: { tipo: string; nomeOriginal: string | null }): Formato {
-  if (fonte.tipo === 'texto') return 'txt'
+  if (fonte.tipo === 'texto' || fonte.tipo === 'pergunta_resposta') return 'txt'
   if (fonte.tipo === 'arquivo') {
     const formato = formatoDoNome(fonte.nomeOriginal ?? '')
     if (formato) return formato
@@ -181,26 +183,38 @@ export function criarFila(opcoes: OpcoesDaFila = {}): Fila {
     await armazenamento().apagarTrabalho(fonte.agenteId, fonte.id).catch(() => undefined)
   }
 
-  /** Link do YouTube: lê as legendas (sem baixar o vídeo e sem gastar crédito) e segue o caminho comum (PR-75). */
+  /** Legendas primeiro; se indisponíveis, recupera com yt-dlp e transcrição do áudio. */
   async function processarYoutube(fonte: { id: string; agenteId: string; titulo: string; urlOrigem: string | null }): Promise<void> {
     if (!fonte.urlOrigem) throw new ErroDeAplicacao('Esta fonte não tem o link do vídeo.', 422, 'url_invalida')
     await gravarAndamento(fonte.id, { etapa: 'Lendo as legendas do vídeo', progresso: 10 })
-    const legendas = await lerLegendas(fonte.urlOrigem)
-    const texto = normalizarTexto(montarTextoDeLegenda(legendas.falas))
-    if (texto === '') {
-      throw new ErroDeAplicacao(
-        'Este vídeo não tem legendas disponíveis. Baixe o vídeo e envie o arquivo para transcrever.',
-        422,
-        'sem_legendas',
-      )
+    let resultado: { texto: string; titulo: string; duracaoSegundos: number | null }
+    try {
+      const legendas = await lerLegendas(fonte.urlOrigem)
+      resultado = { ...legendas, texto: montarTextoDeLegenda(legendas.falas) }
+      if (!resultado.texto.trim()) throw new ErroDeAplicacao('Legenda vazia.', 422, 'sem_legendas')
+    } catch (erro) {
+      if (!(erro instanceof ErroDeAplicacao) || !['sem_legendas', 'youtube_formato', 'youtube_indisponivel', 'youtube_tempo_esgotado'].includes(erro.codigo)) throw erro
+      resultado = await (opcoes.recuperarYoutube ?? recuperarTextoDoYoutube)({
+        url: fonte.urlOrigem,
+        fonte: { id: fonte.id, agenteId: fonte.agenteId },
+        armazenamento: armazenamento(),
+        transcrever,
+        segundosPorParte: opcoes.segundosPorParte,
+        aoAndar: (a) => gravarAndamento(fonte.id, a),
+        fonteExiste: async () => (await prisma.fonte.findUnique({ where: { id: fonte.id }, select: { id: true } })) !== null,
+      })
     }
+    const texto = normalizarTexto(resultado.texto)
+    const trechos = dividirEmTrechos(texto).filter((t) => !trechoSoDeMarcadores(t))
+    if (trechos.length === 0) throw new ErroDeAplicacao('Não encontrei fala neste vídeo para transcrever.', 422, 'transcricao_vazia')
     // O título do vídeo só substitui o provisório: o que o usuário digitou fica.
     const provisorio = fonte.titulo === tituloProvisorioDoYoutube(extrairIdDoYoutube(fonte.urlOrigem))
-    await gravarResultado(fonte.id, fonte.agenteId, dividirEmTrechos(texto), texto.length, {
-      ...(legendas.duracaoSegundos !== null && { duracaoSegundos: legendas.duracaoSegundos }),
-      ...(provisorio && { titulo: legendas.titulo.slice(0, LIMITES.tituloDoTexto) }),
+    await gravarResultado(fonte.id, fonte.agenteId, trechos, texto.length, {
+      ...(resultado.duracaoSegundos !== null && { duracaoSegundos: resultado.duracaoSegundos }),
+      ...(provisorio && { titulo: resultado.titulo.slice(0, LIMITES.tituloDoTexto) }),
       tamanhoBytes: Buffer.byteLength(texto),
     })
+    await armazenamento().apagarTrabalho(fonte.agenteId, fonte.id).catch(() => undefined)
   }
 
   async function processar(fonte: {

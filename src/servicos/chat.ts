@@ -1,5 +1,5 @@
 // O turno de conversa (FT-03): recebe a mensagem de quem pergunta, monta o
-// prompt, chama o OpenRouter em stream e devolve os eventos conforme chegam.
+// prompt, chama o OpenRouter em stream e valida a resposta antes de entregá-la.
 // Serve ao painel agora e ao chat embutido e ao Telegram depois (FT-06, FT-07):
 // não conhece HTTP nem sessão, só quem é o "dono" da conversa.
 //
@@ -36,6 +36,13 @@ import {
   mensagemParaOperador,
 } from '@/servicos/chat-erros'
 import { log } from '@/lib/log'
+import {
+  pedidoForaDoEscopo,
+  respostaDeCordialidade,
+  respostaPermitida,
+  RESPOSTA_FORA_DO_ESCOPO,
+  RESPOSTA_SEM_CONHECIMENTO,
+} from '@/servicos/chat-guardrails'
 
 export { mensagemParaOperador, mensagemParaVisitante } from '@/servicos/chat-erros'
 
@@ -60,7 +67,7 @@ export interface EntradaDoTurno {
   criadoPorId?: string
   /** Validada aqui: 1 a 4000 caracteres, sem ser só espaços. */
   mensagem: unknown
-  /** Cancela o turno: a chamada ao provedor é abortada e nada é gravado. */
+  /** Cancela o turno: aborta o provedor e descarta a resposta do assistente. */
   sinal?: AbortSignal
 }
 
@@ -88,16 +95,14 @@ function registrarRecuperacao(agenteId: string, conversaId: string, trechos: num
 }
 
 interface MaterialDoTurno {
-  /** `undefined` sem fonte pronta: o turno é o da FT-03. */
-  texto?: string
+  texto: string
   /** Os trechos que entraram no prompt, numerados. */
   incluidos: TrechoIncluido[]
 }
 
 /**
- * O material de consulta do turno: sem texto se não há fonte pronta (modo da FT-03);
- * com fonte pronta, os trechos relevantes delimitados ou a instrução de dizer
- * que a base não cobre a pergunta. A pergunta anterior do usuário ajuda as
+ * Sem fonte pronta ou sem resultado, a base não cobre a pergunta. Nunca há
+ * fallback para conhecimento geral. A pergunta anterior do usuário ajuda as
  * perguntas de continuação (PR-51). Erro da busca é erro do turno: responder
  * como se a base estivesse vazia seria mentir.
  */
@@ -107,7 +112,7 @@ async function materialDaBase(
   historico: Array<{ role: 'user' | 'assistant'; content: string }>,
 ): Promise<MaterialDoTurno> {
   const comBase = (await prisma.fonte.count({ where: { agenteId, status: 'pronto' } })) > 0
-  if (!comBase) return { incluidos: [] }
+  if (!comBase) return { texto: montarMaterialSemResultado(), incluidos: [] }
   const perguntas = historico.filter((m) => m.role === 'user')
   const pergunta = perguntas.at(-1)?.content ?? ''
   const trechos = await buscarTrechos(agenteId, pergunta, { perguntaAnterior: perguntas.at(-2)?.content })
@@ -158,31 +163,55 @@ export async function* responderMensagem(entrada: EntradaDoTurno): AsyncGenerato
       await listarMensagens(conversa.id, LIMITE_DE_MENSAGENS_DO_HISTORICO * 2)
     ).map((m) => ({ role: m.papel as 'user' | 'assistant', content: m.conteudo }))
 
-    // Modo fundamentado (PR-52): o agente com ao menos uma fonte pronta responde a
-    // partir da base; sem nenhuma, o turno é o da FT-03.
-    const material = await materialDaBase(agente.id, conversa.id, historico)
+    if (entrada.sinal?.aborted) return
+    const bloqueado = pedidoForaDoEscopo(texto.data)
+    const cordialidade = bloqueado ? null : respostaDeCordialidade(texto.data)
+    const material: MaterialDoTurno = bloqueado || cordialidade !== null
+      ? { texto: montarMaterialSemResultado(), incluidos: [] }
+      : await materialDaBase(agente.id, conversa.id, historico)
 
-    let resposta = ''
-    for await (const trecho of conversar({
-      chave,
-      modelo: agente.modelo,
-      mensagens: montarPrompt({ instrucoes: agente.instrucoes, materialDeConsulta: material.texto, historico }),
-      temperatura: agente.temperatura,
-      maxTokens: ambiente.maxTokensDaResposta,
-      sinal: entrada.sinal,
-    })) {
-      resposta += trecho
+    let resposta = bloqueado ? RESPOSTA_FORA_DO_ESCOPO : cordialidade ?? RESPOSTA_SEM_CONHECIMENTO
+    let trechosDaResposta = [resposta]
+    let modeloDaResposta: string | null = null
+    if (material.incluidos.length > 0) {
+      resposta = ''
+      trechosDaResposta = []
+      for await (const trecho of conversar({
+        contexto: { funcao: 'responderMensagem', origem: entrada.canal },
+        chave,
+        modelo: agente.modelo,
+        mensagens: montarPrompt({ instrucoes: agente.instrucoes, materialDeConsulta: material.texto, historico }),
+        temperatura: agente.temperatura,
+        maxTokens: ambiente.maxTokensDaResposta,
+        sinal: entrada.sinal,
+      })) {
+        resposta += trecho
+        trechosDaResposta.push(trecho)
+      }
+      modeloDaResposta = agente.modelo
+      // Cancelado: o adaptador termina sem erro; o texto parcial é descartado.
+      if (entrada.sinal?.aborted) return
+      if (resposta.trim() === '') {
+        throw new ErroDeAplicacao(
+          'O OpenRouter está indisponível no momento. Tente de novo em instantes.',
+          502,
+          'provedor_indisponivel',
+        )
+      }
+      if (!respostaPermitida({ resposta, modelo: agente.modelo, instrucoes: agente.instrucoes, citacoesPermitidas: material.incluidos.map((i) => i.n) })) {
+        resposta = RESPOSTA_SEM_CONHECIMENTO
+        trechosDaResposta = [resposta]
+        material.incluidos = []
+        modeloDaResposta = null
+      }
+    }
+
+    // A resposta completa passa pelo guardrail antes de qualquer texto sair.
+    for (const trecho of trechosDaResposta) {
+      if (entrada.sinal?.aborted) return
       yield { tipo: 'trecho', texto: trecho }
     }
-    // Cancelado: o adaptador termina sem erro, e a resposta cortada não é gravada.
     if (entrada.sinal?.aborted) return
-    if (resposta === '') {
-      throw new ErroDeAplicacao(
-        'O OpenRouter está indisponível no momento. Tente de novo em instantes.',
-        502,
-        'provedor_indisponivel',
-      )
-    }
 
     let fontes: FonteDaResposta[] = []
     try {
@@ -192,7 +221,7 @@ export async function* responderMensagem(entrada: EntradaDoTurno): AsyncGenerato
     }
     if (fontes.length > 0) yield { tipo: 'fontes', fontes }
 
-    const dadosDaResposta = { papel: 'assistant' as const, conteudo: resposta, modelo: agente.modelo }
+    const dadosDaResposta = { papel: 'assistant' as const, conteudo: resposta, modelo: modeloDaResposta }
     let mensagem
     try {
       mensagem = await anexarMensagem(conversa.id, {

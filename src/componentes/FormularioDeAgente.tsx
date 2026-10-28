@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Formulario, type AcaoDeFormulario } from '@/componentes/Formulario'
 import { SeletorDeModelo, type ModeloSugerido } from '@/componentes/SeletorDeModelo'
+import estilos from './FormularioDeAgente.module.css'
 
 const MODELO_PADRAO = 'openai/gpt-4o-mini'
 const TEMPERATURA_PADRAO = 0.7
@@ -76,6 +77,9 @@ export function FormularioDeAgente({
   reserva: boolean
   ehAdmin: boolean
 }) {
+  const [temperatura, setTemperatura] = useState(agente?.temperatura ?? TEMPERATURA_PADRAO)
+  const temperaturaFormatada = temperatura.toFixed(1).replace('.', ',')
+
   return (
     <Formulario acao={acao} rotulo={rotulo}>
       {agente && <input type="hidden" name="id" value={agente.id} />}
@@ -110,16 +114,20 @@ export function FormularioDeAgente({
         ehAdmin={ehAdmin}
       />
 
-      <label className="campo campo-curto">
-        <span>Temperatura</span>
+      <label className={`campo ${estilos.temperatura}`}>
+        <span className={estilos.cabecalho}>
+          <span>Temperatura</span>
+          <span className={estilos.valor} aria-hidden="true">{temperaturaFormatada}</span>
+        </span>
         <input
-          type="number"
+          type="range"
           name="temperatura"
-          defaultValue={agente?.temperatura ?? TEMPERATURA_PADRAO}
+          value={temperatura}
+          onChange={(e) => setTemperatura(e.target.valueAsNumber)}
+          aria-valuetext={temperaturaFormatada}
           min={0}
           max={2}
           step={0.1}
-          required
         />
         <span className="campo-ajuda">
           De 0 a 2. Valores baixos deixam as respostas mais previsíveis; valores altos, mais variadas.

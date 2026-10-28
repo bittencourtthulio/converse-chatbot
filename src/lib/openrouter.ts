@@ -6,6 +6,7 @@
 import { ambiente } from '@/lib/ambiente'
 import { ErroDeAplicacao, erroDoProvedor } from '@/lib/erros'
 import { lerTrechosDeSSE } from '@/lib/sse'
+import { iniciarRegistroDeIA, type ContextoDaChamada, type RegistroDeChamada } from '@/lib/registro-de-ia'
 
 export interface Modelo {
   id: string
@@ -30,7 +31,7 @@ export const MODELOS_DE_RESERVA: Modelo[] = [
   { id: 'anthropic/claude-sonnet-4', nome: 'Anthropic: Claude Sonnet 4', contexto: 200000 },
   { id: 'google/gemini-2.0-flash-001', nome: 'Google: Gemini 2.0 Flash', contexto: 1000000 },
   { id: 'meta-llama/llama-3.3-70b-instruct', nome: 'Meta: Llama 3.3 70B Instruct', contexto: 131072 },
-]
+].sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'))
 
 /** Cabeçalhos de toda chamada. A chave só entra em `Authorization`. */
 export function cabecalhosDoProvedor(chave?: string): Record<string, string> {
@@ -55,8 +56,17 @@ export async function chamarProvedor(
     /** Vale até os cabeçalhos da resposta (o corpo em stream tem prazo próprio). */
     tempoLimiteMs: number
     sinal?: AbortSignal
+    /** O chamador conclui o registro depois de consumir o corpo (stream ou JSON). */
+    registro?: RegistroDeChamada
+    contexto?: ContextoDaChamada
   },
 ): Promise<Response> {
+  const registro = opcoes.registro ?? await iniciarRegistroDeIA({
+    caminho,
+    funcao: opcoes.contexto?.funcao ?? 'chamarProvedor',
+    origem: opcoes.contexto?.origem ?? 'integracoes',
+    semCusto: (opcoes.metodo ?? 'GET') === 'GET',
+  })
   const prazo = new AbortController()
   const temporizador = setTimeout(() => prazo.abort(), opcoes.tempoLimiteMs)
   const sinais = [prazo.signal, ...(opcoes.sinal ? [opcoes.sinal] : [])]
@@ -67,16 +77,18 @@ export async function chamarProvedor(
       body: opcoes.corpo === undefined ? undefined : JSON.stringify(opcoes.corpo),
       signal: AbortSignal.any(sinais),
     })
+    registro.receberStatusHttp(resposta.status)
     if (!resposta.ok) {
       await resposta.body?.cancel().catch(() => undefined)
       throw erroDoProvedor(resposta.status)
     }
+    if (!opcoes.registro) await registro.concluir('sucesso')
     return resposta
   } catch (erro) {
-    if (erro instanceof Error && erro.name === 'ErroDeAplicacao') throw erro
-    if (opcoes.sinal?.aborted) throw erro
-    if (prazo.signal.aborted) throw erroDoProvedor('timeout')
-    throw erroDoProvedor('rede')
+    const traduzido = erro instanceof ErroDeAplicacao || opcoes.sinal?.aborted ? erro
+      : erroDoProvedor(prazo.signal.aborted ? 'timeout' : 'rede')
+    if (!opcoes.registro) await registro.concluir(opcoes.sinal?.aborted ? 'cancelada' : 'erro', traduzido)
+    throw traduzido
   } finally {
     clearTimeout(temporizador)
   }
@@ -89,7 +101,7 @@ export function limparCacheDeModelos(): void {
 }
 
 /**
- * Modelos disponíveis, ordenados por nome. Cache de 5 minutos em memória; se o
+ * Modelos com saída de texto, ordenados por nome. Cache de 5 minutos em memória; se o
  * provedor falha, devolve a lista de reserva (`reserva: true`, sem cache).
  */
 export async function listarModelos(chave?: string): Promise<ListaDeModelos> {
@@ -98,12 +110,28 @@ export async function listarModelos(chave?: string): Promise<ListaDeModelos> {
     return { modelos: cache.lista, reserva: false }
   }
   try {
-    const resposta = await chamarProvedor('/models', { chave, tempoLimiteMs: TEMPO_CURTO_MS })
+    const resposta = await chamarProvedor('/models?output_modalities=text', {
+      contexto: { funcao: 'listarModelos', origem: 'integracoes' },
+      chave,
+      tempoLimiteMs: TEMPO_CURTO_MS,
+    })
     const corpo = (await resposta.json()) as {
-      data?: Array<{ id?: unknown; name?: unknown; context_length?: unknown }>
+      data?: Array<{
+        id?: unknown
+        name?: unknown
+        context_length?: unknown
+        architecture?: { input_modalities?: unknown; output_modalities?: unknown }
+      }>
     }
     const modelos: Modelo[] = (corpo.data ?? [])
       .filter((m) => typeof m.id === 'string' && m.id !== '')
+      .filter((m) => {
+        const entrada = m.architecture?.input_modalities
+        const saida = m.architecture?.output_modalities
+        // O endpoint já filtra por texto; confirma as modalidades quando informadas.
+        return (!Array.isArray(entrada) || entrada.includes('text')) &&
+          (!Array.isArray(saida) || saida.includes('text'))
+      })
       .map((m) => ({
         id: m.id as string,
         nome: typeof m.name === 'string' && m.name !== '' ? m.name : (m.id as string),
@@ -124,6 +152,7 @@ export async function verificarChave(
   opcoes: { tempoLimiteMs?: number } = {},
 ): Promise<{ valida: true; saldoRestante: number | null }> {
   const resposta = await chamarProvedor('/key', {
+    contexto: { funcao: 'verificarChave', origem: 'integracoes' },
     chave,
     tempoLimiteMs: opcoes.tempoLimiteMs ?? TEMPO_CURTO_MS,
   })
@@ -140,6 +169,7 @@ export interface MensagemDeChat {
 }
 
 export interface PedidoDeConversa {
+  contexto?: ContextoDaChamada
   chave: string
   modelo: string
   mensagens: MensagemDeChat[]
@@ -160,12 +190,17 @@ export interface PedidoDeConversa {
  * entregues. Usada pela conversa de teste (FT-03) e pelos canais.
  */
 export async function* conversar(pedido: PedidoDeConversa): AsyncGenerator<string> {
+  const registro = await iniciarRegistroDeIA({ caminho: '/chat/completions', modelo: pedido.modelo,
+    funcao: pedido.contexto?.funcao ?? 'conversar', origem: pedido.contexto?.origem ?? 'chat' })
+  let status: 'sucesso' | 'erro' | 'cancelada' = 'cancelada'
+  let falha: unknown
   const total = new AbortController()
   const temporizador = setTimeout(() => total.abort(), pedido.tempoTotalMs ?? 120_000)
   const sinal = AbortSignal.any([total.signal, ...(pedido.sinal ? [pedido.sinal] : [])])
 
   try {
     const resposta = await chamarProvedor('/chat/completions', {
+      registro,
       chave: pedido.chave,
       metodo: 'POST',
       corpo: {
@@ -179,14 +214,16 @@ export async function* conversar(pedido: PedidoDeConversa): AsyncGenerator<strin
       sinal,
     })
     if (!resposta.body) throw erroDoProvedor('rede')
-    yield* lerTrechosDeSSE(resposta.body)
+    yield* lerTrechosDeSSE(resposta.body, registro.receberDados)
+    status = pedido.sinal?.aborted ? 'cancelada' : 'sucesso'
   } catch (erro) {
     if (pedido.sinal?.aborted) return
-    if (total.signal.aborted) throw erroDoProvedor('timeout')
-    if (erro instanceof Error && erro.name === 'ErroDeAplicacao') throw erro
-    throw erroDoProvedor('rede')
+    status = 'erro'
+    falha = total.signal.aborted ? erroDoProvedor('timeout') : erro instanceof ErroDeAplicacao ? erro : erroDoProvedor('rede')
+    throw falha
   } finally {
     clearTimeout(temporizador)
+    await registro.concluir(status, falha)
   }
 }
 
@@ -199,6 +236,7 @@ export const INSTRUCAO_DE_TRANSCRICAO =
   'Não resuma, não traduza, não comente e não acrescente nada: devolva somente o texto transcrito.'
 
 export interface PedidoDeTranscricao {
+  contexto?: ContextoDaChamada
   chave: string
   modelo: string
   /** O áudio em base64 (o OpenRouter não aceita URL para áudio). */
@@ -218,12 +256,17 @@ export interface PedidoDeTranscricao {
  * áudio da base de conhecimento (FT-08).
  */
 export async function transcreverAudio(pedido: PedidoDeTranscricao): Promise<string> {
+  const registro = await iniciarRegistroDeIA({ caminho: '/chat/completions', modelo: pedido.modelo,
+    funcao: pedido.contexto?.funcao ?? 'transcreverAudio', origem: pedido.contexto?.origem ?? 'conhecimento' })
+  let status: 'sucesso' | 'erro' | 'cancelada' = 'erro'
+  let falha: unknown
   const prazoTotal = pedido.tempoTotalMs ?? TEMPO_DA_TRANSCRICAO_MS
   const total = new AbortController()
   const temporizador = setTimeout(() => total.abort(), prazoTotal)
   const sinal = AbortSignal.any([total.signal, ...(pedido.sinal ? [pedido.sinal] : [])])
   try {
     const resposta = await chamarProvedor('/chat/completions', {
+      registro,
       chave: pedido.chave,
       metodo: 'POST',
       corpo: {
@@ -245,6 +288,7 @@ export async function transcreverAudio(pedido: PedidoDeTranscricao): Promise<str
     const corpo = (await resposta.json()) as {
       choices?: Array<{ message?: { content?: unknown } }>
     }
+    registro.receberDados(corpo)
     const conteudo = corpo.choices?.[0]?.message?.content
     const texto = (
       typeof conteudo === 'string'
@@ -260,13 +304,15 @@ export async function transcreverAudio(pedido: PedidoDeTranscricao): Promise<str
         'transcricao_vazia',
       )
     }
+    status = 'sucesso'
     return texto
   } catch (erro) {
-    if (pedido.sinal?.aborted) throw erro
-    if (total.signal.aborted) throw erroDoProvedor('timeout')
-    if (erro instanceof ErroDeAplicacao) throw erro
-    throw erroDoProvedor('rede')
+    status = pedido.sinal?.aborted ? 'cancelada' : 'erro'
+    falha = pedido.sinal?.aborted ? erro : total.signal.aborted ? erroDoProvedor('timeout')
+      : erro instanceof ErroDeAplicacao ? erro : erroDoProvedor('rede')
+    throw falha
   } finally {
     clearTimeout(temporizador)
+    await registro.concluir(status, falha)
   }
 }

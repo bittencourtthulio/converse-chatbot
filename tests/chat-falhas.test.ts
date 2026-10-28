@@ -4,7 +4,7 @@ import { salvarChaveDoOpenrouter } from '@/servicos/integracoes'
 import { mensagemParaOperador, mensagemParaVisitante } from '@/servicos/chat'
 import { limparBanco } from './ajuda'
 import { iniciarOpenRouterFalso, type OpenRouterFalso } from './apoio/openrouter-falso'
-import { cenarioDeChat, coletar, responderMensagem } from './apoio/chat'
+import { cenarioDeChatComBase as cenarioDeChat, coletar, responderMensagem } from './apoio/chat'
 
 let falso: OpenRouterFalso
 const baseOriginal = process.env.OPENROUTER_BASE_URL
@@ -26,7 +26,7 @@ afterEach(async () => {
 
 const logado = () => erros.mock.calls.map((c: unknown[]) => c.map(String).join(' '))
 
-async function turno(mensagem = 'Qual é o segredo do cofre 4242?') {
+async function turno(mensagem = 'Qual é o segredo do cofre 4242 sobre troca?') {
   const { admin, agente } = await cenarioDeChat()
   const r = await coletar(
     responderMensagem({ agenteId: agente.id, canal: 'painel', criadoPorId: admin.id, mensagem }),
@@ -39,7 +39,7 @@ describe('falha do provedor', () => {
     const { admin, agente } = await cenarioDeChat()
     await salvarChaveDoOpenrouter(admin, { chave: 'sk-or-v1-chave-que-o-falso-nao-aceita' })
     const { eventos, erro } = await coletar(
-      responderMensagem({ agenteId: agente.id, canal: 'painel', criadoPorId: admin.id, mensagem: 'Oi' }),
+      responderMensagem({ agenteId: agente.id, canal: 'painel', criadoPorId: admin.id, mensagem: 'Qual o prazo de troca?' }),
     )
     expect(erro).toMatchObject({ status: 502, codigo: 'provedor_chave_invalida' })
     const texto = mensagemParaOperador(erro).mensagem
@@ -67,15 +67,15 @@ describe('falha do provedor', () => {
     const { admin, agente } = await cenarioDeChat()
     await prisma.agente.update({ where: { id: agente.id }, data: { modelo: 'x/modelo-inexistente' } })
     const { erro } = await coletar(
-      responderMensagem({ agenteId: agente.id, canal: 'painel', criadoPorId: admin.id, mensagem: 'Oi' }),
+      responderMensagem({ agenteId: agente.id, canal: 'painel', criadoPorId: admin.id, mensagem: 'Qual o prazo de troca?' }),
     )
     expect(erro).toMatchObject({ codigo: 'provedor_modelo_invalido' })
   })
 
-  it('erro no meio do stream: entrega o que chegou, lança e não grava a resposta', async () => {
+  it('erro no meio do stream: não entrega texto parcial e não grava a resposta', async () => {
     falso.configurar({ erroNoMeioApos: 2 })
     const { eventos, erro } = await turno()
-    expect(eventos.map((e) => e.tipo)).toEqual(['inicio', 'trecho', 'trecho'])
+    expect(eventos.map((e) => e.tipo)).toEqual(['inicio'])
     expect(erro).toMatchObject({ status: 502 })
     expect((await prisma.mensagem.findMany()).map((m) => m.papel)).toEqual(['user'])
   })
@@ -93,11 +93,11 @@ describe('cancelamento', () => {
         agenteId: agente.id,
         canal: 'painel',
         criadoPorId: admin.id,
-        mensagem: 'Oi',
+        mensagem: 'Qual o prazo de troca?',
         sinal: controle.signal,
       })) {
         eventos.push(e.tipo)
-        if (e.tipo === 'trecho') controle.abort()
+        if (e.tipo === 'inicio') setTimeout(() => controle.abort(), 60)
       }
     } catch (e) {
       erro = e
@@ -119,7 +119,7 @@ describe('cancelamento', () => {
         agenteId: agente.id,
         canal: 'painel',
         criadoPorId: admin.id,
-        mensagem: 'Oi',
+        mensagem: 'Qual o prazo de troca?',
         sinal: controle.signal,
       }),
     )
@@ -131,7 +131,7 @@ describe('cancelamento', () => {
 describe('log com correlação e sem conteúdo', () => {
   it('falha do provedor grava uma linha JSON com correlação e código, sem a mensagem nem a chave', async () => {
     falso.configurar({ erroHttp: 402 })
-    await turno('Qual é o segredo do cofre 4242?')
+    await turno('Qual é o segredo do cofre 4242 sobre troca?')
     const linhas = logado()
     expect(linhas).toHaveLength(1)
     const registro = JSON.parse(linhas[0]!)
@@ -150,7 +150,7 @@ describe('log com correlação e sem conteúdo', () => {
       new Error('SELECT segredo FROM tabela WHERE senha=hunter2'),
     )
     const { erro } = await coletar(
-      responderMensagem({ agenteId: agente.id, canal: 'painel', criadoPorId: admin.id, mensagem: 'Oi' }),
+      responderMensagem({ agenteId: agente.id, canal: 'painel', criadoPorId: admin.id, mensagem: 'Qual o prazo de troca?' }),
     )
     expect(erro).toMatchObject({ status: 500, codigo: 'erro_inesperado' })
     const mensagem = (erro as Error).message
@@ -165,8 +165,8 @@ describe('log com correlação e sem conteúdo', () => {
   it('erro de validação, agente inexistente e falta de chave não vão ao log', async () => {
     const { agente } = await cenarioDeChat({ comChave: false })
     await coletar(responderMensagem({ agenteId: agente.id, canal: 'painel', mensagem: '' }))
-    await coletar(responderMensagem({ agenteId: 'nada', canal: 'painel', mensagem: 'Oi' }))
-    await coletar(responderMensagem({ agenteId: agente.id, canal: 'painel', mensagem: 'Oi' }))
+    await coletar(responderMensagem({ agenteId: 'nada', canal: 'painel', mensagem: 'Qual o prazo de troca?' }))
+    await coletar(responderMensagem({ agenteId: agente.id, canal: 'painel', mensagem: 'Qual o prazo de troca?' }))
     expect(logado()).toEqual([])
   })
 })

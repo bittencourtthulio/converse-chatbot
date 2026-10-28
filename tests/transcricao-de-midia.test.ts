@@ -108,6 +108,15 @@ describe('transcreverMidia', () => {
     expect(existsSync(armazenamento.caminhoDoOriginal(fonte.agenteId, fonte.id))).toBe(true)
   })
 
+  it('usa o arquivo temporário do YouTube para sondar e extrair o áudio', async () => {
+    const midia = midiaFalsa({ duracao: 20, partes: 1 })
+    const caminhoOriginal = path.join(raiz, 'audio-youtube')
+    const { p } = pedido({ caminhoOriginal, dependencias: { ...midia, transcrever: transcritorPadrao() } })
+    await transcreverMidia(p)
+    expect(midia.sondar).toHaveBeenCalledWith(caminhoOriginal)
+    expect(midia.extrairAudio).toHaveBeenCalledWith(caminhoOriginal, expect.any(String))
+  })
+
   it('com o segmento 1 já em disco o transcritor não é chamado para a parte 1', async () => {
     await armazenamento.gravarSegmento(fonte.agenteId, fonte.id, 1, 'fala guardada da parte 2')
     const transcrever = transcritorPadrao()

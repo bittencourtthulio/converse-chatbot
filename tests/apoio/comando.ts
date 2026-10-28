@@ -14,7 +14,7 @@ const TSX = path.join(process.cwd(), 'node_modules', 'tsx', 'dist', 'cli.mjs')
 /**
  * Executa `scripts/<script>.ts` com `tsx`. O ambiente do teste NÃO é herdado por inteiro: o filho
  * recebe só o PATH, o HOME e o que o teste passar, para nenhum teste tocar o banco do desenvolvedor
- * por esquecimento. `entrada` vai para a entrada padrão do processo.
+ * por esquecimento; variável passada como `undefined` chega vazia, nunca preenchida pelo ambiente dele. `entrada` vai para a entrada padrão do processo.
  */
 export function rodarScript(
   script: string,
@@ -24,7 +24,9 @@ export function rodarScript(
 ): Promise<SaidaDoComando> {
   return new Promise((resolver, rejeitar) => {
     const ambienteDoFilho: Record<string, string> = { PATH: process.env.PATH ?? '', HOME: process.env.HOME ?? '' }
-    for (const [k, v] of Object.entries(variaveis)) if (v !== undefined) ambienteDoFilho[k] = v
+    // `undefined` vai como texto vazio: os scripts carregam o arquivo de ambiente do desenvolvedor com
+    // `dotenv/config`, que não sobrescreve variável já definida. Sem isso, "sem DATABASE_URL" lia o banco dele.
+    for (const [k, v] of Object.entries(variaveis)) ambienteDoFilho[k] = v ?? ''
     const filho = spawn(process.execPath, [TSX, path.join('scripts', `${script}.ts`), ...args], {
       cwd: process.cwd(),
       env: ambienteDoFilho as unknown as NodeJS.ProcessEnv,

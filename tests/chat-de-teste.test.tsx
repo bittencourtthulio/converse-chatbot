@@ -36,9 +36,9 @@ describe('estado vazio', () => {
     expect(saida).toContain('tabindex="0"')
   })
 
-  it('o botão Enviar começa desabilitado e Nova conversa também (nada a recomeçar)', () => {
+  it('o botão Enviar começa desabilitado e Limpar conversa também (nada a recomeçar)', () => {
     expect(saida).toMatch(/<button[^>]*type="submit"[^>]*disabled/)
-    expect(saida).toMatch(/<button[^>]*disabled[^>]*>Nova conversa<\/button>/)
+    expect(saida).toMatch(/<button[^>]*disabled[^>]*>Limpar conversa<\/button>/)
   })
 
   it('não mostra Parar, contador nem erro', () => {
@@ -79,9 +79,9 @@ describe('conversa retomada', () => {
     expect(saida).toContain('<ul><li>segunda a sexta</li></ul>')
   })
 
-  it('a sugestão de estado vazio some e Nova conversa fica habilitada', () => {
+  it('a sugestão de estado vazio some e Limpar conversa fica habilitada', () => {
     expect(saida).not.toContain('Faça uma pergunta')
-    expect(saida).not.toMatch(/<button[^>]*disabled[^>]*>Nova conversa<\/button>/)
+    expect(saida).not.toMatch(/<button[^>]*disabled[^>]*>Limpar conversa<\/button>/)
   })
 
   it('cada bolha tem nome acessível de quem fala', () => {

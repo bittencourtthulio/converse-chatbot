@@ -13,6 +13,7 @@ import { cenarioDeChat } from './apoio/chat'
 import { criarBase } from './apoio/conhecimento'
 import { conectar } from '@/servicos/canal-telegram'
 import { MENSAGEM_PARA_VISITANTE } from '@/servicos/chat-erros'
+import { RESPOSTA_SEM_CONHECIMENTO } from '@/servicos/chat-guardrails'
 import { autenticarWebhook, lerUpdate, type CanalAutenticado } from '@/servicos/telegram-webhook'
 import { atenderUpdate, type OpcoesDeAtendimento } from '@/servicos/telegram-atendimento'
 
@@ -54,6 +55,7 @@ afterEach(async () => {
 afterAll(limparBanco)
 
 const chamadasDeChat = () => openrouter.requisicoes.filter((r) => r.caminho.endsWith('/chat/completions'))
+const SAUDACAO = 'Olá! Como posso ajudar?'
 
 describe('resposta do agente', () => {
   it('uma pergunta gera conversa do canal telegram com o chat id, grava as duas mensagens e envia a resposta em texto puro', async () => {
@@ -65,9 +67,10 @@ describe('resposta do agente', () => {
     const mensagens = await prisma.mensagem.findMany({ orderBy: { criadoEm: 'asc' } })
     expect(mensagens.map((m) => [m.papel, m.conteudo])).toEqual([
       ['user', 'Oi, tudo bem?'],
-      ['assistant', 'Claro, posso ajudar.'],
+      ['assistant', SAUDACAO],
     ])
-    expect(falso.mensagensEnviadas()).toEqual([{ chat_id: 42, text: 'Claro, posso ajudar.' }])
+    expect(falso.mensagensEnviadas()).toEqual([{ chat_id: 42, text: SAUDACAO }])
+    expect(chamadasDeChat()).toHaveLength(0)
     const envio = falso.requisicoes.find((r) => r.metodo === 'sendMessage')
     expect(Object.keys(envio?.corpo ?? {}).sort()).toEqual(['chat_id', 'text'])
     expect(await prisma.canalTelegram.findFirstOrThrow()).toMatchObject({ ultimoErro: null })
@@ -82,9 +85,10 @@ describe('resposta do agente', () => {
   })
 
   it('o texto vai sem marcação: nada é interpretado, mesmo com asteriscos e HTML na resposta', async () => {
-    await preparar({ resposta: '**negrito** <b>html</b> _x_' })
-    await atender('oi')
-    expect(falso.mensagensEnviadas()[0]?.text).toBe('**negrito** <b>html</b> _x_')
+    const { agente } = await preparar({ resposta: '**negrito** <b>html</b> _x_ [1]' })
+    await criarBase({ agenteId: agente.id, titulo: 'Formatação', textos: ['O texto de exemplo é negrito html x.'] })
+    await atender('Qual o texto de exemplo?')
+    expect(falso.mensagensEnviadas()[0]?.text).toBe('**negrito** <b>html</b> _x_ [1]\n\nFontes: Formatação')
     expect(falso.requisicoes.find((r) => r.metodo === 'sendMessage')?.corpo).not.toHaveProperty('parse_mode')
   })
 
@@ -105,13 +109,15 @@ describe('resposta do agente', () => {
     const { agente } = await preparar({ resposta: 'Não encontrei isso na base.' })
     await criarBase({ agenteId: agente.id, titulo: 'Cadernos', textos: ['Vendemos cadernos.'] })
     await atender('Qual a capital da Austrália?')
-    expect(falso.mensagensEnviadas()[0]?.text).toBe('Não encontrei isso na base.')
+    expect(falso.mensagensEnviadas()[0]?.text).toBe(RESPOSTA_SEM_CONHECIMENTO)
+    expect(chamadasDeChat()).toHaveLength(0)
   })
 
   it('resposta acima de 4096 caracteres sai em mais de uma mensagem, em ordem, e a gravada é inteira', async () => {
-    const longa = 'a'.repeat(3000) + '\n\n' + 'b'.repeat(3000)
-    await preparar({ resposta: longa, trechos: [longa] })
-    await atender('conte tudo')
+    const longa = 'a'.repeat(3000) + '\n\n' + 'b'.repeat(3000) + ' [1]'
+    const { agente } = await preparar({ resposta: longa, trechos: [longa] })
+    await criarBase({ agenteId: agente.id, textos: [`Exemplo longo: ${longa}`] })
+    await atender('Mostre o exemplo longo')
     const enviadas = falso.mensagensEnviadas().map((m) => m.text)
     expect(enviadas).toHaveLength(2)
     expect(enviadas[0]?.startsWith('a')).toBe(true)
@@ -122,9 +128,10 @@ describe('resposta do agente', () => {
 
 describe('falhas', () => {
   it('falha do provedor responde a frase única ao chat e grava um último erro seguro para quem opera', async () => {
-    await preparar()
+    const { agente } = await preparar()
+    await criarBase({ agenteId: agente.id, textos: ['A troca é em sete dias.'] })
     openrouter.configurar({ erroHttp: 402 })
-    await atender('oi')
+    await atender('Qual o prazo de troca?')
     expect(falso.mensagensEnviadas()).toEqual([{ chat_id: 42, text: MENSAGEM_PARA_VISITANTE }])
     const texto = falso.mensagensEnviadas()[0]?.text ?? ''
     expect(texto).not.toMatch(/OpenRouter|saldo|provedor|402|Insufficient/i)
@@ -179,8 +186,9 @@ describe('falhas', () => {
 
 describe('digitando', () => {
   it('renova o indicador enquanto o modelo gera e para ao responder', async () => {
-    await preparar({ resposta: 'um dois três quatro cinco seis', intervaloEntreTrechosMs: 150 })
-    await atender('oi', { intervaloDigitandoMs: 100 })
+    const { agente } = await preparar({ resposta: 'A troca pode ser feita em sete dias [1].', intervaloEntreTrechosMs: 150 })
+    await criarBase({ agenteId: agente.id, textos: ['A troca é em sete dias.'] })
+    await atender('Qual o prazo de troca?', { intervaloDigitandoMs: 100 })
     const acoes = falso.requisicoes.filter((r) => r.metodo === 'sendChatAction')
     expect(acoes.length).toBeGreaterThanOrEqual(3)
     for (const a of acoes) expect(a.corpo).toEqual({ chat_id: 42, action: 'typing' })
@@ -195,6 +203,6 @@ describe('digitando', () => {
     await preparar()
     falso.configurar({ falhas: { sendChatAction: { status: 500 } } })
     await atender('oi', { intervaloDigitandoMs: 50 })
-    expect(falso.mensagensEnviadas()).toEqual([{ chat_id: 42, text: 'Claro, posso ajudar.' }])
+    expect(falso.mensagensEnviadas()).toEqual([{ chat_id: 42, text: SAUDACAO }])
   })
 })

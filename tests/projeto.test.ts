@@ -563,8 +563,8 @@ describe('convenções da privacidade e da auditoria (FT-10)', () => {
     ['src/servicos/auditoria-acoes.ts:96', /export function validarDetalhes/],
     ['src/servicos/auditoria-ouvintes.ts:71', /export function ligarAuditoria/],
     ['src/servicos/auditoria-ouvintes.ts:42', /export function tratarConversaApagada/],
-    ['src/instrumentation.ts:25', /ligarAuditoria/],
-    ['src/instrumentation.ts:31', /obterAgendadorDoExpurgo/],
+    ['src/instrumentation-node.ts:23', /ligarAuditoria/],
+    ['src/instrumentation-node.ts:29', /obterAgendadorDoExpurgo/],
     ['src/servicos/expurgo.ts:66', /export async function executarExpurgo/],
     ['src/servicos/expurgo.ts:19', /export const TAMANHO_DO_LOTE/],
     ['src/servicos/expurgo.ts:147', /export function criarAgendadorDoExpurgo/],
@@ -583,7 +583,7 @@ describe('convenções da privacidade e da auditoria (FT-10)', () => {
     ['src/app/api/titulares/exportar/route.ts:33', /export async function POST/],
     ['src/componentes/embed-logica.ts:256', /export function reduzirApagar/],
     ['src/componentes/embed-logica.ts:279', /export async function apagarMinhaConversaNoServidor/],
-    ['src/estilos/global.css:1542', /tabela-envoltorio:has/],
+    ['src/estilos/global.css:1569', /tabela-envoltorio:has/],
   ]
 
   it.each(CITACOES)('%s existe e contém o que o CONVENCOES.md diz', (citacao, esperado) => {
@@ -710,9 +710,10 @@ describe('convenções da operação e do backup (FT-11)', () => {
     ['src/app/error.tsx:10', /export default function Erro/],
     ['src/app/global-error.tsx:10', /export default function ErroGlobal/],
     ['src/app/not-found.tsx:9', /export default async function NaoEncontrada/],
-    ['src/instrumentation.ts:8', /export async function register/],
-    ['src/instrumentation.ts:69', /export async function desligarComCalma/],
-    ['src/instrumentation.ts:112', /export async function onRequestError/],
+    ['src/instrumentation.ts:4', /export async function register/],
+    ['src/instrumentation-node.ts:8', /export async function registrarNoNode/],
+    ['src/instrumentation-node.ts:67', /export async function desligarComCalma/],
+    ['src/instrumentation.ts:18', /export async function onRequestError/],
     ['src/lib/ambiente.ts:89', /export function validarAmbiente/],
     ['src/lib/ambiente.ts:48', /export class ErroDeConfiguracao/],
     ['src/lib/ambiente.ts:38', /export function bytesDaChaveDeCriptografia/],

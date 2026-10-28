@@ -93,7 +93,9 @@ function appUrlConfigurada(): string | undefined {
 /** A origem pública que o Telegram vai chamar; exige HTTPS (PR-65). */
 export function origemDoWebhook(): string {
   const url = appUrlConfigurada()
-  const https = url?.startsWith('https://') === true
+  const hostname = url ? new URL(url).hostname : ''
+  const local = hostname === 'localhost' || hostname.endsWith('.localhost') || hostname.startsWith('127.') || hostname === '[::1]' || hostname === '0.0.0.0'
+  const https = url?.startsWith('https://') === true && !local
   const http = url?.startsWith('http://') === true && ambiente.telegramPermitirUrlNaoHttps
   if (!url || !(https || http)) {
     throw new ErroDeAplicacao(MENSAGEM_DE_URL_NAO_HTTPS, 422, 'telegram_url_nao_https')
@@ -170,9 +172,9 @@ function lerToken(entrada: unknown): string {
 }
 
 /**
- * Conecta o bot ao agente: confere o formato, a URL pública e o bot (`getMe`),
- * cifra o token, registra o webhook com um segredo novo e só então grava. Sem
- * `ENCRYPTION_KEY` ou com `APP_URL` sem HTTPS, falha antes de falar com o Telegram.
+ * Conecta o bot ao agente: confere o formato e o bot (`getMe`), cifra o token
+ * e configura webhook se houver URL pública HTTPS; caso contrário usa getUpdates.
+ * Sem `ENCRYPTION_KEY`, falha antes de falar com o Telegram.
  * Reconectar gira o segredo; se o bot mudou, o webhook do antigo é solto.
  */
 export async function conectar(
@@ -183,7 +185,8 @@ export async function conectar(
   exigirAutor(autor)
   const agente = await exigirAgente(agenteId)
   const token = lerToken(tokenBruto)
-  const url = urlDoWebhook(agente.id)
+  // URL vazia identifica recebimento direto (getUpdates), sem endpoint público.
+  const url = appUrlServeAoTelegram() ? urlDoWebhook(agente.id) : ''
   const tokenCifrado = cifrar(token)
 
   const bot = await getMe(token)
@@ -200,7 +203,8 @@ export async function conectar(
   }
 
   const segredo = randomBytes(32).toString('hex')
-  await setWebhook(token, { url, secretToken: segredo })
+  if (url) await setWebhook(token, { url, secretToken: segredo })
+  else await deleteWebhook(token)
 
   const anterior = await prisma.canalTelegram.findUnique({ where: { agenteId: agente.id } })
   const dados = {
@@ -298,9 +302,10 @@ export async function verificar(autor: UsuarioAutenticado, agenteId: string): Pr
   const token = decifrar(canal.tokenCifrado)
   try {
     const info = await getWebhookInfo(token)
+    const esperada = appUrlServeAoTelegram() ? urlDoWebhook(agenteId) : ''
     return {
-      urlConfere: info.url === canal.webhookUrl,
-      urlEsperada: canal.webhookUrl,
+      urlConfere: info.url === esperada && canal.webhookUrl === esperada,
+      urlEsperada: esperada,
       urlRegistrada: info.url,
       pendentes: info.pendentes,
       ultimoErroDoTelegram: info.ultimoErro === null ? null : redigirToken(info.ultimoErro, token).slice(0, 200),

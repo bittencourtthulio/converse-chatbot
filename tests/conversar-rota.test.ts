@@ -11,6 +11,7 @@ import { COOKIE_SESSAO } from '@/lib/sessao'
 import { hashDeSenha } from '@/lib/senha'
 import { prisma } from '@/lib/prisma'
 import { limparBanco } from './ajuda'
+import { criarBase } from './apoio/conhecimento'
 import {
   CHAVE_VALIDA,
   iniciarOpenRouterFalso,
@@ -82,6 +83,7 @@ afterAll(async () => {
 beforeEach(async () => {
   await prisma.mensagem.deleteMany()
   await prisma.conversa.deleteMany()
+  await prisma.fonte.deleteMany()
   falso.configurar({
     erroHttp: null,
     erroNoMeioApos: null,
@@ -188,10 +190,11 @@ describe('stream completo', () => {
     expect(conversaId).toBeTruthy()
 
     const eventos = await eventosDe(r)
-    expect(eventos.map(([nome]) => nome)).toEqual(['trecho', 'trecho', 'trecho', 'trecho', 'fim'])
-    expect(eventos.slice(0, 4).map(([, d]) => d.texto).join('')).toBe('Olá, tudo bem?')
+    expect(eventos.map(([nome]) => nome)).toEqual(['trecho', 'fim'])
+    const saudacao = 'Olá! Como posso ajudar?'
+    expect(eventos[0]![1].texto).toBe(saudacao)
     const [, fim] = eventos.at(-1)!
-    expect(fim).toMatchObject({ conversaId, tamanho: 'Olá, tudo bem?'.length })
+    expect(fim).toMatchObject({ conversaId, tamanho: saudacao.length })
     expect(typeof fim.mensagemId).toBe('string')
 
     const gravadas = await prisma.mensagem.findMany({
@@ -200,7 +203,7 @@ describe('stream completo', () => {
     })
     expect(gravadas.map((m) => [m.papel, m.conteudo])).toEqual([
       ['user', 'Oi, tudo bem?'],
-      ['assistant', 'Olá, tudo bem?'],
+      ['assistant', saudacao],
     ])
   })
 
@@ -217,12 +220,16 @@ describe('stream completo', () => {
 })
 
 describe('falhas depois do início', () => {
-  it('erro no meio do stream: trechos, depois evento erro, e nada do assistente gravado', async () => {
+  beforeEach(async () => {
+    await criarBase({ agenteId, textos: ['Aceitamos a troca em sete dias.'] })
+  })
+
+  it('erro no meio do stream: evento erro sem texto parcial e nada do assistente gravado', async () => {
     falso.configurar({ erroNoMeioApos: 2 })
-    const r = await conversar({ mensagem: 'Oi' }, { cookie })
+    const r = await conversar({ mensagem: 'Qual o prazo de troca?' }, { cookie })
     expect(r.status).toBe(200)
     const eventos = await eventosDe(r)
-    expect(eventos.map(([nome]) => nome)).toEqual(['trecho', 'trecho', 'erro'])
+    expect(eventos.map(([nome]) => nome)).toEqual(['erro'])
     const [, erro] = eventos.at(-1)!
     expect(erro.codigo).toBe('provedor_indisponivel')
     expect(String(erro.mensagem)).toMatch(/indispon/i)
@@ -232,7 +239,7 @@ describe('falhas depois do início', () => {
 
   it('chave recusada pelo provedor: evento erro em português, sem o corpo bruto nem a chave', async () => {
     falso.configurar({ chavesValidas: ['outra-chave'] })
-    const r = await conversar({ mensagem: 'Oi' }, { cookie })
+    const r = await conversar({ mensagem: 'Qual o prazo de troca?' }, { cookie })
     expect(r.status).toBe(200)
     const texto = await r.text()
     expect(texto).toContain('event: erro')
@@ -245,7 +252,7 @@ describe('falhas depois do início', () => {
 
   it('saldo insuficiente: evento erro com a mensagem de saldo', async () => {
     falso.configurar({ erroHttp: 402 })
-    const texto = await (await conversar({ mensagem: 'Oi' }, { cookie })).text()
+    const texto = await (await conversar({ mensagem: 'Qual o prazo de troca?' }, { cookie })).text()
     expect(texto).toContain('provedor_sem_saldo')
     expect(texto).not.toContain('Insufficient credits')
   })
@@ -253,14 +260,19 @@ describe('falhas depois do início', () => {
 
 describe('cancelamento', () => {
   it('abortar a leitura no navegador aborta a chamada ao provedor e não grava a resposta', async () => {
+    await criarBase({ agenteId, textos: ['Aceitamos a troca em sete dias.'] })
     falso.configurar({ intervaloEntreTrechosMs: 150 })
     const antes = falso.cancelamentos
+    const chamadasAntes = falso.requisicoes.length
     const controle = new AbortController()
-    const r = await conversar({ mensagem: 'Oi' }, { cookie, sinal: controle.signal })
-    const leitor = r.body!.getReader()
-    await leitor.read()
+    const pendente = conversar({ mensagem: 'Qual o prazo de troca?' }, { cookie, sinal: controle.signal })
+      .then((r) => r.body?.cancel().catch(() => undefined)).catch(() => undefined)
+    // A resposta agora é retida para validação; não se espera texto parcial.
+    for (let i = 0; i < 60 && falso.requisicoes.length === chamadasAntes; i += 1) {
+      await new Promise((res) => setTimeout(res, 25))
+    }
     controle.abort()
-    await leitor.cancel().catch(() => undefined)
+    await pendente
     for (let i = 0; i < 60 && falso.cancelamentos === antes; i += 1) {
       await new Promise((res) => setTimeout(res, 50))
     }
@@ -272,7 +284,6 @@ describe('cancelamento', () => {
 
 describe('fontes da resposta pelo servidor de produção (FT-05)', () => {
   it('com base pronta, o SSE traz trecho, fontes e fim; a conversa retomada guarda as fontes', async () => {
-    const { criarBase } = await import('./apoio/conhecimento')
     falso.configurar({ trechos: ['Troca em sete dias ', '[1]', '.'] })
     const base = await criarBase({ agenteId, titulo: 'Política de troca', textos: ['Aceitamos a troca em até sete dias corridos.'] })
     try {
@@ -295,9 +306,10 @@ describe('fontes da resposta pelo servidor de produção (FT-05)', () => {
     }
   })
 
-  it('sem fonte pronta a mesma rota devolve só trecho e fim, como na FT-03', async () => {
+  it('sem fonte pronta a mesma rota devolve uma recusa e fim', async () => {
     falso.configurar({ trechos: ['Olá', ', ', 'tudo ', 'bem?'] })
     const eventos = await eventosDe(await conversar({ mensagem: 'Qual o prazo de troca?' }, { cookie }))
-    expect(eventos.map(([nome]) => nome)).toEqual(['trecho', 'trecho', 'trecho', 'trecho', 'fim'])
+    expect(eventos.map(([nome]) => nome)).toEqual(['trecho', 'fim'])
+    expect(String(eventos[0]![1].texto)).toContain('Não encontrei essa informação na base')
   })
 })

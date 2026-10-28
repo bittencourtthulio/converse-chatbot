@@ -98,11 +98,12 @@ describe('conectarTelegram', () => {
     expect((await conectarTelegram(vazio, formulario({ id: agenteId }))).erro).toBeTruthy()
   })
 
-  it('sem APP_URL HTTPS devolve a explicação do túnel', async () => {
+  it('sem APP_URL HTTPS conecta diretamente sem exigir túnel', async () => {
     delete process.env.APP_URL
     const r = await conectarTelegram(vazio, formulario({ id: agenteId, token: TOKEN_VALIDO }))
-    expect(r.erro).toMatch(/HTTPS/)
-    expect(r.erro).toMatch(/túnel/i)
+    expect(r.erro).toBeUndefined()
+    expect(r.sucesso).toBeTruthy()
+    expect((await prisma.canalTelegram.findUniqueOrThrow({ where: { agenteId } })).webhookUrl).toBe('')
   })
 
   it('sem sessão recusa, não muda nada e o que vai ao console não leva o token', async () => {

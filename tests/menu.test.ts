@@ -37,6 +37,7 @@ describe('itens de menu', () => {
     expect(doGrupo(true).map((i) => [i.rotulo, i.href])).toEqual([
       ['Usuários', '/configuracoes/usuarios'],
       ['Integrações', '/configuracoes/integracoes'],
+      ['Consumo de IA', '/configuracoes/consumo-ia'],
       ['Privacidade', '/configuracoes/privacidade'],
       ['Auditoria', '/configuracoes/auditoria'],
       ['Sistema', '/configuracoes/sistema'],

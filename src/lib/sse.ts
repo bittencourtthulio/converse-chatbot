@@ -14,6 +14,7 @@ interface Evento {
 
 export async function* lerTrechosDeSSE(
   corpo: ReadableStream<Uint8Array>,
+  aoEvento?: (dados: unknown) => void,
 ): AsyncGenerator<string> {
   const decodificador = new TextDecoder()
   const leitor = corpo.getReader()
@@ -33,6 +34,7 @@ export async function* lerTrechosDeSSE(
     } catch {
       throw erroDoProvedor('rede')
     }
+    aoEvento?.(evento)
     const escolha = evento.choices?.[0]
     if (evento.error || escolha?.finish_reason === 'error') {
       const codigo = evento.error?.code

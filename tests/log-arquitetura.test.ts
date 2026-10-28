@@ -27,6 +27,7 @@ describe('regra no-console do ESLint', () => {
     'src/componentes/Novo.tsx',
     'src/lib/novo.ts',
     'src/instrumentation.ts',
+    'src/instrumentation-node.ts',
   ])('console em %s é erro', async (caminho) => {
     expect(await regrasDeConsole(caminho, CODIGO)).toBe(2)
   })

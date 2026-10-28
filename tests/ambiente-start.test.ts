@@ -12,11 +12,19 @@ interface Saida {
   texto: string
 }
 
+/**
+ * O `next start` carrega sozinho o arquivo de ambiente do desenvolvedor e não sobrescreve variável já
+ * definida: a ausente vai como texto vazio, senão "sem configuração" subiria com a configuração dele (OC-2026-0001).
+ */
+function vazioNoLugarDeAusente(variaveis: Record<string, string | undefined>): NodeJS.ProcessEnv {
+  return Object.fromEntries(Object.entries(variaveis).map(([k, v]) => [k, v ?? ''])) as NodeJS.ProcessEnv
+}
+
 /** Roda `next start` e espera ele terminar sozinho (ou o prazo, e então o encerra). */
 function subirAteTerminar(porta: number, env: Record<string, string | undefined>, prazoMs: number): Promise<Saida & { terminou: boolean }> {
   return new Promise((resolver) => {
     const filho = spawn('npx', ['next', 'start', '-p', String(porta)], {
-      env: env as NodeJS.ProcessEnv,
+      env: vazioNoLugarDeAusente(env),
       stdio: ['ignore', 'pipe', 'pipe'],
     })
     let texto = ''
@@ -34,7 +42,7 @@ function subirAteTerminar(porta: number, env: Record<string, string | undefined>
 
 const base = (): Record<string, string | undefined> => {
   const env: Record<string, string | undefined> = { ...process.env, NODE_ENV: 'production' }
-  for (const nome of ['JWT_SECRET', 'DATABASE_URL', 'ENCRYPTION_KEY', 'APP_URL']) delete env[nome]
+  for (const nome of ['JWT_SECRET', 'DATABASE_URL', 'ENCRYPTION_KEY', 'APP_URL']) env[nome] = undefined
   return env
 }
 
@@ -65,7 +73,7 @@ describe('start de produção com configuração completa', () => {
   it('sobe e responde, e APP_URL ausente vira só o aviso configuracao_aviso no log', async () => {
     const porta = 3224
     const env = { ...base(), JWT_SECRET: process.env.JWT_SECRET, DATABASE_URL: process.env.DATABASE_URL, ENCRYPTION_KEY: process.env.ENCRYPTION_KEY }
-    const filho = spawn('npx', ['next', 'start', '-p', String(porta)], { env: env as unknown as NodeJS.ProcessEnv, stdio: ['ignore', 'pipe', 'pipe'] })
+    const filho = spawn('npx', ['next', 'start', '-p', String(porta)], { env: vazioNoLugarDeAusente(env), stdio: ['ignore', 'pipe', 'pipe'] })
     let texto = ''
     filho.stdout.on('data', (p: Buffer) => void (texto += p.toString('utf8')))
     filho.stderr.on('data', (p: Buffer) => void (texto += p.toString('utf8')))

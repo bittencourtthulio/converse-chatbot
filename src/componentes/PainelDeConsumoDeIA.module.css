@@ -1,0 +1,44 @@
+.filtros, .paginacao, .cabecalhoHistorico { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.rotuloPeriodo { font-weight: 600; margin-bottom: 4px; }
+.periodos { display: flex; gap: 4px; padding: 4px; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--raio-controle); }
+.periodos a { display: grid; place-items: center; min-height: var(--alvo-toque); padding: 6px 16px; color: var(--fg-muted); text-decoration: none; font-size: var(--texto-pequeno); font-weight: 500; border-radius: var(--raio-controle); }
+.periodos a:hover { background: var(--bg-hover); color: var(--fg-default); }
+.periodos a[aria-current] { background: var(--accent); color: var(--accent-fg); }
+.indicadores { grid-template-columns: minmax(220px, 1.4fr) repeat(4, minmax(0, 1fr)); }
+.indicadores strong { font-size: clamp(18px, 1.4vw, 24px); overflow-wrap: normal; }
+.indicadores .custo { background: var(--accent); color: var(--accent-fg); }
+.custo span, .custo strong { color: inherit; }
+.custo strong { font-size: clamp(22px, 2vw, 30px); }
+.custo span { opacity: 0.85; }
+.distribuicoes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: start; }
+.distribuicao { padding: 24px; min-width: 0; max-height: 400px; overflow-y: auto; }
+.quebra { list-style: none; margin: 0; padding: 0; display: grid; gap: 20px; }
+.linhaDistribuicao { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; font-size: var(--texto-pequeno); }
+.linhaDistribuicao strong { flex-shrink: 0; font-variant-numeric: tabular-nums; }
+.nome { overflow-wrap: anywhere; }
+.trilho { height: 4px; background: var(--bg-subtle); border-radius: var(--raio-controle); margin: 8px 0; overflow: hidden; }
+.trilho span { display: block; height: 100%; background: var(--grafico-barra); border-radius: inherit; }
+.historico { overflow: hidden; min-width: 0; }
+.cabecalhoHistorico { padding: 20px 24px; border-bottom: 1px solid var(--border); }
+.tabela { font-size: var(--texto-pequeno); }
+.tabela td { vertical-align: top; font-variant-numeric: tabular-nums; }
+.tabela td:first-child, .tabela td:nth-child(4), .tabela td:nth-child(5) { white-space: nowrap; }
+.tabela small { display: block; margin-top: 4px; overflow-wrap: anywhere; }
+.tabela code, .modelo { overflow-wrap: anywhere; }
+.modelo { display: block; min-width: 130px; }
+.paginacao { padding-bottom: 8px; }
+@media (max-width: 1200px) { .indicadores { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 767px) {
+  .indicadores { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .indicadores .custo { grid-column: 1 / -1; }
+  .distribuicoes { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .periodos { width: 100%; }
+  .periodos a { flex: 1; padding-inline: 8px; }
+  .tabela, .tabela tbody { display: block; }
+  .tabela thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .tabela tr { display: grid; gap: 12px; padding: 20px; border-bottom: 1px solid var(--border); }
+  .tabela tbody tr:last-child { border: 0; }
+  .tabela td { display: block; padding: 0; border: 0; white-space: normal; }
+  .tabela td:first-child, .tabela td:nth-child(4), .tabela td:nth-child(5) { white-space: normal; }
+  .tabela td::before { content: attr(data-rotulo); display: block; color: var(--fg-muted); font-size: var(--texto-pequeno); margin-bottom: 2px; }
+}

@@ -5,8 +5,8 @@ import { BarraLateral } from '@/componentes/BarraLateral'
 import { Cabecalho } from '@/componentes/Cabecalho'
 
 /**
- * A casca do sistema: barra lateral fixa, cabeçalho e conteúdo com largura
- * máxima. Abaixo de 768px a barra vira gaveta; ela fecha com Esc, ao tocar no
+ * A casca do sistema: cabeçalho fixo, barra lateral expansível e conteúdo com
+ * toda a largura disponível. Até 768px a barra vira gaveta; fecha com Esc, ao tocar no
  * fundo escurecido e ao navegar. O estado mora aqui, em um lugar só.
  */
 export function CascaDoSistema({

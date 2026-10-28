@@ -8,7 +8,7 @@ import { spawn } from 'node:child_process'
 import path from 'node:path'
 import { prisma } from '../src/lib/prisma.js'
 import { criarFila } from '../src/servicos/fontes-fila.js'
-import { desligarComCalma } from '../src/instrumentation.js'
+import { desligarComCalma } from '../src/instrumentation-node.js'
 import { limparBanco } from './ajuda'
 import { armazenamentoDeTeste, criarAgenteDeTeste, criarFonteDeTeste } from './apoio/fontes'
 

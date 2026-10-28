@@ -121,14 +121,15 @@ describe('orçamento de caracteres', () => {
 })
 
 describe('montarMaterialSemResultado', () => {
-  it('diz que não há material e manda responder que não encontrou, salvo saudação', () => {
+  it('diz que não há material e libera apenas cordialidade, sem conhecimento geral', () => {
     const texto = montarMaterialSemResultado()
     expect(texto).toMatch(/não há material relevante/i)
     expect(texto).toMatch(/não encontr/i)
     expect(texto).toMatch(/idioma de quem pergunta/i)
     expect(texto).toMatch(/português do Brasil/i)
     expect(texto).toMatch(/sem inventar/i)
-    expect(texto).toMatch(/saudaç/i)
+    expect(texto).toMatch(/somente de saudações, agradecimentos ou despedidas/)
+    expect(texto).toMatch(/pergunta factual junto do cumprimento/)
   })
 })
 
@@ -143,7 +144,7 @@ describe('montarPrompt com material', () => {
     expect(prompt).toHaveLength(2)
     expect(prompt[0]!.role).toBe('system')
     const sistema = prompt[0]!.content
-    expect(sistema.indexOf('Você é a Ana.')).toBeLessThan(sistema.indexOf(LINHA_DE_CONDUTA))
+    expect(sistema.indexOf(LINHA_DE_CONDUTA)).toBeLessThan(sistema.indexOf('Você é a Ana.'))
     expect(sistema.indexOf(LINHA_DE_CONDUTA)).toBeLessThan(sistema.indexOf('[1] Fonte 1'))
     expect(prompt[1]).toEqual({ role: 'user', content: 'e a troca?' })
   })

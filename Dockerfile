@@ -36,8 +36,14 @@ RUN DATABASE_URL=file:/tmp/construcao.db JWT_SECRET=segredo-de-construcao-descar
 FROM node:22-bookworm-slim AS final
 # ffmpeg (traz o ffprobe) para a transcrição de vídeo e áudio; tzdata para o fuso (o painel agrupa por dia local).
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends ffmpeg tzdata ca-certificates \
+  && apt-get install -y --no-install-recommends ffmpeg tzdata ca-certificates python3 python3-venv \
   && rm -rf /var/lib/apt/lists/*
+
+# Versão fixada com o componente EJS para os desafios JavaScript do YouTube.
+ARG YTDLP_VERSION=2026.10.26
+RUN python3 -m venv /opt/ytdlp \
+  && /opt/ytdlp/bin/pip install --no-cache-dir "yt-dlp[default]==${YTDLP_VERSION}"
+ENV YTDLP_PATH=/opt/ytdlp/bin/yt-dlp
 
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \

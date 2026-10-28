@@ -6,9 +6,7 @@ import { mensagemDaResposta } from '@/componentes/fonte-da-tela'
 import { validarLinkDoYoutube } from '@/componentes/video-logica'
 
 /**
- * Link do YouTube como fonte (PR-75): usa as legendas do vídeo, sem baixar o
- * vídeo e sem consumir créditos. O link é conferido ao digitar; o servidor
- * confere de novo, e quem lê as legendas é a fila.
+ * Link do YouTube como fonte: a fila busca legendas e, se necessário, transcreve o áudio.
  */
 export function FormularioDoYoutube({
   agenteId,
@@ -66,7 +64,7 @@ export function FormularioDoYoutube({
   return (
     <form className="formulario" onSubmit={enviar} noValidate>
       {erro && <Alerta variante="erro">{erro}</Alerta>}
-      {sucesso && <Alerta variante="sucesso">Vídeo adicionado. Ele aparece na lista e as legendas são lidas em instantes.</Alerta>}
+      {sucesso && <Alerta variante="sucesso">Vídeo adicionado. Ele aparece na lista e o conteúdo será processado em segundo plano.</Alerta>}
       <label className="campo" htmlFor={idDoCampo}>
         <span>Link do vídeo</span>
         <input
@@ -91,8 +89,8 @@ export function FormularioDoYoutube({
         </p>
       )}
       <p className="texto-de-apoio sem-margem" id={idDaAjuda}>
-        Usa as legendas do vídeo, sem baixar o vídeo e sem consumir créditos do OpenRouter. Se o vídeo não tiver legendas, baixe-o e envie o
-        arquivo. Aceita links de youtube.com e youtu.be.
+        Usa as legendas disponíveis sem consumir créditos. Se não conseguir obtê-las, baixa o áudio e transcreve com o modelo
+        configurado, consumindo créditos do OpenRouter. Aceita links de youtube.com e youtu.be.
       </p>
       <div>
         <button type="submit" className="botao primario" disabled={enviando}>

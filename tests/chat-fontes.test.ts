@@ -75,7 +75,7 @@ describe('evento fontes', () => {
   it('agente sem fonte pronta também não emite fontes', async () => {
     const { admin, agente } = await cenarioDeChat()
     const { eventos } = await turno(agente.id, admin.id, 'Qual o prazo de troca?')
-    expect(eventos.map((e) => e.tipo)).toEqual(['inicio', 'trecho', 'trecho', 'trecho', 'fim'])
+    expect(eventos.map((e) => e.tipo)).toEqual(['inicio', 'trecho', 'fim'])
   })
 })
 

@@ -1,0 +1,24 @@
+.temperatura {
+  max-width: 440px;
+}
+
+.temperatura > .cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.valor {
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.temperatura input[type='range'] {
+  display: block;
+  width: 100%;
+  min-height: var(--alvo-toque);
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}

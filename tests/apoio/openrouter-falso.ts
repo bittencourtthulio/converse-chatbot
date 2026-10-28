@@ -47,9 +47,12 @@ export interface ModeloFalso {
   id: string
   name: string
   context_length: number
+  architecture?: { input_modalities: string[]; output_modalities: string[] }
 }
 
 export interface OpcoesDoFalso {
+  uso?: Record<string, unknown>
+  modeloRespondido?: string
   chavesValidas?: string[]
   modelos?: ModeloFalso[]
   resposta?: string
@@ -192,7 +195,7 @@ export async function iniciarOpenRouterFalso(
       Connection: 'keep-alive',
     })
     const evento = (dados: unknown) => `data: ${JSON.stringify(dados)}\n\n`
-    const base = { id: 'gen-falso', object: 'chat.completion.chunk', model: modelo }
+    const base = { id: 'gen-falso', object: 'chat.completion.chunk', model: opcoes.modeloRespondido ?? modelo }
     const enviar = async (texto: string) => {
       if (encerrada) return
       if (opcoes.partirChunks && texto.length > 10) {
@@ -233,7 +236,7 @@ export async function iniciarOpenRouterFalso(
       evento({
         ...base,
         choices: [{ index: 0, delta: { content: '' }, finish_reason: 'stop' }],
-        usage: { prompt_tokens: 1, completion_tokens: trechos.length, total_tokens: trechos.length + 1 },
+        usage: opcoes.uso ?? { prompt_tokens: 1, completion_tokens: trechos.length, total_tokens: trechos.length + 1 },
       }),
     )
     await enviar('data: [DONE]\n\n')
@@ -290,9 +293,9 @@ export async function iniciarOpenRouterFalso(
         return json(res, {
           id: 'gen-falso',
           object: 'chat.completion',
-          model: pedido.model,
+          model: opcoes.modeloRespondido ?? pedido.model,
           choices: [{ index: 0, message: { role: 'assistant', content: conteudo }, finish_reason: 'stop' }],
-          usage: { prompt_tokens: 1, completion_tokens: 1, total_tokens: 2 },
+          usage: opcoes.uso ?? { prompt_tokens: 1, completion_tokens: 1, total_tokens: 2 },
         })
       }
       if (!(opcoes.modelos ?? []).some((m) => m.id === pedido.model)) return erro(res, 400)

@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 import { PrismaClient } from '../src/gerado/prisma/client.js'
 import { hashDeSenha } from '../src/lib/senha.js'

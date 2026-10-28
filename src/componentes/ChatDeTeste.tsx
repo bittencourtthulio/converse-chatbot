@@ -147,8 +147,10 @@ export function ChatDeTeste({ agente, retomada, temChave, ehAdmin }: ChatDeTeste
         }),
         signal: abortar.signal,
       })
+      if (abortar.signal.aborted) return
       if (!resposta.ok || !resposta.body) {
         const corpo = (await resposta.json().catch(() => null)) as Partial<ErroDaConversa> | null
+        if (abortar.signal.aborted) return
         despachar({
           tipo: 'recusada',
           erro: {
@@ -162,6 +164,8 @@ export function ChatDeTeste({ agente, retomada, temChave, ehAdmin }: ChatDeTeste
       const conversaId = resposta.headers.get('X-Conversa-Id')
       if (conversaId) despachar({ tipo: 'conversa', conversaId })
       for await (const evento of lerEventos(resposta.body, abortar.signal)) {
+        // Uma resposta anterior não pode restaurar o contexto após a limpeza.
+        if (abortar.signal.aborted) break
         if (evento.tipo === 'trecho') despachar({ tipo: 'trecho', texto: evento.texto })
         else if (evento.tipo === 'fontes') despachar({ tipo: 'fontes', fontes: evento.fontes })
         else if (evento.tipo === 'fim') {
@@ -193,6 +197,8 @@ export function ChatDeTeste({ agente, retomada, temChave, ehAdmin }: ChatDeTeste
 
   const novaConversa = () => {
     controle.current?.abort()
+    controle.current = null
+    pertoDoFim.current = true
     despachar({ tipo: 'nova' })
     setTexto('')
     campo.current?.focus()
@@ -209,9 +215,10 @@ export function ChatDeTeste({ agente, retomada, temChave, ehAdmin }: ChatDeTeste
           type="button"
           className="botao secundario botao-pequeno"
           onClick={novaConversa}
-          disabled={vazio && !estado.erro}
+          title="Limpar as mensagens e o contexto para começar uma nova conversa"
+          disabled={vazio && !estado.conversaId && !estado.erro && texto.length === 0}
         >
-          Nova conversa
+          Limpar conversa
         </button>
       </div>
 
@@ -247,7 +254,7 @@ export function ChatDeTeste({ agente, retomada, temChave, ehAdmin }: ChatDeTeste
         {vazio && (
           <p className="chat-sugestao">
             Faça uma pergunta para ver como o agente responde. Esta conversa fica salva ao recarregar a
-            página; use &ldquo;Nova conversa&rdquo; para recomeçar.
+            página; use &ldquo;Limpar conversa&rdquo; para recomeçar sem o contexto anterior.
           </p>
         )}
         {estado.bolhas.map((b) => (

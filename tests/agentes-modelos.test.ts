@@ -27,14 +27,14 @@ afterEach(async () => {
 })
 
 describe('modelosParaOSeletor', () => {
-  it('sem chave configurada não chama o provedor e diz que não há chave', async () => {
+  it('sem chave configurada carrega o catálogo público e informa que não há chave', async () => {
     const usuario = await criarUsuario()
-    expect(await modelosParaOSeletor(usuario)).toEqual({
-      modelos: [],
-      temChave: false,
-      reserva: false,
-    })
-    expect(falso.requisicoes).toHaveLength(0)
+    const resultado = await modelosParaOSeletor(usuario)
+    expect(resultado.temChave).toBe(false)
+    expect(resultado.reserva).toBe(false)
+    expect(resultado.modelos).toContainEqual({ id: 'openai/gpt-4o-mini', nome: 'OpenAI: GPT-4o mini' })
+    expect(falso.requisicoes).toHaveLength(1)
+    expect(falso.requisicoes[0]?.cabecalhos.authorization).toBeUndefined()
   })
 
   it('com chave devolve id e nome dos modelos, sem a chave', async () => {
@@ -49,6 +49,7 @@ describe('modelosParaOSeletor', () => {
       nome: 'OpenAI: GPT-4o mini',
     })
     expect(JSON.stringify(resultado)).not.toContain(CHAVE_VALIDA)
+    expect(falso.requisicoes.find((r) => r.caminho.endsWith('/models'))?.cabecalhos.authorization).toBeUndefined()
   })
 
   it('com o provedor fora do ar devolve a lista de reserva marcada', async () => {
@@ -67,6 +68,15 @@ describe('modelosParaOSeletor', () => {
     process.env.ENCRYPTION_KEY = 'cd'.repeat(32)
     const resultado = await modelosParaOSeletor(admin)
     expect(resultado.temChave).toBe(false)
-    expect(resultado.modelos).toEqual([])
+    expect(resultado.reserva).toBe(false)
+    expect(resultado.modelos.length).toBeGreaterThan(0)
+  })
+
+  it('sem chave e com o provedor indisponível ainda oferece a lista de reserva', async () => {
+    falso.configurar({ modelosFalham: true })
+    const resultado = await modelosParaOSeletor(await criarUsuario())
+    expect(resultado.temChave).toBe(false)
+    expect(resultado.reserva).toBe(true)
+    expect(resultado.modelos.length).toBeGreaterThan(0)
   })
 })

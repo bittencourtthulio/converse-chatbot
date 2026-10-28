@@ -33,18 +33,17 @@ const comoDados = (parcial: Partial<EstadoDoCanal> = {}): DadosDoCanalTelegram =
   dadosDoCanal({ ...estadoBase, ...parcial }) as DadosDoCanalTelegram
 
 describe('visaoDoCartaoTelegram', () => {
-  it('sem canal: não conectado, Conectar habilitado só com APP_URL que o Telegram aceita', () => {
+  it('sem canal: não conectado, Conectar habilitado com ou sem URL pública', () => {
     const ok = visaoDoCartaoTelegram({ canal: null, appUrlServe: true })
     expect(ok).toMatchObject({ situacao: 'nao_conectado', selo: { texto: 'Não conectado', variante: 'neutro' }, podeConectar: true, motivoSemConectar: null, linkDoBot: null })
     const sem = visaoDoCartaoTelegram({ canal: null, appUrlServe: false })
-    expect(sem.podeConectar).toBe(false)
+    expect(sem.podeConectar).toBe(true)
     expect(sem.motivoSemConectar).toBe(AVISO_SEM_APP_URL)
   })
 
-  it('o aviso de APP_URL explica HTTPS, o túnel e a variável', () => {
-    expect(AVISO_SEM_APP_URL).toMatch(/HTTPS/)
-    expect(AVISO_SEM_APP_URL).toMatch(/túnel/i)
-    expect(AVISO_SEM_APP_URL).toMatch(/APP_URL/)
+  it('explica a conexão direta sem exigir configuração adicional', () => {
+    expect(AVISO_SEM_APP_URL).toMatch(/diretamente/)
+    expect(AVISO_SEM_APP_URL).toMatch(/servidor estiver ligado/)
   })
 
   it('conectado, pausado e com erro têm selo, variante e rótulo do botão de pausa próprios', () => {
@@ -56,11 +55,11 @@ describe('visaoDoCartaoTelegram', () => {
     expect(comErro).toMatchObject({ situacao: 'com_erro', selo: { texto: 'Com erro', variante: 'perigo' } })
   })
 
-  it('canal já conectado continua operável mesmo se APP_URL deixou de servir; só a troca de token fica bloqueada', () => {
+  it('canal já conectado continua operável mesmo se APP_URL deixou de servir; a troca de token também funciona', () => {
     const v = visaoDoCartaoTelegram({ canal: comoDados(), appUrlServe: false })
     expect(v.situacao).toBe('conectado')
-    expect(v.podeConectar).toBe(false)
-    expect(v.motivoSemConectar).toBe(AVISO_SEM_APP_URL)
+    expect(v.podeConectar).toBe(true)
+    expect(v.motivoSemConectar).toBeNull()
   })
 })
 

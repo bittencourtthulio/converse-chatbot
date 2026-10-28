@@ -48,11 +48,12 @@ export function BarraLateral({
                   key={item.href}
                   href={item.href}
                   className="navegacao-item"
+                  title={item.rotulo}
                   aria-current={ativo ? 'page' : undefined}
                   onClick={aoNavegar}
                 >
                   <Icone nome={item.icone} />
-                  {item.rotulo}
+                  <span className="navegacao-rotulo">{item.rotulo}</span>
                 </Link>
               )
             })}

@@ -12,6 +12,7 @@ import { criarAdmin, limparBanco } from './ajuda'
 import { CHAVE_VALIDA, iniciarOpenRouterFalso, type OpenRouterFalso } from './apoio/openrouter-falso'
 import { dispararUpdate, iniciarTelegramFalso, TOKEN_VALIDO, updateDeTexto, type TelegramFalso } from './apoio/telegram-falso'
 import { esperar, subirServidor, type Servidor } from './apoio/servidor'
+import { criarBase } from './apoio/conhecimento'
 
 const PORTA = 3200
 const original = { ...process.env }
@@ -34,6 +35,7 @@ beforeAll(async () => {
   adminId = admin.id
   await salvarChaveDoOpenrouter(admin, { chave: CHAVE_VALIDA })
   agenteId = (await prisma.agente.create({ data: { nome: 'Agente do Telegram', modelo: 'openai/gpt-4o-mini', instrucoes: 'Seja breve.', criadoPorId: admin.id } })).id
+  await criarBase({ agenteId, titulo: 'Política de troca', textos: ['A troca pode ser feita em sete dias.'] })
   openrouter = await iniciarOpenRouterFalso({ resposta: 'Claro, posso ajudar.' })
   telegram = await iniciarTelegramFalso()
   process.env.TELEGRAM_API_BASE = telegram.url
@@ -88,9 +90,9 @@ describe('autenticação', () => {
 
 describe('resposta rápida e atendimento depois', () => {
   it('um update válido recebe 200 vazio antes da resposta do agente e a sendMessage chega ao Telegram depois', async () => {
-    openrouter.configurar({ latenciaMs: 700 })
+    openrouter.configurar({ latenciaMs: 700, resposta: 'A troca pode ser feita em sete dias [1].' })
     const inicio = Date.now()
-    const r = await dispararUpdate({ url: url(), segredo, update: novoUpdate('Pergunta lenta') })
+    const r = await dispararUpdate({ url: url(), segredo, update: novoUpdate('Qual o prazo de troca?') })
     const demorou = Date.now() - inicio
     expect(r.status).toBe(200)
     expect(await r.text()).toBe('')
@@ -98,7 +100,7 @@ describe('resposta rápida e atendimento depois', () => {
     expect(telegram.mensagensEnviadas()).toHaveLength(0)
 
     const enviada = await esperar(async () => telegram.mensagensEnviadas()[0], 15_000)
-    expect(enviada).toEqual({ chat_id: 42, text: 'Claro, posso ajudar.' })
+    expect(enviada).toEqual({ chat_id: 42, text: 'A troca pode ser feita em sete dias [1].\n\nFontes: Política de troca' })
     const conversa = await prisma.conversa.findFirstOrThrow({ where: { identificadorExterno: '42' } })
     expect(conversa).toMatchObject({ canal: 'telegram', titulo: 'Telegram: Maria' })
     expect((await prisma.canalTelegram.findFirstOrThrow()).ultimaMensagemEm).toBeInstanceOf(Date)
@@ -159,10 +161,10 @@ describe('corpo', () => {
 
 describe('logs do servidor', () => {
   it('o log do servidor de produção não contém o token, o segredo nem o texto das conversas', async () => {
-    await dispararUpdate({ url: url(), segredo, update: novoUpdate('Mensagem sigilosa do cliente 4455', 99) })
+    await dispararUpdate({ url: url(), segredo, update: novoUpdate('Mensagem sigilosa do cliente 4455 sobre troca', 99) })
     await esperar(async () => telegram.mensagensEnviadas().some((m) => m.chat_id === 99), 15_000)
     openrouter.configurar({ erroHttp: 500 })
-    await dispararUpdate({ url: url(), segredo, update: novoUpdate('Outra mensagem sigilosa 9988', 99) })
+    await dispararUpdate({ url: url(), segredo, update: novoUpdate('Outra mensagem sigilosa 9988 sobre troca', 99) })
     await esperar(async () => telegram.mensagensEnviadas().filter((m) => m.chat_id === 99).length >= 2, 15_000)
     const logs = servidor.logs()
     expect(logs).not.toContain(TOKEN_VALIDO)

@@ -90,7 +90,7 @@ describe('turno do visitante', () => {
     const { agente } = await cenarioPublico()
     const { eventos, erro } = await turno(agente.id)
     expect(erro).toBeUndefined()
-    expect(eventos.map((e) => e.tipo)).toEqual(['inicio', 'trecho', 'trecho', 'trecho', 'fim'])
+    expect(eventos.map((e) => e.tipo)).toEqual(['inicio', 'trecho', 'fim'])
     const conversa = await prisma.conversa.findFirstOrThrow({ where: { agenteId: agente.id } })
     expect(conversa).toMatchObject({ canal: 'widget', identificadorExterno: VISITANTE_A, criadoPorId: null })
     const mensagens = await prisma.mensagem.findMany({ where: { conversaId: conversa.id }, orderBy: { criadoEm: 'asc' } })
@@ -162,6 +162,7 @@ describe('turno do visitante', () => {
 
   it('erro do provedor vira erro genérico sem detalhe técnico, antes e depois do início', async () => {
     const { agente } = await cenarioPublico()
+    await criarBase({ agenteId: agente.id, textos: ['A troca é em sete dias.'] })
     falso.configurar({ erroHttp: 402 })
     const { erro } = await turno(agente.id)
     const e = erro as ErroDeAplicacao

@@ -279,3 +279,29 @@ model SessaoRevogada {
   @@index([expiraEm])
   @@map("sessoes_revogadas")
 }
+
+// Metadados de cada chamada HTTP de IA, sem prompts, respostas, áudio ou chaves.
+// Sem FK: excluir agente/conversa não apaga o histórico financeiro.
+model ChamadaDeIA {
+  id               String    @id @default(cuid())
+  iniciadoEm       DateTime  @default(now())
+  concluidoEm      DateTime?
+  funcao           String
+  origem           String
+  caminho          String
+  modeloSolicitado String?
+  modelo           String?
+  geracaoId        String?
+  status           String    @default("em_andamento")
+  statusHttp       Int?
+  erroCodigo       String?
+  tokensEntrada    Int?
+  tokensSaida      Int?
+  tokensTotal      Int?
+  // Valor efetivamente informado pelo OpenRouter em USD. Nulo = não informado.
+  custoUsd         Float?
+  duracaoMs        Int?
+
+  @@index([iniciadoEm, id])
+  @@map("chamadas_de_ia")
+}

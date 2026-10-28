@@ -4,7 +4,8 @@
  * é testável aqui (PR-26): é limite conhecido.
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { LINHA_DE_CONDUTA, montarPrompt } from '@/servicos/chat-prompt'
+import { LINHA_DE_CONDUTA } from '@/servicos/chat-prompt'
+import { RESPOSTA_SEM_CONHECIMENTO } from '@/servicos/chat-guardrails'
 import { limparBanco } from './ajuda'
 import { iniciarOpenRouterFalso, type OpenRouterFalso } from './apoio/openrouter-falso'
 import { cenarioDeChat, coletar, responderMensagem } from './apoio/chat'
@@ -39,18 +40,12 @@ async function perguntar(agenteId: string, criadoPorId: string, mensagem: string
 }
 
 describe('agente sem fonte pronta', () => {
-  it('envia exatamente o prompt da FT-03, sem busca e sem material', async () => {
+  it('recusa sem chamar o provedor, inclusive quando só há fonte em erro', async () => {
     const { admin, agente } = await cenarioDeChat()
     await criarBase({ agenteId: agente.id, status: 'erro', textos: ['Troca em sete dias.'] })
-    await perguntar(agente.id, admin.id, 'Qual a política de troca?')
-    expect(enviado()).toEqual(
-      montarPrompt({
-        instrucoes: 'Você é a Ana, atendente da loja.',
-        historico: [{ role: 'user', content: 'Qual a política de troca?' }],
-      }),
-    )
-    expect(sistema()).not.toContain('MATERIAL')
-    expect(sistema()).not.toMatch(/base de conhecimento/i)
+    const { eventos } = await coletar(responderMensagem({ agenteId: agente.id, criadoPorId: admin.id, canal: 'painel', mensagem: 'Qual a política de troca?' }))
+    expect(eventos.filter((e) => e.tipo === 'trecho').map((e) => e.texto).join('')).toBe(RESPOSTA_SEM_CONHECIMENTO)
+    expect(falso.requisicoes).toHaveLength(0)
   })
 })
 
@@ -129,24 +124,19 @@ describe('agente com base e trechos relevantes', () => {
 })
 
 describe('agente com base e nenhum trecho relevante', () => {
-  it('pergunta fora da base recebe a instrução de dizer que não encontrou, sem material', async () => {
+  it('pergunta fora da base recebe recusa do servidor sem chamar a IA', async () => {
     const { admin, agente } = await cenarioDeChat()
     await criarBase({ agenteId: agente.id, textos: ['Vendemos cadernos e canetas.'] })
-    await perguntar(agente.id, admin.id, 'Qual a capital da Austrália?')
-    const s = sistema()
-    expect(s).toMatch(/Não há material relevante/)
-    expect(s).toMatch(/não encontrou essa informação na base/)
-    expect(s).toMatch(/idioma de quem pergunta/)
-    expect(s).toMatch(/saudações e conversa trivial/)
-    expect(s).not.toContain('<<<MATERIAL')
+    const { eventos } = await coletar(responderMensagem({ agenteId: agente.id, criadoPorId: admin.id, canal: 'painel', mensagem: 'Qual a capital da Austrália?' }))
+    expect(eventos.filter((e) => e.tipo === 'trecho').map((e) => e.texto).join('')).toBe(RESPOSTA_SEM_CONHECIMENTO)
+    expect(falso.requisicoes).toHaveLength(0)
   })
 
-  it('saudação também cai aqui (o agente é instruído a responder normalmente)', async () => {
+  it('saudação é respondida sem precisar chamar a IA', async () => {
     const { admin, agente } = await cenarioDeChat()
     await criarBase({ agenteId: agente.id, textos: ['Olá, bem-vindo! Bom dia.'] })
     await perguntar(agente.id, admin.id, 'Olá!')
-    expect(sistema()).toMatch(/Não há material relevante/)
-    expect(sistema()).not.toContain('<<<MATERIAL')
+    expect(falso.requisicoes).toHaveLength(0)
   })
 })
 

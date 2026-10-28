@@ -68,6 +68,12 @@ export const GRUPOS_DE_MENU: GrupoDeMenu[] = [
         somenteAdmin: true,
       },
       {
+        rotulo: 'Consumo de IA',
+        href: '/configuracoes/consumo-ia',
+        icone: 'painel',
+        somenteAdmin: true,
+      },
+      {
         rotulo: 'Privacidade',
         href: '/configuracoes/privacidade',
         icone: 'informacao',

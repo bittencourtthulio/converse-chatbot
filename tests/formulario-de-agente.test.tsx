@@ -34,7 +34,7 @@ describe('FormularioDeAgente: novo agente', () => {
   })
 
   it('a temperatura vai de 0 a 2 em passos de 0,1', () => {
-    expect(html).toMatch(/<input[^>]*type="number"[^>]*name="temperatura"/)
+    expect(html).toMatch(/<input[^>]*type="range"[^>]*name="temperatura"/)
     expect(html).toContain('min="0"')
     expect(html).toContain('max="2"')
     expect(html).toContain('step="0.1"')

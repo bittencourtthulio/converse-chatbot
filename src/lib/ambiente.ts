@@ -128,7 +128,7 @@ export function validarAmbiente(opcoes: { env?: Env } = {}): ResultadoDaValidaca
       protocolo = null
     }
     if (protocolo !== 'http:' && protocolo !== 'https:') erros.push('APP_URL (precisa ser uma URL http ou https)')
-    else if (protocolo === 'http:') avisos.push('APP_URL sem HTTPS: o chat embutido e o Telegram exigem uma URL pública HTTPS')
+    else if (protocolo === 'http:') avisos.push('APP_URL sem HTTPS: o chat embutido e o webhook do Telegram exigem uma URL pública HTTPS')
   }
 
   if (erros.length > 0) throw new ErroDeConfiguracao(erros, avisos)
@@ -296,6 +296,9 @@ export const ambiente = {
     if (!valor) return 'info'
     if ((NIVEIS_DE_LOG as readonly string[]).includes(valor)) return valor as NivelDeLog
     throw new Error('Variável LOG_LEVEL precisa ser debug, info, aviso ou erro.')
+  },
+  get ytdlpPath(): string {
+    return textoComPadrao('YTDLP_PATH', 'yt-dlp')
   },
   /** Endereço do YouTube; só o simulado de teste muda o padrão (PR-75, PR-77). */
   get youtubeBase(): string {

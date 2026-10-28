@@ -9,7 +9,7 @@ import { criarLimitador } from '@/lib/limite-de-uso'
 import { limparBanco } from './ajuda'
 import { iniciarOpenRouterFalso, type OpenRouterFalso } from './apoio/openrouter-falso'
 import { iniciarTelegramFalso, TOKEN_VALIDO, updateDeTexto, type TelegramFalso } from './apoio/telegram-falso'
-import { cenarioDeChat } from './apoio/chat'
+import { cenarioDeChatComBase as cenarioDeChat } from './apoio/chat'
 import { conectar } from '@/servicos/canal-telegram'
 import { autenticarWebhook, lerUpdate, type CanalAutenticado } from '@/servicos/telegram-webhook'
 import { atenderUpdate, MENSAGEM_DE_NOVA_CONVERSA, type OpcoesDeAtendimento } from '@/servicos/telegram-atendimento'
@@ -22,6 +22,7 @@ let agenteId: string
 let relogio = 1_000_000
 const limitador = () => criarLimitador(() => relogio)
 const original = { ...process.env }
+const RESPOSTA = 'A troca é em sete dias [1].\n\nFontes: Política de troca'
 let contadorDeUpdate = 1
 
 async function atender(texto: string, chatId = 42, opcoes: OpcoesDeAtendimento = {}) {
@@ -36,7 +37,7 @@ const textosAoChat = (chatId: number) => falso.mensagensEnviadas().filter((m) =>
 beforeEach(async () => {
   await limparBanco()
   relogio = 1_000_000
-  openrouter = await iniciarOpenRouterFalso({ resposta: 'ok' })
+  openrouter = await iniciarOpenRouterFalso({ resposta: 'A troca é em sete dias [1].' })
   process.env.OPENROUTER_BASE_URL = openrouter.url
   const { admin, agente } = await cenarioDeChat()
   agenteId = agente.id
@@ -60,7 +61,7 @@ afterAll(limparBanco)
 describe('por chat, por minuto', () => {
   it('a 11ª mensagem do mesmo chat no minuto recebe a frase de limite sem chamar o provedor; outro chat não é afetado', async () => {
     const lim = limitador()
-    for (let i = 0; i < LIMITES_DO_TELEGRAM.porChatPorMinuto; i += 1) await atender(`pergunta ${i}`, 42, { limitador: lim })
+    for (let i = 0; i < LIMITES_DO_TELEGRAM.porChatPorMinuto; i += 1) await atender(`troca ${i}`, 42, { limitador: lim })
     expect(chamadasAoProvedor()).toBe(10)
 
     await atender('pergunta demais', 42, { limitador: lim })
@@ -68,23 +69,23 @@ describe('por chat, por minuto', () => {
     expect(textosAoChat(42).at(-1)).toBe(MENSAGENS_DE_LIMITE.porChat)
     expect(await prisma.mensagem.count({ where: { conteudo: 'pergunta demais' } })).toBe(0)
 
-    await atender('outro chat', 43, { limitador: lim })
+    await atender('troca em outro chat', 43, { limitador: lim })
     expect(chamadasAoProvedor()).toBe(11)
-    expect(textosAoChat(43)).toEqual(['ok'])
+    expect(textosAoChat(43)).toEqual([RESPOSTA])
   })
 
   it('passado o minuto o chat volta a ser atendido', async () => {
     const lim = limitador()
-    for (let i = 0; i < 11; i += 1) await atender(`p${i}`, 42, { limitador: lim })
+    for (let i = 0; i < 11; i += 1) await atender(`troca ${i}`, 42, { limitador: lim })
     expect(textosAoChat(42).at(-1)).toBe(MENSAGENS_DE_LIMITE.porChat)
     relogio += 61_000
-    await atender('de volta', 42, { limitador: lim })
-    expect(textosAoChat(42).at(-1)).toBe('ok')
+    await atender('troca de volta', 42, { limitador: lim })
+    expect(textosAoChat(42).at(-1)).toBe(RESPOSTA)
   })
 
   it('o limite de um canal não vaza para outro agente com o mesmo chat id', async () => {
     const lim = limitador()
-    for (let i = 0; i < 10; i += 1) await atender(`p${i}`, 42, { limitador: lim })
+    for (let i = 0; i < 10; i += 1) await atender(`troca ${i}`, 42, { limitador: lim })
     const { chave } = { chave: `telegram:chat:${canal.id}:42` }
     expect(lim.verificarLimite(chave, { max: 10, janelaMs: 60_000 }).permitido).toBe(false)
     expect(lim.verificarLimite(`telegram:chat:outro-canal:42`, { max: 10, janelaMs: 60_000 }).permitido).toBe(true)
@@ -103,8 +104,8 @@ describe('por conversa', () => {
     expect(MENSAGENS_DE_LIMITE.conversaCheia).toContain('/novo')
 
     await atender('/novo', 42, { limitador: limitador() })
-    await atender('agora vai', 42, { limitador: limitador() })
-    expect(textosAoChat(42)).toEqual([MENSAGENS_DE_LIMITE.conversaCheia, MENSAGEM_DE_NOVA_CONVERSA, 'ok'])
+    await atender('troca agora', 42, { limitador: limitador() })
+    expect(textosAoChat(42)).toEqual([MENSAGENS_DE_LIMITE.conversaCheia, MENSAGEM_DE_NOVA_CONVERSA, RESPOSTA])
     expect(await prisma.conversa.count({ where: { identificadorExterno: '42' } })).toBe(2)
   })
 })
@@ -115,7 +116,7 @@ describe('teto diário do canal', () => {
     const outra = await prisma.conversa.create({ data: { agenteId, canal: 'telegram', identificadorExterno: '99' } })
     await prisma.mensagem.createMany({ data: [1, 2, 3].map((i) => ({ conversaId: outra.id, papel: 'user', conteudo: `u${i}` })) })
     canal = { ...canal, limiteDiario: 3 }
-    await atender('oi', 42, { limitador: limitador() })
+    await atender('troca', 42, { limitador: limitador() })
     expect(chamadasAoProvedor()).toBe(0)
     expect(textosAoChat(42)).toEqual([MENSAGENS_DE_LIMITE.tetoDiario])
     expect(MENSAGENS_DE_LIMITE.tetoDiario).toMatch(/amanhã/)
@@ -128,8 +129,8 @@ describe('teto diário do canal', () => {
     const ontem = new Date(Date.now() - 36 * 3600 * 1000)
     const velha = await prisma.conversa.create({ data: { agenteId, canal: 'telegram', identificadorExterno: '7' } })
     await prisma.mensagem.createMany({ data: [1, 2, 3].map((i) => ({ conversaId: velha.id, papel: 'user', conteudo: `v${i}`, criadoEm: ontem })) })
-    await atender('oi', 42, { limitador: limitador() })
-    expect(textosAoChat(42)).toEqual(['ok'])
+    await atender('troca', 42, { limitador: limitador() })
+    expect(textosAoChat(42)).toEqual([RESPOSTA])
   })
 })
 
@@ -142,14 +143,14 @@ describe('mensagens de limite e ordem', () => {
   })
 
   it('duas mensagens simultâneas do mesmo chat são atendidas em ordem, sem intercalar', async () => {
-    openrouter.configurar({ intervaloEntreTrechosMs: 40, resposta: 'um dois três' })
+    openrouter.configurar({ intervaloEntreTrechosMs: 40, resposta: 'Troca em sete dias [1].' })
     contadorDeUpdate += 2
-    const a = lerUpdate(updateDeTexto({ updateId: contadorDeUpdate, chatId: 42, texto: 'primeira', nome: 'Maria' }))!
-    const b = lerUpdate(updateDeTexto({ updateId: contadorDeUpdate + 1, chatId: 42, texto: 'segunda', nome: 'Maria' }))!
+    const a = lerUpdate(updateDeTexto({ updateId: contadorDeUpdate, chatId: 42, texto: 'primeira troca', nome: 'Maria' }))!
+    const b = lerUpdate(updateDeTexto({ updateId: contadorDeUpdate + 1, chatId: 42, texto: 'segunda troca', nome: 'Maria' }))!
     const lim = limitador()
     await Promise.all([atenderUpdate(canal, a, { limitador: lim }), atenderUpdate(canal, b, { limitador: lim })])
     const mensagens = await prisma.mensagem.findMany({ orderBy: [{ criadoEm: 'asc' }, { id: 'asc' }] })
-    expect(mensagens.map((m) => `${m.papel}:${m.conteudo}`)).toEqual(['user:primeira', 'assistant:um dois três', 'user:segunda', 'assistant:um dois três'])
+    expect(mensagens.map((m) => `${m.papel}:${m.conteudo}`)).toEqual(['user:primeira troca', 'assistant:Troca em sete dias [1].', 'user:segunda troca', 'assistant:Troca em sete dias [1].'])
     expect(await prisma.conversa.count()).toBe(1)
   })
 })

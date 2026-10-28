@@ -11,7 +11,7 @@
       "referencia": "main",
       "travado": false,
       "commit": "6b846ae3404ddc6087b032d4a598b4d897838da9",
-      "resolvido_em": "2026-09-30",
+      "resolvido_em": "2026-10-01",
       "arquivos": {
         "DECISOES-DA-SKILL.md": "75a5c5a52f092fd584f404e90aaf754f02b585b6abd87b157f3f20bca6bb6918",
         "SKILL.md": "6a3ab38845933f2cc4504cdbd5be86202bd1736e2a1006710ecefdcd0dd4fd37",
@@ -45,7 +45,7 @@
       "referencia": "main",
       "travado": false,
       "commit": "4480d7817da730f743c3cd2c0c6199addcd87bb1",
-      "resolvido_em": "2026-09-30",
+      "resolvido_em": "2026-10-01",
       "arquivos": {
         "DECISOES-DA-SKILL.md": "28332866d74b35b9d8458dbef573ec5e930a2c2b7b36b54d607259ad8d748f1a",
         "SKILL.md": "bf0691c75384c6abf4d2021c3f0a02fdfd93856163b7ee69be4ea3d6219f8526",
@@ -72,12 +72,43 @@
         "references/07-diagrama.md": "ecee2c7fb17c80298d2779a6c02fe2895ba775d6537fea0a792a82797cb66a73"
       }
     },
+    "legadox": {
+      "repositorio": "https://github.com/bittencourtthulio/legadox",
+      "referencia": "main",
+      "travado": false,
+      "commit": "3678e5a6648a29e62d3a141665b457c8b904dd92",
+      "resolvido_em": "2026-10-01",
+      "arquivos": {
+        "DECISOES-DA-SKILL.md": "191d6543b974f01219822be7a968b87b68a45d70be1ed82c0e34770d8a433fe7",
+        "SKILL.md": "7ad9ecbc730948c7bd2a014c8ca9c0d4917a55ceb217b93707d09fdb1c65c496",
+        "assets/TEMPLATE-DIVIDA.md": "837d37aa6b65faa094e4f19937836be09063efe01d4e75e242b5b8b3b65f8b37",
+        "assets/TEMPLATE-LACUNAS.md": "4434ae17a799d24cc3d42014ba7a873014177f7e805176a58497831bf8512590",
+        "assets/TEMPLATE-PERFIL.md": "77fa703e3dc4463f576e7e54256f4f0e5d2accd219b0c4ff534dc92e536f8f6e",
+        "assets/TEMPLATE-caracterizacao.md": "537aefe5c0f46bccb4751dba8bdef548f85f1f231377884e3717dcd9b4f58119",
+        "assets/TEMPLATE-comparacao.md": "be3559a3f22c475cb7f64c3e68e4198f4a9c1b67633f2f1f4b97ee61f6bbb05a",
+        "assets/TEMPLATE-raio.md": "36ac0948e92169317e10cbc29bd24daecf96e7998b291e72acadcc940949ef62",
+        "assets/TEMPLATE-reversao.md": "9a31da776648fbb40747ec21f5ebc6f7092b0914e0c6712f44ee3e93897abcd3",
+        "assets/TEMPLATE-teste-manual.md": "1bc67ae9ef469f2892267cb4916a720345280f5c329697719d62cc1a21da7303",
+        "references/01-perfil.md": "bdd311d3f8734b9f6b6b0587faa72cee8a5762bd594c1c658029eeb2d2a64b89",
+        "references/02-raio-de-impacto.md": "411c033a40c4c91e5b7987f75713188919c455b8c74df3d795817b7aa77f3cbd",
+        "references/03-caracterizacao.md": "5aec909a436043664727c1b6b744fd0e257df12092f105d651c635d209f437e3",
+        "references/04-ponto-de-costura.md": "d1b6d6af56e9046b03087b4c3abd24d20d79fe8f9e53d4e4f2091952bb7c526b",
+        "references/05-orcamento-e-colateral.md": "e08ec871a13dbb1db69b4563f3344a128416a3f556850f445c1ef9b042c1464e",
+        "references/06-reversao.md": "384f5bc5483638086c372c770944f419f7b794650d9a86db1450fc3b243ce9da",
+        "references/07-teste-manual.md": "36c691267292021468e90ce1a2ba1e0442612042ac7223dd6486d480e8ac1618",
+        "references/08-comparacao-real.md": "185b51a4c252073773bef3bb0db9406f4ceb9025de87c75c89bbc7784c8c0944",
+        "references/09-zonas-e-perguntas.md": "84fbd17da945f992cc2f3c04ebb8fda983480f44974a1932d3a12727950e2fac",
+        "references/10-integracao-sprintx.md": "6e4eb99e8eeb91c94a729ea3e314338a14eba1a67ac4d3430a1f8b7ab42fc4da",
+        "references/11-integracao-runx.md": "8d01ef51967b6800b6fa1418e0e940a99a415a0eca13c6074681be6842e54119",
+        "references/12-estado.md": "8634f1d9c6b2bdfe9bca83383f451d095057d903f950b0a903c2ca90e76afc8e"
+      }
+    },
     "stackx": {
       "repositorio": "https://github.com/bittencourtthulio/stackx",
       "referencia": "main",
       "travado": false,
       "commit": "872043bfc045bb01725e9ef21d5eaa735105268e",
-      "resolvido_em": "2026-09-30",
+      "resolvido_em": "2026-10-01",
       "arquivos": {
         "DECISOES-DA-SKILL.md": "dfeceeea23a792c839fb146b04ff5f868ab70c660218104caf4bbc5edd2aa4c1",
         "SKILL.md": "04a601e537fe4d18ff75f0793786d5422a8bdb7f8e304b8f12110732d77f31b0",
@@ -103,7 +134,7 @@
       "referencia": "main",
       "travado": false,
       "commit": "064625fd70cb2dcaf0634f72db88cb87a963dc68",
-      "resolvido_em": "2026-09-30",
+      "resolvido_em": "2026-10-01",
       "arquivos": {
         "DECISOES-DA-SKILL.md": "be03d273e29d6cdc8428cd8ffb158147ec889730cd65fdfe8dd09d835f887724",
         "SKILL.md": "f1f80cfd77cb18d2d787a761de4bbe5c0d7d78ba0a2449512054f194b793147e",
@@ -137,7 +168,7 @@
       "referencia": "main",
       "travado": false,
       "commit": "01b2b040c745f391ec72a584600bdd42d8387bd5",
-      "resolvido_em": "2026-09-30",
+      "resolvido_em": "2026-10-01",
       "arquivos": {
         "DECISOES-DA-SKILL.md": "cc6c6828fc2b3d424af18e5e73ef4054a2451cbeb6b3195dd9351a30741f2c98",
         "SKILL.md": "790920a4e6fb80bd541883ae617126c963b7579d50de2eec40eae34af5013c5a",
@@ -160,7 +191,7 @@
       "referencia": "main",
       "travado": false,
       "commit": "ed7c7343165fc3b7dcf97895568015632c07457c",
-      "resolvido_em": "2026-09-30",
+      "resolvido_em": "2026-10-01",
       "arquivos": {
         "DECISOES-DA-SKILL.md": "9d283a6e7733fcd45eafd4484f38fc57b7f2800b9f905a455953f81ca9cd6645",
         "SKILL.md": "63495863b537422f3db8f2970cdd7c40910c4a0b33b9a150d9908daff615ab53",
@@ -188,7 +219,7 @@
       "referencia": "main",
       "travado": false,
       "commit": "566b53a2de4805a06c2d047de86de18e72140850",
-      "resolvido_em": "2026-09-30",
+      "resolvido_em": "2026-10-01",
       "arquivos": {
         "DECISOES-DA-SKILL.md": "cd66e0302e18de3cd7af05a066eac52d9f6bd968baca566d94df32ce659ae32e",
         "SKILL.md": "3035db834b536f3c48843f9d66185f21c67af90c05c00bc4cef6a9c16650e5c2",
@@ -261,7 +292,7 @@
       "referencia": "main",
       "travado": false,
       "commit": "e8eda95fd2882738a3b9b96a56b8cc0df5d0a068",
-      "resolvido_em": "2026-09-30",
+      "resolvido_em": "2026-10-01",
       "arquivos": {
         "SKILL.md": "09d9b0f6e78a45804d03690a170a75723c03c1be2b07167412376bbb42c79969",
         "assets/tokens.css.exemplo": "e07c4cb9555adfae31f3ef5ac588eca42829bcf19111a61e9e7995c3ac5e28c3",

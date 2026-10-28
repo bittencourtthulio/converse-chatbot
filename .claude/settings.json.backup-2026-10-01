@@ -1,0 +1,43 @@
+{
+  "extraKnownMarketplaces": {
+    "expx-local": {
+      "source": {
+        "source": "directory",
+        "path": "/Users/thuliobittencourt/orca/projects/chatbase-clone/.expx/marketplace"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "expx@expx-local": true
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/expx-lembrete.sh"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/memox-injetar.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/memox-reindexar.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

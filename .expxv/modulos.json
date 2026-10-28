@@ -1,0 +1,14 @@
+{
+  "versao": 1,
+  "modulos": {
+    "sprintx": true,
+    "runx": true,
+    "legadox": false,
+    "stackx": true,
+    "mergex": true,
+    "memox": true,
+    "prodx": true,
+    "buildx": true,
+    "designx": true
+  }
+}

@@ -1,5 +1,4 @@
-// As opções da seção "Adicionar" da aba Conhecimento. A FT-08 acrescenta a
-// opção de vídeo AQUI, com o componente dela; a tela lê esta lista.
+// As opções da seção "Adicionar" da aba Conhecimento; a tela lê esta lista.
 import type { NomeDeIcone } from '@/componentes/itens-de-menu'
 
 export interface OpcaoDeFonte {
@@ -28,5 +27,11 @@ export const OPCOES_DE_FONTE: OpcaoDeFonte[] = [
     rotulo: 'Vídeo',
     descricao: 'Envie um vídeo ou áudio, ou cole um link do YouTube: a fala vira texto para o agente usar.',
     icone: 'video',
+  },
+  {
+    id: 'pergunta_resposta',
+    rotulo: 'Perguntas e respostas',
+    descricao: 'Cadastre uma pergunta e a resposta que o agente deve usar como referência.',
+    icone: 'conversa',
   },
 ]

@@ -4,14 +4,14 @@ import { LINHA_DE_CONDUTA } from '@/servicos/chat-prompt'
 import { anexarMensagem, criar as criarConversa } from '@/servicos/conversas'
 import { limparBanco } from './ajuda'
 import { iniciarOpenRouterFalso, type OpenRouterFalso } from './apoio/openrouter-falso'
-import { cenarioDeChat, coletar, responderMensagem } from './apoio/chat'
+import { cenarioDeChatComBase as cenarioDeChat, coletar, responderMensagem } from './apoio/chat'
 
 let falso: OpenRouterFalso
 const baseOriginal = process.env.OPENROUTER_BASE_URL
 
 beforeEach(async () => {
   await limparBanco()
-  falso = await iniciarOpenRouterFalso({ trechos: ['Olá', ', ', 'tudo bem?'] })
+  falso = await iniciarOpenRouterFalso({ trechos: ['A troca', ' é em ', 'sete dias [1].'] })
   process.env.OPENROUTER_BASE_URL = falso.url
 })
 afterEach(async () => {
@@ -37,39 +37,39 @@ describe('responderMensagem: turno completo', () => {
         agenteId: agente.id,
         canal: 'painel',
         criadoPorId: admin.id,
-        mensagem: '  Oi, tudo bem?  ',
+        mensagem: '  Qual o prazo de troca?  ',
       }),
     )
     expect(erro).toBeUndefined()
-    expect(eventos.map((e) => e.tipo)).toEqual(['inicio', 'trecho', 'trecho', 'trecho', 'fim'])
+    expect(eventos.map((e) => e.tipo)).toEqual(['inicio', 'trecho', 'trecho', 'trecho', 'fontes', 'fim'])
     const inicio = eventos[0]!
     const fim = eventos.at(-1)!
     if (inicio.tipo !== 'inicio' || fim.tipo !== 'fim') throw new Error('eventos fora do esperado')
     expect(eventos.filter((e) => e.tipo === 'trecho').map((e) => (e as { texto: string }).texto)).toEqual([
-      'Olá',
-      ', ',
-      'tudo bem?',
+      'A troca',
+      ' é em ',
+      'sete dias [1].',
     ])
     expect(fim.conversaId).toBe(inicio.conversaId)
-    expect(fim.tamanho).toBe('Olá, tudo bem?'.length)
+    expect(fim.tamanho).toBe('A troca é em sete dias [1].'.length)
 
     const mensagens = await prisma.mensagem.findMany({
       where: { conversaId: inicio.conversaId },
       orderBy: [{ criadoEm: 'asc' }, { id: 'asc' }],
     })
     expect(mensagens.map((m) => [m.papel, m.conteudo])).toEqual([
-      ['user', 'Oi, tudo bem?'],
-      ['assistant', 'Olá, tudo bem?'],
+      ['user', 'Qual o prazo de troca?'],
+      ['assistant', 'A troca é em sete dias [1].'],
     ])
     expect(mensagens[1]!.id).toBe(fim.mensagemId)
     expect(mensagens[1]!.modelo).toBe('openai/gpt-4o-mini')
     const conversa = await prisma.conversa.findUniqueOrThrow({ where: { id: inicio.conversaId } })
-    expect(conversa).toMatchObject({ canal: 'painel', criadoPorId: admin.id, titulo: 'Oi, tudo bem?' })
+    expect(conversa).toMatchObject({ canal: 'painel', criadoPorId: admin.id, titulo: 'Qual o prazo de troca?' })
   })
 
   it('envia ao provedor o sistema, o histórico, a temperatura e o teto de tokens', async () => {
     const { agente } = await cenarioDeChat({ instrucoes: 'Você é a Ana, atendente da loja.' })
-    await coletar(responderMensagem({ agenteId: agente.id, canal: 'painel', mensagem: 'Olá' }))
+    await coletar(responderMensagem({ agenteId: agente.id, canal: 'painel', mensagem: 'Qual o prazo de troca?' }))
     const corpo = corpoEnviado()
     expect(corpo.model).toBe('openai/gpt-4o-mini')
     expect(corpo.temperature).toBe(0.3)
@@ -78,13 +78,13 @@ describe('responderMensagem: turno completo', () => {
     expect(corpo.messages[0]!.role).toBe('system')
     expect(corpo.messages[0]!.content).toContain('Você é a Ana, atendente da loja.')
     expect(corpo.messages[0]!.content).toContain(LINHA_DE_CONDUTA)
-    expect(corpo.messages.slice(1)).toEqual([{ role: 'user', content: 'Olá' }])
+    expect(corpo.messages.slice(1)).toEqual([{ role: 'user', content: 'Qual o prazo de troca?' }])
   })
 
   it('retomar a conversa envia o histórico e grava na mesma conversa', async () => {
     const { admin, agente } = await cenarioDeChat()
     const primeira = await coletar(
-      responderMensagem({ agenteId: agente.id, canal: 'painel', criadoPorId: admin.id, mensagem: 'Primeira' }),
+      responderMensagem({ agenteId: agente.id, canal: 'painel', criadoPorId: admin.id, mensagem: 'Primeira troca' }),
     )
     const conversaId = (primeira.eventos[0] as { conversaId: string }).conversaId
     const segunda = await coletar(
@@ -93,14 +93,14 @@ describe('responderMensagem: turno completo', () => {
         conversaId,
         canal: 'painel',
         criadoPorId: admin.id,
-        mensagem: 'Segunda',
+        mensagem: 'Segunda troca',
       }),
     )
     expect((segunda.eventos.at(-1) as { conversaId: string }).conversaId).toBe(conversaId)
     expect(corpoEnviado().messages.slice(1).map((m) => [m.role, m.content])).toEqual([
-      ['user', 'Primeira'],
-      ['assistant', 'Olá, tudo bem?'],
-      ['user', 'Segunda'],
+      ['user', 'Primeira troca'],
+      ['assistant', 'A troca é em sete dias [1].'],
+      ['user', 'Segunda troca'],
     ])
     expect(await prisma.conversa.count()).toBe(1)
     expect(await prisma.mensagem.count()).toBe(4)
@@ -118,12 +118,12 @@ describe('responderMensagem: turno completo', () => {
         conversaId: conversa.id,
         canal: 'painel',
         criadoPorId: admin.id,
-        mensagem: 'agora',
+        mensagem: 'troca agora',
       }),
     )
     const historico = corpoEnviado().messages.slice(1)
     expect(historico.length).toBeLessThanOrEqual(20)
-    expect(historico.at(-1)).toEqual({ role: 'user', content: 'agora' })
+    expect(historico.at(-1)).toEqual({ role: 'user', content: 'troca agora' })
   })
 
   it('canal de visitante grava o identificador externo e não exige usuário', async () => {

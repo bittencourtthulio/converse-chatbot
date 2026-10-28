@@ -4,6 +4,7 @@ import path from 'node:path'
 import { prisma } from '@/lib/prisma'
 import { criarFila, type Fila } from '@/servicos/fontes-fila'
 import { register } from '@/instrumentation'
+import { obterRecebimentoTelegram } from '@/servicos/telegram-recebimento'
 import { aguardarGravacoesPendentes } from '@/servicos/auditoria'
 import { desligarAuditoria } from '@/servicos/auditoria-ouvintes'
 import { apagarConversas } from '@/servicos/historico'
@@ -24,7 +25,9 @@ beforeEach(async () => {
   await limparBanco()
   agenteId = (await criarAgenteDeTeste()).agente.id
 })
-afterEach(() => {
+afterEach(async () => {
+  obterRecebimentoTelegram().parar()
+  await obterRecebimentoTelegram().ocioso()
   globalAgendador[CHAVE_DO_AGENDADOR]?.parar()
   delete globalAgendador[CHAVE_DO_AGENDADOR]
   desligarAuditoria()
@@ -107,7 +110,7 @@ describe('register (src/instrumentation.ts)', () => {
   })
 
   it('importa a fila por import dinâmico, para não carregá-la fora do runtime Node', () => {
-    const fonte = readFileSync(path.resolve(process.cwd(), 'src/instrumentation.ts'), 'utf8')
+    const fonte = readFileSync(path.resolve(process.cwd(), 'src/instrumentation-node.ts'), 'utf8')
     expect(fonte).toMatch(/await import\('@\/servicos\/fontes-fila'\)/)
     expect(fonte).not.toMatch(/^import .*fontes-fila/m)
   })
@@ -136,7 +139,7 @@ describe('register (src/instrumentation.ts)', () => {
     await apagarConversas([c.id], admin.id)
     await aguardarGravacoesPendentes()
     expect(await prisma.registroDeAuditoria.count()).toBe(0)
-    const fonte = readFileSync(path.resolve(process.cwd(), 'src/instrumentation.ts'), 'utf8')
+    const fonte = readFileSync(path.resolve(process.cwd(), 'src/instrumentation-node.ts'), 'utf8')
     expect(fonte).toMatch(/await import\('@\/servicos\/auditoria-ouvintes'\)/)
   })
 
@@ -189,7 +192,7 @@ describe('register (src/instrumentation.ts)', () => {
     globalAgendador[CHAVE_DO_AGENDADOR] = ag
     await register()
     expect(ag.ativo()).toBe(false)
-    const fonte = readFileSync(path.resolve(process.cwd(), 'src/instrumentation.ts'), 'utf8')
+    const fonte = readFileSync(path.resolve(process.cwd(), 'src/instrumentation-node.ts'), 'utf8')
     expect(fonte).toMatch(/await import\('@\/servicos\/expurgo'\)/)
   })
 })
@@ -202,7 +205,9 @@ describe('register e a configuração de produção (FT-11, PR-94)', () => {
     if (valor === undefined) delete process.env[nome]
     else Object.assign(process.env, { [nome]: valor })
   }
-  afterEach(() => {
+  afterEach(async () => {
+  obterRecebimentoTelegram().parar()
+  await obterRecebimentoTelegram().ocioso()
     for (const [n, v] of guardadas) atribuir(n, v)
     delete (globalThis as unknown as Record<symbol, unknown>)[FILTRO]
   })

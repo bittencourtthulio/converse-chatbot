@@ -59,6 +59,7 @@ export interface OpcoesDoTelegramFalso {
   derrubar?: boolean
   exigirHttps?: boolean
   webhookInfo?: Record<string, unknown>
+  updates?: Array<{ update_id: number; [chave: string]: unknown }>
 }
 
 export interface RequisicaoDoTelegram {
@@ -158,6 +159,12 @@ export async function iniciarTelegramFalso(inicial: OpcoesDoTelegramFalso = {}):
     }
 
     switch (metodo) {
+      case 'getUpdates': {
+        if (estado.webhook) return erro(res, 409)
+        const offset = typeof corpo.offset === 'number' ? corpo.offset : 0
+        opcoes.updates = (opcoes.updates ?? []).filter((update) => update.update_id >= offset)
+        return responder(res, 200, { ok: true, result: opcoes.updates.slice(0, 100) })
+      }
       case 'getMe':
         return responder(res, 200, { ok: true, result: { ...bot, is_bot: true, can_join_groups: true } })
       case 'setWebhook': {

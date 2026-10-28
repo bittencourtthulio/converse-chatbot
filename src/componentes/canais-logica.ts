@@ -5,9 +5,7 @@
 import type { EstadoDoCanal } from '@/servicos/canal-telegram'
 
 export const AVISO_SEM_APP_URL =
-  'O Telegram só entrega mensagens em um endereço HTTPS público. Defina APP_URL com o endereço HTTPS deste sistema ' +
-  'e reinicie o servidor. Em desenvolvimento, exponha o servidor por um túnel (por exemplo ngrok ou Cloudflare Tunnel) ' +
-  'e use o endereço dele em APP_URL.'
+  'A conexão funciona diretamente enquanto este servidor estiver ligado. Você pode testar no Telegram sem configurar um endereço público.'
 
 export const PASSOS_DO_TELEGRAM = [
   'Abra o @BotFather no Telegram e crie um bot com o comando /newbot.',
@@ -34,7 +32,7 @@ export interface DadosDoCanalTelegram {
 export interface VisaoDoCartaoTelegram {
   situacao: SituacaoDoCartao
   selo: { texto: string; variante: VarianteDoSelo }
-  /** Conectar (e trocar o token) só com APP_URL que o Telegram aceita. */
+  /** O recebimento direto permite conectar mesmo sem URL pública. */
   podeConectar: boolean
   motivoSemConectar: string | null
   linkDoBot: string | null
@@ -77,8 +75,8 @@ export function visaoDoCartaoTelegram(entrada: {
   return {
     situacao,
     selo: SELOS[situacao],
-    podeConectar: entrada.appUrlServe,
-    motivoSemConectar: entrada.appUrlServe ? null : AVISO_SEM_APP_URL,
+    podeConectar: true,
+    motivoSemConectar: (entrada.canal ? entrada.canal.webhookUrl !== '' : entrada.appUrlServe) ? null : AVISO_SEM_APP_URL,
     linkDoBot: entrada.canal?.bot.url ?? null,
     rotuloDaPausa: entrada.canal !== null && !entrada.canal.ativo ? 'Retomar' : 'Pausar',
   }

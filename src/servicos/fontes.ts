@@ -45,6 +45,15 @@ const entradaDeTexto = z.object({
     .refine((c) => c.trim().length > 0, 'Informe o conteúdo do texto.'),
 })
 
+const entradaDePerguntaResposta = z.object({
+  pergunta: z.string({ message: 'Informe a pergunta.' }).trim()
+    .min(1, 'Informe a pergunta.')
+    .max(LIMITES.pergunta, `A pergunta pode ter até ${LIMITES.pergunta} caracteres.`),
+  resposta: z.string({ message: 'Informe a resposta.' })
+    .max(LIMITES.conteudoDoTexto, 'A resposta pode ter até 200.000 caracteres.')
+    .refine((r) => r.trim().length > 0, 'Informe a resposta.'),
+})
+
 const entradaDoYoutube = z.object({
   url: z
     .string({ message: 'Informe o link do vídeo do YouTube.' })
@@ -148,9 +157,34 @@ export async function adicionarTexto(
   exigirAutor(autor)
   const dados = entradaDeTexto.safeParse(entrada)
   if (!dados.success) throw entradaInvalida(dados.error.issues[0]?.message ?? 'Entrada inválida.')
+  return gravarFonteDeTexto(autor, agenteId, 'texto', dados.data.titulo, dados.data.conteudo)
+}
+
+export async function adicionarPerguntaResposta(
+  autor: UsuarioAutenticado,
+  agenteId: string,
+  entrada: unknown,
+): Promise<FonteVisivel> {
+  exigirAutor(autor)
+  const dados = entradaDePerguntaResposta.safeParse(entrada)
+  if (!dados.success) throw entradaInvalida(dados.error.issues[0]?.message ?? 'Entrada inválida.')
+  const { pergunta, resposta } = dados.data
+  return gravarFonteDeTexto(
+    autor, agenteId, 'pergunta_resposta', pergunta.slice(0, LIMITES.tituloDoTexto),
+    `Pergunta: ${pergunta}\n\nResposta: ${resposta.trim()}`,
+  )
+}
+
+async function gravarFonteDeTexto(
+  autor: UsuarioAutenticado,
+  agenteId: string,
+  tipo: 'texto' | 'pergunta_resposta',
+  titulo: string,
+  conteudo: string,
+): Promise<FonteVisivel> {
   await exigirAgente(agenteId)
 
-  const bytes = Buffer.from(dados.data.conteudo, 'utf8')
+  const bytes = Buffer.from(conteudo, 'utf8')
   const id = novoIdDeFonte()
   const armazenamento = armazenamentoPadrao()
   // Arquivo primeiro, linha depois (PR-47): se a linha falhar, o arquivo é apagado.
@@ -160,8 +194,8 @@ export async function adicionarTexto(
       data: {
         id,
         agenteId,
-        tipo: 'texto',
-        titulo: dados.data.titulo,
+        tipo,
+        titulo,
         tipoMime: mimeDoFormato('txt'),
         tamanhoBytes: bytes.length,
         caminhoArquivo: caminho,

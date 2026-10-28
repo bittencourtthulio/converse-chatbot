@@ -85,8 +85,8 @@ describe('status e polling', () => {
 })
 
 describe('opções de adicionar (lista única, a FT-08 acrescentou Vídeo)', () => {
-  it('traz Arquivos, Texto e Vídeo, com id único, rótulo, ícone e descrição', () => {
-    expect(OPCOES_DE_FONTE.map((o) => o.id)).toEqual(['arquivos', 'texto', 'video'])
+  it('traz Arquivos, Texto, Vídeo e Perguntas e respostas, com id único, rótulo, ícone e descrição', () => {
+    expect(OPCOES_DE_FONTE.map((o) => o.id)).toEqual(['arquivos', 'texto', 'video', 'pergunta_resposta'])
     expect(new Set(OPCOES_DE_FONTE.map((o) => o.id)).size).toBe(OPCOES_DE_FONTE.length)
     for (const o of OPCOES_DE_FONTE) {
       expect(o.rotulo).toBeTruthy()

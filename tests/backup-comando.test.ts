@@ -6,7 +6,7 @@
  */
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import Database from 'better-sqlite3'
-import { chmodSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync } from 'node:fs'
+import { chmodSync, copyFileSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { limparBanco } from './ajuda'
@@ -80,6 +80,21 @@ describe('npm run backup', () => {
     expect(r.stderr).toContain('DATABASE_URL')
     expect(r.stderr).not.toMatch(/\n\s+at\s/)
     expect(readdirSync(pasta)).not.toContain('backups')
+  }, 90_000)
+
+  it('sem DATABASE_URL não lê um arquivo de ambiente: o banco que ele indicaria fica intacto (OC-2026-0001)', async () => {
+    // Isca: faz o papel do arquivo de ambiente do desenvolvedor, apontando para um banco que não pode ser tocado.
+    const sentinela = path.join(pasta, 'sentinela.db')
+    copyFileSync(banco, sentinela)
+    const isca = path.join(pasta, 'isca.env')
+    writeFileSync(isca, `DATABASE_URL=file:${sentinela}\n`)
+    const r = await rodarScript('backup', variaveis({ DATABASE_URL: undefined, DOTENV_CONFIG_PATH: isca }))
+    expect(r.codigo).not.toBe(0)
+    expect(r.stderr).toContain('DATABASE_URL')
+    const db = new Database(sentinela, { readonly: true })
+    const gravadas = db.prepare("SELECT COUNT(*) AS n FROM registros_de_auditoria WHERE acao = 'backup_gerado'").get() as { n: number }
+    db.close()
+    expect(gravadas.n).toBe(0)
   }, 90_000)
 
   it('BACKUP_DIR sem permissão de escrita sai com código diferente de zero e mensagem clara, sem pilha', async () => {

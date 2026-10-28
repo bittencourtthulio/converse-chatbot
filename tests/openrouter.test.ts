@@ -46,6 +46,33 @@ describe('listarModelos', () => {
     expect(falso.requisicoes.filter((r) => r.caminho.endsWith('/models'))).toHaveLength(1)
   })
 
+  it('inclui modelos multimodais que conversam por texto e exclui saída só de imagem, áudio e embeddings', async () => {
+    falso.configurar({ modelos: [
+      { id: 'texto', name: 'Z Texto', context_length: 100, architecture: { input_modalities: ['text'], output_modalities: ['text'] } },
+      { id: 'multimodal', name: 'A Multimodal', context_length: 200, architecture: { input_modalities: ['text', 'image'], output_modalities: ['text', 'image'] } },
+      { id: 'imagem', name: 'Imagem', context_length: 100, architecture: { input_modalities: ['text'], output_modalities: ['image'] } },
+      { id: 'audio', name: 'Áudio', context_length: 100, architecture: { input_modalities: ['text'], output_modalities: ['audio'] } },
+      { id: 'embedding', name: 'Embedding', context_length: 100, architecture: { input_modalities: ['text'], output_modalities: ['embeddings'] } },
+      { id: 'transcricao', name: 'Transcrição', context_length: 100, architecture: { input_modalities: ['audio'], output_modalities: ['text'] } },
+    ] })
+    const lista = await listarModelos()
+    expect(lista.reserva).toBe(false)
+    expect(lista.modelos.map((m) => m.id)).toEqual(['multimodal', 'texto'])
+  })
+
+  it('não limita a quantidade de modelos do catálogo', async () => {
+    falso.configurar({ modelos: Array.from({ length: 600 }, (_, i) => ({
+      id: `provedor/modelo-${i}`, name: `Modelo ${i}`, context_length: 100,
+      architecture: { input_modalities: ['text'], output_modalities: ['text'] },
+    })) })
+    expect((await listarModelos()).modelos).toHaveLength(600)
+  })
+
+  it('a lista de reserva também está em ordem alfabética', () => {
+    const nomes = MODELOS_DE_RESERVA.map((m) => m.nome)
+    expect(nomes).toEqual([...nomes].sort((a, b) => a.localeCompare(b, 'pt-BR')))
+  })
+
   it('o cache expira depois de 5 minutos', async () => {
     vi.useFakeTimers({ toFake: ['Date'] })
     await listarModelos(CHAVE_VALIDA)

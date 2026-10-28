@@ -1,0 +1,11 @@
+{
+  "legadox": {
+    "zona-de-risco": "bloqueio",
+    "aprovacao-em-raio-alto": "bloqueio",
+    "raio-antes-do-plano": "aviso",
+    "caracterizacao-antes": "aviso",
+    "orcamento-de-mudanca": "aviso",
+    "reversao-declarada": "aviso",
+    "sem-colateral": "aviso"
+  }
+}

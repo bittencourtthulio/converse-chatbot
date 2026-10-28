@@ -4,7 +4,8 @@
  * tamanho e monta o texto com marcadores de tempo (PR-74, PR-75). Contra o
  * simulado do YouTube.
  */
-import { describe, it, expect, beforeEach, afterEach, afterAll } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach, afterAll } from 'vitest'
+import { ErroDeAplicacao } from '@/lib/erros'
 import { prisma } from '@/lib/prisma'
 import { criarFila } from '@/servicos/fontes-fila'
 import { reprocessar } from '@/servicos/fontes'
@@ -18,6 +19,8 @@ const baseOriginal = process.env.YOUTUBE_BASE
 const AGORA = new Date('2026-09-30T12:00:00.000Z')
 
 beforeEach(async () => {
+  recuperarYoutube.mockReset()
+  recuperarYoutube.mockRejectedValue(new ErroDeAplicacao('Falha simulada na recuperação do vídeo.', 502, 'youtube_download_falhou'))
   await limparBanco()
   agenteId = (await criarAgenteDeTeste()).agente.id
   falso = await iniciarYoutubeFalso()
@@ -30,7 +33,8 @@ afterEach(async () => {
 })
 afterAll(limparBanco)
 
-const fila = () => criarFila({ relogio: () => AGORA, armazenamento: armazenamentoDeTeste() })
+const recuperarYoutube = vi.fn(async () => { throw new ErroDeAplicacao('Falha simulada na recuperação do vídeo.', 502, 'youtube_download_falhou') })
+const fila = () => criarFila({ relogio: () => AGORA, armazenamento: armazenamentoDeTeste(), recuperarYoutube })
 const ler = (id: string) => prisma.fonte.findUniqueOrThrow({ where: { id } })
 async function youtube(id = ID_COM_LEGENDAS, titulo = `YouTube: ${id}`, urlOrigem = `https://www.youtube.com/watch?v=${id}`) {
   const f = await criarFonteDeTeste({ agenteId, tipo: 'youtube', titulo, nomeOriginal: null, bytes: null })
@@ -63,12 +67,27 @@ describe('fonte do YouTube na fila', () => {
     expect(falso.requisicoes.map((r) => r.caminho)).toEqual(['/watch', '/api/timedtext'])
   })
 
-  it('sem legendas a fonte fica em erro com a frase do briefing', async () => {
+  it('sem legendas tenta recuperação e preserva a mensagem de falha', async () => {
     const fonte = await youtube(ID_SEM_LEGENDAS)
     await fila().processarUma(fonte.id)
     const depois = await ler(fonte.id)
     expect(depois.status).toBe('erro')
-    expect(depois.mensagemErro).toBe('Este vídeo não tem legendas disponíveis. Baixe o vídeo e envie o arquivo para transcrever.')
+    expect(recuperarYoutube).toHaveBeenCalledOnce()
+    expect(depois.mensagemErro).toBe('Falha simulada na recuperação do vídeo.')
+  })
+
+  it('anexa a transcrição recuperada à fonte, mantém o link e grava os trechos', async () => {
+    const fonte = await youtube(ID_SEM_LEGENDAS)
+    const recuperar = vi.fn(async () => ({ texto: '[00:00] Conteúdo transcrito do áudio.', titulo: 'Aula transcrita', duracaoSegundos: 90 }))
+    const f = criarFila({ armazenamento: armazenamentoDeTeste(), recuperarYoutube: recuperar })
+    await f.processarUma(fonte.id)
+    expect(await ler(fonte.id)).toMatchObject({ status: 'pronto', titulo: 'Aula transcrita', duracaoSegundos: 90, caminhoArquivo: null, urlOrigem: fonte.urlOrigem })
+    expect(await prisma.trecho.findMany({ where: { fonteId: fonte.id } })).toEqual([expect.objectContaining({ texto: '[00:00] Conteúdo transcrito do áudio.' })])
+  })
+
+  it('legenda válida não aciona a recuperação nem a transcrição', async () => {
+    await fila().processarUma((await youtube()).id)
+    expect(recuperarYoutube).not.toHaveBeenCalled()
   })
 
   it('um título dado pelo usuário não é trocado pelo do vídeo', async () => {
@@ -83,7 +102,8 @@ describe('fonte do YouTube na fila', () => {
     await fila().processarUma(fonte.id)
     const depois = await ler(fonte.id)
     expect(depois.status).toBe('erro')
-    expect(depois.mensagemErro).toMatch(/formato da página/)
+    expect(recuperarYoutube).toHaveBeenCalledOnce()
+    expect(depois.mensagemErro).toBe('Falha simulada na recuperação do vídeo.')
     expect(depois.mensagemErro).not.toContain('página em outro formato')
   })
 
@@ -109,7 +129,7 @@ describe('fonte do YouTube na fila', () => {
     expect(falso.requisicoes).toHaveLength(0)
   })
 
-  it('o YouTube roda na raia leve: a fila drena YouTube e texto juntos', async () => {
+  it('a fila drena YouTube na raia de mídia e texto na leve', async () => {
     const yt = await youtube()
     const texto = await criarFonteDeTeste({ agenteId, tipo: 'texto', nomeOriginal: null, bytes: Buffer.from('Texto.') })
     expect(await fila().processarPendentes()).toBe(2)

@@ -81,6 +81,7 @@ export function deveContinuarPolling(fontes: Array<{ status: string }>): boolean
 }
 
 export function iconeDoTipo(tipo: string): NomeDeIcone {
+  if (tipo === 'pergunta_resposta') return 'conversa'
   if (tipo === 'texto') return 'texto'
   if (tipo === 'video' || tipo === 'youtube') return 'video'
   return 'arquivo'

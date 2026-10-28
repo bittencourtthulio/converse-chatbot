@@ -69,6 +69,13 @@ export function erroDoTelegram(causa: Causa, metodo?: string, retryAfter?: numbe
     }
     return new ErroDoTelegram('O Telegram recusou o pedido.', 502, 'telegram_pedido_invalido')
   }
+  if (causa === 409) {
+    return new ErroDoTelegram(
+      'Este bot está sendo usado por outro servidor. Desconecte-o no outro ambiente ou use outro bot para testar.',
+      409,
+      'telegram_conflito',
+    )
+  }
   if (causa === 429) {
     return new ErroDoTelegram(
       'O Telegram pediu para esperar um pouco. Tente de novo em instantes.',
@@ -271,4 +278,13 @@ export async function sendMessage(
 /** Mostra "digitando…" por cerca de 5 segundos. */
 export async function sendChatAction(token: string, chatId: number | string, opcoes?: OpcoesDeChamada): Promise<void> {
   await chamar(token, 'sendChatAction', { chat_id: chatId, action: 'typing' }, opcoes)
+}
+
+/** Recebe mensagens sem exigir endereço público. O prazo HTTP supera o long polling. */
+export async function getUpdates(token: string, offset: number, sinal?: AbortSignal): Promise<unknown[]> {
+  const resultado = await chamar(token, 'getUpdates', {
+    offset, timeout: 20, limit: 100, allowed_updates: ['message'],
+  }, { tempoLimiteMs: 25_000, sinal })
+  if (!Array.isArray(resultado)) throw erroDoTelegram('resposta', 'getUpdates')
+  return resultado
 }

@@ -4,13 +4,15 @@
  */
 import { describe, it, expect, beforeEach } from 'vitest'
 import { spawnSync } from 'node:child_process'
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import os from 'node:os'
 import path from 'node:path'
 import { ambiente } from '@/lib/ambiente'
 import { listar, resumo, trechosDaFonte } from '@/servicos/fontes'
 import { dividirEmTrechos } from '@/servicos/trechos'
 import { prisma } from '@/lib/prisma'
 import { senhaConfere } from '@/lib/senha'
+import { entrar } from '@/servicos/autenticacao'
 import {
   configuracaoPublica,
   dominiosDoEmbed,
@@ -28,6 +30,26 @@ function semear(ambienteExtra: Record<string, string> = {}) {
 
 describe('seed de demonstração', () => {
   beforeEach(limparBanco)
+
+  it('carrega DATABASE_URL do .env e cria o administrador que consegue entrar', async () => {
+    const diretorio = mkdtempSync(path.join(os.tmpdir(), 'converse-seed-env-'))
+    try {
+      writeFileSync(path.join(diretorio, '.env'), `DATABASE_URL=${process.env.DATABASE_URL}\n`)
+      const env = { ...process.env }
+      delete env.DATABASE_URL
+      const r = spawnSync(process.execPath, [
+        path.resolve('node_modules/tsx/dist/cli.mjs'),
+        path.resolve('prisma/seed.ts'),
+      ], { cwd: diretorio, env, encoding: 'utf8' })
+
+      expect(r.status, r.stderr).toBe(0)
+      const { usuario, token } = await entrar({ email: 'admin@exemplo.local', senha: 'demo1234' })
+      expect(usuario.papel).toBe('admin')
+      expect(token).toBeTruthy()
+    } finally {
+      rmSync(diretorio, { recursive: true, force: true })
+    }
+  })
 
   it('cria as duas contas e é idempotente', async () => {
     expect(semear().status).toBe(0)

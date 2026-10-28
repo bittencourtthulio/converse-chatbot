@@ -85,13 +85,12 @@ describe('cartão do Telegram: ainda não conectado', () => {
 describe('cartão do Telegram: sem APP_URL HTTPS', () => {
   const html = renderizar({ canal: null, appUrlServe: false })
 
-  it('mostra o aviso destacado, útil e acessível, e desabilita Conectar', () => {
+  it('explica a conexão direta e mantém Conectar habilitado', () => {
     expect(html).toMatch(/role="status"/)
     expect(html).toContain('alerta-aviso')
-    expect(html).toContain('APP_URL')
-    expect(html).toContain('HTTPS')
-    expect(html).toMatch(/túnel/i)
-    expect(html).toMatch(/<button[^>]*disabled[^>]*>Conectar<\/button>/)
+    expect(html).toContain('diretamente')
+    expect(html).toContain('servidor estiver ligado')
+    expect(html).not.toMatch(/<button[^>]*disabled[^>]*>Conectar<\/button>/)
   })
 })
 
@@ -129,9 +128,9 @@ describe('cartão do Telegram: conectado', () => {
     expect(html).not.toContain('alerta-erro')
   })
 
-  it('o aviso de APP_URL aparece só para a troca de token, sem esconder o canal', () => {
+  it('canal com webhook segue visível mesmo sem APP_URL', () => {
     const sem = renderizar({ appUrlServe: false })
-    expect(sem).toContain('APP_URL')
+    expect(sem).not.toContain('APP_URL')
     expect(sem).toContain('Loja da Ana')
     expect(sem).toMatch(/>Verificar<\/button>/)
   })

@@ -2,6 +2,7 @@
 
 import { useState, type KeyboardEvent, type ReactNode } from 'react'
 import { Icone } from '@/componentes/Icones'
+import { FormularioDePerguntaResposta } from '@/componentes/FormularioDePerguntaResposta'
 import { FormularioDeTexto } from '@/componentes/FormularioDeTexto'
 import { PainelDeVideo } from '@/componentes/PainelDeVideo'
 import { ZonaDeArquivos } from '@/componentes/ZonaDeArquivos'
@@ -19,6 +20,7 @@ interface PropsDoPainel {
 
 // O painel de cada opção de `opcoes-de-fonte.ts`, pelo id.
 const PAINEIS: Record<string, (p: PropsDoPainel) => ReactNode> = {
+  pergunta_resposta: (p) => <FormularioDePerguntaResposta agenteId={p.agenteId} aoAlterar={p.aoAlterar} />,
   arquivos: (p) => <ZonaDeArquivos agenteId={p.agenteId} limiteDeUploadBytes={p.limiteDeUploadBytes} aoAlterar={p.aoAlterar} />,
   texto: (p) => <FormularioDeTexto agenteId={p.agenteId} aoAlterar={p.aoAlterar} />,
   video: (p) => (
